@@ -21,7 +21,7 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className}`}>
         <QueryProvider>
           <main>{children}</main>
         </QueryProvider>
