@@ -1,6 +1,5 @@
-import React from 'react';
-
 import './button.css';
+import React from 'react';
 
 export interface ButtonProps {
   /** Is this the principal call to action on the page? */

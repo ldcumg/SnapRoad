@@ -1,7 +1,6 @@
 // import React from 'react'
 // import { cn } from '@/lib/utils'
 // import './input.css'
-
 // export interface InputProps {
 //   /** Label for the input */
 //   label: string
@@ -16,7 +15,6 @@
 //   /** Optional change handler */
 //   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 // }
-
 // /** Primary UI component for user interaction */
 // export const Input = ({ label, placeholder = '', disabled = false, size = 'medium', backgroundColor, ...props }: InputProps) => {
 //   return (
@@ -37,49 +35,55 @@
 //     </div>
 //   )
 // }
-
-import React from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 export interface InputProps {
   /** Label for the input */
-  label: string
+  label: string;
   /** Placeholder text for the input */
-  placeholder?: string
+  placeholder?: string;
   /** Is the input disabled? */
-  disabled?: boolean
+  disabled?: boolean;
   /** How large should the input be? */
-  size?: 'small' | 'medium' | 'large'
+  size?: 'small' | 'medium' | 'large';
   /** Background color for the input */
-  backgroundColor?: string
+  backgroundColor?: string;
   /** Optional change handler */
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 /** Primary UI component for user interaction */
-export const Input = ({ label, placeholder = '', disabled = false, size = 'medium', backgroundColor, ...props }: InputProps) => {
+export const Input = ({
+  label,
+  placeholder = '',
+  disabled = false,
+  size = 'medium',
+  backgroundColor,
+  ...props
+}: InputProps) => {
   const sizeClasses = {
     small: 'py-1 px-2 text-sm',
     medium: 'py-2 px-3 text-base',
-    large: 'py-3 px-4 text-lg'
-  }
+    large: 'py-3 px-4 text-lg',
+  };
 
   return (
-    <div className="mb-4">
-      <label className="block text-fuchsia-700 font-bold mb-2">{label}</label>
+    <div className='mb-4'>
+      <label className='block text-fuchsia-700 font-bold mb-2'>{label}</label>
       <input
-        type="text"
+        type='text'
         placeholder={placeholder}
         disabled={disabled}
         className={cn(
           'border rounded-md w-full',
           sizeClasses[size],
           'focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent',
-          disabled ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'
+          disabled ? 'bg-gray-200 cursor-not-allowed' : 'bg-white',
         )}
         style={{ backgroundColor }}
         {...props}
       />
     </div>
-  )
-}
+  );
+};
