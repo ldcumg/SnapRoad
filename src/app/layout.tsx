@@ -1,7 +1,8 @@
-import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
-import type { Metadata } from 'next';
+
 import { Inter } from 'next/font/google';
+import type { Metadata } from 'next';
+import QueryProvider from '@/components/providers/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,12 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type='text/javascript'
+          src='//dapi.kakao.com/v2/maps/sdk.js?appkey=%NEXT_PUBLIC_KAKAO_MAPS_KEY%&libraries=services,clusterer'
+        />
+      </head>
       <body className={`${inter.className}`}>
         <QueryProvider>
           <main>{children}</main>
