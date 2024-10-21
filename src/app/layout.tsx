@@ -1,7 +1,7 @@
+import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import QueryProvider from '@/components/providers/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +21,7 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className}`}>
         <QueryProvider>
           <main>{children}</main>
         </QueryProvider>

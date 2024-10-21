@@ -6,7 +6,8 @@
     "plugin:storybook/recommended",
     "plugin:storybook/recommended"
   ],
-  "plugins": [
-    "css-modules"
-  ]
+  "plugins": ["css-modules"],
+  "rules": {
+    "@next/next/no-img-element": "off"
+  }
 }
