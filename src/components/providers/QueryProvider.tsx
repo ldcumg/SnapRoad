@@ -1,8 +1,9 @@
 'use client';
+
 import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-function makeQueryClient() {
+const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
@@ -12,11 +13,11 @@ function makeQueryClient() {
       },
     },
   });
-}
+};
 
 let browserQueryClient: QueryClient | undefined = undefined;
 
-function getQueryClient() {
+const getQueryClient = () => {
   if (isServer) {
     // Server: always make a new query client
     return makeQueryClient();
@@ -28,9 +29,9 @@ function getQueryClient() {
     if (!browserQueryClient) browserQueryClient = makeQueryClient();
     return browserQueryClient;
   }
-}
+};
 
-export default function Provider({ children }: { children: React.ReactNode }) {
+const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   // Avoid useState when initializing the query client if you don't
   // have a suspense boundary between this and the code that may
   // suspend because React will throw away the client on the initial
@@ -43,4 +44,6 @@ export default function Provider({ children }: { children: React.ReactNode }) {
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
-}
+};
+
+export default QueryProvider;
