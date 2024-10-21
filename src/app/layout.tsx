@@ -1,7 +1,7 @@
+import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import QueryProvider from '@/hooks/queries/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
   keywords: 'Next.js, Typescript, TailwindCSS',
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html
       lang='ko'
@@ -28,4 +28,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
