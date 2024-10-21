@@ -1,23 +1,23 @@
 ```bash
 FEATURE
-"FEAT:" - 기능 추가나 개선 사항을 나타낼 때
-예: FEAT: 새로운 로그인 기능 추가
+"[Feat]" - 기능 추가나 개선 사항을 나타낼 때
+예: [Feat] 새로운 로그인 기능 추가
 
 ENHANCEMENT
-"ENHAN:" - 기존 기능의 개선 사항을 나타낼 때
-예: ENHAN: 성능 최적화
+"[Enhan]" - 기존 기능의 개선 사항을 나타낼 때
+예: [Enhan] 성능 최적화
 
-"FIX:" - 버그 수정일 경우
-예: FIX: 로그인 시 발생하는 오류 수정
+"[Fix]" - 버그 수정일 경우
+예: [Fix] 로그인 시 발생하는 오류 수정
 
-"SETUP:" - 프로젝트 환경 설정과 관련된 경우
-예: SETUP: ESLint 설정 추가
+"[Setup]" - 프로젝트 환경 설정과 관련된 경우
+예: [Setup] ESLint 설정 추가
 
-"REFACTOR:" - 리팩토링과 관련된 경우
-예: REFACTOR: 코드 구조 개선
+"[Refactor]" - 리팩토링과 관련된 경우
+예: [Refactor] 코드 구조 개선
 
-"DOCS:" - 문서 관련 변경 사항일 경우
-예: DOCS: README 업데이트
+"[Docs]" - 문서 관련 변경 사항일 경우
+예: [Docs] README 업데이트
 ```
 
 ## 🛂 연관된 커밋
