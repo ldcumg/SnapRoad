@@ -13,6 +13,9 @@ const config: Config = {
       }
     }
   },
+  future: {
+    hoverOnlyWhenSupported: true // 모바일에서 호버 끄기
+  },
   plugins: []
 }
 export default config
