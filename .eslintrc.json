@@ -8,5 +8,8 @@
   ],
   "plugins": [
     "css-modules"
-  ]
+  ],
+  "rules": {
+    "@next/next/no-img-element": "off"
+  }
 }
