@@ -1,10 +1,9 @@
 ---
 name: Bug Report Template
 about: 버그 리포트 이슈 템플릿
-title: 'BUG:'
-labels: bug
+title: '[BUG] '
+labels: 버그
 assignees: ''
-
 ---
 
 ## 어떤 버그인가요?
