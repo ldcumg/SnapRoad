@@ -1,19 +1,38 @@
-import fetchGroups from '@/services/server-action/groupActions';
+'use client';
 
-const GroupDetailPage = async () => {
-  const groups = await fetchGroups();
+import { fetchGroupsFromApi } from '@/services/client-action/groupAction';
+import { useQuery } from '@tanstack/react-query';
+
+const GroupDetailPage = () => {
+  const {
+    data: groups,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['groups'],
+    queryFn: fetchGroupsFromApi,
+  });
+
+  if (isLoading) {
+    return <p>로딩 중...</p>;
+  }
+
+  if (error instanceof Error) {
+    return <p>에러 발생: {error.message}</p>;
+  }
 
   return (
     <div>
-      <h1>Group Details</h1>
+      <h1 className='text-xl'>Group Details</h1>
+      <hr />
       {groups && groups.length > 0 ? (
-        groups.map((group) => (
+        groups.map((group: any) => (
           <div key={group.group_id}>
             <p>Title: {group.group_title}</p>
             <p>Description: {group.group_desc}</p>
-            <p>{group.group_invite_code}</p>
-            <p>{group.group_status}</p>
-            <p>{group.created_at}</p>
+            <p>Invite Code: {group.group_invite_code}</p>
+            <p>Status: {group.group_status}</p>
+            <p>Created At: {group.created_at}</p>
             <hr />
           </div>
         ))

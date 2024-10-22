@@ -2,15 +2,22 @@
 
 import { createClient } from '@/utils/supabase/server';
 
-const fetchGroups = async () => {
+export interface Group {
+  group_id: string;
+  group_title: string;
+  group_desc: string;
+  group_invite_code: string;
+  group_status: string;
+  created_at: string;
+}
+
+export const fetchGroups = async (): Promise<Group[]> => {
   const supabase = createClient();
 
   console.log('그룹 데이터 패칭 시도 중...');
 
   try {
-    const { data, error, status } = await supabase
-      .from('group') // 그룹 테이블에서 데이터 가져오기
-      .select('*');
+    const { data, error, status } = await supabase.from('group').select('*');
 
     if (error && status !== 406) {
       // 406: 'no rows'
@@ -23,7 +30,9 @@ const fetchGroups = async () => {
     }
 
     console.log('데이터 가져옴:', data);
-    return data;
+
+    // 직렬화 가능한 객체로 변환
+    return JSON.parse(JSON.stringify(data)) as Group[];
   } catch (err) {
     if (err instanceof Error) {
       console.error('에러 발생:', err.message);
@@ -34,5 +43,3 @@ const fetchGroups = async () => {
     }
   }
 };
-
-export default fetchGroups;
