@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -12,18 +12,19 @@ export default function Home() {
   useEffect(() => {
     const kakaoMapScript = document.createElement('script');
     kakaoMapScript.async = false;
-    kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=2fd272e8be49b2206f2791b44e925288&autoload=false`;
+    kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&libraries=services,clusterer&autoload=false`;
     document.head.appendChild(kakaoMapScript);
 
     const onLoadKakaoAPI = () => {
       window.kakao.maps.load(() => {
-        var container = document.getElementById('map');
-        var options = {
+        const container = document.getElementById('map');
+        const options = {
           center: new window.kakao.maps.LatLng(33.450701, 126.570667),
           level: 3,
         };
 
-        var map = new window.kakao.maps.Map(container, options);
+        new window.kakao.maps.Map(container, options);
+        return
       });
     };
 
