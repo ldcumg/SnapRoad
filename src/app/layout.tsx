@@ -1,8 +1,8 @@
-import '@/styles/globals.css';
-
-import { Inter } from 'next/font/google';
-import type { Metadata } from 'next';
+import Header from '@/components/header/Header';
 import QueryProvider from '@/components/providers/QueryProvider';
+import '@/styles/globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +24,7 @@ const RootLayout = ({
     >
       <body className={`${inter.className}`}>
         <QueryProvider>
+          <Header />
           <main>{children}</main>
         </QueryProvider>
       </body>
