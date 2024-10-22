@@ -25,7 +25,7 @@ const RootLayout = ({
       <body className={`${inter.className}`}>
         <QueryProvider>
           <Header />
-          <main>{children}</main>
+          <main className='w-full h-full'>{children}</main>
         </QueryProvider>
       </body>
     </html>
