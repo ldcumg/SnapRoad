@@ -12,7 +12,6 @@ type Props = {
 
 const AcceptInvitePage = ({ searchParams: { group_id } }: Props) => {
   const router = useRouter();
-  console.log('group_id :>> ', group_id);
   if (!group_id) {
     alert('존재하지 않는 초대링크입니다!');
     router.push('/');
@@ -35,6 +34,7 @@ const AcceptInvitePage = ({ searchParams: { group_id } }: Props) => {
     }
   };
 
+  if (insertUserGroupError) throw new Error('에러 발생!');
   return (
     <div>
       <p></p>
