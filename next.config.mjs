@@ -1,7 +1,19 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fakestoreapi.com',
+        pathname: '/**',
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
+  },
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
