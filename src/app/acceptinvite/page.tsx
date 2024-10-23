@@ -1,6 +1,7 @@
 'use client';
 
 import { useInsertUserGroupMutation } from '@/hooks/queries/byUse/useGroupMutations';
+import { useGroupDetailQuery } from '@/hooks/queries/byUse/useGroupQueries';
 import { checkMemberexist } from '@/services/client-action/groupActions';
 import { makeUserGroupDataToObj } from '@/services/groupServices';
 import browserClient from '@/utils/supabase/client';
@@ -16,6 +17,11 @@ const AcceptInvitePage = ({ searchParams: { group_id } }: Props) => {
     alert('존재하지 않는 초대링크입니다!');
     router.push('/');
   }
+  const {
+    data: groupDetailData,
+    isPending: isGroupDetailPending,
+    isError: isGroupDetailError,
+  } = useGroupDetailQuery(group_id);
   const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
   const onClick = async () => {
     const { data } = await browserClient.auth.getUser();
@@ -34,10 +40,21 @@ const AcceptInvitePage = ({ searchParams: { group_id } }: Props) => {
     }
   };
 
+  if (isGroupDetailPending) return <>loading...</>;
   if (insertUserGroupError) throw new Error('에러 발생!');
   return (
     <div>
-      <p></p>
+      <div>
+        <img
+          src={`${groupDetailData?.group_image_url}`}
+          alt='그룹 대표 이미지'
+          className='w-[300px] h-[300px]'
+        />
+        <h1>
+          <span className='font-bold'>{groupDetailData?.group_title}</span>
+          로부터 초대를 받았습니다!
+        </h1>
+      </div>
       <button onClick={onClick}>수락</button>
       <button onClick={() => router.push('/')}>거절</button>
     </div>
