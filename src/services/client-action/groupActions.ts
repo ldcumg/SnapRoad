@@ -38,4 +38,14 @@ const insertUserGroupData = async (userGroupObj: UserGroupType) => {
   else if (state.status === 201) return { data: state.data, error: state.error, groupId: userGroupObj.group_id };
 };
 
-export { insertGroupData, insertUserGroupData };
+const checkMemberexist = async (group_id: string, userId: string) => {
+  const state = await browserClient
+    .from('user_group')
+    .select('user_id, group_id')
+    .eq('group_id', group_id)
+    .eq('user_id', userId);
+  if (state.status !== 200) throw state.error;
+  return { data: state.data, error: state.error };
+};
+
+export { insertGroupData, insertUserGroupData, checkMemberexist };
