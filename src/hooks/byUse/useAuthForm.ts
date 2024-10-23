@@ -1,4 +1,4 @@
-import { signUpSchema } from '@/schemas/authSchemas';
+import { loginSchema, signUpSchema } from '@/schemas/authSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -9,4 +9,11 @@ const useSignUpForm = () => {
   });
 };
 
-export { useSignUpForm };
+const useLoginForm = () => {
+  return useForm({
+    mode: 'onChange',
+    resolver: zodResolver(loginSchema),
+  });
+};
+
+export { useSignUpForm, useLoginForm };
