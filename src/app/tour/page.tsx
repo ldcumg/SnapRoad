@@ -1,135 +1,84 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import browserClient from '@/utils/supabase/client';
 import { useState } from 'react';
 
-interface ExifData {
-  latitude: string;
-  longitude: string;
-  dateTaken: string;
-  name: string;
-  thumbnail: string;
-}
+// 이미지 업로드 함수
+export const uploadImage = async (file: File): Promise<string | null> => {
+  try {
+    const supabase = browserClient;
 
-// ClientPage와 ServerPage를 동적으로 import(최적화)
-// 동적으로 import하여 필요할 때만 로드
-const ClientPage = dynamic(() => import('./client'), { loading: () => <p>로딩 중...</p> });
-const ServerPage = dynamic(() => import('./server'), { loading: () => <p>로딩 중...</p> });
+    // 파일 업로드
+    const { data, error } = await supabase.storage.from('tour_images').upload(`group_name/${file.name}`, file);
+
+    if (error) throw error;
+
+    // 업로드된 파일의 퍼블릭 URL 생성
+    const { data: publicUrlData } = supabase.storage.from('tour_images').getPublicUrl(`group_name/${file.name}`);
+
+    if (!publicUrlData) throw new Error('퍼블릭 URL을 가져올 수 없습니다.');
+
+    console.log('이미지 업로드 성공:', publicUrlData.publicUrl);
+    return publicUrlData.publicUrl; // 퍼블릭 URL 반환
+  } catch (error) {
+    console.error('이미지 업로드 실패:', error);
+    throw error;
+  }
+};
 
 const TourPage = () => {
-  const [showClient, setShowClient] = useState<boolean>(false);
-  const [showServer, setShowServer] = useState<boolean>(false);
-
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [exifDataList, setExifDataList] = useState<ExifData[]>([]); // 다중 파일 EXIF 데이터
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) setSelectedFiles(Array.from(e.target.files));
-  };
-
-  const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedFiles.length === 0) return;
-
-    const formData = new FormData();
-    selectedFiles.forEach((file) => {
-      formData.append('photos', file);
-    }); //photos 필드로 추가
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const uploadedImageUrl = await uploadImage(file);
 
-      if (res.ok) {
-        const data = await res.json();
-        console.log(data);
-        setExifDataList(data); //다중 파일 데이터 저장
+      if (uploadedImageUrl) {
+        setImageUrl(uploadedImageUrl);
       } else {
-        setError('EXIF 데이터를 가져오는 데 실패했습니다.');
+        setError('이미지 업로드에 실패했습니다.');
       }
     } catch (err) {
-      setError('파일 업로드 중 오류가 발생했습니다.');
+      setError('이미지 업로드에 실패했습니다.');
     } finally {
       setLoading(false);
     }
-
-    console.log(selectedFiles);
   };
 
   return (
     <section className='Tour'>
-      <nav>
-        <ul className='flex gap-2'>
-          <li>
-            <h1
-              className='text-xl font-bold cursor-pointer'
-              onClick={() => setShowClient(!showClient)}
-            >
-              클라이언트
-            </h1>
-            {showClient && <ClientPage />}
-          </li>
-          <li>
-            <h1
-              className='text-xl font-bold cursor-pointer'
-              onClick={() => setShowServer(!showServer)}
-            >
-              서버
-            </h1>
-            {showServer && <ServerPage />}
-          </li>
-        </ul>
-      </nav>
-      <hr />
-
+      {/* 이미지 업로드 */}
       <article>
-        <form onSubmit={handleUpload}>
-          <input
-            type='file'
-            accept='image/*'
-            multiple
-            onChange={handleFileChange}
-          />
-          <button>업로드 하기</button>
-        </form>
-
-        {loading && <p>로딩 중...</p>}
-        {error && <p>{error}</p>}
-
-        <hr />
-
-        {exifDataList.length > 0 && (
-          <>
-            <h2>EXIF 데이터 예시</h2>
-            {exifDataList.map((data, index) => (
-              <div key={index}>
-                <h3>파일명 : {data.name}</h3>
-                <p>촬영 날짜 : {data.dateTaken}</p>
-                <p>위도: {data.latitude}</p>
-                <p>경도: {data.longitude}</p>
-                {/* Base64로 인코딩된 썸네일 이미지 */}
-                {data.thumbnail !== '썸네일 없음' && (
-                  <img
-                    src={data.thumbnail}
-                    alt='썸네일'
-                    style={{ maxWidth: '150px', height: 'auto' }}
-                  />
-                )}
-              </div>
-            ))}
-          </>
+        <input
+          type='file'
+          accept='image/*'
+          multiple
+          onChange={handleImageUpload}
+        />
+        {loading && <p>이미지 업로드 중...</p>}
+        {error && <p className='text-red-500'>{error}</p>}
+        {imageUrl && (
+          <div>
+            <p>업로드된 이미지</p>
+            <img
+              src={imageUrl}
+              alt='Uploaded'
+              style={{ maxWidth: '300px' }}
+            />
+          </div>
         )}
-
         <hr />
       </article>
     </section>
   );
 };
+
 export default TourPage;

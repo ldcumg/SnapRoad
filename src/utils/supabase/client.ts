@@ -5,5 +5,4 @@ export const createClient = () => {
 };
 
 const browserClient = createClient();
-
 export default browserClient;
