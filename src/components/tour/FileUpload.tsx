@@ -23,36 +23,26 @@ const FileUpload = () => {
   };
 
   // EXIF 데이터를 추출하고 이미지를 회전시키는 함수
-  const adjustImageOrientation = async (imgElement: HTMLImageElement, file: File) => {
-    try {
-      const exifData = await exifr.parse(file); // EXIF 데이터 추출
-      console.log('EXIF 데이터:', exifData);
+  // const adjustImageOrientation = async (imgElement: HTMLImageElement, file: File) => {
+  //   try {
+  //     const exifData = await exifr.parse(file); // EXIF 데이터 추출
+  //     console.log('EXIF 데이터:', exifData);
 
-      const orientation = exifData?.Orientation;
-      console.log('Orientation:', orientation); // 이미지 돌아가는거
+  //     const orientation = exifData?.Orientation;
+  //     console.log('Orientation:', orientation);
 
-      if (orientation) {
-        switch (orientation) {
-          case 6: // Rotate 90 degrees
-            imgElement.style.transform = 'rotate(90deg)';
-            break;
-          case 8: // Rotate -90 degrees
-            imgElement.style.transform = 'rotate(-90deg)';
-            break;
-          case 3: // Rotate 180 degrees
-            imgElement.style.transform = 'rotate(180deg)';
-            break;
-          default:
-            imgElement.style.transform = 'rotate(0deg)';
-            break;
-        }
-      } else {
-        console.warn('Orientation 정보를 찾을 수 없습니다.');
-      }
-    } catch (err) {
-      console.error('EXIF 데이터 추출 실패:', err);
-    }
-  };
+  //     if (orientation === 6) {
+  //       // EXIF Orientation 값이 6일 때 (Rotate 90 CW)
+  //       imgElement.style.transform = 'rotate(90deg)';
+  //     } else {
+  //       imgElement.style.transform = 'rotate(0deg)';
+  //     }
+  //   } catch (err) {
+  //     console.error('EXIF 데이터 추출 실패:', err);
+  //     // EXIF 데이터 추출에 실패한 경우 회전 없이 표시
+  //     imgElement.style.transform = 'rotate(0deg)';
+  //   }
+  // };
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -115,12 +105,12 @@ const FileUpload = () => {
               >
                 {data.thumbnail !== '썸네일 없음' && (
                   <>
-                    {/* <img
+                    <img
                       src={data.thumbnail}
                       alt='썸네일'
                       style={{ maxWidth: '150px', height: 'auto' }}
                       onLoad={(e) => adjustImageOrientation(e.currentTarget, selectedFiles[index])} // 이미지 로드 후 회전
-                    /> */}
+                    />
                     <img
                       src={data.thumbnail}
                       alt='썸네일'
