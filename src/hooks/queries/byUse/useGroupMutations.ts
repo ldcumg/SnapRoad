@@ -3,10 +3,14 @@ import { GroupObjType, UserGroupType } from '@/types/groupTypes';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-// TODO - invalidate필요시 쿼리키 추가 필요
+type InsertGroupType = {
+  groupObj: GroupObjType;
+  groupImg: File | null;
+};
+//TODO - invalidate필요시 쿼리키 추가 필요
 const useInsertGroupMutation = () => {
   return useMutation({
-    mutationFn: async (groupObj: GroupObjType) => await insertGroupData(groupObj),
+    mutationFn: async ({ groupObj, groupImg }: InsertGroupType) => await insertGroupData(groupObj, groupImg),
     onSuccess: (data) => {
       // console.log('data :>> ', data);
     },
