@@ -36,9 +36,10 @@
 //   )
 // }
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 export interface InputProps {
+  type?: string;
   /** Label for the input */
   label: string;
   /** Placeholder text for the input */
@@ -54,36 +55,34 @@ export interface InputProps {
 }
 
 /** Primary UI component for user interaction */
-export const Input = ({
-  label,
-  placeholder = '',
-  disabled = false,
-  size = 'medium',
-  backgroundColor,
-  ...props
-}: InputProps) => {
-  const sizeClasses = {
-    small: 'py-1 px-2 text-sm',
-    medium: 'py-2 px-3 text-base',
-    large: 'py-3 px-4 text-lg',
-  };
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ type, label, placeholder = '', disabled = false, size = 'medium', backgroundColor, ...props }, ref) => {
+    const sizeClasses = {
+      small: 'py-1 px-2 text-sm',
+      medium: 'py-2 px-3 text-base',
+      large: 'py-3 px-4 text-lg',
+    };
 
-  return (
-    <div className='mb-4'>
-      <label className='block text-fuchsia-700 font-bold mb-2'>{label}</label>
-      <input
-        type='text'
-        placeholder={placeholder}
-        disabled={disabled}
-        className={cn(
-          'border rounded-md w-full',
-          sizeClasses[size],
-          'focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent',
-          disabled ? 'bg-gray-200 cursor-not-allowed' : 'bg-white',
-        )}
-        style={{ backgroundColor }}
-        {...props}
-      />
-    </div>
-  );
-};
+    return (
+      <div className='mb-4'>
+        <label className='block text-fuchsia-700 font-bold mb-2'>{label}</label>
+        <input
+          ref={ref}
+          type={type}
+          placeholder={placeholder}
+          disabled={disabled}
+          className={cn(
+            'border rounded-md w-full',
+            sizeClasses[size],
+            'focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent',
+            disabled ? 'bg-gray-200 cursor-not-allowed' : 'bg-white',
+          )}
+          style={{ backgroundColor }}
+          {...props}
+        />
+      </div>
+    );
+  },
+);
+
+// Input.displayName = 'Input';

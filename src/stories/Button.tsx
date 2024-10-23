@@ -2,7 +2,7 @@ import './button.css';
 import React from 'react';
 
 export interface ButtonProps {
-  /** Is this the principal call to action on the page? */
+  type: 'button' | 'submit' | 'reset' /** Is this the principal call to action on the page? */;
   primary?: boolean;
   /** What background color to use */
   backgroundColor?: string;
@@ -18,6 +18,7 @@ export interface ButtonProps {
 
 /** Primary UI component for user interaction */
 export const Button = ({
+  type,
   primary = false,
   size = 'medium',
   backgroundColor,
@@ -29,7 +30,7 @@ export const Button = ({
 
   return (
     <button
-      type='button'
+      type={type}
       className={['storybook-button', `storybook-button--${size}`, mode, className].join(' ')} // className 추가
       {...props}
     >
