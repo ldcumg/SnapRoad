@@ -2,6 +2,7 @@ import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,8 +24,12 @@ const RootLayout = ({
     >
       <body className={`${inter.className}`}>
         <QueryProvider>
-          <main>{children}</main>
+          <main className='w-full h-full'>{children}</main>
         </QueryProvider>
+        <Script
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&libraries=services,clusterer&autoload=false`}
+          strategy='beforeInteractive'
+        />
       </body>
     </html>
   );

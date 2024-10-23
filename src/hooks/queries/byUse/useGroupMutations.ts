@@ -19,7 +19,7 @@ const useInsertUserGroupMutation = () => {
   return useMutation({
     mutationFn: async (userGroupObj: UserGroupType) => await insertUserGroupData(userGroupObj),
     onSuccess: (data) => {
-      router.push(`/groupdetail?group_id=${data?.groupId}`);
+      router.push(`/group/${data?.groupId}`);
     },
     onError: (error) => console.log('error :>> ', error),
   });
