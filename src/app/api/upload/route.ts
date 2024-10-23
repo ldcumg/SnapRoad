@@ -13,6 +13,7 @@ export async function Post(request: Request) {
 
   const results = [];
 
+  // for 말고 Promise.all()을 사용하여 비동기 파일 처리를 병렬적으로 처리 할 수 있지 않을까?
   for (const file of files) {
     if (file instanceof File) {
       try {
@@ -22,7 +23,7 @@ export async function Post(request: Request) {
         const thumbnailBuffer = await exifr.thumbnail(await file.arrayBuffer());
         // 썸네일을 base64로 인코딩하여 클라이언트로 전송
         const thumbnailBase64 = thumbnailBuffer
-          ? `data:image/jpg;base64,${Buffer.from(thumbnailBuffer)}.toString('base64)`
+          ? `data:image/jpg;base64,${Buffer.from(thumbnailBuffer).toString('base64')}`
           : null;
 
         console.log('EXIF 데이터:', exifData);
