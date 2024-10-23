@@ -16,6 +16,10 @@
     }
   }
 
+  * {
+    word-break: keep-all;
+  }
+
   body {
     color: var(--foreground);
     background: var(--background);
@@ -24,9 +28,7 @@
 }
 
 /* 재사용하는 구조적인 스타일링 */
-@layer components {
-}
+@layer components {}
 
 /* 하나의 속성에 대해 스타일 */
-@layer utilities {
-}
+@layer utilities {}
