@@ -1,32 +1,7 @@
 'use client';
 
-import browserClient from '@/utils/supabase/client';
 import { useState } from 'react';
-
-// 이미지 업로드 함수
-export const uploadImage = async (files: File[]): Promise<string[]> => {
-  try {
-    const supabase = browserClient;
-    const urls: string[] = [];
-
-    for (const file of files) {
-      const { data, error } = await supabase.storage.from('tour_images').upload(`group_name/${file.name}`, file);
-      if (error) throw error;
-
-      // 업로드된 파일의 퍼블릭 URL 생성
-      const { data: publicUrlData } = supabase.storage.from('tour_images').getPublicUrl(`group_name/${file.name}`);
-
-      if (!publicUrlData) throw new Error('퍼블릭 URL을 가져올 수 없습니다.');
-
-      console.log('이미지 업로드 성공:', publicUrlData.publicUrl);
-      urls.push(publicUrlData.publicUrl);
-    }
-    return urls; // 퍼블릭 URL 배열 반환
-  } catch (error) {
-    console.error('이미지 업로드 실패:', error);
-    throw error;
-  }
-};
+import { uploadImage } from '@/services/client-action/uploadImage';
 
 const TourPage = () => {
   const [imageUrl, setImageUrl] = useState<string[]>([]);
