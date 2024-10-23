@@ -2,7 +2,8 @@
 import exifr from 'exifr';
 import { NextResponse } from 'next/server';
 
-export async function Post(request: Request) {
+
+export async function POST(request: Request) {
   const formData = await request.formData();
   const files = formData.getAll('photos') as File[]; // 다중 파일
 

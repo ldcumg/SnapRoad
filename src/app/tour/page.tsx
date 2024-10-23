@@ -40,6 +40,27 @@ const TourPage = () => {
 
     setLoading(true);
     setError(null);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        setExifDataList(data); //다중 파일 데이터 저장
+      } else {
+        setError('EXIF 데이터를 가져오는 데 실패했습니다.');
+      }
+    } catch (err) {
+      setError('파일 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+
+    console.log(selectedFiles);
   };
 
   return (
@@ -82,10 +103,31 @@ const TourPage = () => {
         {loading && <p>로딩 중...</p>}
         {error && <p>{error}</p>}
 
-        <h2>EXIF 데이터 예시</h2>
         <hr />
 
-        <div></div>
+        {exifDataList.length > 0 && (
+          <>
+            <h2>EXIF 데이터 예시</h2>
+            {exifDataList.map((data, index) => (
+              <div key={index}>
+                <h3>파일명 : {data.name}</h3>
+                <p>촬영 날짜 : {data.dateTaken}</p>
+                <p>위도: {data.latitude}</p>
+                <p>경도: {data.longitude}</p>
+                {/* Base64로 인코딩된 썸네일 이미지 */}
+                {data.thumbnail !== '썸네일 없음' && (
+                  <img
+                    src={data.thumbnail}
+                    alt='썸네일'
+                    style={{ maxWidth: '150px', height: 'auto' }}
+                  />
+                )}
+              </div>
+            ))}
+          </>
+        )}
+
+        <hr />
       </article>
     </section>
   );
