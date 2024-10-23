@@ -2,7 +2,6 @@ import { fetchGroups } from '@/services/server-action/infoAction';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-
   try {
     const groups = await fetchGroups();
     return NextResponse.json(groups);

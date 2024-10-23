@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import FileUpload from '@/components/tour/FileUpload';
 import { uploadImage } from '@/services/client-action/uploadImage';
+import { useState } from 'react';
 
 const TourPage = () => {
   const [imageUrl, setImageUrl] = useState<string[]>([]);
@@ -51,6 +52,8 @@ const TourPage = () => {
         )}
         <hr />
       </article>
+
+      <FileUpload />
     </section>
   );
 };
