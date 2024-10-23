@@ -1,5 +1,6 @@
 'use client';
 
+import { formatDateToNumber } from '@/utils/dateUtils';
 import { useState } from 'react';
 
 interface ExifData {
@@ -75,22 +76,29 @@ const FileUpload = () => {
         {exifDataList.length > 0 && (
           <>
             <h2>EXIF 데이터 예시</h2>
-            {exifDataList.map((data, index) => (
-              <div key={index}>
-                <h3>파일명 : {data.name}</h3>
-                <p>촬영 날짜 : {data.dateTaken}</p>
-                <p>위도: {data.latitude}</p>
-                <p>경도: {data.longitude}</p>
-                {/* Base64로 인코딩된 썸네일 이미지 */}
-                {data.thumbnail !== '썸네일 없음' && (
-                  <img
-                    src={data.thumbnail}
-                    alt='썸네일'
-                    style={{ maxWidth: '150px', height: 'auto' }}
-                  />
-                )}
-              </div>
-            ))}
+
+            <div className='flex flex-row gap-2 p-3'>
+              {exifDataList.map((data, index) => (
+                <div
+                  key={index}
+                  className='border border-black'
+                >
+                  {/* Base64로 인코딩된 썸네일 이미지 */}
+                  {data.thumbnail !== '썸네일 없음' && (
+                    <img
+                      src={data.thumbnail}
+                      alt='썸네일'
+                      style={{ maxWidth: '150px', height: 'auto' }}
+                    />
+                  )}
+                  <h3>파일명 : {data.name}</h3>
+                  <p>촬영 날짜 : {data.dateTaken}</p>
+                  <p>{formatDateToNumber(data.dateTaken)}</p>
+                  <p>위도: {data.latitude}</p>
+                  <p>경도: {data.longitude}</p>
+                </div>
+              ))}
+            </div>
           </>
         )}
 

@@ -37,19 +37,23 @@ const TourPage = () => {
         />
         {loading && <p>이미지 업로드 중...</p>}
         {error && <p className='text-red-500'>{error}</p>}
-        {imageUrl.length > 0 && (
-          <div>
-            <p>업로드된 이미지</p>
-            {imageUrl.map((url, index) => (
-              <img
-                key={index}
-                src={url}
-                alt={`업로드 이미지 ${index}`}
-                style={{ maxWidth: '300px', margin: '10px' }}
-              />
-            ))}
-          </div>
-        )}
+
+        <p>Tour_images</p>
+
+        <div className='flex flex-row gap-2 p-3'>
+          {imageUrl.length > 0 && (
+            <div className='flex flex-row border border-black'>
+              {imageUrl.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`업로드 이미지 ${index}`}
+                  style={{ maxWidth: '300px', margin: '10px' }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
         <hr />
       </article>
 

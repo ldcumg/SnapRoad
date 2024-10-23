@@ -1,5 +1,5 @@
+import { generateRandomFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
-import { generateRandomFileName } from '@/utils/generateFileHelpers';
 
 // multiply file upload
 export const uploadImage = async (files: File[]): Promise<string[]> => {
