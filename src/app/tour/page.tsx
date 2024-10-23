@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
-
 // ClientPage와 ServerPage를 동적으로 import(최적화)
 // 동적으로 import하여 필요할 때만 로드
 const ClientPage = dynamic(() => import('./client'), { loading: () => <p>로딩 중...</p> });
@@ -37,6 +36,8 @@ const TourPage = () => {
           </li>
         </ul>
       </nav>
+
+      <hr />
     </div>
   );
 };
