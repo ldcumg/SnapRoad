@@ -105,12 +105,12 @@ const FileUpload = () => {
               >
                 {data.thumbnail !== '썸네일 없음' && (
                   <>
-                    <img
+                    {/* <img
                       src={data.thumbnail}
                       alt='썸네일'
                       style={{ maxWidth: '150px', height: 'auto' }}
                       onLoad={(e) => adjustImageOrientation(e.currentTarget, selectedFiles[index])} // 이미지 로드 후 회전
-                    />
+                    /> */}
                     <img
                       src={data.thumbnail}
                       alt='썸네일'
