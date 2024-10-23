@@ -1,4 +1,4 @@
-import { fetchGroups } from '@/services/server-action/groupAction';
+import { fetchGroups } from '@/services/server-action/infoAction';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
