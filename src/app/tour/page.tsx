@@ -7,14 +7,20 @@ import { downloadSingleFile, downloadAllAsZip } from '@/utils/downloadUtils';
 import { useState } from 'react';
 
 const TourPage = () => {
+  const bucketName = 'tour_images';
+  const folderName = 'group_name';
+  const formattedDate = formatDateToNumber(new Date().toString());
+
   const [imageData, setImageData] = useState<{ url: string; filename: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const formattedDate = formatDateToNumber(new Date().toString());
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    if (!files.length) return;
+    if (!files.length) {
+      setError('업로드할 파일을 선택하세요.');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -27,8 +33,9 @@ const TourPage = () => {
       } else {
         setError('이미지 업로드에 실패했습니다.');
       }
-    } catch {
-      setError('이미지 업로드에 실패했습니다.');
+    } catch (err) {
+      console.error('이미지 업로드 에러:', err);
+      setError('이미지 업로드 중 문제가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -48,6 +55,7 @@ const TourPage = () => {
           accept='image/*'
           multiple
           onChange={handleImageUpload}
+          // disabled={loading}
         />
 
         {renderUploadStatus()}
@@ -63,13 +71,22 @@ const TourPage = () => {
                   <img
                     src={image.url}
                     alt={`업로드 이미지 ${index}`}
+                    style={{ width: '100%' }}
                   />
                   <p>{image.filename}</p>
-                  <button onClick={() => downloadSingleFile(image.filename)}>개별 다운로드</button>
+                  <button
+                    onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}
+                    // disabled={loading}
+                  >
+                    개별 다운로드
+                  </button>
                 </div>
               ))}
             </div>
-            <button onClick={() => downloadAllAsZip(imageData, `images_${formattedDate}.zip`)}>
+            <button
+              onClick={() => downloadAllAsZip(bucketName, imageData, `images_${formattedDate}.zip`, folderName)}
+              // disabled={loading || imageData.length === 0}
+            >
               ZIP 파일로 다운로드
             </button>
           </>

@@ -4,14 +4,15 @@ import JSZip from 'jszip';
 
 /**
  * 개별 파일 다운로드
+ * @param bucketName 버킷명
  * @param filename 파일명
- * @param folder 폴더명 (optional)
+ * @param folder 폴더명
  */
 
-export const downloadSingleFile = async (filename: string, folder = 'group_name') => {
+export const downloadSingleFile = async (bucketName: string, filename: string, folder: string) => {
   try {
     const { data, error } = await browserClient.storage
-      .from('tour_images')
+      .from(bucketName) // 버킷 이름을 매개변수로 받음
       .createSignedUrl(`${folder}/${filename}`, 60, { download: true });
 
     if (error || !data) throw new Error('파일 다운로드 실패');
@@ -27,18 +28,24 @@ export const downloadSingleFile = async (filename: string, folder = 'group_name'
 
 /**
  * 모든 파일을 ZIP으로 다운로드
+ * @param bucketName 버킷명
  * @param images 파일 정보 배열
  * @param zipFilename ZIP 파일명
- * @param folder 폴더명 (optional)
+ * @param folder 폴더명
  */
 
-export const downloadAllAsZip = async (images: { filename: string }[], zipFilename: string, folder = 'group_name') => {
+export const downloadAllAsZip = async (
+  bucketName: string,
+  images: { filename: string }[],
+  zipFilename: string,
+  folder: string,
+) => {
   const zip = new JSZip();
 
   for (const image of images) {
     try {
       const { data, error } = await browserClient.storage
-        .from('tour_images')
+        .from(bucketName) // 버킷 이름을 매개변수로 받음
         .createSignedUrl(`${folder}/${image.filename}`, 60, { download: true });
 
       if (error || !data) {
