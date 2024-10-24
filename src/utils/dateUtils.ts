@@ -1,3 +1,9 @@
+/**
+ * 날짜를 숫자 형식으로 변환
+ * @param dateString 날짜 문자열 (예: '2023-10-21T12:30:00Z')
+ * @returns 변환된 날짜 문자열 (예: '20231021-1230')
+ */
+
 export const formatDateToNumber = (dateString: string): string => {
   const dateObj = new Date(dateString);
 
