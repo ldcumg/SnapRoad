@@ -13,7 +13,6 @@ const TourPage = () => {
   const [error, setError] = useState<string | null>(null);
   const formattedDate = formatDateToNumber(new Date().toString());
 
-
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length === 0) return;
