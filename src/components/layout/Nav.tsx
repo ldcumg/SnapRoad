@@ -1,11 +1,12 @@
 'use client';
 
 import browserClient from '@/utils/supabase/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
 
-const getUserGroup = async (userId: string) => {
+// 그룹 ID
+const fetchUserGroup = async (userId: string) => {
   const { data, error } = await browserClient.from('user_group').select('group_id').eq('user_id', userId);
   if (error) {
     console.error('내그룹 없음:', error);
@@ -15,50 +16,71 @@ const getUserGroup = async (userId: string) => {
   return data && data.length > 0 ? data[0].group_id : null; // 첫 번째 그룹 ID 반환
 };
 
+// 사용자 세션
+const fetchUserSession = async () => {
+  const {
+    data: { session },
+  } = await browserClient.auth.getSession();
+  return session;
+};
+
 const Nav = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [groupId, setGroupId] = useState<string | null>(null); 
-  const router = useRouter(); 
+  const router = useRouter();
 
-  useEffect(() => {
-    const checkUserSession = async () => {
-      const {
-        data: { session },
-      } = await browserClient.auth.getSession();
+  // 사용자 세션
+  const {
+    data: session,
+    isLoading: sessionLoading,
+    error: sessionError,
+    refetch,
+  } = useQuery({
+    queryKey: ['userSession'],
+    queryFn: fetchUserSession,
+  });
 
-      if (session) {
-        setIsLoggedIn(true);
-        const user = session.user;
-        const name = user.user_metadata?.full_name || user.email;
-        setUserName(name);
+  const userName = session?.user?.user_metadata?.full_name || session?.user?.email || null;
 
-        // 사용자가 속한 첫 번째 그룹 ID 가져오기
-        const fetchedGroupId = await getUserGroup(user.id);
-        if (fetchedGroupId) {
-          setGroupId(fetchedGroupId);
-        }
-      }
-    };
+  // 그룹 ID
+  const {
+    data: groupId,
+    isLoading: groupLoading,
+    error: groupError,
+  } = useQuery({
+    queryKey: ['userGroup', session?.user?.id],
+    queryFn: () => fetchUserGroup(session?.user?.id || ''),
+    enabled: !!session, // 세션이 있어야 쿼리가 실행됨
+  });
 
-    checkUserSession();
-  }, []);
+  // 로그인
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      return await browserClient.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: window.origin + '/auth/callback',
+        },
+      });
+    },
+    onSuccess: () => {
+      refetch(); // 로그인 후 세션을 다시 가져옴
+    },
+    onError: () => {
+      console.error('로그인 에러');
+    },
+  });
 
-  const loginWithGithub = async () => {
-    await browserClient.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: window.origin + '/auth/callback',
-      },
-    });
-  };
-
-  const logout = async () => {
-    await browserClient.auth.signOut();
-    setIsLoggedIn(false);
-    setUserName(null);
-    setGroupId(null); // 로그아웃 시 그룹 아이디 초기화
-  };
+  // 로그아웃
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return await browserClient.auth.signOut();
+    },
+    onSuccess: () => {
+      refetch(); // 로그아웃 후 세션을 다시 가져옴
+    },
+    onError: () => {
+      console.error('로그아웃 에러');
+    },
+  });
 
   const goToGroup = () => {
     if (groupId) {
@@ -68,16 +90,21 @@ const Nav = () => {
     }
   };
 
+  // 세션이나 그룹 관련 에러가 발생하면 처리
+  if (sessionError) console.error('세션 가져오기 실패:', sessionError);
+  if (groupError) console.error('그룹 정보 가져오기 실패:', groupError);
+  if (sessionLoading || groupLoading) return <div>로딩 중...</div>;
+
   return (
     <nav>
       <ul className='flex flex-row gap-2'>
         <li>
           <Link href={`/tour`}>이미지업로드</Link>
         </li>
-        {!isLoggedIn ? (
+        {!session ? (
           <>
             <li>
-              <button onClick={loginWithGithub}>login</button>
+              <button onClick={() => loginMutation.mutate()}>login</button>
             </li>
             <li>
               <Link href={`/login`}>로그인</Link>
@@ -100,7 +127,7 @@ const Nav = () => {
               <span>{userName}님</span>
             </li>
             <li>
-              <button onClick={logout}>logout</button>
+              <button onClick={() => logoutMutation.mutate()}>logout</button>
             </li>
           </div>
         )}
