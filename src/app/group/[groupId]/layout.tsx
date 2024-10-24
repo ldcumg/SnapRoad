@@ -6,13 +6,17 @@ export const metadata: Metadata = {
   keywords: 'Next.js, Typescript, TailwindCSS',
 };
 
-type Props = Readonly<{ children: React.ReactNode; params: { group_id: string } }>;
+type Props = Readonly<{
+  children: React.ReactNode;
+  params: { groupId: string };
+  // searchParams: { 위치명: string; lat: string; lng: string };
+}>;
 
-const GroupDetailLayout = ({ children, params: { group_id } }: Props) => {
+const GroupDetailLayout = ({ children, params: { groupId } }: Props) => {
   return (
     <>
       {children}
-      <div>브라우저 기본 네비 바</div>
+      <button>추가하기</button>
     </>
   );
 };

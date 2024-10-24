@@ -7,10 +7,10 @@ import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/GarlicToast'), { ssr: false });
 
-type Props = {
+type Props = Readonly<{
   // params: { groupId: string };
   // searchParams: { 위치명:string, lat:string,lng:string }
-};
+}>;
 
 const GroupPage = (
   {
@@ -39,7 +39,6 @@ const GroupPage = (
       </header>
       {isToggleOn.isDetail && <div>상세 정보</div>}
       {isToggleOn.isMap ? <GroupMap /> : <GroupAlbum />}
-      <button>추가하기</button>
     </>
   );
 };

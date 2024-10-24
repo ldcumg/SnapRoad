@@ -19,7 +19,6 @@ const GroupMap = () => {
   });
 
   const { searchTerm } = formState.errors;
-  console.log('searchTerm', searchTerm);
   if (searchTerm) {
     toast.error(searchTerm.message as string);
   }
