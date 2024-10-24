@@ -5,7 +5,7 @@ import { uploadImage } from '@/services/client-action/uploadImage';
 import { useState } from 'react';
 
 const TourPage = () => {
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
+  const [imageData, setImageData] = useState<{ url: string; filename: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,8 +17,8 @@ const TourPage = () => {
     setError(null);
 
     try {
-      const uploadedImageUrl = await uploadImage(files);
-      uploadedImageUrl ? setImageUrl(uploadedImageUrl) : setError('이미지 업로드에 실패했습니다.');
+      const uploadedFiles = await uploadImage(files);
+      uploadedFiles.length > 0 ? setImageData(uploadedFiles) : setError('이미지 업로드에 실패했습니다.');
     } catch (err) {
       setError('이미지 업로드에 실패했습니다.');
     } finally {
@@ -37,19 +37,22 @@ const TourPage = () => {
         />
         {loading && <p>이미지 업로드 중...</p>}
         {error && <p className='text-red-500'>{error}</p>}
-
-        <p>Tour_images</p>
+        <p>Tour_Images</p>
 
         <div className='flex flex-row gap-2 p-3'>
-          {imageUrl.length > 0 && (
+          {imageData.length > 0 && (
             <div className='flex flex-row border border-black'>
-              {imageUrl.map((url, index) => (
-                <img
+              {imageData.map((image, index) => (
+                <div
                   key={index}
-                  src={url}
-                  alt={`업로드 이미지 ${index}`}
                   style={{ maxWidth: '300px', margin: '10px' }}
-                />
+                >
+                  <img
+                    src={image.url}
+                    alt={`업로드 이미지 ${index}`}
+                  />
+                  <p>{image.filename}</p>
+                </div>
               ))}
             </div>
           )}

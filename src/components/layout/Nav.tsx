@@ -124,6 +124,9 @@ const Nav = () => {
               </button>
             </li>
             <li>
+              <Link href={'/makegroup'}>그룹 만들기</Link>
+            </li>
+            <li>
               <span>{userName}님</span>
             </li>
             <li>

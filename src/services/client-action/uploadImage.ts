@@ -2,9 +2,9 @@ import { generateRandomFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
 
 // multiply file upload
-export const uploadImage = async (files: File[]): Promise<string[]> => {
+export const uploadImage = async (files: File[]): Promise<{ url: string; filename: string }[]> => {
   const supabase = browserClient;
-  const urls: string[] = [];
+  const uploadedFiles: { url: string; filename: string }[] = [];
 
   for (const file of files) {
     const randomFileName = generateRandomFileName(file.name);
@@ -16,7 +16,8 @@ export const uploadImage = async (files: File[]): Promise<string[]> => {
     if (!publicUrlData) throw new Error('퍼블릭 URL을 가져올 수 없습니다.');
 
     console.log('이미지 업로드 성공:', publicUrlData.publicUrl);
-    urls.push(publicUrlData.publicUrl);
+    uploadedFiles.push({ url: publicUrlData.publicUrl, filename: randomFileName });
   }
-  return urls;
+
+  return uploadedFiles;
 };
