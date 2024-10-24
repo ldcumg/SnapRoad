@@ -1,3 +1,5 @@
+import { getGroupUsersCount, GroupListResponseType } from './client-action/groupActions';
+import { getSignedImgUrl } from './server-action/getSignedImgUrl';
 import { GroupObjType, UserGroupType } from '@/types/groupTypes';
 import { FieldValues } from 'react-hook-form';
 
@@ -21,4 +23,20 @@ const makeUserGroupDataToObj = (userId: string, is_owner: boolean, group_id: str
   };
 };
 
-export { makeGroupDataToObj, makeUserGroupDataToObj };
+const getUserCount = async (groups: GroupListResponseType[]) => {
+  return await Promise.all(
+    groups.map(async (group) => {
+      return await getGroupUsersCount(group.group_data.group_id);
+    }),
+  );
+};
+
+const getGroupSignedImageUrl = async (groups: GroupListResponseType[]) => {
+  return await Promise.all(
+    groups.map(async (group) => {
+      return await getSignedImgUrl('group_image', 1000 * 60 * 10, group.group_data.group_image_url);
+    }),
+  );
+};
+
+export { makeGroupDataToObj, makeUserGroupDataToObj, getUserCount, getGroupSignedImageUrl };
