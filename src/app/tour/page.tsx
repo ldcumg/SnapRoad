@@ -1,6 +1,7 @@
 'use client';
 
 import { uploadImage } from '@/services/client-action/uploadImage';
+import { formatDateToNumber } from '@/utils/dateUtils';
 import browserClient from '@/utils/supabase/client';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -10,6 +11,8 @@ const TourPage = () => {
   const [imageData, setImageData] = useState<{ url: string; filename: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formattedDate = formatDateToNumber(new Date().toString());
+
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
@@ -65,7 +68,8 @@ const TourPage = () => {
     }
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    saveAs(zipBlob, 'images.zip');
+    // saveAs(zipBlob, 'images.zip');
+    saveAs(zipBlob, `images_${formattedDate}.zip`);
   };
 
   return (
