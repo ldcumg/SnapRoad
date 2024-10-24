@@ -3,7 +3,7 @@
 import { useLoginForm } from '@/hooks/byUse/useAuthForm';
 import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
 import { loginSchema } from '@/schemas/authSchemas';
-import { signInWithGoogle, signInWithKakao } from '@/services/client-action/socialAuthAction';
+import { signInWithGithub, signInWithGoogle, signInWithKakao } from '@/services/client-action/socialAuthAction';
 import { login } from '@/services/server-action/authActions';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
@@ -62,6 +62,12 @@ const LoginForm = () => {
           type='button'
         >
           구글 로그인
+        </button>
+        <button
+          onClick={signInWithGithub}
+          type='button'
+        >
+          깃허브 로그인
         </button>
       </div>
     </div>

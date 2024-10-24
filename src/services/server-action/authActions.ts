@@ -44,6 +44,7 @@ export const signUp = async (formData: { email: string; password: string; nickna
 export const login = async (formData: { email: string; password: string }) => {
   const supabase = createClient();
 
+  // 오류코드, 메세지 확인해보기
   const { error: checkEmailError, isExists } = await checkExistEmail(formData.email);
   if (checkEmailError) throw new Error(checkEmailError);
   if (!isExists) throw new Error(IS_NOT_EXIST_EMAIL);

@@ -23,3 +23,15 @@ export const signInWithGoogle = async () => {
     },
   });
 };
+
+/** 깃허브 로그인 */
+export const signInWithGithub = async () => {
+  const supabase = createClient();
+
+  return await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo: window.origin + '/auth/callback',
+    },
+  });
+};
