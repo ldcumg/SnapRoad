@@ -12,10 +12,13 @@ export const getProfile = async (userId: string) => {
   return profiles;
 };
 
-export const updateProfile = async (userId: string, imageName: string) => {
+export const updateProfile = async (userId: string, imageName: string, newNickname: string) => {
   const supabase = createClient();
 
-  const { data, error } = await supabase.from('profiles').update({ user_image_url: imageName }).eq('user_id', userId);
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ user_image_url: imageName, user_nickname: newNickname })
+    .eq('user_id', userId);
 
   if (error) throw new Error(error.message);
 

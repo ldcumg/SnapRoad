@@ -46,7 +46,9 @@ const Profile = ({ userId }: { userId: string }) => {
     await uploadProfileImage(imageName, newImage, 'avatars');
 
     // 유저 정보 업데이트
-    await updateProfile(userId, imageName);
+    newNickname
+      ? await updateProfile(userId, imageName, newNickname)
+      : await updateProfile(userId, imageName, profileData?.[0].user_nickname);
 
     setIdEditMode(false);
   };
@@ -68,7 +70,12 @@ const Profile = ({ userId }: { userId: string }) => {
               />
             </div>
           ) : (
-            <img src={profileImageUrl} />
+            <Image
+              alt='프로필 이미지'
+              src={profileImageUrl}
+              height={100}
+              width={100}
+            />
           )}
 
           {/* 사진 첨부 */}
@@ -98,14 +105,12 @@ const Profile = ({ userId }: { userId: string }) => {
         <>
           {/* 읽기모드 */}
           <div>
-            <img src={profileImageUrl} />
-            {/* TODO Image 로 변경 */}
-            {/* <Image
+            <Image
               alt='프로필 이미지'
-              src={profileImageUrl.publicUrl}
+              src={profileImageUrl}
               height={100}
               width={100}
-            /> */}
+            />
           </div>
           <span>{profileData?.[0].user_nickname || '닉네임 없음'}</span>
           <button onClick={() => setIdEditMode(true)}>프로필 수정</button>
