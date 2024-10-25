@@ -14,7 +14,7 @@ export const useGetProfileImageUrl = (profileData: any) => {
         const publicImageUrl = await getDefaultImageUrl();
         return publicImageUrl.publicUrl;
       } else {
-        return await getSignedImgUrl('avatars', 60, profileData?.[0]?.user_image_url);
+        return await getSignedImgUrl('avatars', 86400, profileData?.[0]?.user_image_url);
       }
     },
     enabled: !!profileData, // profileData 존재할 때만 쿼리 실행(이거 안하면 안됨 오류남)

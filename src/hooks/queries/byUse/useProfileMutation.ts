@@ -9,7 +9,7 @@ export const useUpdateProfile = () => {
     mutationFn: ({ userId, imageName, newNickname }: { userId: string; imageName: string; newNickname: string }) =>
       updateProfile(userId, imageName, newNickname),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
       // alert(data.message);
     },
     onError: (error) => {

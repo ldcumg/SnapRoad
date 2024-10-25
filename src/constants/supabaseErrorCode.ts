@@ -1,4 +1,4 @@
-const errorCode = {
+const errorCode: Record<string, string> = {
   invalid_credentials: '유효하지 않는 사용자입니다.',
   user_already_exists: '이미 사용 중인 이메일입니다.',
 };

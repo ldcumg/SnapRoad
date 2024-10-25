@@ -6,6 +6,7 @@ import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { FieldValues } from 'react-hook-form';
 
 /** 이메일 링크를 통해 들어온 페이지 */
 const PasswordResetForm = () => {

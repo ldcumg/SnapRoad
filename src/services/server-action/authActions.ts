@@ -18,7 +18,7 @@ export const signUp = async (formData: { email: string; password: string; nickna
     },
   });
 
-  if (signUpError) throw new Error(getErrorMessage(signUpError.code));
+  if (signUpError) throw new Error(getErrorMessage(signUpError.code!));
 
   await signOut();
   return { message: SUCCESS_SIGN_UP };
@@ -33,7 +33,7 @@ export const login = async (formData: { email: string; password: string }) => {
     password: formData.password,
   });
 
-  if (loginError) throw new Error(getErrorMessage(loginError.code));
+  if (loginError) throw new Error(getErrorMessage(loginError.code!));
 
   return { message: SUCCESS_LOGIN, data: data };
 };

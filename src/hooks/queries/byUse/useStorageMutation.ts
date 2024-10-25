@@ -9,7 +9,7 @@ export const useUploadImage = () => {
     mutationFn: ({ imageName, newImage, storage }: { imageName: string; newImage: File; storage: string }) =>
       uploadProfileImage(imageName, newImage, storage),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['userImageUrl']);
+      queryClient.invalidateQueries({ queryKey: ['userImageUrl'] });
     },
     onError: (error) => {
       alert(error.message);

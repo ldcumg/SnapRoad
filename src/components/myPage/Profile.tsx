@@ -4,8 +4,6 @@ import { useUpdateProfile } from '@/hooks/queries/byUse/useProfileMutation';
 import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { useUploadImage } from '@/hooks/queries/byUse/useStorageMutation';
 import { useGetProfileImageUrl } from '@/hooks/queries/byUse/useStorageQueries';
-// import { uploadProfileImage } from '@/services/client-action/storageAction';
-// import { updateProfile } from '@/services/server-action/profilesAction';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -55,7 +53,7 @@ const Profile = ({ userId }: { userId: string }) => {
     const storage = 'avatars';
 
     // 버킷에 업로드
-    uploadProfileImage({ imageName, newImage, storage });
+    uploadProfileImage({ imageName, newImage: newImage!, storage });
 
     // 유저 정보 업데이트
     updateProfile({
@@ -86,7 +84,7 @@ const Profile = ({ userId }: { userId: string }) => {
           ) : (
             <Image
               alt='프로필 이미지'
-              src={profileImageUrl}
+              src={profileImageUrl!}
               height={100}
               width={100}
             />
@@ -104,7 +102,7 @@ const Profile = ({ userId }: { userId: string }) => {
               id='file'
               className='hidden'
               type='file'
-              onChange={(e) => createPreviewImage(e.target.files?.[0])}
+              onChange={(e) => createPreviewImage(e.target.files?.[0]!)}
             />
           </div>
 
@@ -121,7 +119,7 @@ const Profile = ({ userId }: { userId: string }) => {
           <div>
             <Image
               alt='프로필 이미지'
-              src={profileImageUrl}
+              src={profileImageUrl!}
               height={100}
               width={100}
             />

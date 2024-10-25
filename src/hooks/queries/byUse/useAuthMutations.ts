@@ -1,6 +1,6 @@
 import { HOME, LOGIN_PAGE } from '@/constants/urls';
-import { signUp, login, getSession, updateUser } from '@/services/server-action/authActions';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { signUp, login } from '@/services/server-action/authActions';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 /** 회원 가입 */
@@ -34,16 +34,3 @@ export const useLogin = () => {
     },
   });
 };
-
-/** 유저 정보 수정 */
-// export const useUpdateUser = () => {
-//   return useMutation({
-//     mutationFn:
-//     onSuccess: (data) => {
-//       alert(data.message);
-//     },
-//     onError: (error) => {
-//       alert(error.message);
-//     },
-//   });
-// };
