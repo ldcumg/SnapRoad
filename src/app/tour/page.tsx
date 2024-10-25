@@ -3,12 +3,12 @@
 import { uploadImage } from '@/services/client-action/uploadImage';
 import { formatDateToNumber, formatDateToPostgres } from '@/utils/dateUtils';
 import { downloadSingleFile, downloadAllAsZip } from '@/utils/downloadUtils';
-import { removeFileExtension } from '@/utils/fileNameUtils';
+import { removeFileExtension, generateUniqueFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ImageData {
-  url: string;
+  blobUrl: string;
   filename: string;
   latitude?: string;
   longitude?: string;
@@ -53,22 +53,28 @@ const TourPage = () => {
 
       const uploadedFiles = await Promise.all(
         files.map(async (file, index) => {
-          const uploadedFile = await uploadImage([file]);
+          // 중복된 파일명 처리
+          const uniqueFileName = await generateUniqueFileName(file.name, folderName, bucketName);
+          const uploadedFile = await uploadImage([file], folderName, bucketName);
 
-          // 업로드된 파일의 서명된 URL 생성 (Signed URL)
+          // Supabase에서 서명된 URL을 가져와 Blob으로 변환
           const { data, error } = await browserClient.storage
             .from(bucketName)
-            .createSignedUrl(`${folderName}/${uploadedFile[0].filename}`, 60 * 60);
+            .createSignedUrl(`${folderName}/${uniqueFileName}`, 60 * 60 * 1000);
 
           if (error || !data) throw new Error('Signed URL 생성 실패');
 
-          const signedUrl = data.signedUrl;
+          const response = await fetch(data.signedUrl);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob); // Blob URL 생성
+
           const exifData = exifDataArray[index];
           const fileNameWithoutExtension = removeFileExtension(uploadedFile[0].filename);
 
+          // 데이터베이스에 파일 정보 저장
           const { data: dbData, error: dbError } = await browserClient.from('images').insert({
             post_image_name: fileNameWithoutExtension,
-            post_image_url: signedUrl,
+            post_image_url: data.signedUrl,
             post_lat: exifData.latitude,
             post_lng: exifData.longitude,
             origin_created_at: formatDateToPostgres(exifData.dateTaken),
@@ -81,7 +87,7 @@ const TourPage = () => {
             console.log('데이터 저장 성공:', dbData);
           }
 
-          return { url: signedUrl, filename: uploadedFile[0].filename, ...exifData };
+          return { blobUrl, filename: uniqueFileName, ...exifData };
         }),
       );
 
@@ -155,40 +161,37 @@ const TourPage = () => {
         {renderUploadStatus()}
 
         {imageData.length > 0 && (
-          <>
-            {console.log('렌더링된 이미지 데이터:', imageData)}
-            <div className='flex flex-row gap-2 p-3'>
-              {imageData.map((image, index) => (
-                <div
-                  key={index}
-                  style={{ maxWidth: '300px', margin: '10px' }}
+          <div className='flex flex-row gap-2 p-3'>
+            {imageData.map((image, index) => (
+              <div
+                key={index}
+                style={{ maxWidth: '300px', margin: '10px' }}
+              >
+                <img
+                  src={image.blobUrl}
+                  alt={`업로드 이미지 ${index}`}
+                  style={{ width: '100%' }}
+                />
+                <p>파일명: {image.filename}</p>
+                <p>위도: {image.latitude}</p>
+                <p>경도: {image.longitude}</p>
+                <p>촬영 날짜: {formatDateToNumber(image.dateTaken)}</p>
+                <button onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}>
+                  개별 다운로드
+                </button>
+                <button
+                  onClick={() => handleDeleteImage(image.filename)}
+                  disabled={loading}
                 >
-                  <img
-                    src={image.url}
-                    alt={`업로드 이미지 ${index}`}
-                    style={{ width: '100%' }}
-                  />
-                  <p>파일명: {image.filename}</p>
-                  <p>위도: {image.latitude}</p>
-                  <p>경도: {image.longitude}</p>
-                  <p>촬영 날짜: {formatDateToNumber(image.dateTaken)}</p>
-                  <button onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}>
-                    개별 다운로드
-                  </button>
-                  <button
-                    onClick={() => handleDeleteImage(image.filename)}
-                    disabled={loading}
-                  >
-                    삭제
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => downloadAllAsZip(bucketName, imageData, `images_${formattedDate}.zip`, folderName)}>
-              ZIP 파일로 다운로드
-            </button>
-          </>
+                  삭제
+                </button>
+              </div>
+            ))}
+          </div>
         )}
+        <button onClick={() => downloadAllAsZip(bucketName, imageData, `images_${formattedDate}.zip`, folderName)}>
+          ZIP 파일로 다운로드
+        </button>
         <hr />
       </article>
     </section>
