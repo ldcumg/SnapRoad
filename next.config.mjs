@@ -7,11 +7,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'fakestoreapi.com',
+        hostname: '.com',
         pathname: '/**',
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    domains: ['i.scdn.co'],
   },
 };
 

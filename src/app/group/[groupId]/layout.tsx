@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+export const generateMetadata = async () => {
+  return {
+    title: '...',
+  };
 };
 
 type Props = Readonly<{
@@ -13,12 +13,7 @@ type Props = Readonly<{
 }>;
 
 const GroupDetailLayout = ({ children, params: { groupId } }: Props) => {
-  return (
-    <>
-      {children}
-      <button>추가하기</button>
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default GroupDetailLayout;

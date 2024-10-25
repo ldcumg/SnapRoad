@@ -1,42 +1,29 @@
 'use server';
 
-import { ERROR_SIGN_UP, Is_EXIST_EMAIL, SUCCESS_SIGN_UP } from '@/constants/authMessage';
+import { IS_EXIST_EMAIL, IS_NOT_EXIST_EMAIL, SUCCESS_LOGIN, SUCCESS_SIGN_UP } from '@/constants/authMessage';
 import { createClient } from '@/utils/supabase/server';
 
-/** 이메일 중복 체크 */
+/** 이메일 체크 */
 const checkExistEmail = async (email: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase.from('profiles').select('user_email').eq('user_email', email);
 
-  if (error) {
-    console.log('이메일 중복 체크 중 오류 발생', error.message);
-    return { error: ERROR_SIGN_UP };
-  }
-
-  if (data && data.length > 0) {
-    return { isExists: true };
-  }
+  if (error) return { error: error.message };
+  if (data && data.length > 0) return { isExists: true };
 
   return { isExists: false };
 };
 
+/** 회원가입 */
 export const signUp = async (formData: { email: string; password: string; nickname: string }) => {
   const supabase = createClient();
 
   const { error: checkEmailError, isExists } = await checkExistEmail(formData.email);
 
-  /** 일반 오류 */
-  if (checkEmailError) {
-    throw new Error(checkEmailError);
-  }
+  if (checkEmailError) throw new Error(checkEmailError);
+  if (isExists) throw new Error(IS_EXIST_EMAIL);
 
-  /** 중복 이메일 오류 */
-  if (isExists) {
-    throw new Error(Is_EXIST_EMAIL);
-  }
-
-  /** 회원가입 시도 */
   const { error: signUpError } = await supabase.auth.signUp({
     email: formData.email,
     password: formData.password,
@@ -47,11 +34,42 @@ export const signUp = async (formData: { email: string; password: string; nickna
     },
   });
 
-  /** 일반 오류 */
-  if (signUpError) {
-    console.log('회원가입 중 오류 발생', signUpError.message);
-    throw new Error('ERROR_SIGN_UP');
-  }
+  if (signUpError) throw new Error(signUpError.message);
 
+  await signOut();
   return { message: SUCCESS_SIGN_UP };
+};
+
+/** 로그인 */
+export const login = async (formData: { email: string; password: string }) => {
+  const supabase = createClient();
+
+  // 오류코드, 메세지 확인해보기
+  const { error: checkEmailError, isExists } = await checkExistEmail(formData.email);
+  if (checkEmailError) throw new Error(checkEmailError);
+  if (!isExists) throw new Error(IS_NOT_EXIST_EMAIL);
+
+  const { data, error: loginError } = await supabase.auth.signInWithPassword({
+    email: formData.email,
+    password: formData.password,
+  });
+
+  if (loginError) throw new Error(loginError.message);
+  return { message: SUCCESS_LOGIN, data: data };
+};
+
+export const getSession = async () => {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user;
+};
+
+export const signOut = async () => {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
 };
