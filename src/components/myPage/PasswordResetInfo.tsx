@@ -8,8 +8,6 @@ const PasswordResetInfo = () => {
   const [success, setSuccess] = useState<boolean>(false);
 
   const handleSendEmailResetPassword = async () => {
-    console.log('이메일 보낼게요!');
-
     try {
       const resetData = await sendEmailResetPassword(email);
       setSuccess(true);

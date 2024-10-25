@@ -1,12 +1,11 @@
 'use client';
 
-import { useLoginForm } from '@/hooks/byUse/useAuthForm';
 import { useResetPasswordForm } from '@/hooks/byUse/usePasswordResetForm';
 import { resetPassword } from '@/services/server-action/authActions';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 
 /** 이메일 링크를 통해 들어온 페이지 */
 const PasswordResetForm = () => {
@@ -18,9 +17,7 @@ const PasswordResetForm = () => {
   } = useResetPasswordForm();
 
   const handleConfirmPasswords = async (value: FieldValues) => {
-    console.log('value :>> ', value.password);
     const data = await resetPassword(value.password);
-    console.log('data :>> ', data);
     alert('변경이 완료되었습니다.');
 
     router.push('/mypage');
