@@ -1,17 +1,24 @@
 import { HOME, LOGIN_PAGE } from '@/constants/urls';
 import { signUp, login, getSession, updateUser } from '@/services/server-action/authActions';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { updateProfile } from '@/services/server-action/profilesAction';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 /** 프로필 업데이트 */
-export const useSignUp = () => {
+export const useUpdateProfile = () => {
+  console.log('프로필 업데이트');
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: signUp,
+    // mutationFn: updateProfile,
+    mutationFn: ({ userId, imageName, newNickname }: { userId: string; imageName: string; newNickname: string }) =>
+      updateProfile(userId, imageName, newNickname),
     onSuccess: (data) => {
-      alert(data.message);
+      queryClient.invalidateQueries(['profiles']); // [???????]
+      // alert(data.message);
     },
     onError: (error) => {
-      alert(error.message);
+      // alert(error.message);
     },
   });
 };

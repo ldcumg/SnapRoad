@@ -1,14 +1,20 @@
 import { HOME, LOGIN_PAGE } from '@/constants/urls';
 import { uploadProfileImage } from '@/services/client-action/storageAction';
 import { signUp, login, getSession, updateUser } from '@/services/server-action/authActions';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 /** 파일 업로드 */
 export const useUploadImage = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: uploadProfileImage,
-    onSuccess: (data) => {},
+    // mutationFn: (uploadProfileImage),
+    mutationFn: ({ imageName, newImage, storage }: { imageName: string; newImage: File; storage: string }) =>
+      uploadProfileImage(imageName, newImage, storage),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['userImageUrl']);
+    },
     onError: (error) => {
       alert(error.message);
     },

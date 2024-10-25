@@ -17,13 +17,14 @@ export const getSignedImageUrl = async (imageUrl: string, bucket: string) => {
 };
 
 /** 이미지 업로드 */
-export const uploadProfileImage = async (fileName: string, newImage: File, storage: string) => {
-  console.log('fileName :>> ', fileName);
+export const uploadProfileImage = async (imageName: string, newImage: File, storage: string) => {
+  console.log('----------------- 이미지 업로드 할게요');
+  console.log('imageName :>> ', imageName);
   console.log('newImage :>> ', newImage);
   console.log('storage :>> ', storage);
 
   const supabase = createClient();
-  const { data, error } = await supabase.storage.from(storage).upload(fileName, newImage);
+  const { data, error } = await supabase.storage.from(storage).upload(imageName, newImage);
   console.log('data :>> ', data);
   if (error) throw new Error(error.message);
   return { message: '이미지 등록 성공' };

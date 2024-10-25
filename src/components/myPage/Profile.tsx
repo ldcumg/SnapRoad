@@ -1,25 +1,47 @@
 'use client';
 
+import { useUpdateProfile } from '@/hooks/queries/byUse/useProfileMutation';
 import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { useUploadImage } from '@/hooks/queries/byUse/useStorageMutation';
 import { useGetProfileImageUrl } from '@/hooks/queries/byUse/useStorageQueries';
-import { uploadProfileImage } from '@/services/client-action/storageAction';
-import { updateProfile } from '@/services/server-action/profilesAction';
+// import { uploadProfileImage } from '@/services/client-action/storageAction';
+// import { updateProfile } from '@/services/server-action/profilesAction';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+/**
+ * 유저의 프로필 이미지는 보안을 위해 supabase 의 private bucket 에 저장
+ * private 에 있는 이미지는 유효기간이 있어서 매 요청마다 url 을 새로 생성해야함(signed url)
+ *
+ */
 const Profile = ({ userId }: { userId: string }) => {
   const [isEditMode, setIdEditMode] = useState<boolean>(false);
-  const [newNickname, setNewNickname] = useState<string>('');
+  const [newNickname, setNewNickname] = useState<string>(''); // 변경시점 찾아보기
   const [previewImage, setPreviewImage] = useState<string>(''); // 미리보기 이미지
   const [newImage, setNewImage] = useState<File>(); // 첨부한 이미지
 
   // 1. 프로필 정보 조회(user_image_url) 사진명이 들어가있음
   const { data: profileData, isLoading: profileLoading, isError } = useProfilesQuery(userId);
 
-  // 2. 디비의 user_image_url (사진명) 으로 이미지 url 얻기
+  /**
+   * 2. 디비의 user_image_url (사진명) 으로 이미지 url 얻기
+   * 1번에서 사용자 정보를 불러왔으면, profiles 의 user_image_url 이 null 인지 아닌지에 따라 분기처리됨
+   * null : public 버킷에 있는 default 이미지를 불러옴
+   * null 아님 : 해당 이미지명으로 private 에 있는 사진을 찾아서 signed url 로 만들어서 줌
+   */
   const { data: profileImageUrl, isLoading: imageLoading, error: imageError } = useGetProfileImageUrl(profileData);
+
+  useEffect(() => {
+    // profileData가 로드된 후에만 newNickname을 설정
+    if (profileData && profileData[0]?.user_nickname) {
+      setNewNickname(profileData[0].user_nickname);
+    }
+
+    // if (profileData && profileData[0]?.user_image_url) {
+    //   setNewNickname(profileData[0].user_image_url);
+    // }
+  }, [profileData]);
 
   console.log('Profile profileImageUrl :>> ', profileImageUrl);
 
@@ -31,7 +53,8 @@ const Profile = ({ userId }: { userId: string }) => {
     setNewImage(file);
   };
 
-  //   const { mutate: uploadProfileImage } = useUploadImage();
+  const { mutate: uploadProfileImage } = useUploadImage();
+  const { mutate: updateProfile } = useUpdateProfile(); // [?????????]
 
   /** 프로필 수정 */
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -42,13 +65,17 @@ const Profile = ({ userId }: { userId: string }) => {
     let imageName = crypto.randomUUID();
 
     console.log('newImage :>> ', newImage);
-    // 스토리지 업데이트
-    await uploadProfileImage(imageName, newImage, 'avatars');
+
+    const storage = 'avatars';
+    // 버킷에 업로드
+    uploadProfileImage({ imageName, newImage, storage });
 
     // 유저 정보 업데이트
-    newNickname
-      ? await updateProfile(userId, imageName, newNickname)
-      : await updateProfile(userId, imageName, profileData?.[0].user_nickname);
+    updateProfile({
+      userId,
+      imageName,
+      newNickname,
+    });
 
     setIdEditMode(false);
   };
