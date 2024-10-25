@@ -23,6 +23,12 @@ const TourPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // 확장자 제거
+  const removeFileExtension = (filename: string) => {
+    return filename.substring(0, filename.lastIndexOf('.')) || filename;
+  };
+
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (!files.length) {
@@ -63,8 +69,10 @@ const TourPage = () => {
 
           const signedUrl = data.signedUrl;
           const exifData = exifDataArray[index];
+          const fileNameWithoutExtension = removeFileExtension(uploadedFile[0].filename);
 
           const { data: dbData, error: dbError } = await browserClient.from('images').insert({
+            post_image_name: fileNameWithoutExtension,
             post_image_url: signedUrl,
             post_lat: exifData.latitude,
             post_lng: exifData.longitude,

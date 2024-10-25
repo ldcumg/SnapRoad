@@ -7,7 +7,8 @@ export const uploadImage = async (files: File[]): Promise<{ url: string; filenam
   const uploadedFiles: { url: string; filename: string }[] = [];
 
   for (const file of files) {
-    const randomFileName = generateRandomFileName(file.name);
+    // const randomFileName = generateRandomFileName(file.name);
+    const randomFileName = file.name;
 
     const { data, error } = await supabase.storage.from('tour_images').upload(`group_name/${randomFileName}`, file);
     if (error) throw error;
