@@ -92,6 +92,47 @@ const TourPage = () => {
     }
   };
 
+  const deleteImage = async (filename: string) => {
+    try {
+      const { error: storageError } = await browserClient.storage
+        .from(bucketName)
+        .remove([`${folderName}/${filename}`]);
+
+      if (storageError) {
+        throw new Error(`스토리지에서 파일 삭제 중 오류 발생: ${storageError.message}`);
+      }
+
+      const { error: dbError } = await browserClient
+        .from('images')
+        .delete()
+        .eq('post_image_url', `${folderName}/${filename}`);
+
+      if (dbError) {
+        throw new Error(`데이터베이스에서 이미지 삭제 중 오류 발생: ${dbError.message}`);
+      }
+
+      console.log(`이미지 삭제 성공: ${filename}`);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const handleDeleteImage = async (filename: string) => {
+    setLoading(true);
+    const isDeleted = await deleteImage(filename);
+
+    if (isDeleted) {
+      const updatedImageData = imageData.filter((image) => image.filename !== filename);
+      setImageData(updatedImageData);
+    } else {
+      setError('이미지 삭제 중 오류가 발생했습니다.');
+    }
+
+    setLoading(false);
+  };
+
   const renderUploadStatus = () => {
     if (loading) return <p>이미지 업로드 중...</p>;
     if (error) return <p className='text-red-500'>{error}</p>;
@@ -130,6 +171,12 @@ const TourPage = () => {
                   <p>촬영 날짜: {formatDateToNumber(image.dateTaken)}</p>
                   <button onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}>
                     개별 다운로드
+                  </button>
+                  <button
+                    onClick={() => handleDeleteImage(image.filename)}
+                    disabled={loading}
+                  >
+                    삭제
                   </button>
                 </div>
               ))}
