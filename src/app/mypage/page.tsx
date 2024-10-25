@@ -16,8 +16,6 @@ interface UserSession {
 const MyPage = () => {
   const { data, isLoading } = useGetUserSession() as { data: UserSession | null; isLoading: boolean };
 
-  console.log('data :>> ', data);
-
   if (isLoading) return <>로딩중...</>;
 
   return <Profile userId={data?.user.id!} />;
