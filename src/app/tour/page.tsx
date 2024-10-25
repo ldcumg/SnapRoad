@@ -3,6 +3,7 @@
 import { uploadImage } from '@/services/client-action/uploadImage';
 import { formatDateToNumber, formatDateToPostgres } from '@/utils/dateUtils';
 import { downloadSingleFile, downloadAllAsZip } from '@/utils/downloadUtils';
+import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
 import { useState } from 'react';
 
@@ -22,12 +23,6 @@ const TourPage = () => {
   const [imageData, setImageData] = useState<ImageData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // 확장자 제거
-  const removeFileExtension = (filename: string) => {
-    return filename.substring(0, filename.lastIndexOf('.')) || filename;
-  };
-
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];

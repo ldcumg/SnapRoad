@@ -57,7 +57,7 @@ const Nav = () => {
       return await browserClient.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: window.origin + '/auth/callback',
+          redirectTo: window.origin + '/api/auth/callback',
         },
       });
     },
