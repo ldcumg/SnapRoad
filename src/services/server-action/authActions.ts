@@ -73,3 +73,26 @@ export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
 };
+
+/** 유저 정보 업데이트
+ * 닉네임, 이미지(파일명)
+ */
+// TODO 텐스텍 쿼리
+export const updateUser = async (imageUrl: string, newNickname: string) => {
+  console.log('imageUrl :>> ', imageUrl);
+  console.log('newNickname :>> ', newNickname);
+
+  // const supabase = createClient();
+
+  // const { error } = await supabase.auth.updateUser({
+  //   data: {
+  //     avatar_url: imageUrl,
+  //     nickname: newNickname,
+  //   },
+  // });
+
+  // if (error) throw new Error(error.message);
+
+  // // TODO 메세지
+  // return { message: '수정 성공' };
+};

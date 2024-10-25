@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* HTML태그 등 전역적인 스타일 */
-@layer base {
+/* @layer base {
   :root {
     --background: #ffffff;
     --foreground: #171717;
@@ -25,10 +25,12 @@
     background: var(--background);
     @apply font-sans;
   }
-}
+} */
 
 /* 재사용하는 구조적인 스타일링 */
-@layer components {}
+@layer components {
+}
 
 /* 하나의 속성에 대해 스타일 */
-@layer utilities {}
+@layer utilities {
+}

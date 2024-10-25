@@ -1,9 +1,10 @@
 import { HOME, LOGIN_PAGE } from '@/constants/urls';
-import { signUp, login } from '@/services/server-action/authActions';
-import { useMutation } from '@tanstack/react-query';
+import { signUp, login, getSession, updateUser } from '@/services/server-action/authActions';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-const useSignUp = () => {
+/** 회원 가입 */
+export const useSignUp = () => {
   const router = useRouter();
 
   return useMutation({
@@ -19,7 +20,7 @@ const useSignUp = () => {
 };
 
 /** 로그인 */
-const useLogin = () => {
+export const useLogin = () => {
   const router = useRouter();
 
   return useMutation({
@@ -34,4 +35,15 @@ const useLogin = () => {
   });
 };
 
-export { useSignUp, useLogin };
+/** 유저 정보 수정 */
+// export const useUpdateUser = () => {
+//   return useMutation({
+//     mutationFn:
+//     onSuccess: (data) => {
+//       alert(data.message);
+//     },
+//     onError: (error) => {
+//       alert(error.message);
+//     },
+//   });
+// };
