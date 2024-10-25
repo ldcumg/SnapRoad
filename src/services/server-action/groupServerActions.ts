@@ -1,5 +1,6 @@
 'use server';
 
+import { getSignedImgUrl } from './getSignedImgUrl';
 import { createClient } from '@/utils/supabase/server';
 
 const getGroupDetails = async (group_id: string) => {
@@ -10,18 +11,10 @@ const getGroupDetails = async (group_id: string) => {
     .eq('group_id', group_id)
     .single();
   if (state.status !== 200) throw state.error;
-  console.log('state.data :>> ', { ...state.data });
-  const signedImgUrl = await getSignedGroupImg(state.data?.group_image_url);
-  console.log('signedImgUrl :>> ', signedImgUrl);
+  const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, state.data?.group_image_url);
   if (state.data) {
-    return { ...state.data, group_image_url: signedImgUrl?.signedUrl };
+    return { ...state.data, group_image_url: signedImgUrl };
   }
-};
-
-const getSignedGroupImg = async (group_image_url: string) => {
-  const supabase = createClient();
-  const { data: signedImgUrl } = await supabase.storage.from('group_image').createSignedUrl(group_image_url, 60);
-  return signedImgUrl;
 };
 
 export { getGroupDetails };
