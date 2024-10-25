@@ -5,7 +5,7 @@ import type { LocationInfo } from '@/types/placesTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from 'react-kakao-maps-sdk';
 
@@ -31,7 +31,7 @@ const GroupMap = () => {
   //   libraries: ['services', 'clusterer'],
   // });
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, setFocus } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(searchPlaceSchema),
   });
@@ -40,6 +40,10 @@ const GroupMap = () => {
   // if (searchTerm) {
   //   toast.error(searchTerm.message as string);
   // }
+
+  useEffect(() => {
+    setFocus('searchTerm');
+  }, []);
 
   const searchLocation = ({ searchTerm }: FieldValues) => {
     const kakaoPlacesSearch = new kakao.maps.services.Places();
@@ -111,7 +115,7 @@ const GroupMap = () => {
               }}
               draggable={true}
               // onDragStart={}
-              onDragEnd={(test)=>console.log(test.getPosition())}
+              onDragEnd={(test) => console.log(test.getPosition())}
             >
               {spotMarker.place_name}
             </MapMarker>
