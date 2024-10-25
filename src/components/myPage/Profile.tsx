@@ -17,7 +17,7 @@ const Profile = ({ userId }: { userId: string }) => {
   const [isEditMode, setIdEditMode] = useState<boolean>(false);
   const [newNickname, setNewNickname] = useState<string>('');
   const [previewImage, setPreviewImage] = useState<string>('');
-  const [newImage, setNewImage] = useState<File>();
+  const [newImage, setNewImage] = useState<File | null>(null);
 
   // 1. 프로필 정보 조회(user_image_url) 사진명이 들어가있음
   const { data: profileData, isLoading: profileLoading, isError } = useProfilesQuery(userId);
@@ -52,15 +52,22 @@ const Profile = ({ userId }: { userId: string }) => {
     let imageName = crypto.randomUUID();
     const storage = 'avatars';
 
-    // 버킷에 업로드
-    uploadProfileImage({ imageName, newImage: newImage!, storage });
+    if (newImage) {
+      // 버킷에 업로드
+      uploadProfileImage({ imageName, newImage: newImage!, storage });
 
-    // 유저 정보 업데이트
-    updateProfile({
-      userId,
-      imageName,
-      newNickname,
-    });
+      updateProfile({
+        userId,
+        imageName,
+        newNickname,
+      });
+    } else {
+      updateProfile({
+        userId,
+        imageName: profileData?.[0]?.user_image_url,
+        newNickname,
+      });
+    }
 
     setIdEditMode(false);
   };
