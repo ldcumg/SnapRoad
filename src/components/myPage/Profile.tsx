@@ -17,9 +17,9 @@ import React, { useEffect, useState } from 'react';
  */
 const Profile = ({ userId }: { userId: string }) => {
   const [isEditMode, setIdEditMode] = useState<boolean>(false);
-  const [newNickname, setNewNickname] = useState<string>(''); // 변경시점 찾아보기
-  const [previewImage, setPreviewImage] = useState<string>(''); // 미리보기 이미지
-  const [newImage, setNewImage] = useState<File>(); // 첨부한 이미지
+  const [newNickname, setNewNickname] = useState<string>('');
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const [newImage, setNewImage] = useState<File>();
 
   // 1. 프로필 정보 조회(user_image_url) 사진명이 들어가있음
   const { data: profileData, isLoading: profileLoading, isError } = useProfilesQuery(userId);
@@ -33,40 +33,27 @@ const Profile = ({ userId }: { userId: string }) => {
   const { data: profileImageUrl, isLoading: imageLoading, error: imageError } = useGetProfileImageUrl(profileData);
 
   useEffect(() => {
-    // profileData가 로드된 후에만 newNickname을 설정
     if (profileData && profileData[0]?.user_nickname) {
       setNewNickname(profileData[0].user_nickname);
     }
-
-    // if (profileData && profileData[0]?.user_image_url) {
-    //   setNewNickname(profileData[0].user_image_url);
-    // }
   }, [profileData]);
-
-  console.log('Profile profileImageUrl :>> ', profileImageUrl);
 
   /** 미리보기 */
   const createPreviewImage = (file: File) => {
-    console.log('createPreviewImage');
     const previewUrl = URL.createObjectURL(file);
     setPreviewImage(previewUrl);
     setNewImage(file);
   };
 
   const { mutate: uploadProfileImage } = useUploadImage();
-  const { mutate: updateProfile } = useUpdateProfile(); // [?????????]
+  const { mutate: updateProfile } = useUpdateProfile();
 
   /** 프로필 수정 */
   const handleSubmit = async (e: { preventDefault: () => void }) => {
-    console.log('previewImage :>> ', previewImage);
-    console.log('newImage :>> ', newImage);
     e.preventDefault();
-
     let imageName = crypto.randomUUID();
-
-    console.log('newImage :>> ', newImage);
-
     const storage = 'avatars';
+
     // 버킷에 업로드
     uploadProfileImage({ imageName, newImage, storage });
 
