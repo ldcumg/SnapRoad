@@ -1,10 +1,14 @@
 'use client';
 
-import { useGetUserSession } from '@/hooks/queries/byUse/useAuthMutations';
 import React, { useState } from 'react';
 
-const PasswordChangeForm = () => {
+const PasswordResetInfo = () => {
   const [email, setEmail] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false); // 이거 왜 만들지
+
+  const handleSendEmailResetPassword = async () => {
+    console.log('비밀번호 변경할게요');
+  };
 
   return (
     <div className='flex flex-col'>
@@ -15,9 +19,10 @@ const PasswordChangeForm = () => {
         onChange={(e) => setEmail(e.target.value)}
         value={email}
       />
-      <button>재설정 링크 전송하기</button>
+      {success && <div>이메일을 확인하세요</div>}
+      <button onClick={handleSendEmailResetPassword}>재설정 링크 전송하기</button>
     </div>
   );
 };
 
-export default PasswordChangeForm;
+export default PasswordResetInfo;

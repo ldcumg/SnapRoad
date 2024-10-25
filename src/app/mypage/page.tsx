@@ -2,8 +2,7 @@
 
 import Profile from '@/components/myPage/Profile';
 import { useGetUserSession } from '@/hooks/queries/byUse/useAuthQueries';
-import Image from 'next/image';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 /**
  * 이메일 회원가입 & 소셜 로그인 -> 처음에 profiles 의 유저 이미지 null

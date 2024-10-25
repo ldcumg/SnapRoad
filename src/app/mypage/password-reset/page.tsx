@@ -1,4 +1,4 @@
-import PasswordChangeForm from '@/components/myPage/PasswordChangeForm';
+import PasswordResetForm from '@/components/myPage/PasswordResetForm';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: '비밀번호 변경 페이지',
 };
 
-const PasswordChange = () => {
-  return <PasswordChangeForm />;
+const PasswordResetPage = () => {
+  return <PasswordResetForm />;
 };
 
-export default PasswordChange;
+export default PasswordResetPage;
