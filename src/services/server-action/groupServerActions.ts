@@ -17,4 +17,22 @@ const getGroupDetails = async (group_id: string) => {
   }
 };
 
-export { getGroupDetails };
+type PostLists = {
+  group_id: string;
+};
+
+const getGroupPostLists = async (user_id: string) => {
+  const supabase = createClient();
+  const { data, error } = await supabase.from('user_group').select('group_id').eq('user_id', user_id).limit(10);
+  if (error) throw error;
+  return data as PostLists[];
+};
+
+const getPostListsByGroupId = async (group_id: string) => {
+  const supabase = createClient();
+  const { data, error } = await supabase.from('post').select('post_thumbnail_image').eq('group_id', group_id).single();
+  if (error) throw error;
+  return data;
+};
+
+export { getGroupDetails, getGroupPostLists, getPostListsByGroupId };
