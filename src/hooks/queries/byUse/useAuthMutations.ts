@@ -3,7 +3,8 @@ import { signUp, login } from '@/services/server-action/authActions';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-const useSignUp = () => {
+/** 회원 가입 */
+export const useSignUp = () => {
   const router = useRouter();
 
   return useMutation({
@@ -19,7 +20,7 @@ const useSignUp = () => {
 };
 
 /** 로그인 */
-const useLogin = () => {
+export const useLogin = () => {
   const router = useRouter();
 
   return useMutation({
@@ -33,5 +34,3 @@ const useLogin = () => {
     },
   });
 };
-
-export { useSignUp, useLogin };

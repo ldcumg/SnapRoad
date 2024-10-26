@@ -1,7 +1,11 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    domains: [`${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`],
+  },
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
