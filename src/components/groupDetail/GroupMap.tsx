@@ -47,10 +47,10 @@ const GroupMap = () => {
     resolver: zodResolver(searchPlaceSchema),
   });
 
-  // const { searchTerm } = errors;
-  // if (searchTerm) {
-  //   toast.error(searchTerm.message as string);
-  // }
+  const { searchTerm: searchTermInvalidate } = errors;
+  if (searchTermInvalidate) {
+    toast.error(searchTermInvalidate.message as string);
+  }
 
   useEffect(() => {
     setFocus(searchInput);
@@ -95,7 +95,7 @@ const GroupMap = () => {
           placeholder='장소를 검색해보세요!'
           {...register(searchInput)}
         />
-        {getValues(searchInput) && (
+        {!!getValues(searchInput) && (
           <button
             type='button'
             onClick={() => {
@@ -109,7 +109,7 @@ const GroupMap = () => {
       </form>
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[80vh]'
+        className='w-full h-[50vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={(kakaoMap) => (map.current = kakaoMap)}
@@ -122,8 +122,8 @@ const GroupMap = () => {
         }}
         level={13}
         // onDragEnd={(map) => {
-        //   const latlng = map.getCenter();
-        //   console.log("latlng", latlng);
+        // const latlng = map.getCenter();
+        // console.log("latlng", latlng);
         // }}
       >
         {isPostsView ? (
@@ -169,10 +169,10 @@ const GroupMap = () => {
                 onClick={() => {
                   if (!map.current) return;
                   map.current.panTo(new kakao.maps.LatLng(spotMarker.lat, spotMarker.lng));
-                  // 확대 이동
-                  // map.jump(new kakao.maps.LatLng(pointMarker.y, pointMarker.x), 4, { animate: true });
+                  // TODO - 인포 띄우기
                 }}
                 draggable={true}
+                // TODO - 인포 지우기
                 // onDragStart={}
                 onDragEnd={(test) => console.log(test.getPosition())}
               >
@@ -200,12 +200,27 @@ const GroupMap = () => {
           </>
         )}
       </Map>
-      <button>내 위치</button>
+      <button
+        onClick={() => {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const { latitude, longitude } = position.coords;
+            setSpotMarker({
+              lat: latitude,
+              lng: longitude,
+            });
+            setIsPostsView(false);
+          });
+        }}
+      >
+        내 위치
+      </button>
       {/* NOTE 임시 라우트 주소 */}
       {spotMarker &&
         (isPostsView || <Link href={`/ceatePost?lat=${spotMarker.lat}&lng=${spotMarker.lng}`}>추가하기</Link>)}
     </>
   );
 };
+console.log('navigator.geolocation', navigator.geolocation);
+console.log('navigator.geolocation', navigator.geolocation);
 
 export default GroupMap;
