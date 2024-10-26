@@ -1,7 +1,7 @@
-import { GroupListResponseType } from '@/services/client-action/groupActions';
+import { GroupWithCounts } from '@/types/groupTypes';
 import { useRouter } from 'next/navigation';
 
-const GroupItem = ({ el }: { el?: GroupListResponseType }) => {
+const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   const router = useRouter();
   return (
     <li
@@ -9,12 +9,12 @@ const GroupItem = ({ el }: { el?: GroupListResponseType }) => {
       onClick={() => router.push(`/group/${el?.group_id}`)}
     >
       <img
-        src={el?.group_data.group_image_url}
-        alt={`${el?.group_data.group_title}_이미지`}
+        src={el?.group_image_url}
+        alt={`${el?.group_title}_이미지`}
         fetchPriority='high'
       />
       <div className='text-[14px] flex flex-row justify-between'>
-        <p className='max-w-[100px] truncate'>{el?.group_data.group_title}</p>
+        <p className='max-w-[100px] truncate'>{el?.group_title}</p>
         <p className='flex flex-row'>
           <span>
             <img
@@ -23,10 +23,10 @@ const GroupItem = ({ el }: { el?: GroupListResponseType }) => {
               className='w-[15px] h-[15px]'
             />
           </span>
-          <span>{el?.userCount}</span>
+          <span>{el?.user_count}</span>
         </p>
       </div>
-      <p>{el?.group_data.group_desc}</p>
+      <p>{el?.group_desc}</p>
     </li>
   );
 };
