@@ -202,14 +202,17 @@ const GroupMap = () => {
       </Map>
       <button
         onClick={() => {
-          navigator.geolocation.getCurrentPosition((position) => {
-            const { latitude, longitude } = position.coords;
-            setSpotMarker({
-              lat: latitude,
-              lng: longitude,
+          // TODO - 내 위치로 줌인 하기
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              const { latitude, longitude } = position.coords;
+              setSpotMarker({
+                lat: latitude,
+                lng: longitude,
+              });
+              setIsPostsView(false);
             });
-            setIsPostsView(false);
-          });
+          }
         }}
       >
         내 위치
