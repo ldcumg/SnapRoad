@@ -15,6 +15,8 @@ type Markers = {
   postMarkers: null;
 };
 
+const searchInput = 'searchInput';
+
 const GroupMap = () => {
   const map = useRef<kakao.maps.Map>();
   // QUESTION - state 객체로 묶기?
@@ -31,25 +33,35 @@ const GroupMap = () => {
   //   libraries: ['services', 'clusterer'],
   // });
 
-  const { register, handleSubmit, formState, setFocus } = useForm({
+  const [isPostsView, setIsPostsView] = useState<boolean>(true);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus,
+    getValues,
+    resetField,
+  } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(searchPlaceSchema),
   });
 
-  // const { searchTerm } = formState.errors;
+  // const { searchTerm } = errors;
   // if (searchTerm) {
   //   toast.error(searchTerm.message as string);
   // }
 
   useEffect(() => {
-    setFocus('searchTerm');
+    setFocus(searchInput);
   }, []);
 
-  const searchLocation = ({ searchTerm }: FieldValues) => {
+  const searchLocation = ({ searchInput }: FieldValues) => {
+    setIsPostsView(false);
     const kakaoPlacesSearch = new kakao.maps.services.Places();
 
     kakaoPlacesSearch.keywordSearch(
-      searchTerm,
+      searchInput,
       (results, status, pagination) => {
         if (status !== kakao.maps.services.Status.OK || !map.current) {
           toast.error('검색 결과를 불러오지 못 했습니다.');
@@ -81,10 +93,21 @@ const GroupMap = () => {
         <input
           className='text-black'
           placeholder='장소를 검색해보세요!'
-          {...register('searchTerm')}
+          {...register(searchInput)}
         />
-        <button>돋보기, X</button>
+        {getValues(searchInput) && (
+          <button
+            type='button'
+            onClick={() => {
+              resetField(searchInput);
+            }}
+          >
+            X
+          </button>
+        )}
+        <button type='submit'>돋보기</button>
       </form>
+      <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
         className='w-full h-[80vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
@@ -103,41 +126,7 @@ const GroupMap = () => {
         //   console.log("latlng", latlng);
         // }}
       >
-        {!!spotMarker ? (
-          <>
-            <MapMarker
-              position={{ lat: spotMarker.lat, lng: spotMarker.lng }}
-              onClick={() => {
-                if (!map.current) return;
-                map.current.panTo(new kakao.maps.LatLng(spotMarker.lat, spotMarker.lng));
-                // 확대 이동
-                // map.jump(new kakao.maps.LatLng(pointMarker.y, pointMarker.x), 4, { animate: true });
-              }}
-              draggable={true}
-              // onDragStart={}
-              onDragEnd={(test) => console.log(test.getPosition())}
-            >
-              {spotMarker.place_name}
-            </MapMarker>
-            {searchResultMarkers.map((marker) => (
-              <MapMarker
-                key={marker.id}
-                position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => {
-                  setSpotMarker(marker);
-                  setSearchResultMarkers((prev) => [spotMarker, ...prev].filter((m) => m.id !== marker.id));
-                }}
-                image={{
-                  src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                  size: {
-                    width: 24,
-                    height: 35,
-                  },
-                }}
-              />
-            ))}
-          </>
-        ) : (
+        {isPostsView ? (
           <MarkerClusterer
             averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
             minLevel={5} // 클러스터 할 최소 지도 레벨
@@ -172,10 +161,49 @@ const GroupMap = () => {
               ></MapMarker>
             ))} */}
           </MarkerClusterer>
+        ) : (
+          <>
+            {!!spotMarker && (
+              <MapMarker
+                position={{ lat: spotMarker.lat, lng: spotMarker.lng }}
+                onClick={() => {
+                  if (!map.current) return;
+                  map.current.panTo(new kakao.maps.LatLng(spotMarker.lat, spotMarker.lng));
+                  // 확대 이동
+                  // map.jump(new kakao.maps.LatLng(pointMarker.y, pointMarker.x), 4, { animate: true });
+                }}
+                draggable={true}
+                // onDragStart={}
+                onDragEnd={(test) => console.log(test.getPosition())}
+              >
+                {spotMarker.place_name}
+              </MapMarker>
+            )}
+            {searchResultMarkers.map((marker) => (
+              <MapMarker
+                key={marker.id}
+                position={{ lat: marker.lat, lng: marker.lng }}
+                onClick={() => {
+                  setSpotMarker(marker);
+                  !!spotMarker &&
+                    setSearchResultMarkers((prev) => [spotMarker, ...prev].filter((m) => m.id !== marker.id));
+                }}
+                image={{
+                  src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+                  size: {
+                    width: 24,
+                    height: 35,
+                  },
+                }}
+              />
+            ))}
+          </>
         )}
       </Map>
+      <button>내 위치</button>
       {/* NOTE 임시 라우트 주소 */}
-      {spotMarker && <Link href={`/ceatePost?lat=${spotMarker.lat}&lng=${spotMarker.lng}`}>추가하기</Link>}
+      {spotMarker &&
+        (isPostsView || <Link href={`/ceatePost?lat=${spotMarker.lat}&lng=${spotMarker.lng}`}>추가하기</Link>)}
     </>
   );
 };
