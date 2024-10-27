@@ -5,7 +5,7 @@ import GroupMap from '@/components/groupDetail/GroupMap';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
-const ToastContainer = dynamic(() => import('@/components/GarlicToast'), { ssr: false });
+const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
 type Props = Readonly<{
   // params: { groupId: string };
@@ -18,27 +18,17 @@ const GroupPage = (
     // searchParams: {위치명, lat,lng }
   }: Props,
 ) => {
-  const [isToggleOn, setIsToggleOn] = useState<{ [key: string]: boolean }>({
-    isMap: true,
-    isDetail: false,
-  });
-
-  const handleToggle = (target: string) => {
-    setIsToggleOn((prev) => {
-      return { ...prev, [target]: !prev[target] };
-    });
-  };
+  const [isMap, setIsMap] = useState<boolean>(true);
 
   return (
     <>
       <ToastContainer />
       <header className='flex justify-between px-5'>
         <span>로고</span>
-        <button onClick={() => handleToggle('isDetail')}>그룹명</button>
-        <button onClick={() => handleToggle('isMap')}>전환</button>
+        <h4>그룹명</h4>
+        <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
-      {isToggleOn.isDetail && <div>상세 정보</div>}
-      {isToggleOn.isMap ? <GroupMap /> : <GroupAlbum />}
+      {isMap ? <GroupMap /> : <GroupAlbum />}
     </>
   );
 };

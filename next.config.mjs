@@ -2,17 +2,8 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '.com',
-        pathname: '/**',
-      },
-    ],
-    formats: ['image/avif', 'image/webp'],
-    domains: ['i.scdn.co'],
+    domains: [`${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`],
   },
 };
 
