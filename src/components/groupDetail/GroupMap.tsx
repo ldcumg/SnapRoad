@@ -27,7 +27,7 @@ const GroupMap = () => {
   // });
   const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [spotMarker, setSpotMarker] = useState<LocationInfo | null>(null);
+  const [selectMarker, setSelectMarker] = useState<LocationInfo | null>(null);
   // const [loading, error] = useKakaoLoader({
   //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
   //   libraries: ['services', 'clusterer'],
@@ -75,11 +75,12 @@ const GroupMap = () => {
         mappedResults.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
 
         const fistResult = mappedResults.shift() as LocationInfo;
-        setSpotMarker(fistResult);
+        setSelectMarker(fistResult);
         setSearchResultMarkers(mappedResults);
 
         // 검색된 장소 위치를 기준으로 지도 범위 재설정
-        map.current.setBounds(bounds);
+        // map.current.setBounds(bounds);
+        map.current.panTo(bounds);
       },
       // {
       //   page: 1,
@@ -109,22 +110,19 @@ const GroupMap = () => {
       </form>
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[50vh]'
+        className='w-full h-[80vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={(kakaoMap) => (map.current = kakaoMap)}
         onClick={(_, mouseEvent) => {
           const latlng = mouseEvent.latLng;
-          setSpotMarker({
+          !!selectMarker?.id && setSearchResultMarkers((prev) => [selectMarker, ...prev]);
+          setSelectMarker({
             lat: latlng.getLat(),
             lng: latlng.getLng(),
           });
         }}
         level={13}
-        // onDragEnd={(map) => {
-        // const latlng = map.getCenter();
-        // console.log("latlng", latlng);
-        // }}
       >
         {isPostsView ? (
           <MarkerClusterer
@@ -163,20 +161,20 @@ const GroupMap = () => {
           </MarkerClusterer>
         ) : (
           <>
-            {!!spotMarker && (
+            {!!selectMarker && (
               <MapMarker
-                position={{ lat: spotMarker.lat, lng: spotMarker.lng }}
+                position={{ lat: selectMarker.lat, lng: selectMarker.lng }}
                 onClick={() => {
                   if (!map.current) return;
-                  map.current.panTo(new kakao.maps.LatLng(spotMarker.lat, spotMarker.lng));
+                  map.current.panTo(new kakao.maps.LatLng(selectMarker.lat, selectMarker.lng));
                   // TODO - 인포 띄우기
                 }}
                 draggable={true}
                 // TODO - 인포 지우기
                 // onDragStart={}
-                onDragEnd={(test) => console.log(test.getPosition())}
+                onDragEnd={(map) => console.log(map.getPosition())}
               >
-                {spotMarker.place_name}
+                {selectMarker.place_name}
               </MapMarker>
             )}
             {searchResultMarkers.map((marker) => (
@@ -184,9 +182,9 @@ const GroupMap = () => {
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
                 onClick={() => {
-                  setSpotMarker(marker);
-                  !!spotMarker &&
-                    setSearchResultMarkers((prev) => [spotMarker, ...prev].filter((m) => m.id !== marker.id));
+                  setSelectMarker(marker);
+                  !!selectMarker &&
+                    setSearchResultMarkers((prev) => [selectMarker, ...prev].filter((m) => m.id !== marker.id));
                 }}
                 image={{
                   src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
@@ -202,11 +200,12 @@ const GroupMap = () => {
       </Map>
       <button
         onClick={() => {
-          // TODO - 내 위치로 줌인 하기
+          // TODO - 내 위치로 줌인 이동하기
           if (navigator.geolocation) {
+            !!selectMarker?.id && setSearchResultMarkers((prev) => [selectMarker, ...prev]);
             navigator.geolocation.getCurrentPosition((position) => {
               const { latitude, longitude } = position.coords;
-              setSpotMarker({
+              setSelectMarker({
                 lat: latitude,
                 lng: longitude,
               });
@@ -218,12 +217,10 @@ const GroupMap = () => {
         내 위치
       </button>
       {/* NOTE 임시 라우트 주소 */}
-      {spotMarker &&
-        (isPostsView || <Link href={`/ceatePost?lat=${spotMarker.lat}&lng=${spotMarker.lng}`}>추가하기</Link>)}
+      {selectMarker &&
+        (isPostsView || <Link href={`/ceatePost?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>)}
     </>
   );
 };
-console.log('navigator.geolocation', navigator.geolocation);
-console.log('navigator.geolocation', navigator.geolocation);
 
 export default GroupMap;
