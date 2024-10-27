@@ -3,7 +3,9 @@
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useKakaoLoader } from 'react-kakao-maps-sdk';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -20,11 +22,20 @@ const GroupPage = (
 ) => {
   const [isMap, setIsMap] = useState<boolean>(true);
 
+  // const [loading, error] = useKakaoLoader({
+  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+  //   libraries: ['services', 'clusterer'],
+  // });
+
+  // useEffect(() => {
+  //   if (loading) return;
+  // }, [loading]);
+
   return (
     <>
       <ToastContainer />
       <header className='flex justify-between px-5'>
-        <span>로고</span>
+        <Link href='/'>로고</Link>
         <h4>그룹명</h4>
         <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>

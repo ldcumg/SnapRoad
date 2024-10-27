@@ -13,7 +13,7 @@ type Location = {
   road_address_name: string;
 };
 
-type Latlng = {
+export type Latlng = {
   lat: number;
   lng: number;
 };

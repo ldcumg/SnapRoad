@@ -1,13 +1,13 @@
 'use client';
 
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
-import type { LocationInfo } from '@/types/placesTypes';
+import type { Latlng, LocationInfo } from '@/types/placesTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
 type Markers = {
   searchResultMarkers: LocationInfo[];
@@ -19,18 +19,14 @@ const searchInput = 'searchInput';
 
 const GroupMap = () => {
   const map = useRef<kakao.maps.Map>();
+  const [postMarkers, setPostMarkers] = useState();
+  const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
+  const [selectMarker, setSelectMarker] = useState<LocationInfo | null>(null);
   // QUESTION - state 객체로 묶기?
   // const [markers, setMarkers] = useState<Markers>({
   //   searchResultMarkers: [],
   //   spotMarker: null,
   //   postMarkers: null,
-  // });
-  const [postMarkers, setPostMarkers] = useState();
-  const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [selectMarker, setSelectMarker] = useState<LocationInfo | null>(null);
-  // const [loading, error] = useKakaoLoader({
-  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-  //   libraries: ['services', 'clusterer'],
   // });
 
   const [isPostsView, setIsPostsView] = useState<boolean>(true);
@@ -56,6 +52,7 @@ const GroupMap = () => {
     setFocus(searchInput);
   }, []);
 
+  /** 키워드 검색 함수 */
   const searchLocation = ({ searchInput }: FieldValues) => {
     setIsPostsView(false);
     const kakaoPlacesSearch = new kakao.maps.services.Places();
@@ -79,7 +76,6 @@ const GroupMap = () => {
         setSearchResultMarkers(mappedResults);
 
         // 검색된 장소 위치를 기준으로 지도 범위 재설정
-        // map.current.setBounds(bounds);
         map.current.panTo(bounds);
       },
       // {
@@ -123,6 +119,7 @@ const GroupMap = () => {
           });
         }}
         level={13}
+        isPanto
       >
         {isPostsView ? (
           <MarkerClusterer
@@ -166,6 +163,9 @@ const GroupMap = () => {
                 position={{ lat: selectMarker.lat, lng: selectMarker.lng }}
                 onClick={() => {
                   if (!map.current) return;
+                  map.current.setLevel(5, {
+                    animate: true,
+                  });
                   map.current.panTo(new kakao.maps.LatLng(selectMarker.lat, selectMarker.lng));
                   // TODO - 인포 띄우기
                 }}
@@ -200,15 +200,14 @@ const GroupMap = () => {
       </Map>
       <button
         onClick={() => {
-          // TODO - 내 위치로 줌인 이동하기
           if (navigator.geolocation) {
             !!selectMarker?.id && setSearchResultMarkers((prev) => [selectMarker, ...prev]);
             navigator.geolocation.getCurrentPosition((position) => {
-              const { latitude, longitude } = position.coords;
-              setSelectMarker({
-                lat: latitude,
-                lng: longitude,
-              });
+              if (!map.current) return;
+              const { latitude: lat, longitude: lng } = position.coords;
+              map.current.setLevel(5, { animate: true });
+              map.current.panTo(new kakao.maps.LatLng(lat, lng));
+              setSelectMarker({ lat, lng });
               setIsPostsView(false);
             });
           }
