@@ -79,15 +79,18 @@ export const saveImageMetadata = async (
  */
 
 export async function resetCoverImage(userId: string, uploadSessionId: string) {
-  const { error } = await browserClient
+  const { error, data } = await browserClient
     .from('images')
     .update({ is_cover: false })
     .eq('user_id', userId)
     .eq('upload_session_id', uploadSessionId);
 
-  if (error) throw new Error('대표 이미지 초기화 실패');
+  if (error) {
+    console.error('대표 이미지 초기화 실패:', error.message);
+    throw new Error('대표 이미지 초기화 실패');
+  }
+  console.log('대표 이미지 초기화 성공:', data);
 }
-
 /**
  * 특정 ID의 이미지를 대표 이미지로 설정
  * @param id 이미지 ID
