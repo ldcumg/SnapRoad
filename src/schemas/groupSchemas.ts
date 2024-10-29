@@ -10,4 +10,9 @@ const groupSchema = z.object({
   groupImg: z.any(),
 });
 
-export { groupSchema };
+const inviteCodeRegex = new RegExp(/^[0-9A-Fa-f]{8}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{12}$/);
+const inviteSchema = z.object({
+  inviteCode: z.string().min(1, '초대코드를 입력해주세요.').regex(inviteCodeRegex, '초대코드가 올바르지 않습니다.'),
+});
+
+export { groupSchema, inviteSchema };
