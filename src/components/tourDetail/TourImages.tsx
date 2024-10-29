@@ -51,7 +51,7 @@ const TourImages = ({ images }: TourImagesProps) => {
   useEffect(() => {
     if (moveCarousel.current) {
       // moveCarousel.current.style.transform = `translateX(-${currentIndex * 412}px)`;
-      moveCarousel.current.style.transition = 'transform 0.5s ease'; // 부드러운 이동을 위한 트랜지션 설정
+      moveCarousel.current.style.transition = 'transform 0.5s ease';
 
       moveCarousel.current.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
@@ -68,16 +68,16 @@ const TourImages = ({ images }: TourImagesProps) => {
           ref={moveCarousel}
           className='flex w-full	h-full'
         >
-          {/* {images.map((image) => (
-            <img
+          {images.map((image) => (
+            <Image
               key={image}
               src={image}
               alt={image}
               width={412}
               height={300}
             />
-          ))} */}
-          <div
+          ))}
+          {/* <div
             style={{ backgroundColor: 'black', width: '412px', height: '300px' }}
             className='flex-shrink-0'
           />
@@ -92,13 +92,13 @@ const TourImages = ({ images }: TourImagesProps) => {
           <div
             style={{ backgroundColor: 'blue', width: '412px', height: '300px' }}
             className='flex-shrink-0'
-          />
+          /> */}
         </div>
       </div>
-      <div className='flex justify-around'>
+      {/* <div className='flex justify-around'>
         <button onClick={handleMovePrev}>앞</button>
         <button onClick={handleMoveNext}>뒤</button>
-      </div>
+      </div> */}
     </>
   );
 };
