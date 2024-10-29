@@ -13,8 +13,9 @@ const ImageList = () => {
       <h2>Images</h2>
       <ul>
         {data?.map((image) => (
-          <li key={image.image_id}>
+          <li key={image.id}>
             <img
+            className="w-[200px]"
               src={image.post_image_url}
               alt={image.post_image_name}
             />

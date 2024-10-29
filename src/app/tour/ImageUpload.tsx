@@ -9,35 +9,39 @@ import browserClient from '@/utils/supabase/client';
 import { useState, useEffect } from 'react';
 
 interface ImageData {
-  id: string;
+  id: number;
   blobUrl: string;
   filename: string;
   latitude?: string;
   longitude?: string;
   dateTaken?: string;
   isCover?: boolean;
+  userId?: string;
+  createdAt: string;
 }
 
 const TourPage = () => {
   const bucketName = 'tour_images';
   const folderName = 'group_name';
+  const currentDate = new Date().toISOString(); // 현재 업로드 시간 기준
   const formattedDate = formatDateToNumber(new Date().toString()) || '';
 
   const [imageData, setImageData] = useState<ImageData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const userId = '88ab003e-5806-46dd-9c15-05060cbeed6a'; // 실제 사용자 ID로 변경
 
-  // NOTE - Supabase에서 서명된 URL 가져오기
+  // Supabase에서 서명된 URL 가져오기
   const fetchSignedUrl = async (filename: string) => {
     const { data, error } = await browserClient.storage
       .from(bucketName)
-      .createSignedUrl(`${folderName}/${filename}`, 60 * 60); // 60분 유효
+      .createSignedUrl(`${folderName}/${filename}`, 60 * 60);
 
     if (error) throw new Error('Signed URL 생성 실패');
     return data.signedUrl;
   };
 
-  // NOTE - 이미지 데이터의 Blob URL 갱신
+  // 이미지 데이터의 Blob URL 갱신
   const refreshBlobUrls = async () => {
     try {
       const updatedImageData = await Promise.all(
@@ -56,18 +60,17 @@ const TourPage = () => {
     }
   };
 
-  // NOTE - 일정 간격마다 Blob URL 갱신
   useEffect(() => {
     const interval = setInterval(
       () => {
         refreshBlobUrls();
       },
       60 * 60 * 1000,
-    ); // 60분 유효
+    );
     return () => clearInterval(interval);
   }, [imageData]);
 
-  // NOTE - 파일 업로드
+  // 파일 업로드
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (!files.length) {
@@ -97,27 +100,45 @@ const TourPage = () => {
           const signedUrl = await fetchSignedUrl(uniqueFileName);
           const response = await fetch(signedUrl);
           const blob = await response.blob();
-          const blobUrl = URL.createObjectURL(blob); // Blob URL 생성
+          const blobUrl = URL.createObjectURL(blob);
           const exifData = exifDataArray[index];
           const fileNameWithoutExtension = removeFileExtension(uploadedFile[0].filename);
 
-          const { data: dbData, error: dbError } = await browserClient
-            .from('images_test')
+          const { data, error } = await browserClient
+            .from('images')
             .insert({
               post_image_name: fileNameWithoutExtension,
               post_image_url: signedUrl,
-              created_at: new Date().toISOString(),
+              created_at: currentDate,
               is_cover: false,
+              post_lat: exifData.latitude,
+              post_lng: exifData.longitude,
+              origin_created_at: formatDateToNumber(exifData.dateTaken),
+              user_id: userId,
             })
             .select();
 
-          if (dbError) console.error('데이터베이스에 저장하는 동안 오류 발생:', dbError.message);
-          else console.log('데이터 저장 성공:', dbData);
-          return { id: dbData[0].id, blobUrl, filename: uniqueFileName, isCover: false };
+          if (error) {
+            console.error('데이터베이스에 저장하는 동안 오류 발생:', error.message);
+            throw new Error(error.message);
+          }
+
+          return {
+            id: data[0].id,
+            blobUrl,
+            filename: uniqueFileName,
+            isCover: data[0].is_cover,
+            latitude: exifData.latitude,
+            longitude: exifData.longitude,
+            dateTaken: exifData.dateTaken,
+            userId: data[0].user_id,
+            createdAt: currentDate,
+          };
         }),
       );
 
-      setImageData(uploadedFiles);
+      const filteredData = uploadedFiles.filter((image) => image.userId === userId);
+      setImageData(filteredData);
       console.log('이미지 업로드에 성공했습니다.');
     } catch (err) {
       console.error('이미지 업로드 에러:', err);
@@ -127,39 +148,34 @@ const TourPage = () => {
     }
   };
 
-  // NOTE - 대표 이미지 설정
-  const handleCoverImage = async (id: string) => {
+  // 특정 created_at 기준으로 대표 이미지 설정
+  const handleSetCoverImage = async (id: number, createdAt: string) => {
     try {
-      const { error: updateError } = await browserClient.from('images_test').update({ is_cover: false }).neq('id', id); // 다른 모든 이미지를 대표 이미지에서 해제
-      if (updateError) throw new Error(`대표 이미지 해제 중 오류 발생: ${updateError.message}`);
-      const { error: coverError } = await browserClient.from('images_test').update({ is_cover: true }).eq('id', id);
-      if (coverError) throw new Error(`대표 이미지 설정 중 오류 발생: ${coverError.message}`);
+      // 해당 createdAt 날짜에 대한 이미지들만 is_cover 해제
+      await browserClient.from('images').update({ is_cover: false }).eq('user_id', userId).eq('created_at', createdAt);
+      // 선택한 이미지만 대표 이미지로 설정
+      await browserClient.from('images').update({ is_cover: true }).eq('id', id);
 
-      // 로컬 상태 업데이트
-      const updateImages = imageData.map((image) => ({
-        ...image,
-        isCover: image.id === id,
-      }));
+      const updatedImages = imageData.map((image) =>
+        image.id === id && image.createdAt === createdAt ? { ...image, isCover: true } : { ...image, isCover: false },
+      );
 
-      setImageData(updateImages);
+      setImageData(updatedImages);
     } catch (error) {
-      console.error('대표 이미지 설정 중 오류 발생:', error);
-      setError('대표 이미지 설정 중 오류가 발생했습니다.');
+      console.error('대표 이미지 상태 업데이트 중 오류 발생:', error);
+      setError('대표 이미지 상태 업데이트 중 오류가 발생했습니다.');
     }
   };
 
-  // NOTE - 스토리지 파일 삭제
-  const deleteImage = async (id: string, filename: string) => {
+  const deleteImage = async (id: number, filename: string) => {
     try {
       const { error: storageError } = await browserClient.storage
         .from(bucketName)
         .remove([`${folderName}/${filename}`]);
 
-      if (storageError) {
-        throw new Error(`스토리지에서 파일 삭제 중 오류 발생: ${storageError.message}`);
-      }
+      if (storageError) throw new Error(`스토리지에서 파일 삭제 중 오류 발생: ${storageError.message}`);
 
-      const { error: dbError } = await browserClient.from('images_test').delete().eq('id', id);
+      const { error: dbError } = await browserClient.from('images').delete().eq('id', id);
 
       if (dbError) throw new Error(`데이터베이스에서 이미지 삭제 중 오류 발생: ${dbError.message}`);
       console.log(`이미지 삭제 성공: ${id}`);
@@ -170,8 +186,7 @@ const TourPage = () => {
     }
   };
 
-  // NOTE - 파일 삭제 UI
-  const handleDeleteImage = async (id: string, filename: string) => {
+  const handleDeleteImage = async (id: number, filename: string) => {
     setLoading(true);
     const isDeleted = await deleteImage(id, filename);
 
@@ -216,18 +231,21 @@ const TourPage = () => {
                   style={{ width: '100%' }}
                 />
                 <p>파일명: {image.filename}</p>
+                <p>위도: {image.latitude}</p>
+                <p>경도: {image.longitude}</p>
+                <p>촬영 날짜: {formatDateToNumber(image.dateTaken)}</p>
                 <button onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}>
                   개별 다운로드
                 </button>
                 <button
-                  onClick={() => handleDeleteImage(image.id!, image.filename)}
+                  onClick={() => handleDeleteImage(image.id, image.filename)}
                   disabled={loading}
                 >
                   삭제
                 </button>
                 <button
-                  onClick={() => handleCoverImage(image.id!)}
-                  disabled={image.isCover}
+                  onClick={() => handleSetCoverImage(image.id, image.createdAt)}
+                  disabled={loading}
                 >
                   {image.isCover ? '대표 이미지로 설정됨' : '대표 이미지 설정'}
                 </button>
@@ -243,4 +261,5 @@ const TourPage = () => {
     </section>
   );
 };
+
 export default TourPage;
