@@ -99,7 +99,7 @@ const Nav = () => {
     <nav>
       <ul className='flex flex-row gap-2'>
         <li>
-          <Link href={`/tour`}>이미지업로드</Link>
+          <Link href={`/post`}>포스트 쓰기</Link>
         </li>
         {!session ? (
           <>

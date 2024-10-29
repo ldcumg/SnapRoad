@@ -1,19 +1,27 @@
-// import TourPage from './ImageUpload';
-import ImageList from '@/components/tour/ImageList';
-import ImageUpload from '@/components/tour/ImageUpload';
+'use client';
 
-const TourInfoPage = () => {
-  const user_id = 'sample_user_id';
+import ImageUploadForm from '@/components/post/ImageUploadForm';
+import Test from '@/components/post/Test';
+import { useSessionQuery } from '@/hooks/queries/byUse/useSessionQuery';
+
+const TourPage = () => {
+  const { data: session, isLoading: sessionLoading, error: sessionError } = useSessionQuery();
+
+  if (sessionError) return <p>세션 로드에 실패했습니다.</p>;
+  if (sessionLoading) return <div>로딩 중...</div>;
+  if (!session?.user?.id) return <p>로그인이 필요합니다.</p>;
+
+  const userId = session.user.id;
 
   return (
-    <div className='flex flex-col justify-center items-center'>
-      {/* <TourPage /> */}
-      <ImageUpload />
-      <ImageList />
-    </div>
+    <section>
+      {/* <ImageUploadForm userId={userId} /> */}
+      <Test userId={userId}/>
+    </section>
   );
 };
-export default TourInfoPage;
+
+export default TourPage;
 
 // 'use client';
 
@@ -24,6 +32,7 @@ export default TourInfoPage;
 // import { removeFileExtension } from '@/utils/fileNameUtils';
 // import browserClient from '@/utils/supabase/client';
 // import { useState, useEffect } from 'react';
+// import { ImageUpload } from '@/components/tour/ImageUpload';
 
 // interface ImageData {
 //   blobUrl: string;

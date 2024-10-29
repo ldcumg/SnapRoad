@@ -1,3 +1,5 @@
+'use client';
+
 import { fetchUserSession } from '@/services/client-action/sessionAction';
 import { useQuery } from '@tanstack/react-query';
 

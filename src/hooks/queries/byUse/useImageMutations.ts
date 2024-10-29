@@ -95,5 +95,12 @@ export const useImageMutations = (userId: string | undefined, currentDate: strin
     },
   });
 
-  return { uploadImageMutation, setCoverImageMutation, deleteImageMutation };
+  return {
+    uploadImageMutation,
+    setCoverImageMutation,
+    deleteImageMutation,
+    uploadImage: uploadImageMutation.mutateAsync,
+    setCoverImage: setCoverImageMutation.mutateAsync,
+    deleteImage: deleteImageMutation.mutateAsync,
+  };
 };
