@@ -1,7 +1,7 @@
 'use client';
 
 import { useImageMutations } from '@/hooks/queries/byUse/useImageMutations';
-import { useSessionQuery } from '@/hooks/queries/byUse/useSessionQuery';
+import { useSessionQuery } from '@/hooks/queries/byUse/useUserQuery';
 import { useImageStore } from '@/stores/existingStore';
 
 const ExistingPage = () => {

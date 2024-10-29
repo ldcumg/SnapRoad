@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+
 interface ImageData {
   id: number;
   blobUrl: string;
@@ -10,6 +11,7 @@ interface ImageData {
   isCover?: boolean;
   userId?: string;
   createdAt: string;
+  uploadSessionId: string;
 }
 
 interface ImageUploadStore {
@@ -17,6 +19,7 @@ interface ImageUploadStore {
   addImages: (newImages: ImageData[]) => void;
   updateImage: (id: number, updates: Partial<ImageData>) => void;
   deleteImage: (id: number) => void;
+  setImages: (newImages: any[]) => void;
 }
 
 export const useImageUploadStore = create<ImageUploadStore>((set) => ({
@@ -30,4 +33,5 @@ export const useImageUploadStore = create<ImageUploadStore>((set) => ({
     set((state) => ({
       images: state.images.filter((image) => image.id !== id),
     })),
+  setImages: (newImages) => set({ images: newImages }), 
 }));
