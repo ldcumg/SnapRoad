@@ -124,7 +124,7 @@ const Nav = () => {
               </button>
             </li>
             <li>
-              <Link href={'/makegroup'}>그룹 만들기</Link>
+              <Link href={`/mypage`}>마이페이지</Link>
             </li>
             <li>
               <span>{userName}님</span>
