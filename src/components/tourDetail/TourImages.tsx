@@ -99,6 +99,17 @@ const TourImages = ({ images }: TourImagesProps) => {
         <button onClick={handleMovePrev}>앞</button>
         <button onClick={handleMoveNext}>뒤</button>
       </div> */}
+
+      <ul className='flex gap-1 justify-center'>
+        {images.map((_, index) => {
+          return (
+            <li
+              key={index}
+              className={`h-[0.6rem] w-[0.6rem] rounded-full ${index === currentIndex ? 'bg-black' : 'bg-gray-300'}`}
+            />
+          );
+        })}
+      </ul>
     </>
   );
 };
