@@ -5,6 +5,7 @@ import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
 import { signUpSchema } from '@/schemas/authSchemas';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
+import Link from 'next/link';
 import React from 'react';
 import { FieldValues } from 'react-hook-form';
 
@@ -23,6 +24,8 @@ const SignUpForm = () => {
 
   return (
     <div>
+      <div>로고 영역</div>
+      <h2>회원가입</h2>
       <form
         onSubmit={handleSubmit(handleSignUp)}
         className='flex flex-col gap-5 w-96'
@@ -55,6 +58,9 @@ const SignUpForm = () => {
           primary={true}
         />
       </form>
+      <p>
+        이미 아이디가 있으신가요? <Link href={'/login'}>로그인</Link>
+      </p>
     </div>
   );
 };

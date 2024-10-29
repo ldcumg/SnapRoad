@@ -124,6 +124,9 @@ const Nav = () => {
               </button>
             </li>
             <li>
+              <Link href={`/mypage`}>마이페이지</Link>
+            </li>
+            <li>
               <span>{userName}님</span>
             </li>
             <li>

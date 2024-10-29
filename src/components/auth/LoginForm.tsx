@@ -4,9 +4,9 @@ import { useLoginForm } from '@/hooks/byUse/useAuthForm';
 import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
 import { loginSchema } from '@/schemas/authSchemas';
 import { signInWithGithub, signInWithGoogle, signInWithKakao } from '@/services/client-action/socialAuthAction';
-import { login } from '@/services/server-action/authActions';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
+import Link from 'next/link';
 import React from 'react';
 import { FieldValues } from 'react-hook-form';
 
@@ -25,6 +25,7 @@ const LoginForm = () => {
 
   return (
     <div>
+      <div>로고 영역</div>
       <form
         onSubmit={handleSubmit(handleLogin)}
         className='flex flex-col gap-5 w-96'
@@ -50,6 +51,7 @@ const LoginForm = () => {
           primary={true}
         />
       </form>
+      <p>소셜 계정으로 로그인</p>
       <div className='flex flex-col'>
         <button
           type='button'
@@ -69,6 +71,10 @@ const LoginForm = () => {
         >
           깃허브 로그인
         </button>
+      </div>
+      <div className='flex'>
+        <Link href={'/mypage/password-reset'}>비밀번호 찾기</Link>
+        <Link href={'/signup'}>회원가입</Link>
       </div>
     </div>
   );
