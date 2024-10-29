@@ -103,9 +103,9 @@ const Nav = () => {
         </li>
         {!session ? (
           <>
-            <li>
+            {/* <li>
               <button onClick={() => loginMutation.mutate()}>login</button>
-            </li>
+            </li> */}
             <li>
               <Link href={`/login`}>로그인</Link>
             </li>
@@ -122,6 +122,9 @@ const Nav = () => {
               >
                 내 그룹으로 이동
               </button>
+            </li>
+            <li>
+              <Link href={'/makegroup'}>그룹 만들기</Link>
             </li>
             <li>
               <Link href={`/mypage`}>마이페이지</Link>

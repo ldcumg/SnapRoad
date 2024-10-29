@@ -18,10 +18,18 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "./*"]
     },
     "types": ["kakao.maps.d.ts"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/tour/page.bak",
+    "src/app/tour/page._tsx",
+    "src/app/tour/ImageUpload.bak"
+  ],
   "exclude": ["node_modules"]
 }

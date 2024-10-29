@@ -1,20 +1,19 @@
 /**
  * 날짜를 숫자 형식으로 변환
  * @param dateString 날짜 문자열 (예: '2023-10-21T12:30:00Z')
- * @returns 변환된 날짜 문자열 (예: '20231021-1230')
+ * @month 월은 0부터 시작하므로 +1
+ * @returns 변환된 날짜 문자열 (예: '2023-10-21-12:30')
  */
 
 export const formatDateToNumber = (dateString: string | undefined): string => {
   if (!dateString) return '';
   const dateObj = new Date(dateString);
   if (isNaN(dateObj.getTime())) return '';
-
   const year = dateObj.getFullYear();
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
   const day = String(dateObj.getDate()).padStart(2, '0');
   const hours = String(dateObj.getHours()).padStart(2, '0');
   const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
@@ -26,9 +25,7 @@ export const formatDateToNumber = (dateString: string | undefined): string => {
 
 export const formatDateToPostgres = (dateString: string): string => {
   const date = new Date(dateString);
-
   const pad = (n: number) => (n < 10 ? '0' + n : n);
-
   const year = date.getFullYear();
   const month = pad(date.getMonth() + 1);
   const day = pad(date.getDate());
@@ -36,6 +33,5 @@ export const formatDateToPostgres = (dateString: string): string => {
   const minutes = pad(date.getMinutes());
   const seconds = pad(date.getSeconds());
   const milliseconds = date.getMilliseconds().toString().padStart(6, '0');
-
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 };

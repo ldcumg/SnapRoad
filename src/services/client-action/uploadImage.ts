@@ -1,4 +1,4 @@
-import { generateUniqueFileName } from '@/utils/fileNameUtils';
+import { generateUniqueFileName } from './fileActions';
 import browserClient from '@/utils/supabase/client';
 
 /**
@@ -23,13 +23,11 @@ export const uploadImage = async (
     const { data, error } = await supabase.storage.from(bucketName).upload(`${folderName}/${uniqueFileName}`, file);
 
     if (error) throw error;
-
     const { data: signedUrlData, error: signedUrlError } = await supabase.storage
       .from(bucketName)
       .createSignedUrl(`${folderName}/${uniqueFileName}`, 60 * 60);
 
     if (signedUrlError || !signedUrlData) throw new Error('Signed URL을 가져오는 데 실패했습니다.');
-
     uploadedFiles.push({ url: signedUrlData.signedUrl, filename: uniqueFileName });
   }
 
