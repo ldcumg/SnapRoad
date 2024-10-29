@@ -1,6 +1,7 @@
 'use client';
 
 import ImageManager from '@/components/post/ImageManager';
+import ImageSliede from '@/components/post/ImageSliede';
 import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
 
 const FormPage = () => {
@@ -14,8 +15,12 @@ const FormPage = () => {
   const uploadSessionId = new Date().toISOString();
 
   return (
-    <section>
-      <ImageManager
+    <section className='w-full'>
+      {/* <ImageManager
+        userId={userId}
+        uploadSessionId={uploadSessionId}
+      /> */}
+      <ImageSliede
         userId={userId}
         uploadSessionId={uploadSessionId}
       />
