@@ -1,6 +1,7 @@
-import { getGroupListByPage } from '@/services/client-action/groupActions';
-import { getGroupSignedImageUrl, getUserCount } from '@/services/groupServices';
-import { getGroupDetails } from '@/services/server-action/groupServerActions';
+import { getGroupSignedImageUrls } from '@/services/groupServices';
+import { getSignedImgUrl } from '@/services/server-action/getSignedImgUrl';
+import { getGroupDetails, getRandomGroupId, getRandomThumbnail } from '@/services/server-action/groupServerActions';
+import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
@@ -18,17 +19,24 @@ const useGroupListInfiniteQuery = () => {
     queryFn: async ({ pageParam = 0 }) => {
       const { data } = await browserClient.auth.getUser();
       if (data.user?.id) {
-        let groups = await getGroupListByPage({ pageParam, userId: data.user?.id });
+        const userId = data.user.id;
+        let { data: groups }: { data: GroupWithCounts[] | null } = await browserClient.rpc(
+          'get_user_groups_with_count',
+          {
+            input_user_id: userId,
+            page: pageParam,
+          },
+        );
         if (!groups) groups = [];
-        const groupCounts = await getUserCount(groups);
-        const groupImageUrls = await getGroupSignedImageUrl(groups);
-        groups = groups.map((group, idx) => {
-          return {
-            ...group,
-            group_data: { ...group.group_data, group_image_url: groupImageUrls[idx] ?? '' },
-            userCount: groupCounts[idx],
-          };
-        });
+        const images = await getGroupSignedImageUrls(groups);
+        if (images) {
+          groups = groups.map((group, idx) => {
+            return {
+              ...group,
+              group_image_url: images[idx].signedUrl,
+            };
+          });
+        }
         return groups;
       }
     },
@@ -40,4 +48,23 @@ const useGroupListInfiniteQuery = () => {
   });
 };
 
-export { useGroupDetailQuery, useGroupListInfiniteQuery };
+const useGroupRandomImageQuery = () => {
+  return useQuery({
+    queryKey: ['groupImages'],
+    queryFn: async () => {
+      const { data } = await browserClient.auth.getUser();
+      let url = '';
+      if (data.user?.id) {
+        const userId = data.user.id;
+        const randomGroupData = await getRandomGroupId(userId);
+        if (randomGroupData) {
+          const thumbnailData = await getRandomThumbnail(randomGroupData);
+          if (thumbnailData) url = (await getSignedImgUrl('tour_images', 20, `/group_name/${thumbnailData}`)) as string;
+        }
+      }
+      return url;
+    },
+  });
+};
+
+export { useGroupDetailQuery, useGroupListInfiniteQuery, useGroupRandomImageQuery };
