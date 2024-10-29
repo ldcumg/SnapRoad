@@ -6,7 +6,8 @@ import { uploadImage } from '@/services/client-action/uploadImage';
 import { formatDateToNumber } from '@/utils/dateUtils';
 import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 interface ImageData {
   id: number;
@@ -20,16 +21,42 @@ interface ImageData {
   createdAt: string;
 }
 
+// 사용자 세션
+const fetchUserSession = async () => {
+  const {
+    data: { session },
+  } = await browserClient.auth.getSession();
+  return session;
+};
+
 const TourPage = () => {
   const bucketName = 'tour_images';
   const folderName = 'group_name';
-  const currentDate = new Date().toISOString(); // 현재 업로드 시간 기준
+  const currentDate = new Date().toISOString();
   const formattedDate = formatDateToNumber(new Date().toString()) || '';
 
+  const {
+    data: session,
+    isLoading: sessionLoading,
+    error: sessionError,
+  } = useQuery({
+    queryKey: ['userSession'],
+    queryFn: fetchUserSession,
+  });
+
+  const userId = session?.user?.id;
   const [imageData, setImageData] = useState<ImageData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const userId = '88ab003e-5806-46dd-9c15-05060cbeed6a'; // 실제 사용자 ID로 변경
+
+  if (sessionError) {
+    console.error('세션 가져오기 실패:', sessionError);
+    return <p>세션 로드에 실패했습니다.</p>;
+  }
+
+  if (sessionLoading) return <div>로딩 중...</div>;
+
+  if (!userId) return <p>로그인이 필요합니다.</p>;
 
   // Supabase에서 서명된 URL 가져오기
   const fetchSignedUrl = async (filename: string) => {
@@ -59,16 +86,6 @@ const TourPage = () => {
       setError('이미지 URL 갱신 중 오류가 발생했습니다.');
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => {
-        refreshBlobUrls();
-      },
-      60 * 60 * 1000,
-    );
-    return () => clearInterval(interval);
-  }, [imageData]);
 
   // 파일 업로드
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,15 +141,15 @@ const TourPage = () => {
           }
 
           return {
-            id: data[0].id,
             blobUrl,
-            filename: uniqueFileName,
+            id: data[0].id,
+            userId: data[0].user_id,
             isCover: data[0].is_cover,
+            createdAt: currentDate,
+            filename: uniqueFileName,
             latitude: exifData.latitude,
             longitude: exifData.longitude,
             dateTaken: exifData.dateTaken,
-            userId: data[0].user_id,
-            createdAt: currentDate,
           };
         }),
       );
@@ -151,9 +168,7 @@ const TourPage = () => {
   // 특정 created_at 기준으로 대표 이미지 설정
   const handleSetCoverImage = async (id: number, createdAt: string) => {
     try {
-      // 해당 createdAt 날짜에 대한 이미지들만 is_cover 해제
       await browserClient.from('images').update({ is_cover: false }).eq('user_id', userId).eq('created_at', createdAt);
-      // 선택한 이미지만 대표 이미지로 설정
       await browserClient.from('images').update({ is_cover: true }).eq('id', id);
 
       const updatedImages = imageData.map((image) =>
@@ -234,6 +249,7 @@ const TourPage = () => {
                 <p>위도: {image.latitude}</p>
                 <p>경도: {image.longitude}</p>
                 <p>촬영 날짜: {formatDateToNumber(image.dateTaken)}</p>
+
                 <button onClick={() => downloadSingleFile(bucketName, image.filename, folderName)}>
                   개별 다운로드
                 </button>

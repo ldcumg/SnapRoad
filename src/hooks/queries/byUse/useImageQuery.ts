@@ -1,4 +1,4 @@
-import { getImages } from '@/services/client-action/imagesAction';
+import { getImages } from '@/services/client-action/_imagesAction';
 import { Images } from '@/types/imagesType';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 

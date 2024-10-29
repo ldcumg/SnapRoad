@@ -1,12 +1,14 @@
-import TourPage from './ImageUpload';
+// import TourPage from './ImageUpload';
 import ImageList from '@/components/tour/ImageList';
+import ImageUpload from '@/components/tour/ImageUpload';
 
 const TourInfoPage = () => {
   const user_id = 'sample_user_id';
 
   return (
     <div className='flex flex-col justify-center items-center'>
-      <TourPage />
+      {/* <TourPage /> */}
+      <ImageUpload />
       <ImageList />
     </div>
   );
