@@ -38,16 +38,6 @@ const insertUserGroupData = async (userGroupObj: UserGroupType) => {
   else if (state.status === 201) return { data: state.data, error: state.error, groupId: userGroupObj.group_id };
 };
 
-const checkMemberexist = async (group_id: string, userId: string) => {
-  const state = await browserClient
-    .from('user_group')
-    .select('user_id, group_id')
-    .eq('group_id', group_id)
-    .eq('user_id', userId);
-  if (state.status !== 200) throw state.error;
-  return { data: state.data, error: state.error };
-};
-
 type GroupListType = {
   pageParam: number;
   userId: string;
@@ -95,4 +85,4 @@ const getGroupUsersCount = async (groupId: string) => {
   return state.data?.length;
 };
 
-export { insertGroupData, insertUserGroupData, checkMemberexist, getGroupListByPage, getGroupUsersCount };
+export { insertGroupData, insertUserGroupData, getGroupListByPage, getGroupUsersCount };

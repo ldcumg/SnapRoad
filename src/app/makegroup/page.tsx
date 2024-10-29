@@ -27,18 +27,6 @@ const MakeGroupPage = () => {
     }
   };
 
-  const loginWithGithub = async () => {
-    await browserClient.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: window.origin + '/auth/callback',
-      },
-    });
-  };
-  const logout = async () => {
-    await browserClient.auth.signOut();
-  };
-
   const groupThumbnail = watch('groupImg') as FileList | null;
   useEffect(() => {
     if (groupThumbnail && groupThumbnail.length) {
@@ -49,8 +37,6 @@ const MakeGroupPage = () => {
   if (insertGroupDataError || insertUserGroupError) throw new Error('에러 발생!');
   return (
     <div className='flex flex-col justify-center items-center gap-[20px] my-[20px] py-[10px]'>
-      <button onClick={loginWithGithub}>깃허브테스트로그인</button>
-      <button onClick={logout}>깃허브테스트로그아웃</button>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-col justify-center items-center gap-[30px]'
