@@ -13,3 +13,12 @@ export type UserGroupType = {
   is_owner: boolean;
   joined_at: Date;
 };
+
+export type GroupWithCounts = {
+  group_desc: string;
+  group_id: string;
+  group_image_url: string;
+  group_title: string;
+  updated_at: Date;
+  user_count: number;
+};

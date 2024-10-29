@@ -27,7 +27,7 @@ const GroupList = () => {
           {FlattedData.map((el) => {
             return (
               <GroupItem
-                key={el?.id}
+                key={el?.group_id}
                 el={el}
               />
             );
