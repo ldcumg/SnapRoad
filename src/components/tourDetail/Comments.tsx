@@ -1,4 +1,5 @@
 import Comment from './Comment';
+import CommentForm from './CommentForm';
 import React from 'react';
 
 interface Comment {
@@ -18,9 +19,11 @@ interface Comment {
 
 interface CommentsProps {
   comments: Comment[];
+  postId: string;
+  userId: string;
 }
 
-const Comments = ({ comments }: CommentsProps) => {
+const Comments = ({ comments, postId, userId }: CommentsProps) => {
   return (
     <ul className='flex flex-col gap-5 border-t'>
       {comments
@@ -34,6 +37,13 @@ const Comments = ({ comments }: CommentsProps) => {
               <Comment
                 nickname={parentComment.profiles.user_nickname}
                 commentDesc={parentComment.comment_desc}
+              />
+              <CommentForm
+                newComment={{
+                  postId: postId,
+                  userId: userId,
+                  parentId: parentComment.comment_id,
+                }}
               />
               <ul>
                 {comments
@@ -55,6 +65,13 @@ const Comments = ({ comments }: CommentsProps) => {
             </li>
           );
         })}
+      <CommentForm
+        newComment={{
+          postId: postId,
+          userId: userId,
+          parentId: null,
+        }}
+      />
     </ul>
   );
 };

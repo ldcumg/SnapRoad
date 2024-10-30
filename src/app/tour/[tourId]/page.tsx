@@ -16,7 +16,8 @@ const TourDetail = async ({
   };
 }) => {
   // TODO 테스트용
-  const tourId = 'af1ce7b5-fbe8-4e3a-835b-5ad5e07a69dc';
+  const postId = 'af1ce7b5-fbe8-4e3a-835b-5ad5e07a69dc';
+  const userId = 'cee8906c-ac2c-496c-a108-1dba7081f345';
 
   console.log('TourDetail rendering . . . 이것은 SSR');
   const supabase = createClient();
@@ -36,7 +37,7 @@ const TourDetail = async ({
     images (*)
   `,
     )
-    .eq('post_id', tourId)
+    .eq('post_id', postId)
     .single();
 
   if (error) console.error('error :>> ', error);
@@ -108,7 +109,11 @@ const TourDetail = async ({
           })}
         </div>
       </div>
-      <Comments comments={data.comment} />
+      <Comments
+        comments={data.comment}
+        postId={postId}
+        userId={userId}
+      />
     </div>
   );
 };
