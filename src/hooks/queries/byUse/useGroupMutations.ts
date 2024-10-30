@@ -1,5 +1,5 @@
-import { insertGroupData, insertUserGroupData } from '@/services/client-action/groupActions';
-import { GroupObjType, UserGroupType } from '@/types/groupTypes';
+import { insertGroupData, insertUserGroupData, updateGroupData } from '@/services/client-action/groupActions';
+import { GroupObjType, UpdateGroupObjType, UserGroupType } from '@/types/groupTypes';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -15,6 +15,24 @@ type InsertGroupType = {
   groupObj: GroupObjType;
   groupImg: File | null;
 };
+
+type updateGroupType = {
+  groupObj: UpdateGroupObjType;
+  groupImg: File | null;
+};
+
+const useUpdateGroupMutation = (group_id?: string) => {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: async ({ groupObj, groupImg }: updateGroupType) => await updateGroupData(groupObj, groupImg),
+    onSuccess: (data) => {
+      router.push(`/group/${group_id}`);
+      // console.log('data :>> ', data);
+    },
+    onError: (error) => console.log('error :>> ', error),
+  });
+};
+
 //TODO - invalidate필요시 쿼리키 추가 필요
 const useInsertGroupMutation = () => {
   return useMutation({
@@ -41,4 +59,4 @@ const useInsertUserGroupMutation = () => {
   });
 };
 
-export { useInsertGroupMutation, useInsertUserGroupMutation };
+export { useInsertGroupMutation, useUpdateGroupMutation, useInsertUserGroupMutation };

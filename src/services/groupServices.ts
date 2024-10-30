@@ -1,8 +1,15 @@
-import { getGroupUsersCount, GroupListResponseType } from './client-action/groupActions';
-import { getSignedImgUrl } from './server-action/getSignedImgUrl';
-import { GroupObjType, UserGroupType } from '@/types/groupTypes';
+import { getSignedImgUrls } from './server-action/getSignedImgUrls';
+import { GroupObjType, GroupWithCounts, UserGroupType } from '@/types/groupTypes';
 import { FieldValues } from 'react-hook-form';
 
+const makeGroupDataForUpdate = (value: FieldValues, update_for: string) => {
+  return {
+    group_id: update_for,
+    updated_at: new Date(),
+    group_title: value.groupTitle,
+    group_desc: value.groupDesc,
+  };
+};
 const makeGroupDataToObj = (value: FieldValues): GroupObjType => {
   return {
     group_id: crypto.randomUUID(),
@@ -23,20 +30,9 @@ const makeUserGroupDataToObj = (userId: string, is_owner: boolean, group_id: str
   };
 };
 
-const getUserCount = async (groups: GroupListResponseType[]) => {
-  return await Promise.all(
-    groups.map(async (group) => {
-      return await getGroupUsersCount(group.group_data.group_id);
-    }),
-  );
+const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
+  const groupImages = groups.map((group) => group.group_image_url);
+  return await getSignedImgUrls('group_image', 1000 * 60 * 10, groupImages);
 };
 
-const getGroupSignedImageUrl = async (groups: GroupListResponseType[]) => {
-  return await Promise.all(
-    groups.map(async (group) => {
-      return await getSignedImgUrl('group_image', 1000 * 60 * 10, group.group_data.group_image_url);
-    }),
-  );
-};
-
-export { makeGroupDataToObj, makeUserGroupDataToObj, getUserCount, getGroupSignedImageUrl };
+export { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj, getGroupSignedImageUrls };
