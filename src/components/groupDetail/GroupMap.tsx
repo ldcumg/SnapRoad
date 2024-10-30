@@ -1,6 +1,7 @@
 'use client';
 
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
+import { keywordSearch } from '@/services/server-action/mapAction';
 import type { LocationInfo } from '@/types/placesTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
@@ -11,12 +12,12 @@ import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
 const searchInput = 'searchInput';
 
-const GroupMap = () => {
+const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const map = useRef<kakao.maps.Map>();
   const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [isPostsView, setIsPostsView] = useState<boolean>(true);
+  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
 
   const {
     register,
@@ -40,33 +41,41 @@ const GroupMap = () => {
   }, []);
 
   /** 키워드 검색 함수 */
-  const searchLocation = ({ searchInput }: FieldValues) => {
-    setIsPostsView(false);
-    const kakaoPlacesSearch = new kakao.maps.services.Places();
+  const searchLocation = async ({ searchInput }: FieldValues) => {
+    if (!map.current) return;
 
-    kakaoPlacesSearch.keywordSearch(
-      searchInput,
-      (results, status, pagination) => {
-        if (status !== kakao.maps.services.Status.OK || !map.current) {
-          toast.error('검색 결과를 불러오지 못 했습니다.');
-          return;
-        }
+    isPostsView && setIsPostsView(false);
 
-        const bounds = new kakao.maps.LatLngBounds();
-        const mappedResults = results.map((result) => {
-          return { ...result, lat: Number(result.y), lng: Number(result.x) };
-        }) as LocationInfo[];
-        mappedResults.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+    const { results, meta } = await keywordSearch({ keyword: searchInput });
+    console.log("meta =>", meta);
+    setSearchResultMarkers(results);
 
-        setSearchResultMarkers(mappedResults);
+    // 검색된 장소 위치를 기준으로 지도 범위 재설정
+    const bounds = new kakao.maps.LatLngBounds();
+    results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+    map.current.panTo(bounds);
+  };
 
-        // 검색된 장소 위치를 기준으로 지도 범위 재설정
-        map.current.panTo(bounds);
-      },
-      // {
-      //   page: 1,
-      // },
-    );
+  /** 사용자의 위치를 찾는 함수 */
+  const handleFindUserLocation = () => {
+    if (!navigator.geolocation) {
+      toast.alert('위치 정보 제공 동의가 필요합니다.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition((position) => {
+      if (!map.current) return;
+      const { latitude: lat, longitude: lng } = position.coords;
+      map.current.setLevel(5, { animate: true });
+      map.current.panTo(new kakao.maps.LatLng(lat, lng));
+      setIsPostsView(false);
+    });
+  };
+
+  /** 게시물을 추가할 장소 선택하는 함수 */
+  const handleSelectSpot = async () => {
+    const centerLatLng = map.current?.getCenter();
+    if (!centerLatLng) return;
+    route.push(`/group/${groupId}/tour?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
   };
 
   return (
@@ -80,9 +89,7 @@ const GroupMap = () => {
         {!!getValues(searchInput) && (
           <button
             type='button'
-            onClick={() => {
-              resetField(searchInput);
-            }}
+            onClick={() => resetField(searchInput)}
           >
             X
           </button>
@@ -156,32 +163,8 @@ const GroupMap = () => {
           </>
         )}
       </Map>
-      <button
-        onClick={() => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-              if (!map.current) return;
-              const { latitude: lat, longitude: lng } = position.coords;
-              map.current.setLevel(5, { animate: true });
-              map.current.panTo(new kakao.maps.LatLng(lat, lng));
-              setIsPostsView(false);
-            });
-          }
-        }}
-      >
-        내 위치
-      </button>
-      {/* TODO - 위도 경도 보내주기 */}
-      {isPostsView || (
-        <button
-          onClick={() => {
-            const centerLatLng = map.current?.getCenter();
-            route.push(`/makegroup?lat=${centerLatLng?.getLat()}&lng=${centerLatLng?.getLng()}`);
-          }}
-        >
-          추가하기
-        </button>
-      )}
+      <button onClick={handleFindUserLocation}>내 위치</button>
+      {isPostsView || <button onClick={handleSelectSpot}>추가하기</button>}
     </>
   );
 };
