@@ -1,5 +1,5 @@
 {
-  "name": "closure-closer",
+  "name": "snap-road",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,8 +15,8 @@
     "@sentry/nextjs": "^8.35.0",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.6",
-    "@tanstack/react-query": "^5.59.15",
-    "@tanstack/react-query-devtools": "^5.59.15",
+    "@tanstack/react-query": "^5.59.16",
+    "@tanstack/react-query-devtools": "^5.59.16",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -47,8 +47,8 @@
     "@storybook/test": "^8.3.6",
     "@storybook/testing-library": "^0.2.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "^20.16.13",
-    "@types/react": "^18.3.11",
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.15",

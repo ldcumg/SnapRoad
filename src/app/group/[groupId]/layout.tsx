@@ -1,20 +1,19 @@
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+export const generateMetadata = async () => {
+  return {
+    title: '...',
+  };
 };
 
-type Props = Readonly<{ children: React.ReactNode; params: { group_id: string } }>;
+type Props = Readonly<{
+  children: React.ReactNode;
+  params: { groupId: string };
+  // searchParams: { 위치명: string; lat: string; lng: string };
+}>;
 
-const GroupDetailLayout = ({ children, params: { group_id } }: Props) => {
-  return (
-    <>
-      {children}
-      <div>브라우저 기본 네비 바</div>
-    </>
-  );
+const GroupDetailLayout = ({ children, params: { groupId } }: Props) => {
+  return <>{children}</>;
 };
 
 export default GroupDetailLayout;

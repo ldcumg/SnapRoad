@@ -2,12 +2,17 @@
 
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
-import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useKakaoLoader } from 'react-kakao-maps-sdk';
 
-type Props = {
+const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
+
+type Props = Readonly<{
   // params: { groupId: string };
   // searchParams: { 위치명:string, lat:string,lng:string }
-};
+}>;
 
 const GroupPage = (
   {
@@ -15,26 +20,26 @@ const GroupPage = (
     // searchParams: {위치명, lat,lng }
   }: Props,
 ) => {
-  const [isToggleOn, setIsToggleOn] = useState<{ [key: string]: boolean }>({
-    isMap: true,
-    isDetail: false,
-  });
+  const [isMap, setIsMap] = useState<boolean>(true);
 
-  const handleToggle = (target: string) => {
-    setIsToggleOn((prev) => {
-      return { ...prev, [target]: !prev[target] };
-    });
-  };
+  // const [loading, error] = useKakaoLoader({
+  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+  //   libraries: ['services', 'clusterer'],
+  // });
+
+  // useEffect(() => {
+  //   if (loading) return;
+  // }, [loading]);
 
   return (
     <>
+      <ToastContainer />
       <header className='flex justify-between px-5'>
-        <span>로고</span>
-        <button onClick={() => handleToggle('isDetail')}>그룹명</button>
-        <button onClick={() => handleToggle('isMap')}>전환</button>
+        <Link href='/'>로고</Link>
+        <h4>그룹명</h4>
+        <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
-      {isToggleOn.isMap ? <GroupMap /> : <GroupAlbum />}
-      <button>추가하기</button>
+      {isMap ? <GroupMap /> : <GroupAlbum />}
     </>
   );
 };
