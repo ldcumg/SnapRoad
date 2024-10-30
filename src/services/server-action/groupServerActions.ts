@@ -49,8 +49,6 @@ const getRandomThumbnail = async (groupId: string) => {
   const { data, error } = await supabase.rpc('get_group_thumbnail_by_group_id', {
     input_group_id: groupId,
   });
-  //NOTE - 썸네일 이미지, created_at, post_address도 같이 가져와야함
-  //근데 어떻게 고쳐야할지 모르겠음
   if (data) return data as string;
   return null;
 };

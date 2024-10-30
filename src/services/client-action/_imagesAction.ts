@@ -1,4 +1,4 @@
-import { Images } from '@/types/imagesType';
+import { Images } from '@/types/projectType';
 import { createClient } from '@/utils/supabase/client';
 
 const supabase = createClient();

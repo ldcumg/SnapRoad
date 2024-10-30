@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
  * @param uploadSessionId 업로드 세션 ID
  * @returns 이미지 대표 설정을 위한 mutation 함수
  */
+
 export function useSetCoverImage(userId: string, uploadSessionId: string) {
   const queryClient = useQueryClient();
 

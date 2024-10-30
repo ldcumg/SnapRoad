@@ -1,4 +1,3 @@
-// ImageSlide.tsx
 import SortableImage from './SortableImage';
 import { useDeleteImage } from '@/hooks/queries/byUse/useDeleteImageMutation';
 import { useSetCoverImage } from '@/hooks/queries/byUse/useSetCoverImageMutation';
@@ -6,7 +5,7 @@ import { useUploadImage } from '@/hooks/queries/byUse/useUploadImageMutation';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface ImageData {
   id: number;
@@ -145,7 +144,7 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
             />
             <button
               onClick={() => handleDelete(image.id)}
-              className='absolute top-1 right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded-full'
+              className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
             >
               ×
             </button>

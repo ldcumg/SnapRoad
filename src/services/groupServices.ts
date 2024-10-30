@@ -2,6 +2,14 @@ import { getSignedImgUrls } from './server-action/getSignedImgUrls';
 import { GroupObjType, GroupWithCounts, UserGroupType } from '@/types/groupTypes';
 import { FieldValues } from 'react-hook-form';
 
+const makeGroupDataForUpdate = (value: FieldValues, update_for: string) => {
+  return {
+    group_id: update_for,
+    updated_at: new Date(),
+    group_title: value.groupTitle,
+    group_desc: value.groupDesc,
+  };
+};
 const makeGroupDataToObj = (value: FieldValues): GroupObjType => {
   return {
     group_id: crypto.randomUUID(),
@@ -27,4 +35,4 @@ const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
   return await getSignedImgUrls('group_image', 1000 * 60 * 10, groupImages);
 };
 
-export { makeGroupDataToObj, makeUserGroupDataToObj, getGroupSignedImageUrls };
+export { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj, getGroupSignedImageUrls };

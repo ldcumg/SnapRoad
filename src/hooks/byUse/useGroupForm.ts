@@ -1,4 +1,4 @@
-import { groupSchema } from '@/schemas/groupSchemas';
+import { groupSchema, inviteSchema } from '@/schemas/groupSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -14,4 +14,13 @@ const useMakeGroupForm = () => {
   });
 };
 
-export { useMakeGroupForm };
+const useInviteGroupForm = () => {
+  return useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      inviteCode: '',
+    },
+    resolver: zodResolver(inviteSchema),
+  });
+};
+export { useMakeGroupForm, useInviteGroupForm };

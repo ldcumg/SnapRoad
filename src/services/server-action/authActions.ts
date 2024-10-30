@@ -18,6 +18,8 @@ export const signUp = async (formData: { email: string; password: string; nickna
     },
   });
 
+  console.error('signUpError :>> ', signUpError);
+
   if (signUpError) throw new Error(getErrorMessage(signUpError.code!));
 
   await signOut();

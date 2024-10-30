@@ -23,7 +23,6 @@ interface ImageUploadStore {
 
 export const useImageUploadStore = create<ImageUploadStore>((set) => ({
   images: [],
-  // 중복 필터링 함수 추가
   addImages: (newImages) =>
     set((state) => {
       const uniqueImages = newImages.filter((newImage) => !state.images.some((image) => image.id === newImage.id));

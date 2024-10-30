@@ -13,7 +13,7 @@ export const downloadSingleFile = async (bucketName: string, filename: string, f
   try {
     const { data, error } = await browserClient.storage
       .from(bucketName)
-      .createSignedUrl(`${folder}/${filename}`, 60 * 60, { download: true });
+      .createSignedUrl(`${folder}/${filename}`, 60 * 60 * 1000, { download: true });
 
     if (error || !data) throw new Error('파일 다운로드 실패');
 
@@ -46,7 +46,7 @@ export const downloadAllAsZip = async (
     try {
       const { data, error } = await browserClient.storage
         .from(bucketName)
-        .createSignedUrl(`${folder}/${image.filename}`, 60 * 60, { download: true });
+        .createSignedUrl(`${folder}/${image.filename}`, 60 * 60 * 1000, { download: true });
 
       if (error || !data) {
         console.error('파일 다운로드 실패:', error);

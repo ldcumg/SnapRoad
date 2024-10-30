@@ -1,7 +1,9 @@
 'use client';
 
+// import PostPage from './[groupId]';
 import ImageManager from '@/components/post/ImageManager';
 import ImageSlide from '@/components/post/ImageSlide';
+import PostForm from '@/components/post/PostForm';
 import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,11 +20,16 @@ const FormPage = () => {
     <section className='w-full'>
       {/* <ImageManager
         userId={userId}
-        uploadSessionId={uploadSessionId} // 업로드 세션 ID를 전달
+        uploadSessionId={uploadSessionId} 
       /> */}
       <ImageSlide
         userId={userId}
-        uploadSessionId={uploadSessionId} 
+        uploadSessionId={uploadSessionId}
+      />
+      <PostForm />
+      <ImageManager
+        userId={userId}
+        uploadSessionId={uploadSessionId}
       />
     </section>
   );
