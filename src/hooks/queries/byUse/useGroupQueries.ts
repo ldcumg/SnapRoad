@@ -1,5 +1,6 @@
 import { getGroupSignedImageUrls } from '@/services/groupServices';
 import { getSignedImgUrl } from '@/services/server-action/getSignedImgUrl';
+import { getSignedImgUrls } from '@/services/server-action/getSignedImgUrls';
 import { getGroupDetails, getRandomGroupId, getRandomThumbnail } from '@/services/server-action/groupServerActions';
 import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
@@ -55,21 +56,40 @@ const useGroupListInfiniteQuery = () => {
   });
 };
 
+type PostData = {
+  created_at: string;
+  post_address: string;
+  post_thumbnail_image: string;
+  group_id: string;
+};
+type PostDataListType = PostData[] | null;
+
 const useGroupRandomImageQuery = () => {
   return useQuery({
     queryKey: ['groupImages'],
     queryFn: async () => {
       const { data } = await browserClient.auth.getUser();
-      let url = '';
+      let dataList: PostDataListType = [];
       if (data.user?.id) {
         const userId = data.user.id;
-        const randomGroupData = await getRandomGroupId(userId);
-        if (randomGroupData) {
-          const thumbnailData = await getRandomThumbnail(randomGroupData);
-          if (thumbnailData) url = (await getSignedImgUrl('tour_images', 20, `/group_name/${thumbnailData}`)) as string;
+        const { data: postDataList }: { data: PostDataListType } = await browserClient.rpc(
+          'get_user_posts_by_user_id',
+          { input_user_id: userId },
+        );
+        if (postDataList?.length) {
+          console.log('postDataList :>> ', postDataList);
+          //TODO - tour_image버킷 폴더구조 변경 후 요청url변경필요
+          const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
+          const signedUrls = await getSignedImgUrls('tour_images', 60 * 60, imgNameArray);
+          if (signedUrls) {
+            dataList = postDataList.map((data, idx) => ({
+              ...data,
+              post_thumbnail_image: signedUrls[idx].signedUrl,
+            }));
+          }
         }
       }
-      return url;
+      return dataList;
     },
   });
 };

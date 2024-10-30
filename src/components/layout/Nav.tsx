@@ -120,11 +120,11 @@ const Nav = () => {
                 onClick={goToGroup}
                 disabled={!groupId}
               >
-                내 그룹으로 이동
+                내 그룹
               </button>
             </li>
             <li>
-              <Link href={`/mypage`}>마이페이지</Link>
+              <Link href={`/mypage`}>mypage</Link>
             </li>
             <li>
               <span>{userName}님</span>

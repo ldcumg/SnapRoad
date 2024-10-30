@@ -1,35 +1,52 @@
 'use client';
 
+import { Card, CardContent } from '../ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useGroupRandomImageQuery } from '@/hooks/queries/byUse/useGroupQueries';
-import { useEffect } from 'react';
+import Autoplay from 'embla-carousel-autoplay';
 
 const RandomImage = () => {
-  const { data, isLoading, refetch } = useGroupRandomImageQuery();
-  useEffect(() => {
-    const refetchInterval = setInterval(() => {
-      refetch();
-    }, 1000 * 10);
-    data && refetchInterval;
-    return () => clearInterval(refetchInterval);
-  });
+  const { data: RandomData, isLoading } = useGroupRandomImageQuery();
+  console.log('data :>> ', RandomData);
 
   if (isLoading) return <div className='w-[343px] h-[172px] bg-slate-400'>loading...</div>;
   return (
-    <div>
-      {data ? (
-        <img
-          src={data}
-          alt=''
-          className='w-[343px] h-[172px] object-contain'
-        />
+    <>
+      {RandomData?.length ? (
+        <Carousel
+          className='w-full max-w-sm'
+          plugins={[
+            Autoplay({
+              delay: 3000,
+            }),
+          ]}
+          opts={{ loop: true }}
+        >
+          <CarouselContent className='-ml-1'>
+            {RandomData?.map((data, index) => (
+              <CarouselItem
+                key={index}
+                className='pl-1 basis-[200px]'
+              >
+                <div className='p-1'>
+                  <Card>
+                    <CardContent className='flex aspect-square items-center justify-center p-0'>
+                      <img
+                        src={data.post_thumbnail_image}
+                        alt=''
+                        className='w-[200px] h-[200px] object-contain'
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
       ) : (
-        <div>
-          <div className='w-[343px] h-[172px] object-contain flex justify-center items-center'>
-            <p>게시글을 작성하고 추억을 공유해보세요!</p>
-          </div>
-        </div>
+        <></>
       )}
-    </div>
+    </>
   );
 };
 
