@@ -48,7 +48,7 @@ const Nav = () => {
   } = useQuery({
     queryKey: ['userGroup', session?.user?.id],
     queryFn: () => fetchUserGroup(session?.user?.id || ''),
-    enabled: !!session, 
+    enabled: !!session,
   });
 
   // 로그인
@@ -62,7 +62,7 @@ const Nav = () => {
       });
     },
     onSuccess: () => {
-      refetch(); 
+      refetch();
     },
     onError: () => {
       console.error('로그인 에러');
@@ -89,6 +89,9 @@ const Nav = () => {
   return (
     <nav>
       <ul className='flex flex-row gap-2'>
+        <li>
+          <Link href={`/`}>메인</Link>
+        </li>
         <li>
           <Link href={`/post`}>포스트 쓰기</Link>
         </li>

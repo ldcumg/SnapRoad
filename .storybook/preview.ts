@@ -1,5 +1,8 @@
-import '../src/styles/globals.css';
+import '@/src/styles/fonts.css';
+import '@/src/styles/globals.css';
 import type { Preview } from '@storybook/react';
+
+// 폰트 정의 CSS 파일 임포트 (필요한 경우)
 
 const preview: Preview = {
   parameters: {

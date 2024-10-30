@@ -27,15 +27,13 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
       style={style}
       {...attributes}
       {...listeners}
-      className='keen-slider__slide min-w-[300px] max-w-[300px] h-[300px] cursor-pointer flex flex-col items-center'
+      className='keen-slider__slide min-w-[300px] max-w-[300px] h-[300px] cursor-pointer flex flex-col items-center relative'
       onClick={() => onSetCover(image.id)} // 대표 이미지 설정
     >
-      <div className='relative'>
-        {selectedCover === image.id && (
-          <span className='absolute top-1 left-1 bg-yellow-300 text-black px-2 py-1 rounded-md text-xs'>대표</span>
-        )}
+      <div className='absolute top-2 right-2 z-10'>
+        {selectedCover === image.id && <span className='bg-white text-black px-2 py-1 rounded-md text-xs'>대표</span>}
       </div>
-      <div className='flex flex-col items-center h-full w-full'>
+      <div className='h-full w-full'>
         <img
           src={image.blobUrl}
           alt='업로드 이미지'

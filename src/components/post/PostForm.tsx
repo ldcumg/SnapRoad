@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Button } from '@/stories/Button';
+import { useState } from 'react';
 
 const PostForm = () => {
   const groupId = '2fef6a47-a295-40e5-abca-1a40354f91ca';
@@ -6,6 +7,7 @@ const PostForm = () => {
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
@@ -31,7 +33,10 @@ const PostForm = () => {
   return (
     <div className='PostForm'>
       <h1>그룹 {groupId} 포스트 작성</h1>
-      <form className="w-full border border-black flex flex-col" onSubmit={handleSubmit}>
+      <form
+        className='w-full border border-black flex flex-col'
+        onSubmit={handleSubmit}
+      >
         <label htmlFor='description'>대표</label>
         <textarea
           id='description'

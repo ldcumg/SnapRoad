@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import 'react';
 
 const Marker = ({ tooltipText }) => {
   const [isOver, setIsOver] = useState(false);
