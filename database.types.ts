@@ -103,6 +103,7 @@ export type Database = {
           post_lat: string | null
           post_lng: string | null
           updated_at: string
+          upload_session_id: string
           user_id: string
         }
         Insert: {
@@ -117,6 +118,7 @@ export type Database = {
           post_lat?: string | null
           post_lng?: string | null
           updated_at?: string
+          upload_session_id?: string
           user_id?: string
         }
         Update: {
@@ -131,6 +133,7 @@ export type Database = {
           post_lat?: string | null
           post_lng?: string | null
           updated_at?: string
+          upload_session_id?: string
           user_id?: string
         }
         Relationships: [
@@ -374,12 +377,6 @@ export type Database = {
         }
         Returns: string
       }
-      get_group_thumbnail_by_group_id: {
-        Args: {
-          input_group_id: string
-        }
-        Returns: string
-      }
       get_user_groups_with_count: {
         Args: {
           input_user_id: string
@@ -392,6 +389,16 @@ export type Database = {
           group_image_url: string
           updated_at: string
           user_count: number
+        }[]
+      }
+      get_user_posts_by_user_id: {
+        Args: {
+          input_user_id: string
+        }
+        Returns: {
+          post_thumbnail_image: string
+          post_address: string
+          created_at: string
         }[]
       }
     }

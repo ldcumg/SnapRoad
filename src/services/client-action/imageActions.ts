@@ -102,6 +102,58 @@ export async function setCoverImage(id: number) {
 }
 
 /**
+ * 특정 사용자와 업로드 세션의 이미지를 초기화한 후, 특정 이미지를 대표 이미지로 설정합니다.
+ * @param userId 사용자 ID
+ * @param uploadSessionId 업로드 세션 ID
+ * @param imageId 대표로 설정할 이미지 ID
+ * 이거 수정 각
+ */
+
+// 모든 이미지를 초기화하는 함수
+// async function resetCoverImages(userId: string, uploadSessionId: string) {
+//   const { error } = await browserClient
+//     .from('images')
+//     .update({ is_cover: false })
+//     .eq('user_id', userId)
+//     .eq('upload_session_id', uploadSessionId); // 특정 업로드 세션 ID 추가
+
+//   if (error) {
+//     console.error('대표 이미지 초기화 실패:', error.message);
+//     throw new Error('대표 이미지 초기화 실패');
+//   }
+// }
+
+// 특정 이미지를 대표 이미지로 설정하는 함수
+// async function setCoverImage(userId: string, imageId: number, uploadSessionId: string) {
+//   const { error, data } = await browserClient
+//     .from('images')
+//     .update({ is_cover: true })
+//     .eq('id', imageId)
+//     .eq('user_id', userId)
+//     .eq('upload_session_id', uploadSessionId) // 특정 업로드 세션 ID 추가
+//     .select('*');
+
+//   if (error) {
+//     console.error('대표 이미지 설정 실패:', error.message);
+//     throw new Error('대표 이미지 설정 실패');
+//   }
+
+//   if (!data) {
+//     console.error('조건에 맞는 행이 없습니다.');
+//     throw new Error('조건에 맞는 행이 없습니다.');
+//   }
+
+//   console.log('대표 이미지 설정 성공:', data);
+// }
+
+// 최종적으로 호출하는 메인 함수
+// export async function updateCoverImage(userId: string, imageId: number, uploadSessionId: string) {
+//   console.log('Updating cover image with:', { userId, imageId, uploadSessionId });
+//   await resetCoverImages(userId, uploadSessionId);
+//   await setCoverImage(userId, imageId, uploadSessionId);
+// }
+
+/**
  * 이미지 ID로 데이터베이스에서 파일 이름을 가져옴
  * @param id 이미지 ID
  * @returns 파일 이름 (문자열)

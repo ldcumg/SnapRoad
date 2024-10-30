@@ -1,12 +1,11 @@
-'use client';
-
+// ImageSlide.tsx
+import SortableImage from './SortableImage';
 import { useDeleteImage } from '@/hooks/queries/byUse/useDeleteImageMutation';
 import { useSetCoverImage } from '@/hooks/queries/byUse/useSetCoverImageMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/useUploadImageMutation';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
-import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import React, { useState } from 'react';
 
 interface ImageData {
@@ -26,7 +25,7 @@ interface ImageListProps {
   uploadSessionId: string;
 }
 
-const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
+const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
   const { images, addImages, deleteImage, setImages } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
 
@@ -45,6 +44,11 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
         onSuccess: (uploadedImages) => {
           const newImages = uploadedImages.filter((newImage) => !images.some((img) => img.id === newImage.id));
           addImages(newImages);
+
+          // 새로 업로드한 이미지 중 첫 번째 이미지를 대표 이미지로 설정
+          if (newImages.length > 0) {
+            handleSetCover(newImages[0].id);
+          }
         },
       });
     }
@@ -54,8 +58,12 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
     setCoverMutation.mutate(id, {
       onSuccess: () => {
         setSelectedCover(id);
+        const { updateImage } = useImageUploadStore.getState();
+        updateImage(id, { isCover: true });
+        images.forEach((image) => {
+          if (image.id !== id) updateImage(image.id, { isCover: false });
+        });
         alert('대표 이미지가 설정되었습니다.');
-        console.log('대표 이미지가 설정되었습니다.');
       },
       onError: (error) => {
         console.error('대표 이미지 설정 오류:', error);
@@ -86,9 +94,9 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
       const sortedImages = arrayMove(images, oldIndex, newIndex);
       setImages(sortedImages);
 
+      // 첫 번째 이미지를 대표 이미지로 설정
       if (sortedImages.length > 0) {
         const firstImageId = sortedImages[0].id;
-        console.log('처음 이미지가 대표 이미지:', firstImageId);
         handleSetCover(firstImageId);
       }
     }
@@ -96,30 +104,32 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
 
   return (
     <section className='flex flex-col items-center gap-4 p-4'>
+      <div className='text-center text-gray-600 mb-2'>
+        <span className='text-sm'>이미지 업로드: {images.length} / 10</span>
+      </div>
+
       <div className='w-full m-auto overflow-auto'>
         <h2 className='text-center text-sm text-gray-500 mb-2'>대표 이미지 선택</h2>
-        <div className='w-full overflow-auto'>
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={images.map((image) => image.id)}
+            strategy={verticalListSortingStrategy}
           >
-            <SortableContext
-              items={images.map((image) => image.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className='flex gap-4'>
-                {images.map((image) => (
-                  <SortableImage
-                    key={image.id}
-                    image={image}
-                    onSetCover={() => handleSetCover(image.id)}
-                    selectedCover={selectedCover}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </div>
+            <div className='flex gap-4'>
+              {images.map((image) => (
+                <SortableImage
+                  key={image.id}
+                  image={image}
+                  onSetCover={() => handleSetCover(image.id)}
+                  selectedCover={selectedCover}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       </div>
 
       <div className='flex flex-wrap gap-4 mt-4'>
@@ -158,46 +168,4 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
   );
 };
 
-// 단일 이미지 항목을 정렬할 수 있도록 설정
-const SortableImage = ({
-  image,
-  onSetCover,
-  selectedCover,
-}: {
-  image: ImageData;
-  onSetCover: (id: number) => void;
-  selectedCover: number | null;
-}) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: image.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className='keen-slider__slide min-w-[300px] max-w-[300px] h-[300px] cursor-pointer flex flex-col items-center'
-      onClick={() => onSetCover(image.id)}
-    >
-      <div className='relative'>
-        {selectedCover === image.id && (
-          <span className='absolute top-2 left-2 bg-yellow-300 text-black px-2 py-1 rounded-md text-xs'>대표</span>
-        )}
-      </div>
-      <div className='flex flex-col items-center h-full w-full'>
-        <img
-          src={image.blobUrl}
-          alt='업로드 이미지'
-          className='w-full h-[260px] object-cover rounded-md'
-        />
-        <span className='mt-2 text-sm text-gray-700'>{image.filename}</span>
-      </div>
-    </div>
-  );
-};
-
-export default ImageManager;
+export default ImageSlide;

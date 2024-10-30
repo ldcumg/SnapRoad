@@ -12,9 +12,10 @@ import { SubmitHandler } from 'react-hook-form';
 interface ImageListProps {
   userId: string;
   uploadSessionId: string;
+  id: number;
 }
 
-const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
+const ImageManager = ({ userId, uploadSessionId, id }: ImageListProps) => {
   const bucketName = 'tour_images';
   const folderName = 'group_name';
   const formattedDate = formatDateToNumber(new Date().toString()) || '';
@@ -22,7 +23,7 @@ const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
 
   const uploadMutation = useUploadImage(bucketName, folderName, userId);
   const deleteMutation = useDeleteImage(bucketName, folderName);
-  const setCoverMutation = useSetCoverImage(userId, uploadSessionId);
+  const setCoverMutation = useSetCoverImage(userId, uploadSessionId, id);
 
   const {
     register,
