@@ -1,16 +1,13 @@
-'use client';
+"use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { AbstractOverlay, useMap } from 'react-kakao-maps-sdk';
-import Tracker from './Tracker';
-import Marker from './Marker';
+import { useCallback, useMemo, useRef } from "react";
+import ReactDOM from "react-dom";
+import { AbstractOverlay, MapMarker } from "react-kakao-maps-sdk";
 
-const TooltipMarker = ({ position, tooltipText }) => {
-  const map = useMap();
+const TooltipMarker = ({ position }) => {
   // Marker로 올려질 node 객체를 생성 합니다.
   const node = useRef(document.createElement('div'));
-  const [visible, setVisible] = useState(false);
+  const [isTackerVisible, setIsTrackerVisible] = useState(false);
   const [tracerPosition, setTracerPosition] = useState({
     x: 0,
     y: 0,
@@ -30,26 +27,17 @@ const TooltipMarker = ({ position, tooltipText }) => {
     node.current.parentNode.removeChild(node.current);
   }
 
-  // AbstractOverlay의 필수 구현 메소드.
-  // 지도의 속성 값들이 변화할 때마다 호출됩니다. (zoom, center, mapType)
-  // 엘리먼트의 위치를 재조정 해 주어야 합니다.
   function draw() {
-    // 화면 좌표와 지도의 좌표를 매핑시켜주는 projection객체
     const projection = this.getProjection();
-    // overlayLayer는 지도와 함께 움직이는 layer이므로
-    // 지도 내부의 위치를 반영해주는 pointFromCoords를 사용합니다.
     const point = projection.pointFromCoords(positionLatlng);
-    // 내부 엘리먼트의 크기를 얻어서
 
     const width = node.current.offsetWidth;
     const height = node.current.offsetHeight;
 
-    // 해당 위치의 정중앙에 위치하도록 top, left를 지정합니다.
     node.current.style.left = point.x - width / 2 + 'px';
     node.current.style.top = point.y - height / 2 + 'px';
   }
 
-  // 클리핑을 위한 outcode
   const OUTCODE = {
     INSIDE: 0, // 0b0000
     TOP: 8, //0b1000
@@ -58,20 +46,34 @@ const TooltipMarker = ({ position, tooltipText }) => {
     LEFT: 1, // 0b0001
   };
 
-  // viewport 영역을 구하기 위한 buffer값
-  // target의 크기가 60x60 이므로
-  // 여기서는 지도 bounds에서 상하좌우 30px의 여분을 가진 bounds를 구하기 위해 사용합니다.
   const BOUNDS_BUFFER = 30;
 
-  // 클리핑 알고리즘으로 tracker의 좌표를 구하기 위한 buffer값
-  // 지도 bounds를 기준으로 상하좌우 buffer값 만큼 축소한 내부 사각형을 구하게 됩니다.
-  // 그리고 그 사각형으로 target위치와 지도 중심 사이의 선을 클리핑 합니다.
-  // 여기서는 tracker의 크기를 고려하여 40px로 잡습니다.
   const CLIP_BUFFER = 40;
 
-  // Cohen–Sutherland clipping algorithm
-  // 자세한 내용은 아래 위키에서...
-  // https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
+  const Tracker = ({ position, angle }) => {
+    return (
+      <div
+        className={'tracker'}
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+        onClick={() => {
+          map.current.setCenter(positionLatlng);
+          setIsTrackerVisible(false);
+        }}
+      >
+        <div
+          className={'balloon'}
+          style={{
+            transform: `rotate(${angle}deg)`,
+          }}
+        ></div>
+        <div className={'icon'}></div>
+      </div>
+    );
+  };
+
   const getClipPosition = useCallback(
     (top, right, bottom, left, inner, outer) => {
       const calcOutcode = (x, y) => {
@@ -126,8 +128,6 @@ const TooltipMarker = ({ position, tooltipText }) => {
     [OUTCODE.BOTTOM, OUTCODE.INSIDE, OUTCODE.LEFT, OUTCODE.RIGHT, OUTCODE.TOP],
   );
 
-  // 말풍선의 회전각을 구하기 위한 함수
-  // 말풍선의 anchor가 TooltipMarker가 있는 방향을 바라보도록 회전시킬 각을 구합니다.
   const getAngle = (center, target) => {
     const dx = target.x - center.x;
     const dy = center.y - target.y;
@@ -138,10 +138,10 @@ const TooltipMarker = ({ position, tooltipText }) => {
 
   // target의 위치를 추적하는 함수
   const tracking = useCallback(() => {
-    const proj = map.getProjection();
+    const proj = map.current.getProjection();
 
     // 지도의 영역을 구합니다.
-    const bounds = map.getBounds();
+    const bounds = map.current.getBounds();
 
     // 지도의 영역을 기준으로 확장된 영역을 구합니다.
     const extBounds = extendBounds(bounds, proj);
@@ -149,78 +149,32 @@ const TooltipMarker = ({ position, tooltipText }) => {
     // target이 확장된 영역에 속하는지 판단하고
     if (extBounds.contain(positionLatlng)) {
       // 속하면 tracker를 숨깁니다.
-      setVisible(false);
+      setIsTrackerVisible(false);
     } else {
-      // target이 영역 밖에 있으면 계산을 시작합니다.
-
-      // 지도 bounds를 기준으로 클리핑할 top, right, bottom, left를 재계산합니다.
-      //
-      //  +-------------------------+
-      //  | Map Bounds              |
-      //  |   +-----------------+   |
-      //  |   | Clipping Rect   |   |
-      //  |   |                 |   |
-      //  |   |        *       (A)  |     A
-      //  |   |                 |   |
-      //  |   |                 |   |
-      //  |   +----(B)---------(C)  |
-      //  |                         |
-      //  +-------------------------+
-      //
-      //        B
-      //
-      //                                       C
-      // * 은 지도의 중심,
-      // A, B, C가 TooltipMarker의 위치,
-      // (A), (B), (C)는 각 TooltipMarker에 대응하는 tracker입니다.
-      // 지도 중심과 각 TooltipMarker를 연결하는 선분이 있다고 가정할 때,
-      // 그 선분과 Clipping Rect와 만나는 지점의 좌표를 구해서
-      // tracker의 위치(top, left)값을 지정해주려고 합니다.
-      // tracker 자체의 크기가 있기 때문에 원래 지도 영역보다 안쪽의 가상 영역을 그려
-      // 클리핑된 지점을 tracker의 위치로 사용합니다.
-      // 실제 tracker의 position은 화면 좌표가 될 것이므로
-      // 계산을 위해 좌표 변환 메소드를 사용하여 모두 화면 좌표로 변환시킵니다.
-
-      // TooltipMarker의 위치
       const pos = proj.containerPointFromCoords(positionLatlng);
-
-      // 지도 중심의 위치
-      // @ts-ignore
-      const center = proj.containerPointFromCoords(map.getCenter());
-
-      // 현재 보이는 지도의 영역의 남서쪽 화면 좌표
+      const center = proj.containerPointFromCoords(map.current.getCenter());
       const sw = proj.containerPointFromCoords(bounds.getSouthWest());
-
-      // 현재 보이는 지도의 영역의 북동쪽 화면 좌표
       const ne = proj.containerPointFromCoords(bounds.getNorthEast());
 
-      // 클리핑할 가상의 내부 영역을 만듭니다.
       const top = ne.y + CLIP_BUFFER;
       const right = ne.x - CLIP_BUFFER;
       const bottom = sw.y - CLIP_BUFFER;
       const left = sw.x + CLIP_BUFFER;
 
-      // 계산된 모든 좌표를 클리핑 로직에 넣어 좌표를 얻습니다.
       const clipPosition = getClipPosition(top, right, bottom, left, center, pos);
 
-      // 클리핑된 좌표를 tracker의 위치로 사용합니다.
       setTracerPosition(clipPosition);
 
-      // 말풍선의 회전각을 얻습니다.
       const angle = getAngle(center, pos);
 
-      // 회전각을 CSS transform을 사용하여 지정합니다.
-      // 브라우저 종류에따라 표현되지 않을 수도 있습니다.
-      // https://caniuse.com/#feat=transforms2d
       setTracerAngle(angle);
 
-      // target이 영역 밖에 있을 경우 tracker를 노출합니다.
-      setVisible(true);
+      setIsTrackerVisible(true);
     }
-  }, [getClipPosition, map, positionLatlng]);
+  }, [getClipPosition, map.current, positionLatlng]);
 
   const hideTracker = useCallback(() => {
-    setVisible(false);
+    setIsTrackerVisible(false);
   }, []);
 
   useEffect(() => {
@@ -228,31 +182,7 @@ const TooltipMarker = ({ position, tooltipText }) => {
     node.current.style.whiteSpace = 'nowrap';
   }, []);
 
-  // 상하좌우로 BOUNDS_BUFFER(30px)만큼 bounds를 확장 하는 함수
-  //
-  //  +-----------------------------+
-  //  |              ^              |
-  //  |              |              |
-  //  |     +-----------------+     |
-  //  |     |                 |     |
-  //  |     |                 |     |
-  //  |  <- |    Map Bounds   | ->  |
-  //  |     |                 |     |
-  //  |     |                 |     |
-  //  |     +-----------------+     |
-  //  |              |              |
-  //  |              v              |
-  //  +-----------------------------+
-  //
-  // 여기서는 TooltipMaker가 완전히 안보이게 되는 시점의 영역을 구하기 위해서 사용됩니다.
-  // TooltipMarker는 60x60 의 크기를 가지고 있기 때문에
-  // 지도에서 완전히 사라지려면 지도 영역을 상하좌우 30px만큼 더 드래그해야 합니다.
-  // 이 함수는 현재 보이는 지도 bounds에서 상하좌우 30px만큼 확장한 bounds를 리턴합니다.
-  // 이 확장된 영역은 TooltipMarker가 화면에서 보이는지를 판단하는 영역으로 사용됩니다.
   const extendBounds = (bounds, proj) => {
-    // 주어진 bounds는 지도 좌표 정보로 표현되어 있습니다.
-    // 이것을 BOUNDS_BUFFER 픽셀 만큼 확장하기 위해서는
-    // 픽셀 단위인 화면 좌표로 변환해야 합니다.
     const sw = proj.pointFromCoords(bounds.getSouthWest());
     const ne = proj.pointFromCoords(bounds.getNorthEast());
 
@@ -263,24 +193,23 @@ const TooltipMarker = ({ position, tooltipText }) => {
     ne.x += BOUNDS_BUFFER;
     ne.y -= BOUNDS_BUFFER;
 
-    // 그리고나서 다시 지도 좌표로 변환한 extBounds를 리턴합니다.
-    // extBounds는 기존의 bounds에서 상하좌우 30px만큼 확장된 영역 객체입니다.
     return new kakao.maps.LatLngBounds(proj.coordsFromPoint(sw), proj.coordsFromPoint(ne));
   };
 
   useEffect(() => {
-    kakao.maps.event.addListener(map, 'zoom_start', hideTracker);
-    kakao.maps.event.addListener(map, 'zoom_changed', tracking);
-    kakao.maps.event.addListener(map, 'center_changed', tracking);
+    setFocus(searchInput);
+    kakao.maps.event.addListener(map.current, 'zoom_start', hideTracker);
+    kakao.maps.event.addListener(map.current, 'zoom_changed', tracking);
+    kakao.maps.event.addListener(map.current, 'center_changed', tracking);
     tracking();
 
     return () => {
-      kakao.maps.event.removeListener(map, 'zoom_start', hideTracker);
-      kakao.maps.event.removeListener(map, 'zoom_changed', tracking);
-      kakao.maps.event.removeListener(map, 'center_changed', tracking);
-      setVisible(false);
+      kakao.maps.event.removeListener(map.current, 'zoom_start', hideTracker);
+      kakao.maps.event.removeListener(map.current, 'zoom_changed', tracking);
+      kakao.maps.event.removeListener(map.current, 'center_changed', tracking);
+      setIsTrackerVisible(false);
     };
-  }, [map, hideTracker, tracking]);
+  }, [map.current, hideTracker, tracking]);
 
   return (
     <>
@@ -289,16 +218,30 @@ const TooltipMarker = ({ position, tooltipText }) => {
         onRemove={onRemove}
         draw={draw}
       />
-      {visible
-        ? ReactDOM.createPortal(
-            <Tracker
-              position={tracerPosition}
-              angle={tracerAngle}
-            />,
-            // @ts-ignore
-            map.getNode(),
-          )
-        : ReactDOM.createPortal(<Marker tooltipText={tooltipText} />, node.current)}
+      {isTackerVisible ? (
+        ReactDOM.createPortal(
+          <Tracker
+            position={tracerPosition}
+            angle={tracerAngle}
+          />,
+          map.current.getNode(),
+        )
+      ) : (
+        // ReactDOM.createPortal(
+        //     <Marker tooltipText={tooltipText} />,
+        //     node.current,
+        //   )
+        <MapMarker
+          position={position}
+          onClick={() => {
+            if (!map.current) return;
+            map.current.setLevel(5, { animate: true });
+            map.current.panTo(new kakao.maps.LatLng(position.lat, position.lng));
+          }}
+          draggable={true}
+          onDragEnd={(map) => console.log(map.getPosition())}
+        />
+      )}
     </>
   );
 };

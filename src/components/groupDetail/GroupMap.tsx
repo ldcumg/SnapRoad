@@ -43,12 +43,10 @@ const GroupMap = () => {
     toast.error(searchTermInvalidate.message as string);
   }
 
-  const [tackerVisible, setTrackerVisible] = useState(false);
-
   const TooltipMarker = ({ position, tooltipText }) => {
     // Marker로 올려질 node 객체를 생성 합니다.
     const node = useRef(document.createElement('div'));
-    const [visible, setVisible] = useState(false);
+    const [isTackerVisible, setIsTrackerVisible] = useState(false);
     const [tracerPosition, setTracerPosition] = useState({
       x: 0,
       y: 0,
@@ -91,45 +89,26 @@ const GroupMap = () => {
 
     const CLIP_BUFFER = 40;
 
-    const Marker = ({ tooltipText }) => {
-      const [isOver, setIsOver] = useState(false);
-      return (
-        <div
-          className={`node`}
-          onMouseOver={() => {
-            setIsOver(true);
-          }}
-          onMouseOut={() => {
-            setIsOver(false);
-          }}
-        >
-          {isOver && <div className={`tooltip`}>{tooltipText}</div>}
-        </div>
-      );
-    };
-
     const Tracker = ({ position, angle }) => {
       return (
         <div
-          className={'tracker h-full w-full'}
+          className={'tracker'}
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
           }}
           onClick={() => {
             map.current.setCenter(positionLatlng);
-            setVisible(false);
+            setIsTrackerVisible(false);
           }}
         >
           <div
-            className={'balloon w-full h-full'}
+            className={'balloon'}
             style={{
               transform: `rotate(${angle}deg)`,
             }}
-          >
-            테스트
-          </div>
-          <div className={'icon h-full w-full'}>테스트2</div>
+          ></div>
+          <div className={'icon'}></div>
         </div>
       );
     };
@@ -209,14 +188,11 @@ const GroupMap = () => {
       // target이 확장된 영역에 속하는지 판단하고
       if (extBounds.contain(positionLatlng)) {
         // 속하면 tracker를 숨깁니다.
-        setVisible(false);
+        setIsTrackerVisible(false);
       } else {
         const pos = proj.containerPointFromCoords(positionLatlng);
-
         const center = proj.containerPointFromCoords(map.current.getCenter());
-
         const sw = proj.containerPointFromCoords(bounds.getSouthWest());
-
         const ne = proj.containerPointFromCoords(bounds.getNorthEast());
 
         const top = ne.y + CLIP_BUFFER;
@@ -232,12 +208,12 @@ const GroupMap = () => {
 
         setTracerAngle(angle);
 
-        setVisible(true);
+        setIsTrackerVisible(true);
       }
     }, [getClipPosition, map.current, positionLatlng]);
 
     const hideTracker = useCallback(() => {
-      setVisible(false);
+      setIsTrackerVisible(false);
     }, []);
 
     useEffect(() => {
@@ -270,7 +246,7 @@ const GroupMap = () => {
         kakao.maps.event.removeListener(map.current, 'zoom_start', hideTracker);
         kakao.maps.event.removeListener(map.current, 'zoom_changed', tracking);
         kakao.maps.event.removeListener(map.current, 'center_changed', tracking);
-        setVisible(false);
+        setIsTrackerVisible(false);
       };
     }, [map.current, hideTracker, tracking]);
 
@@ -281,7 +257,7 @@ const GroupMap = () => {
           onRemove={onRemove}
           draw={draw}
         />
-        {visible ? (
+        {isTackerVisible ? (
           ReactDOM.createPortal(
             <Tracker
               position={tracerPosition}
@@ -363,7 +339,7 @@ const GroupMap = () => {
       </form>
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[50vh]'
+        className='w-full h-[80vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={(kakaoMap) => (map.current = kakaoMap)}
