@@ -45,7 +45,7 @@ const GroupMap = () => {
 
   const [tackerVisible, setTrackerVisible] = useState(false);
 
-  const TooltipMarker = ({ position }) => {
+  const TooltipMarker = ({ position, tooltipText }) => {
     // Marker로 올려질 node 객체를 생성 합니다.
     const node = useRef(document.createElement('div'));
     const [visible, setVisible] = useState(false);
@@ -91,10 +91,27 @@ const GroupMap = () => {
 
     const CLIP_BUFFER = 40;
 
+    const Marker = ({ tooltipText }) => {
+      const [isOver, setIsOver] = useState(false);
+      return (
+        <div
+          className={`node`}
+          onMouseOver={() => {
+            setIsOver(true);
+          }}
+          onMouseOut={() => {
+            setIsOver(false);
+          }}
+        >
+          {isOver && <div className={`tooltip`}>{tooltipText}</div>}
+        </div>
+      );
+    };
+
     const Tracker = ({ position, angle }) => {
       return (
         <div
-          className={'tracker h-6 w-6'}
+          className={'tracker h-full w-full'}
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
@@ -105,12 +122,14 @@ const GroupMap = () => {
           }}
         >
           <div
-            className={'balloon w-6 h-6'}
+            className={'balloon w-full h-full'}
             style={{
               transform: `rotate(${angle}deg)`,
             }}
-          >테스트</div>
-          <div className={'icon'}>테스트2</div>
+          >
+            테스트
+          </div>
+          <div className={'icon h-full w-full'}>테스트2</div>
         </div>
       );
     };
@@ -255,9 +274,6 @@ const GroupMap = () => {
       };
     }, [map.current, hideTracker, tracking]);
 
-    console.log('visible', visible);
-    console.log('tracerPosition', tracerPosition);
-    // console.log("map.current.getNode()", map.current.getNode());
     return (
       <>
         <AbstractOverlay
@@ -274,6 +290,10 @@ const GroupMap = () => {
             map.current.getNode(),
           )
         ) : (
+          // ReactDOM.createPortal(
+          //     <Marker tooltipText={tooltipText} />,
+          //     node.current,
+          //   )
           <MapMarker
             position={position}
             onClick={() => {
@@ -343,7 +363,7 @@ const GroupMap = () => {
       </form>
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[80vh]'
+        className='w-full h-[50vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={(kakaoMap) => (map.current = kakaoMap)}
@@ -398,7 +418,10 @@ const GroupMap = () => {
           <>
             {!!selectMarker && (
               <>
-                <TooltipMarker position={selectMarker} />
+                <TooltipMarker
+                  position={selectMarker}
+                  tooltipText={'테스트'}
+                />
                 {/* <MapMarker
                   position={{ lat: selectMarker.lat, lng: selectMarker.lng }}
                   onClick={() => {
