@@ -108,6 +108,7 @@ const Profile = ({ userId }: { userId: string }) => {
             <input
               id='file'
               className='hidden'
+              accept='image/*'
               type='file'
               onChange={(e) => createPreviewImage(e.target.files?.[0]!)}
             />

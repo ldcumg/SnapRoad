@@ -1,4 +1,5 @@
 /** SSR */
+import Comments from '@/components/tourDetail/Comments';
 import OptionsMenu from '@/components/tourDetail/OptionsMenu';
 import TourImages from '@/components/tourDetail/TourImages';
 import { getSignedImgUrl } from '@/services/server-action/getSignedImgUrl';
@@ -28,7 +29,10 @@ const TourDetail = async ({
       `
     *,
     tags (*),
-    comment (*),
+     comment (
+      *,
+      profiles:user_id (*)
+    ),
     images (*)
   `,
     )
@@ -72,38 +76,39 @@ const TourDetail = async ({
   const coverImageDate = coverImage ? formatDate(coverImage.created_at) : '날짜 없음';
 
   return (
-    <div className='flex flex-col gap-1 p-5'>
-      <div className='flex justify-between'>
-        <div className='flex items-center gap-3'>
-          <div className='flex gap-1 items-center'>
-            <Image
-              src={'/svgs/state=Mappin.svg'}
-              alt='지도 마커'
-              width={15}
-              height={15}
-            />
-            <span>{data.post_address}</span>
+    <div className='flex flex-col gap-5 p-5'>
+      <div className='flex flex-col gap-1'>
+        <div className='flex justify-between'>
+          <div className='flex items-center gap-3'>
+            <div className='flex gap-1 items-center'>
+              <Image
+                src={'/svgs/state=Mappin.svg'}
+                alt='지도 마커'
+                width={15}
+                height={15}
+              />
+              <span>{data.post_address}</span>
+            </div>
+            <span className='text-sm'>{coverImageDate}</span>
           </div>
-          <span className='text-sm'>{coverImageDate}</span>
+          <OptionsMenu />
         </div>
-        <OptionsMenu />
+        <TourImages images={signedImageUrls} />
+        <p>{data.post_desc}</p>
+        <div className='flex gap-3'>
+          {data.tags.map((tag: { tag_title: string }, id: string) => {
+            return (
+              <span
+                className='bg-gray-300'
+                key={id}
+              >
+                #{tag.tag_title}
+              </span>
+            );
+          })}
+        </div>
       </div>
-      <TourImages images={signedImageUrls} />
-      <p>{data.post_desc}</p>
-      <div className='flex gap-3'>
-        {data.tags.map((tag: { tag_title: string }, id: string) => {
-          return (
-            <span
-              className='bg-gray-300'
-              key={id}
-            >
-              #{tag.tag_title}
-            </span>
-          );
-        })}
-      </div>
-
-      <div>댓글 영역</div>
+      <Comments comments={data.comment} />
     </div>
   );
 };
