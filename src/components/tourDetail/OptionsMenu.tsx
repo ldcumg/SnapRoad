@@ -11,7 +11,7 @@ const OptionsMenu = () => {
   };
 
   return (
-    <div className='relative'>
+    <div className='relative flex'>
       <button onClick={toggleMenu}>
         <Image
           src={'/svgs/Dots.svg'}

@@ -4,7 +4,7 @@
 
 /* HTML태그 등 전역적인 스타일 */
 @layer base {
-  /* :root {
+  :root {
     --background: #ffffff;
     --foreground: #171717;
   }
@@ -24,7 +24,7 @@
     color: var(--foreground);
     background: var(--background);
     @apply font-sans;
-  } */
+  }
 }
 
 /* 재사용하는 구조적인 스타일링 */

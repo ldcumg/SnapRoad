@@ -4,13 +4,11 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 type TourImagesProps = {
-  images: string[];
+  images: (string | undefined)[];
 };
 
 const TourImages = ({ images }: TourImagesProps) => {
-  // 현재 선택한 사진의 인덱스를 확인하는 상태변수
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [touchX, setTouchX] = useState(0);
   const [touchY, setTouchY] = useState(0);
 
@@ -47,52 +45,40 @@ const TourImages = ({ images }: TourImagesProps) => {
     }
   };
 
-  // useEffect 훅을 사용하여 currentIndex가 변경될 때만 실행되도록 설정
   useEffect(() => {
     if (moveCarousel.current) {
-      // moveCarousel.current.style.transform = `translateX(-${currentIndex * 412}px)`;
       moveCarousel.current.style.transition = 'transform 0.5s ease';
-
       moveCarousel.current.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
-  }, [currentIndex]); // currentIndex가 변경될 때마다 실행
+  }, [currentIndex]);
 
   return (
     <>
       <div
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className='flex w-[412px] h-[300px] justify-start items-center overflow-hidden'
+        className='flex w-full h-[300px] justify-start items-center overflow-hidden'
       >
         <div
           ref={moveCarousel}
           className='flex w-full	h-full'
         >
-          {images.map((image) => (
-            <Image
-              key={image}
-              src={image}
-              alt={image}
-              width={412}
-              height={300}
-            />
-          ))}
-          {/* <div
-            style={{ backgroundColor: 'black', width: '412px', height: '300px' }}
-            className='flex-shrink-0'
-          />
-          <div
-            style={{ backgroundColor: 'red', width: '412px', height: '300px' }}
-            className='flex-shrink-0'
-          />
-          <div
-            style={{ backgroundColor: 'orange', width: '412px', height: '300px' }}
-            className='flex-shrink-0'
-          />
-          <div
-            style={{ backgroundColor: 'blue', width: '412px', height: '300px' }}
-            className='flex-shrink-0'
-          /> */}
+          {images.map((image) =>
+            image ? (
+              <div
+                key={image}
+                className='flex-shrink-0 flex-[0_0_100%] relative h-full'
+              >
+                <Image
+                  key={image}
+                  src={image}
+                  alt={image}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+            ) : null,
+          )}
         </div>
       </div>
       {/* <div className='flex justify-around'>

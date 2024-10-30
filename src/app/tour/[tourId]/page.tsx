@@ -14,19 +14,19 @@ const TourDetail = async ({
     tourId: string;
   };
 }) => {
-  // TODO 테스트
+  // TODO 테스트용
   const tourId = 'af1ce7b5-fbe8-4e3a-835b-5ad5e07a69dc';
 
   console.log('TourDetail rendering . . . 이것은 SSR');
   const supabase = createClient();
 
+  // TODO 파일 분리
   /** posts 정보 조회 */
   const { data, error } = await supabase
     .from('posts')
     .select(
       `
     *,
-    group:group_id (group_title),
     tags (*),
     comment (*),
     images (*)
@@ -35,22 +35,12 @@ const TourDetail = async ({
     .eq('post_id', tourId)
     .single();
 
-  console.log('data :>> ', data);
+  if (error) console.error('error :>> ', error);
 
-  if (error) {
-    console.log('error :>> ', error);
-  }
+  if (!data) return <p>데이터 없음</p>;
 
-  if (!data) {
-    return <p>데이터 없음</p>;
-  }
+  const imageNames = data.images.map((img: { post_image_name: string }) => img.post_image_name);
 
-  /** post 정보를 통한 이미지 조회 */
-  // 이미지 이름을 배열로 추출
-  const imageNames = data.images.map((img) => img.post_image_name);
-  console.log('imageNames :>> ', imageNames);
-
-  /** 함수 */
   const getSignedImgUrls = async (bucketName: string, expiration: number, folderName: string, imageNames: string[]) => {
     const signedUrls = await Promise.all(
       imageNames.map(async (imageName) => {
@@ -63,11 +53,10 @@ const TourDetail = async ({
     return signedUrls;
   };
 
-  const signedImageUrls = await getSignedImgUrls('tour_images', 86400, data.group.group_title, imageNames);
+  const signedImageUrls = await getSignedImgUrls('tour_images', 86400, data.group_id, imageNames);
 
-  console.log('signedImageUrls :>> ', signedImageUrls);
-  // 날짜 포맷 변환 함수
-  const formatDate = (dateString) => {
+  // TODO utils 로
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('ko-KR', {
       year: 'numeric',
@@ -79,27 +68,30 @@ const TourDetail = async ({
     }).format(date);
   };
 
-  // is_cover가 true인 이미지의 created_at 가져오기
-  const coverImage = data.images.find((image) => image.is_cover);
+  const coverImage = data.images.find((image: { is_cover: boolean }) => image.is_cover);
   const coverImageDate = coverImage ? formatDate(coverImage.created_at) : '날짜 없음';
 
   return (
-    <div className='flex flex-col gap-2'>
-      <div className='flex gap-3 items-center'>
-        <Image
-          src={'/svgs/state=Mappin.svg'}
-          alt='지도 마커'
-          width={20}
-          height={20}
-        />
-        <span>{data.post_address}</span>
-        <span className='text-sm'>{coverImageDate}</span>
+    <div className='flex flex-col gap-1 p-5'>
+      <div className='flex justify-between'>
+        <div className='flex items-center gap-3'>
+          <div className='flex gap-1 items-center'>
+            <Image
+              src={'/svgs/state=Mappin.svg'}
+              alt='지도 마커'
+              width={15}
+              height={15}
+            />
+            <span>{data.post_address}</span>
+          </div>
+          <span className='text-sm'>{coverImageDate}</span>
+        </div>
         <OptionsMenu />
       </div>
       <TourImages images={signedImageUrls} />
       <p>{data.post_desc}</p>
       <div className='flex gap-3'>
-        {data.tags.map((tag, id) => {
+        {data.tags.map((tag: { tag_title: string }, id: string) => {
           return (
             <span
               className='bg-gray-300'
