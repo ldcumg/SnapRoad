@@ -3,10 +3,7 @@ import Header from '@/components/layout/Header';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Script from 'next/script';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Next.js Project',
@@ -24,7 +21,7 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
-      <body className={`${inter.className}`}>
+      <body className={`font-sans`}>
         <QueryProvider>
           <Header />
           <main className='w-full h-full'>{children}</main>

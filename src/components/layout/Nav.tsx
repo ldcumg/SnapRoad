@@ -48,7 +48,7 @@ const Nav = () => {
   } = useQuery({
     queryKey: ['userGroup', session?.user?.id],
     queryFn: () => fetchUserGroup(session?.user?.id || ''),
-    enabled: !!session, // 세션이 있어야 쿼리가 실행됨
+    enabled: !!session,
   });
 
   // 로그인
@@ -57,12 +57,12 @@ const Nav = () => {
       return await browserClient.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: window.origin + '/auth/callback',
+          redirectTo: window.origin + '/api/auth/callback',
         },
       });
     },
     onSuccess: () => {
-      refetch(); // 로그인 후 세션을 다시 가져옴
+      refetch();
     },
     onError: () => {
       console.error('로그인 에러');
@@ -82,15 +82,6 @@ const Nav = () => {
     },
   });
 
-  const goToGroup = () => {
-    if (groupId) {
-      router.push(`/group/${groupId}`);
-    } else {
-      alert('그룹 정보를 찾을 수 없습니다.');
-    }
-  };
-
-  // 세션이나 그룹 관련 에러가 발생하면 처리
   if (sessionError) console.error('세션 가져오기 실패:', sessionError);
   if (groupError) console.error('그룹 정보 가져오기 실패:', groupError);
   if (sessionLoading || groupLoading) return <div>로딩 중...</div>;
@@ -99,13 +90,13 @@ const Nav = () => {
     <nav>
       <ul className='flex flex-row gap-2'>
         <li>
-          <Link href={`/tour`}>이미지업로드</Link>
+          <Link href={`/`}>메인</Link>
+        </li>
+        <li>
+          <Link href={`/post`}>포스트 쓰기</Link>
         </li>
         {!session ? (
           <>
-            <li>
-              <button onClick={() => loginMutation.mutate()}>login</button>
-            </li>
             <li>
               <Link href={`/login`}>로그인</Link>
             </li>
@@ -116,12 +107,10 @@ const Nav = () => {
         ) : (
           <div className='flex gap-3'>
             <li>
-              <button
-                onClick={goToGroup}
-                disabled={!groupId}
-              >
-                내 그룹으로 이동
-              </button>
+              <Link href={'/grouplist'}>그룹 리스트</Link>
+            </li>
+            <li>
+              <Link href={'/makegroup'}>그룹 만들기</Link>
             </li>
             <li>
               <Link href={`/mypage`}>마이페이지</Link>
