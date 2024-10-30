@@ -7,6 +7,13 @@ export type GroupObjType = {
   created_at: Date;
 };
 
+export type UpdateGroupObjType = {
+  group_id: string;
+  updated_at: Date;
+  group_title?: string;
+  group_desc?: string;
+};
+
 export type UserGroupType = {
   user_id: string;
   group_id: string;

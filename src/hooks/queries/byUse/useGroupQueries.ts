@@ -5,6 +5,13 @@ import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
+const useGroupDetailQueryForUpdate = (group_id?: string) => {
+  return useQuery({
+    queryKey: ['groupDetail', group_id],
+    queryFn: () => (group_id ? getGroupDetails(group_id) : null),
+  });
+};
+
 const useGroupDetailQuery = (group_id: string) => {
   return useQuery({
     queryKey: ['groupDetail', group_id],
@@ -67,4 +74,4 @@ const useGroupRandomImageQuery = () => {
   });
 };
 
-export { useGroupDetailQuery, useGroupListInfiniteQuery, useGroupRandomImageQuery };
+export { useGroupDetailQueryForUpdate, useGroupDetailQuery, useGroupListInfiniteQuery, useGroupRandomImageQuery };
