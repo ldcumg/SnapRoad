@@ -7,7 +7,7 @@ export const signInWithKakao = async () => {
   await supabase.auth.signInWithOAuth({
     provider: 'kakao',
     options: {
-      redirectTo: window.origin + '/auth/callback',
+      redirectTo: window.origin + '/api/auth/callback',
     },
   });
 };
@@ -19,7 +19,7 @@ export const signInWithGoogle = async () => {
   await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.origin + '/auth/callback',
+      redirectTo: window.origin + '/api/auth/callback',
     },
   });
 };
@@ -31,7 +31,7 @@ export const signInWithGithub = async () => {
   return await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
-      redirectTo: window.origin + '/auth/callback',
+      redirectTo: window.origin + '/api/auth/callback',
     },
   });
 };
