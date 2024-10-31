@@ -5,43 +5,23 @@ import { useEffect, useState } from 'react';
 
 type ImageData = {
   post_image_name: string;
-  post_lat: number; // 위도
-  post_lng: number; // 경도
-  upload_session_id: string; // 업로드 세션 ID
+  post_lat: number;
+  post_lng: number;
+  upload_session_id: string;
 };
 
 type PostFormProps = {
   groupId: string;
   userId: string;
-  ImageData: ImageData[];
+  imagesData: ImageData[];
 };
 
-const PostForm = ({ groupId, userId }: PostFormProps) => {
+const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imagesData, setImagesData] = useState<ImageData[]>([]); // 이미지 데이터를 저장할 상태
-
-  // Supabase에서 이미지를 가져오는 useEffect
-  useEffect(() => {
-    const fetchImages = async () => {
-      const { data, error } = await browserClient
-        .from('images')
-        .select('post_image_name, post_lat, post_lng, upload_session_id') // 필요한 필드 선택
-        .eq('user_id', userId); // userId로 필터링
-
-      if (error) {
-        console.error('이미지 데이터 가져오기 오류:', error.message);
-      } else {
-        console.log('가져온 이미지 데이터:', data); // 콘솔로 데이터 확인
-        setImagesData(data || []); // 가져온 데이터 저장
-      }
-    };
-
-    fetchImages();
-  }, [userId]);
 
   return (
     <div className='PostForm'>
@@ -87,9 +67,7 @@ const PostForm = ({ groupId, userId }: PostFormProps) => {
                 alt={image.post_image_name}
                 className='w-32 h-32 object-cover'
               />
-              <p>
-                위도: {image.latitude}, 경도: {image.longitude}
-              </p>
+              <p>{/* 위도: {image.post_lat}, 경도: {image.post_lng} */}</p>
             </li>
           ))}
         </ul>

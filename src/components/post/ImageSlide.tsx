@@ -17,6 +17,8 @@ interface ImageData {
   isCover?: boolean;
   userId?: string;
   createdAt: string;
+  uploadSessionId: string;
+  postImageName?: string;
 }
 
 interface ImageListProps {
@@ -43,7 +45,7 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
         onSuccess: (uploadedImages) => {
           const newImages = uploadedImages.filter((newImage) => !images.some((img) => img.id === newImage.id));
           addImages(newImages);
-
+          console.log('업로드된 이미지:', newImages);
           // 새로 업로드한 이미지 중 첫 번째 이미지를 대표 이미지로 설정
           if (newImages.length > 0) {
             handleSetCover(newImages[0].id);
