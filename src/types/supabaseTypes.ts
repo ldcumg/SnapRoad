@@ -200,43 +200,49 @@ export type Database = {
       posts: {
         Row: {
           created_at: string
-          created_test: string
           deleted_at: string | null
           group_id: string | null
+          Image_array: string
           post_address: string | null
+          post_date: string
           post_desc: string | null
           post_id: string
           post_lat: string | null
           post_lng: string | null
           post_thumbnail_image: string | null
+          post_time: string
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
-          created_test?: string
           deleted_at?: string | null
           group_id?: string | null
+          Image_array?: string
           post_address?: string | null
+          post_date?: string
           post_desc?: string | null
           post_id?: string
           post_lat?: string | null
           post_lng?: string | null
           post_thumbnail_image?: string | null
+          post_time?: string
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
-          created_test?: string
           deleted_at?: string | null
           group_id?: string | null
+          Image_array?: string
           post_address?: string | null
+          post_date?: string
           post_desc?: string | null
           post_id?: string
           post_lat?: string | null
           post_lng?: string | null
           post_thumbnail_image?: string | null
+          post_time?: string
           updated_at?: string | null
           user_id?: string | null
         }

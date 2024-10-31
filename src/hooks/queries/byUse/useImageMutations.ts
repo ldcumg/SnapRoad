@@ -33,6 +33,7 @@ export const useImageMutations = (userId: string | undefined, currentDate: strin
   const queryClient = useQueryClient();
   const bucketName = 'tour_images';
   const folderName = 'group_name';
+
   // 이미지 업로드 Mutation
   const uploadImageMutation = useMutation({
     mutationFn: async ({ files, exifDataArray }: UploadImageVariables) => {
@@ -77,6 +78,7 @@ export const useImageMutations = (userId: string | undefined, currentDate: strin
       console.error(`이미지 업로드 중 오류가 발생했습니다: ${error.message}`);
     },
   });
+
   // 대표 이미지 설정 Mutation
   const setCoverImageMutation = useMutation({
     mutationFn: async ({ id, createdAt }: { id: number; createdAt: string }) => setCoverImage(id),
@@ -87,6 +89,7 @@ export const useImageMutations = (userId: string | undefined, currentDate: strin
       console.error(`대표 이미지 설정 중 오류가 발생했습니다: ${error.message}`);
     },
   });
+
   // 이미지 삭제 Mutation
   const deleteImageMutation = useMutation({
     mutationFn: async ({ id, filename }: { id: number; filename: string }) => {

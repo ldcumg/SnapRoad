@@ -2,12 +2,12 @@
 
 import { UploadedImageData } from './type';
 import { fetchSignedUrl } from '@/services/client-action/imageActions';
+import browserClient from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 
 type PostFormProps = {
   groupId: string;
   userId: string;
-  // path: string;
   imagesData: UploadedImageData[];
 };
 
@@ -18,6 +18,7 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
   const [time, setTime] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
+  // 이미지 URL 생성
   useEffect(() => {
     const fetchImageUrls = async () => {
       const urls = await Promise.all(
@@ -32,14 +33,91 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
     fetchImageUrls();
   }, [imagesData, groupId]);
 
-  useEffect(() => {
-    console.log('업로드된 이미지 데이터:', imagesData);
-  }, [imagesData]);
+  // 폼 제출 핸들러
+  const submitPost = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 대표 이미지 설정 및 위치 정보
+    const coverImage = imagesData.find((image) => image.isCover);
+    const locationImage = imagesData.find((image) => image.latitude && image.longitude);
+    const postLat = locationImage?.latitude || null;
+    const postLng = locationImage?.longitude || null;
+    const imageArray = imagesData.map((image) => image.filename);
+
+    // 제출 데이터 준비
+    const postData = {
+      user_id: userId,
+      group_id: groupId,
+      post_desc: description,
+      post_date: date,
+      post_time: time,
+      post_lat: postLat,
+      post_lng: postLng,
+      post_thumbnail_image: coverImage?.filename || null,
+      image_array: imageArray,
+    };
+
+    try {
+      // posts 테이블에 포스트 데이터 삽입 및 post_id 반환
+      const { data: post, error: postError } = await browserClient
+        .from('posts')
+        .insert(postData)
+        .select('post_id')
+        .single();
+
+      if (postError || !post) {
+        console.error('포스트 제출에 실패했습니다:', postError?.message);
+        return;
+      }
+
+      console.log('포스트가 성공적으로 제출되었습니다. post_id:', post);
+
+      // 생성된 post_id
+      const postId = post.post_id;
+
+      // images 테이블에 모든 이미지의 post_id 업데이트
+      const { error: imageError } = await browserClient
+        .from('images')
+        .update({ post_id: postId })
+        .eq('upload_session_id', imagesData[0].uploadSessionId); // 업로드 세션 ID를 사용하여 특정 이미지 그룹만 업데이트
+
+      if (imageError) {
+        console.error('이미지에 post_id 업데이트에 실패했습니다:', imageError.message);
+      } else {
+        console.log('이미지의 post_id가 성공적으로 업데이트되었습니다.');
+      }
+
+      // 해시태그 데이터를 tags 테이블에 저장
+      const tags = hashtag
+        .split(' ')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag); // 공백으로 구분하여 해시태그 배열 생성
+      const tagData = tags.map((tag) => ({
+        tag_title: tag,
+        post_id: post.post_id, // posts 테이블에서 반환된 post_id 사용
+        group_id: groupId, // 그룹 ID는 기존 값 사용
+      }));
+
+      if (tagData.length > 0) {
+        const { error: tagError } = await browserClient.from('tags').insert(tagData);
+        if (tagError) {
+          console.error('태그 저장에 실패했습니다:', tagError.message);
+        } else {
+          console.log('태그가 성공적으로 저장되었습니다.');
+        }
+      }
+    } catch (error) {
+      console.error('포스트 제출 중 오류 발생:', error);
+    }
+  };
 
   return (
     <div className='PostForm'>
       <h1>그룹 {groupId} 포스트 작성</h1>
-      <form className='w-full border border-black flex flex-col'>
+      <form
+        className='w-full border border-black flex flex-col'
+        onSubmit={submitPost}
+      >
         <label htmlFor='description'>대표</label>
         <textarea
           id='description'
@@ -51,6 +129,16 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
         />
         <span>{description.length} / 1000</span>
 
+        <label htmlFor='hashtag'>해시태그</label>
+        <input
+          type='text'
+          id='hashtag'
+          value={hashtag}
+          onChange={(e) => setHashtag(e.target.value)}
+          placeholder='예: 여행 친구랑'
+          className='hashtag-input'
+        />
+
         <label htmlFor='date'>날짜</label>
         <input
           type='date'
@@ -58,15 +146,6 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className='date-input'
-        />
-
-        <label htmlFor='hashtag'>해시태그</label>
-        <input
-          type='text'
-          id='hashtag'
-          value={hashtag}
-          onChange={(e) => setHashtag(e.target.value)}
-          className='hashtag-input'
         />
 
         <label htmlFor='time'>시간</label>
@@ -77,6 +156,13 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
           onChange={(e) => setTime(e.target.value)}
           className='time-input'
         />
+
+        <button
+          type='submit'
+          className='submit-button'
+        >
+          포스트 제출
+        </button>
       </form>
     </div>
   );
