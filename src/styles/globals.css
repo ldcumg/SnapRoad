@@ -131,7 +131,7 @@
   body {
     color: var(--foreground);
     background: var(--background);
-    @apply text-foreground bg-background font-sans;
+    @apply bg-background font-sans text-foreground;
   }
 }
 
@@ -186,5 +186,21 @@
     height: 60px;
     background-image: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/balloon.png);
     transform-origin: 50% 34px;
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

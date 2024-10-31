@@ -4,10 +4,10 @@ import RandomImage from '@/components/groupList/RandomImage';
 
 const GroupListPage = async () => {
   return (
-    <div className='px-[16px] flex flex-col justify-center items-center'>
+    <div className='px-[16px] flex flex-col justify-center items-center gap-[21px] mt-[24px]'>
       <RandomImage />
-      <GroupList />
       <GroupAddButton />
+      <GroupList />
     </div>
   );
 };
