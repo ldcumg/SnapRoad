@@ -56,6 +56,20 @@ export const fetchDeleteComment = async (commentId: string) => {
 
   console.log('error :>> ', error);
   if (error) throw new Error(error.message);
+  return { message: '댓글 삭제 성공', data };
 };
 
 /** 댓글 수정 */
+export const fetchUpdateComment = async (commentId: string, commentDesc: string) => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('comment')
+    .update({ comment_desc: commentDesc })
+    .eq('comment_id', commentId)
+    .select();
+
+  console.log('error :>> ', error);
+  if (error) throw new Error(error.message);
+  return { message: '댓글 수정 성공', data };
+};
