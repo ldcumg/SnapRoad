@@ -12,20 +12,22 @@ export const Buttomsheet = () => {
   const handleFullClose = () => setIsFullHeightOpen(false);
 
   return (
-    <div className='p-4 space-y-4'>
-      {/* 반 높이 바텀시트 열기 버튼 */}
-      <Button
-        onClick={handleHalfOpen}
-        className='p-2 bg-blue-500 text-white rounded'
-        label='반 높이 바텀시트 열기 (뒤로가기 포함)'
-      ></Button>
+    <div className='p-4'>
+      <div className='flex gap-4 p-4'>
+        {/* 반 높이 바텀시트 열기 버튼 */}
+        <Button
+          variant='primary'
+          onClick={handleHalfOpen}
+          label='반 높이 바텀시트 열기 (뒤로가기 포함)'
+        />
 
-      {/* 전체 높이 바텀시트 열기 버튼 */}
-      <Button
-        onClick={handleFullOpen}
-        className='p-2 bg-green-500 text-white rounded'
-        label='전체 높이 바텀시트 열기'
-      ></Button>
+        {/* 전체 높이 바텀시트 열기 버튼 */}
+        <Button
+          onClick={handleFullOpen}
+          variant='secondary'
+          label='전체 높이 바텀시트 열기'
+        />
+      </div>
 
       {/* 반 높이 바텀시트 (뒤로가기 버튼 포함) */}
       <BottomSheet
