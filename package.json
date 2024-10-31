@@ -9,7 +9,7 @@
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "gen": "supabase gen types typescript --project-id seftmlefjwyijhjjjzpt > database.types.ts"
+    "gen": "supabase gen types typescript --project-id seftmlefjwyijhjjjzpt > src/types/supabaseTypes.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

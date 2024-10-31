@@ -148,7 +148,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
         className='w-full h-[80vh]'
-        // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
+        // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
         level={13}
