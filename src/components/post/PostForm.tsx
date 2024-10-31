@@ -1,33 +1,19 @@
-import { Button } from '@/stories/Button';
 import { useState } from 'react';
 
-const PostForm = () => {
-  const groupId = '2fef6a47-a295-40e5-abca-1a40354f91ca';
+type PostFormProps = {
+  groupId: string;
+};
+
+const PostForm = ({ groupId }: PostFormProps) => {
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-  };
-
-  const handleHashtagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHashtag(e.target.value);
-  };
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
-  };
-
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('제출된 내용:', { description, hashtag, date, time });
+    console.log('제출된 내용:', { groupId, description, hashtag, date, time });
   };
 
   return (
@@ -41,7 +27,7 @@ const PostForm = () => {
         <textarea
           id='description'
           value={description}
-          onChange={handleDescriptionChange}
+          onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
           placeholder='이행을 떠나고 싶은 마음으로.'
           className='description-textarea'
@@ -53,7 +39,7 @@ const PostForm = () => {
           type='text'
           id='hashtag'
           value={hashtag}
-          onChange={handleHashtagChange}
+          onChange={(e) => setHashtag(e.target.value)}
           className='hashtag-input'
         />
 
@@ -62,7 +48,7 @@ const PostForm = () => {
           type='date'
           id='date'
           value={date}
-          onChange={handleDateChange}
+          onChange={(e) => setDate(e.target.value)}
           className='date-input'
         />
 
@@ -71,15 +57,16 @@ const PostForm = () => {
           type='time'
           id='time'
           value={time}
-          onChange={handleTimeChange}
+          onChange={(e) => setTime(e.target.value)}
           className='time-input'
         />
 
         <button
           type='submit'
           className='submit-button'
+          disabled={loading}
         >
-          수정 완료
+          {loading ? '저장 중...' : '작성 완료'}
         </button>
       </form>
     </div>

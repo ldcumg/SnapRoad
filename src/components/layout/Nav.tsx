@@ -93,7 +93,7 @@ const Nav = () => {
           <Link href={`/`}>메인</Link>
         </li>
         <li>
-          <Link href={`/post`}>포스트 쓰기</Link>
+          <Link href={`/group/a6706b3b-6a01-4ffc-ac68-49d8872dbd5d/post`}>포스트 쓰기</Link>
         </li>
         {!session ? (
           <>

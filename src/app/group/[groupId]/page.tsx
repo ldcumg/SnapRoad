@@ -10,16 +10,11 @@ import { useKakaoLoader } from 'react-kakao-maps-sdk';
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
 type Props = Readonly<{
-  // params: { groupId: string };
-  // searchParams: { 위치명:string, lat:string,lng:string }
+  params: { groupId: string };
+  searchParams: { 위치명: string; lat: string; lng: string };
 }>;
 
-const GroupPage = (
-  {
-    // params: { groupId },
-    // searchParams: {위치명, lat,lng }
-  }: Props,
-) => {
+const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } }: Props) => {
   const [isMap, setIsMap] = useState<boolean>(true);
 
   // const [loading, error] = useKakaoLoader({
@@ -39,7 +34,13 @@ const GroupPage = (
         <h4>그룹명</h4>
         <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
+
       {isMap ? <GroupMap /> : <GroupAlbum />}
+      <div>
+        <Link href={`/group/${groupId}/post`}>
+          <button>포스트 작성</button>
+        </Link>
+      </div>
     </>
   );
 };
