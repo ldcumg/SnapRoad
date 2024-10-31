@@ -18,13 +18,17 @@ const PostPage = ({ params: { groupId } }: Props) => {
 
   const userId = user.id;
   const uploadSessionId = uuidv4();
+
   return (
     <div className='w-full'>
       <ImageSlide
         userId={userId}
         uploadSessionId={uploadSessionId}
       />
-      <PostForm groupId={groupId} />
+      <PostForm
+        userId={userId}
+        groupId={groupId}
+      />
     </div>
   );
 };

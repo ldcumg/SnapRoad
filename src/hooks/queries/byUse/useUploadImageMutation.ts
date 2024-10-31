@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function useUploadImage(bucketName: string, folderName: string, userId: string) {
   const queryClient = useQueryClient();
-  const { addImages, setImages } = useImageUploadStore();
+  const { setImages } = useImageUploadStore();
   const currentDate = new Date().toISOString();
   const uploadSessionId = uuidv4();
 
@@ -63,7 +63,6 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
         }),
       );
 
-      // addImages(uploadedImages);
       setImages(uploadedImages);
       return uploadedImages;
     },

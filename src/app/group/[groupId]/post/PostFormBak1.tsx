@@ -5,15 +5,13 @@ import { useEffect, useState } from 'react';
 
 type ImageData = {
   post_image_name: string;
-  post_lat: number; // 위도
-  post_lng: number; // 경도
-  upload_session_id: string; // 업로드 세션 ID
+  latitude: number;
+  longitude: number;
 };
 
 type PostFormProps = {
   groupId: string;
   userId: string;
-  ImageData: ImageData[];
 };
 
 const PostForm = ({ groupId, userId }: PostFormProps) => {
@@ -29,13 +27,12 @@ const PostForm = ({ groupId, userId }: PostFormProps) => {
     const fetchImages = async () => {
       const { data, error } = await browserClient
         .from('images')
-        .select('post_image_name, post_lat, post_lng, upload_session_id') // 필요한 필드 선택
+        .select('post_image_name, latitude, longitude')
         .eq('user_id', userId); // userId로 필터링
 
       if (error) {
         console.error('이미지 데이터 가져오기 오류:', error.message);
       } else {
-        console.log('가져온 이미지 데이터:', data); // 콘솔로 데이터 확인
         setImagesData(data || []); // 가져온 데이터 저장
       }
     };
@@ -43,10 +40,47 @@ const PostForm = ({ groupId, userId }: PostFormProps) => {
     fetchImages();
   }, [userId]);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // 포스트 데이터에 imagesData 포함하여 저장
+    const postData = {
+      group_id: groupId,
+      user_id: userId,
+      post_desc: description,
+      hashtag,
+      created_at: new Date(`${date}T${time}`),
+      // 이미지를 배열로 변환하여 저장
+      images: imagesData.map((image) => ({
+        post_image_name: image.post_image_name,
+        latitude: image.latitude,
+        longitude: image.longitude,
+      })),
+    };
+
+    try {
+      const { data, error } = await browserClient.from('posts').insert([postData]);
+
+      if (error) {
+        console.error('포스트 등록 오류:', error.message);
+      } else {
+        console.log('포스트가 성공적으로 등록되었습니다:', data);
+      }
+    } catch (error) {
+      console.error('에러 발생:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className='PostForm'>
       <h1>그룹 {groupId} 포스트 작성</h1>
-      <form className='w-full border border-black flex flex-col'>
+      <form
+        onSubmit={handleSubmit}
+        className='w-full border border-black flex flex-col'
+      >
         <label htmlFor='description'>대표</label>
         <textarea
           id='description'
@@ -75,13 +109,21 @@ const PostForm = ({ groupId, userId }: PostFormProps) => {
           onChange={(e) => setTime(e.target.value)}
           className='time-input'
         />
+
+        <button
+          type='submit'
+          className='submit-button'
+          disabled={loading}
+        >
+          {loading ? '저장 중...' : '작성 완료'}
+        </button>
       </form>
 
       <div className='mt-4'>
         <h2>업로드된 이미지</h2>
         <ul>
           {imagesData.map((image) => (
-            <li key={`${image.post_image_name}-${image.upload_session_id}`}>
+            <li key={image.post_image_name}>
               <img
                 src={image.post_image_name}
                 alt={image.post_image_name}
