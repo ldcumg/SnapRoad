@@ -16,13 +16,13 @@ const CommentForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('newComment :>> ', newComment);
     fetchPostComment({
       postId: newComment.postId,
       userId: newComment.userId,
       parentId: newComment.parentId,
       commentDesc: comment,
     });
+    setComment('');
   };
 
   return (

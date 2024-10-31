@@ -30,8 +30,7 @@ const Comments = ({ postId, userId }: CommentsProps) => {
   /** 댓글 조회 */
   const { data: comments, isLoading, isError } = useCommentsQuery(postId);
 
-  console.log('CommentsCommentsComments data :>> ', comments);
-
+  if (isError) return <>임시 오류,,</>;
   if (isLoading) return <>로딩중...</>;
 
   return (
@@ -46,7 +45,9 @@ const Comments = ({ postId, userId }: CommentsProps) => {
                 className='border-b'
               >
                 <Comment
-                  nickname={parentComment.profiles?.user_nickname!}
+                  commentId={parentComment.comment_id}
+                  userId={userId} // 이 페이지를 조회하는 사람
+                  author={parentComment.profiles} // 글 쓴 사람
                   commentDesc={parentComment.comment_desc}
                 />
                 <CommentForm
@@ -66,7 +67,9 @@ const Comments = ({ postId, userId }: CommentsProps) => {
                           key={childComment.comment_id}
                         >
                           <Comment
-                            nickname={parentComment.profiles?.user_nickname!}
+                            commentId={childComment.comment_id}
+                            userId={userId} // 이 페이지를 조회하는 사람
+                            author={childComment.profiles} // 글 쓴 사람
                             commentDesc={childComment.comment_desc}
                           />
                         </li>
