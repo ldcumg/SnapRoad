@@ -37,49 +37,38 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
   };
 
   return (
-    <div
-      className={`${
-        isBottomSheetOpen ? 'flex' : 'hidden'
-      } fixed z-10 top-0 left-0 w-full h-full justify-center items-center bg-[#c5c5c5] bg-opacity-30`}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white pt-[16px] gap-[20px] rounded-t-[20px] w-[343px]`}
     >
-      {/* NOTE - 바텀시트 배경 */}
-      <div
-        className='absolute top-0 left-0 z-20 w-full h-full'
-        onClick={handleBottomSheetOpen}
-      ></div>
-
-      {/* NOTE - 바텀시트 본문 */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 fixed bottom-0 bg-white py-[50px] gap-[20px] rounded-t-[20px]`}
-      >
-        {/* NOTE - 바텀시트 본문 - 닫기 버튼 */}
-        <div className='flex justify-end items-center w-full px-[20px]'>
-          <button
-            className='w-[15px] h-[15px]'
-            onClick={handleBottomSheetOpen}
-          >
-            <img
-              src='/assets/modalCloseButton.png'
-              alt='X'
-            />
-          </button>
-        </div>
-        {/* NOTE - 바텀시트 본문 - 입력 메인 */}
-        <h3>초대코드 입력하기</h3>
-        <input
-          type='text'
-          {...register('inviteCode')}
-        />
-        {formState.errors.inviteCode && <p>{formState.errors.inviteCode.message}</p>}
+      {/* NOTE - 바텀시트 본문 - 닫기 버튼 */}
+      <div className='flex justify-end items-center px-[20px] w-full'>
         <button
-          type='submit'
-          className='border border-solid border-black p-[10px] w-screen z-10'
+          className='w-[15px] h-[15px]'
+          onClick={handleBottomSheetOpen}
         >
-          그룹 추가하기
+          <img
+            src='/svgs/Close.svg'
+            alt='X'
+          />
         </button>
-      </form>
-    </div>
+      </div>
+      {/* NOTE - 바텀시트 본문 - 입력 메인 */}
+      <h3>초대코드 입력하기</h3>
+      <input
+        type='text'
+        className='bg-[#E9E9E9] py-[8.5px] pl-[20px] pr-[10px]'
+        placeholder='코드를 입력해주세요'
+        {...register('inviteCode')}
+      />
+      {formState.errors.inviteCode && <p className='text-[12px] text-red-600'>{formState.errors.inviteCode.message}</p>}
+      <button
+        type='submit'
+        className='w-full bg-black text-white p-[10px] z-10'
+      >
+        + 그룹 추가하기
+      </button>
+    </form>
   );
 };
 
