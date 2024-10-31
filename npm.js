@@ -6,3 +6,5 @@
 // pnpm add supabase@">=1.8.1" --save-dev
 // pnpm add supabase login
 // pnpm gen <-- 타입 적용 방법
+
+// pnpm install
