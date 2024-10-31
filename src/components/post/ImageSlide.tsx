@@ -2,37 +2,43 @@ import SortableImage from './SortableImage';
 import { useDeleteImage } from '@/hooks/queries/byUse/useDeleteImageMutation';
 import { useSetCoverImage } from '@/hooks/queries/byUse/useSetCoverImageMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/useUploadImageMutation';
+import { fetchSignedUrl } from '@/services/client-action/imageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { useState } from 'react';
-
-interface ImageData {
-  id: number;
-  blobUrl: string;
-  filename: string;
-  latitude?: string;
-  longitude?: string;
-  dateTaken?: string;
-  isCover?: boolean;
-  userId?: string;
-  createdAt: string;
-  uploadSessionId: string;
-  postImageName?: string;
-}
+import { useEffect, useState } from 'react';
 
 interface ImageListProps {
   userId: string;
+  groupId: string;
   uploadSessionId: string;
 }
 
-const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
+const ImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) => {
   const { images, addImages, deleteImage, setImages } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-  const uploadMutation = useUploadImage('tour_images', 'group_name', userId);
-  const deleteMutation = useDeleteImage('tour_images', 'group_name');
+  const bucketName = 'tour_images';
+  const folderName = groupId;
+
+  const uploadMutation = useUploadImage(bucketName, folderName, userId);
+  const deleteMutation = useDeleteImage(bucketName, folderName);
   const setCoverMutation = useSetCoverImage(userId, uploadSessionId);
+
+  const fetchImageUrls = async () => {
+    const urls = await Promise.all(
+      images.map(async (image) => {
+        const url = await fetchSignedUrl(bucketName, folderName, image.filename);
+        return url;
+      }),
+    );
+    setImageUrls(urls);
+  };
+
+  useEffect(() => {
+    fetchImageUrls();
+  }, [images, bucketName, folderName]);
 
   const handleImageUpload = (files: FileList | null) => {
     if (files) {
@@ -46,7 +52,6 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
           const newImages = uploadedImages.filter((newImage) => !images.some((img) => img.id === newImage.id));
           addImages(newImages);
           console.log('업로드된 이미지:', newImages);
-          // 새로 업로드한 이미지 중 첫 번째 이미지를 대표 이미지로 설정
           if (newImages.length > 0) {
             handleSetCover(newImages[0].id);
           }
@@ -77,6 +82,7 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
     deleteMutation.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
+        fetchImageUrls(); // 삭제 후 imageUrls 업데이트
         alert('이미지가 삭제되었습니다.');
       },
       onError: (error) => {
@@ -95,7 +101,6 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
       const sortedImages = arrayMove(images, oldIndex, newIndex);
       setImages(sortedImages);
 
-      // 첫 번째 이미지를 대표 이미지로 설정
       if (sortedImages.length > 0) {
         const firstImageId = sortedImages[0].id;
         handleSetCover(firstImageId);
@@ -120,10 +125,10 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
             strategy={verticalListSortingStrategy}
           >
             <div className='flex gap-4'>
-              {images.map((image) => (
+              {images.map((image, index) => (
                 <SortableImage
                   key={image.id}
-                  image={image}
+                  image={{ ...image, blobUrl: imageUrls[index] }}
                   onSetCover={() => handleSetCover(image.id)}
                   selectedCover={selectedCover}
                 />
@@ -134,13 +139,13 @@ const ImageSlide = ({ userId, uploadSessionId }: ImageListProps) => {
       </div>
 
       <div className='flex flex-wrap gap-4 mt-4'>
-        {images.map((image) => (
+        {images.map((image, index) => (
           <div
             key={image.id}
             className='relative w-24 h-24 border overflow-hidden'
           >
             <img
-              src={image.blobUrl}
+              src={imageUrls[index]}
               alt='미리보기 이미지'
               className='w-full h-full object-cover'
             />

@@ -1,19 +1,14 @@
 'use client';
 
-import browserClient from '@/utils/supabase/client';
+import { UploadedImageData } from './type';
+import { fetchSignedUrl } from '@/services/client-action/imageActions';
 import { useEffect, useState } from 'react';
-
-type ImageData = {
-  post_image_name: string;
-  post_lat: number;
-  post_lng: number;
-  upload_session_id: string;
-};
 
 type PostFormProps = {
   groupId: string;
   userId: string;
-  imagesData: ImageData[];
+  // path: string;
+  imagesData: UploadedImageData[];
 };
 
 const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
@@ -21,7 +16,25 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchImageUrls = async () => {
+      const urls = await Promise.all(
+        imagesData.map(async (image) => {
+          const url = await fetchSignedUrl('tour_images', groupId, image.filename);
+          return url;
+        }),
+      );
+      setImageUrls(urls);
+    };
+
+    fetchImageUrls();
+  }, [imagesData, groupId]);
+
+  useEffect(() => {
+    console.log('업로드된 이미지 데이터:', imagesData);
+  }, [imagesData]);
 
   return (
     <div className='PostForm'>
@@ -33,7 +46,7 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={1000}
-          placeholder='이행을 떠나고 싶은 마음으로.'
+          placeholder='여행을 떠나고 싶은 마음으로.'
           className='description-textarea'
         />
         <span>{description.length} / 1000</span>
@@ -47,6 +60,15 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
           className='date-input'
         />
 
+        <label htmlFor='hashtag'>해시태그</label>
+        <input
+          type='text'
+          id='hashtag'
+          value={hashtag}
+          onChange={(e) => setHashtag(e.target.value)}
+          className='hashtag-input'
+        />
+
         <label htmlFor='time'>시간</label>
         <input
           type='time'
@@ -56,22 +78,6 @@ const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
           className='time-input'
         />
       </form>
-
-      <div className='mt-4'>
-        <h2>업로드된 이미지</h2>
-        <ul>
-          {imagesData.map((image) => (
-            <li key={`${image.post_image_name}-${image.upload_session_id}`}>
-              <img
-                src={image.post_image_name}
-                alt={image.post_image_name}
-                className='w-32 h-32 object-cover'
-              />
-              <p>{/* 위도: {image.post_lat}, 경도: {image.post_lng} */}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };
