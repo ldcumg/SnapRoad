@@ -15,6 +15,7 @@ export type Database = {
           comment_id: string
           created_at: string
           deleted_at: string | null
+          parent_id: string | null
           post_id: string | null
           updated_at: string | null
           user_id: string | null
@@ -24,6 +25,7 @@ export type Database = {
           comment_id?: string
           created_at?: string
           deleted_at?: string | null
+          parent_id?: string | null
           post_id?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -33,6 +35,7 @@ export type Database = {
           comment_id?: string
           created_at?: string
           deleted_at?: string | null
+          parent_id?: string | null
           post_id?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -399,6 +402,7 @@ export type Database = {
           post_thumbnail_image: string
           post_address: string
           created_at: string
+          group_id: string
         }[]
       }
     }
