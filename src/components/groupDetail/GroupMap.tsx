@@ -278,6 +278,10 @@ const GroupMap = ({ groupId }: GroupMapProps) => {
       };
     }, [map.current, hideTracker, tracking]);
 
+    const handleMarkerClick = (lat: number, lng: number) => {
+      setSelectMarker({ lat, lng });
+    };
+
     return (
       <>
         <AbstractOverlay
@@ -482,10 +486,11 @@ const GroupMap = ({ groupId }: GroupMapProps) => {
         내 위치
       </button>
       {/* NOTE 임시 라우트 주소 */}
-      {selectMarker &&
-        (isPostsView || (
-          <Link href={`/group/${groupId}/post?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>
-        ))
+      {
+        selectMarker &&
+          (isPostsView || (
+            <Link href={`/group/${groupId}/post?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>
+          ))
         // <Link href={`/post?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>
       }
     </>

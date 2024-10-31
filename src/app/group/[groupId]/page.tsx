@@ -35,7 +35,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } 
         <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
 
-      {isMap ? <GroupMap /> : <GroupAlbum />}
+      {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />}
       <div>
         <Link href={`/group/${groupId}/post`}>
           <button>포스트 작성</button>
