@@ -10,14 +10,16 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
-const searchInput = 'searchInput';
+const SEARCH_INPUT = 'searchInput';
 
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
-  const map = useRef<kakao.maps.Map>();
+  const [map, setMap] = useState<kakao.maps.Map>();
+  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
+  const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
 
   const {
     register,
@@ -36,46 +38,85 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     toast.error(searchTermInvalidate.message as string);
   }
 
+  //TODO - 데스크탑에서만 적용되게 하기
   useEffect(() => {
-    setFocus(searchInput);
+    setFocus(SEARCH_INPUT);
   }, []);
 
-  /** 키워드 검색 함수 */
-  const searchLocation = async ({ searchInput }: FieldValues) => {
-    if (!map.current) return;
+  /** 키워드 검색 */
+  const searchLocation = async ({ searchInput, more }: FieldValues) => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
 
     isPostsView && setIsPostsView(false);
 
-    const { results, meta } = await keywordSearch({ keyword: searchInput });
-    console.log("meta =>", meta);
-    setSearchResultMarkers(results);
+    const keyword = searchInput ?? searchKeyword.current.keyword;
+    const {
+      results,
+      meta: { is_end },
+    } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+    setSearchResultMarkers((prev) => (more ? [...prev, ...results] : results));
 
     // 검색된 장소 위치를 기준으로 지도 범위 재설정
     const bounds = new kakao.maps.LatLngBounds();
     results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
-    map.current.panTo(bounds);
+    map.panTo(bounds);
+
+    if (is_end) {
+      setHasMoreResults(false);
+      searchKeyword.current = { keyword: '', page: 1 };
+      return;
+    }
+
+    hasMoreResults || setHasMoreResults(true);
+    more
+      ? (searchKeyword.current.page = searchKeyword.current.page += 1)
+      : (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) });
   };
 
-  /** 사용자의 위치를 찾는 함수 */
+  /** 사용자의 위치를 찾기 */
   const handleFindUserLocation = () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
     if (!navigator.geolocation) {
       toast.alert('위치 정보 제공 동의가 필요합니다.');
       return;
     }
+
     navigator.geolocation.getCurrentPosition((position) => {
-      if (!map.current) return;
       const { latitude: lat, longitude: lng } = position.coords;
-      map.current.setLevel(5, { animate: true });
-      map.current.panTo(new kakao.maps.LatLng(lat, lng));
+      map.setLevel(5, { animate: true });
+      map.panTo(new kakao.maps.LatLng(lat, lng));
       setIsPostsView(false);
     });
   };
 
-  /** 게시물을 추가할 장소 선택하는 함수 */
-  const handleSelectSpot = async () => {
-    const centerLatLng = map.current?.getCenter();
+  /** 게시물을 추가할 장소 선택 */
+  const handleSelectSpot = () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
+    const centerLatLng = map.getCenter();
     if (!centerLatLng) return;
     route.push(`/group/${groupId}/tour?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+  };
+
+  /** 마커로 화면 이동 */
+  const moveToMarker = (marker: LocationInfo) => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
+    map.setLevel(6, { animate: true });
+    map.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
   };
 
   return (
@@ -84,24 +125,32 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         <input
           className='text-black'
           placeholder='장소를 검색해보세요!'
-          {...register(searchInput)}
+          {...register(SEARCH_INPUT)}
         />
-        {!!getValues(searchInput) && (
+        {!!getValues(SEARCH_INPUT) && (
           <button
             type='button'
-            onClick={() => resetField(searchInput)}
+            onClick={() => resetField(SEARCH_INPUT)}
           >
             X
           </button>
         )}
         <button type='submit'>돋보기</button>
       </form>
+      {hasMoreResults && (
+        <button
+          type='button'
+          onClick={() => searchLocation({ more: true })}
+        >
+          더보기
+        </button>
+      )}
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
         className='w-full h-[80vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
-        onCreate={(kakaoMap) => (map.current = kakaoMap)}
+        onCreate={setMap}
         level={13}
         isPanto
       >
@@ -146,11 +195,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
               <MapMarker
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => {
-                  if (!map.current) return;
-                  // map.current.setLevel(5, { animate: true });
-                  map.current.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
-                }}
+                onClick={() => moveToMarker(marker)}
                 image={{
                   src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
                   size: {
