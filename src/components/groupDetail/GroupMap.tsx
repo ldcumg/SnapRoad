@@ -10,6 +10,10 @@ import ReactDOM from 'react-dom';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { AbstractOverlay, Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
+type GroupMapProps = {
+  groupId: string;
+};
+
 type Markers = {
   searchResultMarkers: LocationInfo[];
   pointMarker: LocationInfo | null;
@@ -18,7 +22,7 @@ type Markers = {
 
 const searchInput = 'searchInput';
 
-const GroupMap = () => {
+const GroupMap = ({ groupId }: GroupMapProps) => {
   const map = useRef<kakao.maps.Map>();
   const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
@@ -479,7 +483,11 @@ const GroupMap = () => {
       </button>
       {/* NOTE 임시 라우트 주소 */}
       {selectMarker &&
-        (isPostsView || <Link href={`/ceatePost?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>)}
+        (isPostsView || (
+          <Link href={`/group/${groupId}/post?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>
+        ))
+        // <Link href={`/post?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>
+      }
     </>
   );
 };
