@@ -1,15 +1,16 @@
 'use client';
 
-import Tabs from '@/components/ui/Tabs';
-import { Buttomsheet } from '@/components/ui/buttomsheet';
-import Buttons from '@/components/ui/buttons';
-import Colors from '@/components/ui/colors';
+import Tabs from '@/components/common/Tabs';
+import { Buttomsheet } from '@/components/common/buttomsheet';
+import Buttons from '@/components/common/buttons';
+import Colors from '@/components/common/colors';
+import Example from '@/components/common/example';
 import { Tab } from '@/stories/Tab';
 
 const Page = () => {
   return (
-    <div className='p-6'>
-      <h1 className='text-2xl font-bold mb-4'>공통 StoryBook 컴포넌트</h1>
+    <div className='p-8'>
+      <h1 className='text-2xl font-bold mb-8'>공통 StoryBook 컴포넌트</h1>
       <Tab
         tabs={[
           {
@@ -51,8 +52,12 @@ const Page = () => {
           },
           {
             label: 'example',
-            content: <div>example</div>,
-            onClick: () => console.log('example'),
+            content: (
+              <div>
+                <Example />
+              </div>
+            ),
+            onClick: () => console.log('example 폴더 복붙해서 편집해서 넣으셔도 되요! 레이아웃 고정되어 있어요!'),
           },
         ]}
       />
