@@ -1,7 +1,6 @@
 'use client';
 
 import Spinner from '../_common/Spinner';
-import ImagePreview from '@/components/makegroup/ImagePreview';
 import InputSection from '@/components/makegroup/InputSection';
 import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
 import {
@@ -64,14 +63,14 @@ const MakeGroupForm = ({ update_for }: Props) => {
       if (groupDetailData && groupDetailData.group_image_url) {
         const fileList = await urlToFileList(groupDetailData.group_image_url);
         reset({
-          groupTitle: groupDetailData.group_title,
-          groupDesc: groupDetailData.group_desc,
+          groupTitle: groupDetailData.group_title ?? '',
+          groupDesc: groupDetailData.group_desc ?? '',
           groupImg: fileList as unknown as null,
         });
       } else if (groupDetailData) {
         reset({
-          groupTitle: groupDetailData.group_title,
-          groupDesc: groupDetailData.group_desc,
+          groupTitle: groupDetailData.group_title ?? '',
+          groupDesc: groupDetailData.group_desc ?? '',
         });
       }
     };
