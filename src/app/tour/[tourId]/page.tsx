@@ -30,10 +30,7 @@ const TourDetail = async ({
       `
     *,
     tags (*),
-     comment (
-      *,
-      profiles:user_id (*)
-    ),
+
     images (*)
   `,
     )
@@ -110,7 +107,6 @@ const TourDetail = async ({
         </div>
       </div>
       <Comments
-        comments={data.comment}
         postId={postId}
         userId={userId}
       />

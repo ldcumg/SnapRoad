@@ -2,7 +2,22 @@
 
 import { createClient } from '@/utils/supabase/server';
 
-export const fetchPostComment = async (newComment: {
+export const fetchGetComments = async (postId: string) => {
+  console.log('postId :>> ', postId);
+
+  const supabase = createClient();
+
+  const { data, error } = await supabase.from('comment').select('*, profiles(*)').eq('post_id', postId);
+
+  console.log('디비에서 가져온 댓글 정보 data :>> ', data);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+};
+
+/** 댓글 등록 */
+export const fetchInsertComment = async (newComment: {
   postId: string;
   userId: string;
   parentId: string | null;
@@ -19,10 +34,7 @@ export const fetchPostComment = async (newComment: {
     },
   ]);
 
-  if (error) {
-    console.error('error', error);
-    return { success: false, error };
-  }
+  if (error) throw new Error(error.message);
 
   return { message: '댓글 등록 성공', data };
 };

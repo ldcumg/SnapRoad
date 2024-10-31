@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Comment = ({ nickname, commentDesc }: { nickname: string; commentDesc: string }) => {
+const Comment = ({ nickname, commentDesc }: { nickname: string | null; commentDesc: string | null }) => {
   return (
     <div className='flex items-center gap-1 w-full'>
       <div>이미지</div>

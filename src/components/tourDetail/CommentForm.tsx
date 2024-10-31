@@ -1,5 +1,3 @@
-'use client';
-
 import { usePostComment } from '@/hooks/queries/byUse/useCommentMutation';
 import React, { useState } from 'react';
 
@@ -16,7 +14,8 @@ const CommentForm = ({
 
   const { mutate: fetchPostComment } = usePostComment();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     console.log('newComment :>> ', newComment);
     fetchPostComment({
       postId: newComment.postId,
