@@ -67,12 +67,12 @@ export const Large: Story = {
   },
 };
 
-export const medium: Story = {
+export const Medium: Story = {
   args: {
     type: 'button',
     variant: 'primary',
     size: 'medium',
-    label: ' 기본 버튼',
+    label: '기본 버튼',
   },
 };
 

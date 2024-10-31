@@ -12,8 +12,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        origin: 'hsl(var(--origin-background))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        danger: 'hsl(var(--danger))',
+        primary: {
+          50: 'hsl(var(--primary-50))',
+          200: 'hsl(var(--primary-200))',
+          400: 'hsl(var(--primary-400))',
+          600: 'hsl(var(--primary-600))',
+        },
+        secondary: {
+          50: 'hsl(var(--secondary-50))',
+          100: 'hsl(var(--secondary-100))',
+          400: 'hsl(var(--secondary-400))',
+          600: 'hsl(var(--secondary-600))',
+        },
+        gray: {
+          50: 'hsl(var(--gray-50))',
+          100: 'hsl(var(--gray-100))',
+          200: 'hsl(var(--gray-200))',
+          300: 'hsl(var(--gray-300))',
+          400: 'hsl(var(--gray-400))',
+          500: 'hsl(var(--gray-500))',
+          600: 'hsl(var(--gray-600))',
+          700: 'hsl(var(--gray-700))',
+          800: 'hsl(var(--gray-800))',
+          900: 'hsl(var(--gray-900))',
+        },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
@@ -21,14 +47,6 @@ const config: Config = {
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -64,8 +82,9 @@ const config: Config = {
     },
   },
   future: {
-    hoverOnlyWhenSupported: true, // 모바일에서 호버 끄기
+    hoverOnlyWhenSupported: true, // 모바일 호버 해제
   },
   plugins: [require('tailwindcss-animate')],
 };
+
 export default config;
