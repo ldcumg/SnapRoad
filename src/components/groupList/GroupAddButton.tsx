@@ -1,38 +1,35 @@
 'use client';
 
+import Modal from '../_common/Modal';
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { useRouter } from 'next/navigation';
 
 const GroupAddButton = () => {
-  const [isAccordionOpen, handleAccordionOpen] = useIsOpen();
   const [isBottomSheetOpen, handleBottomSheetOpen] = useIsOpen();
   const router = useRouter();
   return (
-    <div className='fixed bottom-0 '>
-      <SubmitInviteForm
-        isBottomSheetOpen={isBottomSheetOpen}
-        handleBottomSheetOpen={handleBottomSheetOpen}
-      />
-      <div className={`${isAccordionOpen ? 'flex' : 'hidden'} flex-col justify-center items-center`}>
-        <button
-          className='border border-solid border-black p-[10px] w-screen'
-          onClick={handleBottomSheetOpen}
-        >
-          초대 코드 입력하기
-        </button>
-        <button
-          className='border border-solid border-black p-[10px] w-screen'
-          onClick={() => router.push('/makegroup')}
-        >
-          새로운 그룹 생성하기
-        </button>
-      </div>
-      <button
-        onClick={handleAccordionOpen}
-        className='border border-solid border-black p-[10px] w-screen z-10'
+    <div className='flex flex-row gap-[17px]'>
+      <Modal
+        isModalOpen={isBottomSheetOpen}
+        handleModalOpen={handleBottomSheetOpen}
       >
-        그룹 추가하기
+        <SubmitInviteForm
+          isBottomSheetOpen={isBottomSheetOpen}
+          handleBottomSheetOpen={handleBottomSheetOpen}
+        />
+      </Modal>
+      <button
+        className='bg-white text-black border border-solid border-black p-[10px] w-[160px] h-[56px]'
+        onClick={handleBottomSheetOpen}
+      >
+        초대 코드 입력하기
+      </button>
+      <button
+        className='bg-black text-white p-[10px] w-[160px] h-[56px]'
+        onClick={() => router.push('/makegroup')}
+      >
+        + 그룹 생성하기
       </button>
     </div>
   );
