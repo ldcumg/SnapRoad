@@ -1,30 +1,25 @@
 'use client';
 
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
+import { keywordSearch } from '@/services/server-action/mapAction';
 import type { LocationInfo } from '@/types/placesTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
-import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { AbstractOverlay, Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
-type Markers = {
-  searchResultMarkers: LocationInfo[];
-  pointMarker: LocationInfo | null;
-  postMarkers: null;
-};
+const SEARCH_INPUT = 'searchInput';
 
-const searchInput = 'searchInput';
-
-const GroupMap = () => {
-  const map = useRef<kakao.maps.Map>();
+const GroupMap = ({ groupId }: { groupId: string }) => {
+  const route = useRouter();
+  const [map, setMap] = useState<kakao.maps.Map>();
+  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [selectMarker, setSelectMarker] = useState<LocationInfo | null>(null);
-
-  const [isPostsView, setIsPostsView] = useState<boolean>(true);
+  const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
+  const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
 
   const {
     register,
@@ -43,302 +38,85 @@ const GroupMap = () => {
     toast.error(searchTermInvalidate.message as string);
   }
 
-  const [tackerVisible, setTrackerVisible] = useState(false);
+  //TODO - 데스크탑에서만 적용되게 하기
+  useEffect(() => {
+    setFocus(SEARCH_INPUT);
+  }, []);
 
-  const TooltipMarker = ({ position, tooltipText }) => {
-    // Marker로 올려질 node 객체를 생성 합니다.
-    const node = useRef(document.createElement('div'));
-    const [visible, setVisible] = useState(false);
-    const [tracerPosition, setTracerPosition] = useState({
-      x: 0,
-      y: 0,
-    });
-    const [tracerAngle, setTracerAngle] = useState(0);
-
-    const positionLatlng = useMemo(() => {
-      return new kakao.maps.LatLng(position.lat, position.lng);
-    }, [position.lat, position.lng]);
-
-    function onAdd() {
-      const panel = this.getPanels().overlayLayer;
-      panel.appendChild(node.current);
+  /** 키워드 검색 */
+  const searchLocation = async ({ searchInput, more }: FieldValues) => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
     }
 
-    function onRemove() {
-      node.current.parentNode.removeChild(node.current);
+    isPostsView && setIsPostsView(false);
+
+    const keyword = searchInput ?? searchKeyword.current.keyword;
+    const {
+      results,
+      meta: { is_end },
+    } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+    setSearchResultMarkers((prev) => (more ? [...prev, ...results] : results));
+
+    // 검색된 장소 위치를 기준으로 지도 범위 재설정
+    const bounds = new kakao.maps.LatLngBounds();
+    results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+    map.panTo(bounds);
+
+    if (is_end) {
+      setHasMoreResults(false);
+      searchKeyword.current = { keyword: '', page: 1 };
+      return;
     }
 
-    function draw() {
-      const projection = this.getProjection();
-      const point = projection.pointFromCoords(positionLatlng);
-
-      const width = node.current.offsetWidth;
-      const height = node.current.offsetHeight;
-
-      node.current.style.left = point.x - width / 2 + 'px';
-      node.current.style.top = point.y - height / 2 + 'px';
-    }
-
-    const OUTCODE = {
-      INSIDE: 0, // 0b0000
-      TOP: 8, //0b1000
-      RIGHT: 2, // 0b0010
-      BOTTOM: 4, // 0b0100
-      LEFT: 1, // 0b0001
-    };
-
-    const BOUNDS_BUFFER = 30;
-
-    const CLIP_BUFFER = 40;
-
-    const Marker = ({ tooltipText }) => {
-      const [isOver, setIsOver] = useState(false);
-      return (
-        <div
-          className={`node`}
-          onMouseOver={() => {
-            setIsOver(true);
-          }}
-          onMouseOut={() => {
-            setIsOver(false);
-          }}
-        >
-          {isOver && <div className={`tooltip`}>{tooltipText}</div>}
-        </div>
-      );
-    };
-
-    const Tracker = ({ position, angle }) => {
-      return (
-        <div
-          className={'tracker h-full w-full'}
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-          }}
-          onClick={() => {
-            map.current.setCenter(positionLatlng);
-            setVisible(false);
-          }}
-        >
-          <div
-            className={'balloon w-full h-full'}
-            style={{
-              transform: `rotate(${angle}deg)`,
-            }}
-          >
-            테스트
-          </div>
-          <div className={'icon h-full w-full'}>테스트2</div>
-        </div>
-      );
-    };
-
-    const getClipPosition = useCallback(
-      (top, right, bottom, left, inner, outer) => {
-        const calcOutcode = (x, y) => {
-          let outcode = OUTCODE.INSIDE;
-
-          if (x < left) {
-            outcode |= OUTCODE.LEFT;
-          } else if (x > right) {
-            outcode |= OUTCODE.RIGHT;
-          }
-
-          if (y < top) {
-            outcode |= OUTCODE.TOP;
-          } else if (y > bottom) {
-            outcode |= OUTCODE.BOTTOM;
-          }
-
-          return outcode;
-        };
-
-        let ix = inner.x;
-        let iy = inner.y;
-        let ox = outer.x;
-        let oy = outer.y;
-
-        let code = calcOutcode(ox, oy);
-
-        while (true) {
-          if (!code) {
-            break;
-          }
-
-          if (code & OUTCODE.TOP) {
-            ox = ox + ((ix - ox) / (iy - oy)) * (top - oy);
-            oy = top;
-          } else if (code & OUTCODE.RIGHT) {
-            oy = oy + ((iy - oy) / (ix - ox)) * (right - ox);
-            ox = right;
-          } else if (code & OUTCODE.BOTTOM) {
-            ox = ox + ((ix - ox) / (iy - oy)) * (bottom - oy);
-            oy = bottom;
-          } else if (code & OUTCODE.LEFT) {
-            oy = oy + ((iy - oy) / (ix - ox)) * (left - ox);
-            ox = left;
-          }
-
-          code = calcOutcode(ox, oy);
-        }
-
-        return { x: ox, y: oy };
-      },
-      [OUTCODE.BOTTOM, OUTCODE.INSIDE, OUTCODE.LEFT, OUTCODE.RIGHT, OUTCODE.TOP],
-    );
-
-    const getAngle = (center, target) => {
-      const dx = target.x - center.x;
-      const dy = center.y - target.y;
-      const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
-
-      return ((-deg + 360) % 360 | 0) + 90;
-    };
-
-    // target의 위치를 추적하는 함수
-    const tracking = useCallback(() => {
-      const proj = map.current.getProjection();
-
-      // 지도의 영역을 구합니다.
-      const bounds = map.current.getBounds();
-
-      // 지도의 영역을 기준으로 확장된 영역을 구합니다.
-      const extBounds = extendBounds(bounds, proj);
-
-      // target이 확장된 영역에 속하는지 판단하고
-      if (extBounds.contain(positionLatlng)) {
-        // 속하면 tracker를 숨깁니다.
-        setVisible(false);
-      } else {
-        const pos = proj.containerPointFromCoords(positionLatlng);
-
-        const center = proj.containerPointFromCoords(map.current.getCenter());
-
-        const sw = proj.containerPointFromCoords(bounds.getSouthWest());
-
-        const ne = proj.containerPointFromCoords(bounds.getNorthEast());
-
-        const top = ne.y + CLIP_BUFFER;
-        const right = ne.x - CLIP_BUFFER;
-        const bottom = sw.y - CLIP_BUFFER;
-        const left = sw.x + CLIP_BUFFER;
-
-        const clipPosition = getClipPosition(top, right, bottom, left, center, pos);
-
-        setTracerPosition(clipPosition);
-
-        const angle = getAngle(center, pos);
-
-        setTracerAngle(angle);
-
-        setVisible(true);
-      }
-    }, [getClipPosition, map.current, positionLatlng]);
-
-    const hideTracker = useCallback(() => {
-      setVisible(false);
-    }, []);
-
-    useEffect(() => {
-      node.current.style.position = 'absolute';
-      node.current.style.whiteSpace = 'nowrap';
-    }, []);
-
-    const extendBounds = (bounds, proj) => {
-      const sw = proj.pointFromCoords(bounds.getSouthWest());
-      const ne = proj.pointFromCoords(bounds.getNorthEast());
-
-      // 확장을 위해 각 좌표에 BOUNDS_BUFFER가 가진 수치만큼 더하거나 빼줍니다.
-      sw.x -= BOUNDS_BUFFER;
-      sw.y += BOUNDS_BUFFER;
-
-      ne.x += BOUNDS_BUFFER;
-      ne.y -= BOUNDS_BUFFER;
-
-      return new kakao.maps.LatLngBounds(proj.coordsFromPoint(sw), proj.coordsFromPoint(ne));
-    };
-
-    useEffect(() => {
-      setFocus(searchInput);
-      kakao.maps.event.addListener(map.current, 'zoom_start', hideTracker);
-      kakao.maps.event.addListener(map.current, 'zoom_changed', tracking);
-      kakao.maps.event.addListener(map.current, 'center_changed', tracking);
-      tracking();
-
-      return () => {
-        kakao.maps.event.removeListener(map.current, 'zoom_start', hideTracker);
-        kakao.maps.event.removeListener(map.current, 'zoom_changed', tracking);
-        kakao.maps.event.removeListener(map.current, 'center_changed', tracking);
-        setVisible(false);
-      };
-    }, [map.current, hideTracker, tracking]);
-
-    return (
-      <>
-        <AbstractOverlay
-          onAdd={onAdd}
-          onRemove={onRemove}
-          draw={draw}
-        />
-        {visible ? (
-          ReactDOM.createPortal(
-            <Tracker
-              position={tracerPosition}
-              angle={tracerAngle}
-            />,
-            map.current.getNode(),
-          )
-        ) : (
-          // ReactDOM.createPortal(
-          //     <Marker tooltipText={tooltipText} />,
-          //     node.current,
-          //   )
-          <MapMarker
-            position={position}
-            onClick={() => {
-              if (!map.current) return;
-              map.current.setLevel(5, { animate: true });
-              map.current.panTo(new kakao.maps.LatLng(position.lat, position.lng));
-            }}
-            draggable={true}
-            onDragEnd={(map) => console.log(map.getPosition())}
-          />
-        )}
-      </>
-    );
+    hasMoreResults || setHasMoreResults(true);
+    more
+      ? (searchKeyword.current.page = searchKeyword.current.page += 1)
+      : (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) });
   };
 
-  /** 키워드 검색 함수 */
-  const searchLocation = ({ searchInput }: FieldValues) => {
-    setIsPostsView(false);
-    const kakaoPlacesSearch = new kakao.maps.services.Places();
+  /** 사용자의 위치를 찾기 */
+  const handleFindUserLocation = () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
 
-    kakaoPlacesSearch.keywordSearch(
-      searchInput,
-      (results, status, pagination) => {
-        if (status !== kakao.maps.services.Status.OK || !map.current) {
-          toast.error('검색 결과를 불러오지 못 했습니다.');
-          return;
-        }
+    if (!navigator.geolocation) {
+      toast.alert('위치 정보 제공 동의가 필요합니다.');
+      return;
+    }
 
-        const bounds = new kakao.maps.LatLngBounds();
-        const mappedResults = results.map((result) => {
-          return { ...result, lat: Number(result.y), lng: Number(result.x) };
-        }) as LocationInfo[];
-        mappedResults.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude: lat, longitude: lng } = position.coords;
+      map.setLevel(5, { animate: true });
+      map.panTo(new kakao.maps.LatLng(lat, lng));
+      setIsPostsView(false);
+    });
+  };
 
-        const fistResult = mappedResults.shift() as LocationInfo;
-        setSelectMarker(fistResult);
-        setSearchResultMarkers(mappedResults);
+  /** 게시물을 추가할 장소 선택 */
+  const handleSelectSpot = () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
 
-        // 검색된 장소 위치를 기준으로 지도 범위 재설정
-        map.current.panTo(bounds);
-      },
-      // {
-      //   page: 1,
-      // },
-    );
+    const centerLatLng = map.getCenter();
+    if (!centerLatLng) return;
+    route.push(`/group/${groupId}/tour?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+  };
+
+  /** 마커로 화면 이동 */
+  const moveToMarker = (marker: LocationInfo) => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
+    map.setLevel(6, { animate: true });
+    map.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
   };
 
   return (
@@ -347,35 +125,32 @@ const GroupMap = () => {
         <input
           className='text-black'
           placeholder='장소를 검색해보세요!'
-          {...register(searchInput)}
+          {...register(SEARCH_INPUT)}
         />
-        {!!getValues(searchInput) && (
+        {!!getValues(SEARCH_INPUT) && (
           <button
             type='button'
-            onClick={() => {
-              resetField(searchInput);
-            }}
+            onClick={() => resetField(SEARCH_INPUT)}
           >
             X
           </button>
         )}
         <button type='submit'>돋보기</button>
       </form>
+      {hasMoreResults && (
+        <button
+          type='button'
+          onClick={() => searchLocation({ more: true })}
+        >
+          더보기
+        </button>
+      )}
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[50vh]'
+        className='w-full h-[80vh]'
         // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
-        onCreate={(kakaoMap) => (map.current = kakaoMap)}
-        onClick={(_, mouseEvent) => {
-          if (isPostsView) return;
-          const latlng = mouseEvent.latLng;
-          !!selectMarker?.id && setSearchResultMarkers((prev) => [selectMarker, ...prev]);
-          setSelectMarker({
-            lat: latlng.getLat(),
-            lng: latlng.getLng(),
-          });
-        }}
+        onCreate={setMap}
         level={13}
         isPanto
       >
@@ -416,38 +191,11 @@ const GroupMap = () => {
           </MarkerClusterer>
         ) : (
           <>
-            {!!selectMarker && (
-              <>
-                <TooltipMarker
-                  position={selectMarker}
-                  tooltipText={'테스트'}
-                />
-                {/* <MapMarker
-                  position={{ lat: selectMarker.lat, lng: selectMarker.lng }}
-                  onClick={() => {
-                    if (!map.current) return;
-                    map.current.setLevel(5, { animate: true });
-                    map.current.panTo(new kakao.maps.LatLng(selectMarker.lat, selectMarker.lng));
-                    // TODO - 인포 띄우기
-                  }}
-                  draggable={true}
-                  // TODO - 인포 지우기
-                  // onDragStart={}
-                  onDragEnd={(map) => console.log(map.getPosition())}
-                >
-                  {selectMarker.place_name}
-                </MapMarker> */}
-              </>
-            )}
             {searchResultMarkers.map((marker) => (
               <MapMarker
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => {
-                  setSelectMarker(marker);
-                  !!selectMarker &&
-                    setSearchResultMarkers((prev) => [selectMarker, ...prev].filter((m) => m.id !== marker.id));
-                }}
+                onClick={() => moveToMarker(marker)}
                 image={{
                   src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
                   size: {
@@ -460,26 +208,8 @@ const GroupMap = () => {
           </>
         )}
       </Map>
-      <button
-        onClick={() => {
-          if (navigator.geolocation) {
-            !!selectMarker?.id && setSearchResultMarkers((prev) => [selectMarker, ...prev]);
-            navigator.geolocation.getCurrentPosition((position) => {
-              if (!map.current) return;
-              const { latitude: lat, longitude: lng } = position.coords;
-              map.current.setLevel(5, { animate: true });
-              map.current.panTo(new kakao.maps.LatLng(lat, lng));
-              setSelectMarker({ lat, lng });
-              setIsPostsView(false);
-            });
-          }
-        }}
-      >
-        내 위치
-      </button>
-      {/* NOTE 임시 라우트 주소 */}
-      {selectMarker &&
-        (isPostsView || <Link href={`/ceatePost?lat=${selectMarker.lat}&lng=${selectMarker.lng}`}>추가하기</Link>)}
+      <button onClick={handleFindUserLocation}>내 위치</button>
+      {isPostsView || <button onClick={handleSelectSpot}>추가하기</button>}
     </>
   );
 };
