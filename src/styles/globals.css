@@ -2,10 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* HTML태그 등 전역적인 스타일 */
+@import url(./fonts.css);
+
+/* HTML 태그 등 전역 스타일 */
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Light Theme Colors */
+    --background: 0, 0%, 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -30,6 +33,92 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --white: 0, 0%, 100%;
+    --origin-background: 48 100% 91%;
+    --danger: 343 95% 50%;
+
+    /* Primary Colors */
+    --primary-50: 160 52% 90%;
+    --primary-200: 161 40% 70%;
+    --primary-400: 166 100% 35%;
+    --primary-600: 160 100% 20%;
+
+    /* Secondary Colors */
+    --secondary-50: 309 81% 93%;
+    --secondary-100: 307 87% 83%;
+    --secondary-400: 310 70% 73%;
+    --secondary-600: 325 46% 53%;
+
+    /* Gray Scale */
+    --gray-50: 180 28% 97%;
+    --gray-100: 180 5% 93%;
+    --gray-200: 200 11% 84%;
+    --gray-300: 220 5% 66%;
+    --gray-400: 220 11% 58%;
+    --gray-500: 208 10% 48%;
+    --gray-600: 219 10% 38%;
+    --gray-700: 228 10% 28%;
+    --gray-800: 226 9% 17%;
+    --gray-900: 225 10% 7%;
+  }
+
+  /* Dark Theme Colors */
+  .dark {
+    --white: 0, 0%, 10%;
+    --background: 210, 20%, 20%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Dark Theme Primary and Secondary Colors */
+    --primary-50: 160, 60%, 30%;
+    --primary-200: 162, 60%, 40%;
+    --primary-400: 162, 100%, 50%;
+    --primary-800: 162, 100%, 70%;
+
+    --secondary-50: 318, 85%, 25%;
+    --secondary-100: 318, 85%, 35%;
+    --secondary-400: 318, 65%, 50%;
+    --secondary-600: 318, 45%, 65%;
+
+    /* Dark Theme Gray Scale */
+    --gray-50: 210, 20%, 20%;
+    --gray-100: 210, 15%, 25%;
+    --gray-200: 210, 10%, 35%;
+    --gray-300: 210, 8%, 45%;
+    --gray-400: 210, 7%, 55%;
+    --gray-500: 210, 6%, 65%;
+    --gray-600: 210, 5%, 75%;
+    --gray-700: 210, 4%, 85%;
+    --gray-800: 210, 3%, 90%;
+    --gray-900: 210, 2%, 95%;
+  }
+
+  /* 기본 스타일 적용 */
+  * {
+    word-break: keep-all;
+    @apply border-border;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -39,14 +128,10 @@
     }
   }
 
-  * {
-    word-break: keep-all;
-  }
-
   body {
     color: var(--foreground);
     background: var(--background);
-    @apply font-sans;
+    @apply text-foreground bg-background font-sans;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -76,12 +161,58 @@
   }
 }
 
-/* 재사용하는 구조적인 스타일링 */
+/* 재사용할 구조적 스타일링 */
 @layer components {
+  /* 예시로 필요한 스타일 추가 가능 */
 }
 
-/* 하나의 속성에 대해 스타일 */
+/* 유틸리티 클래스 */
 @layer utilities {
+  .node {
+    position: absolute;
+    background-image: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/sign-info-64.png);
+    cursor: pointer;
+    width: 64px;
+    height: 64px;
+  }
+
+  .tooltip {
+    background-color: #fff;
+    position: absolute;
+    border: 2px solid #333;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 3px 5px 0;
+    left: 65px;
+    top: 14px;
+    border-radius: 5px;
+    white-space: nowrap;
+    display: none;
+  }
+
+  .tracker {
+    position: absolute;
+    margin: -35px 0 0 -30px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .icon {
+    position: absolute;
+    left: 6px;
+    top: 9px;
+    width: 48px;
+    height: 48px;
+    background-image: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/sign-info-48.png);
+  }
+
+  .balloon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-image: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/balloon.png);
+    transform-origin: 50% 34px;
+  }
 }
 @layer base {
   * {

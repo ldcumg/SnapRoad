@@ -1,22 +1,34 @@
-import { generateRandomFileName } from '@/utils/fileNameUtils';
+import { generateUniqueFileName } from './fileActions';
 import browserClient from '@/utils/supabase/client';
 
-// multiply file upload
-export const uploadImage = async (files: File[]): Promise<string[]> => {
+/**
+ * 다중 파일 업로드 함수
+ * @param files 업로드할 파일 배열
+ * @param folderName 업로드할 폴더명
+ * @param bucketName 업로드할 버킷명
+ * @returns 업로드된 파일의 URL과 파일명을 포함한 배열
+ */
+
+export const uploadImage = async (
+  files: File[],
+  folderName: string,
+  bucketName: string,
+): Promise<{ url: string; filename: string }[]> => {
   const supabase = browserClient;
-  const urls: string[] = [];
+  const uploadedFiles: { url: string; filename: string }[] = [];
 
   for (const file of files) {
-    const randomFileName = generateRandomFileName(file.name);
-    const { data, error } = await supabase.storage.from('tour_images').upload(`group_name/${randomFileName}`, file);
+    const uniqueFileName = await generateUniqueFileName(file.name, folderName, bucketName);
+    const { data, error } = await supabase.storage.from(bucketName).upload(`${folderName}/${uniqueFileName}`, file);
+
     if (error) throw error;
+    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+      .from(bucketName)
+      .createSignedUrl(`${folderName}/${uniqueFileName}`, 60 * 60 * 1000);
 
-    // 업로드된 파일의 퍼블릭 URL 생성
-    const { data: publicUrlData } = supabase.storage.from('tour_images').getPublicUrl(`group_name/${randomFileName}`);
-    if (!publicUrlData) throw new Error('퍼블릭 URL을 가져올 수 없습니다.');
-
-    console.log('이미지 업로드 성공:', publicUrlData.publicUrl);
-    urls.push(publicUrlData.publicUrl);
+    if (signedUrlError || !signedUrlData) throw new Error('Signed URL을 가져오는 데 실패했습니다.');
+    uploadedFiles.push({ url: signedUrlData.signedUrl, filename: uniqueFileName });
   }
-  return urls;
+
+  return uploadedFiles;
 };
