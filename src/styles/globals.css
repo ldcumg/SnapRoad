@@ -4,10 +4,11 @@
 
 @import url(./fonts.css);
 
-/* HTML태그 등 전역적인 스타일 */
+/* HTML 태그 등 전역 스타일 */
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Light Theme Colors */
+    --background: 0, 0%, 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -32,26 +33,40 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --white: 0, 0%, 100%;
+    --origin-background: 48 100% 91%;
+    --danger: 343 95% 50%;
+
+    /* Primary Colors */
+    --primary-50: 160 52% 90%;
+    --primary-200: 161 40% 70%;
+    --primary-400: 166 100% 35%;
+    --primary-600: 160 100% 20%;
+
+    /* Secondary Colors */
+    --secondary-50: 309 81% 93%;
+    --secondary-100: 307 87% 83%;
+    --secondary-400: 310 70% 73%;
+    --secondary-600: 325 46% 53%;
+
+    /* Gray Scale */
+    --gray-50: 180 28% 97%;
+    --gray-100: 180 5% 93%;
+    --gray-200: 200 11% 84%;
+    --gray-300: 220 5% 66%;
+    --gray-400: 220 11% 58%;
+    --gray-500: 208 10% 48%;
+    --gray-600: 219 10% 38%;
+    --gray-700: 228 10% 28%;
+    --gray-800: 226 9% 17%;
+    --gray-900: 225 10% 7%;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-    }
-  }
-
-  * {
-    word-break: keep-all;
-  }
-
-  body {
-    color: var(--foreground);
-    background: var(--background);
-    @apply font-sans;
-  }
+  /* Dark Theme Colors */
   .dark {
-    --background: 0 0% 3.9%;
+    --white: 0, 0%, 10%;
+    --background: 210, 20%, 20%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -75,14 +90,57 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Dark Theme Primary and Secondary Colors */
+    --primary-50: 160, 60%, 30%;
+    --primary-200: 162, 60%, 40%;
+    --primary-400: 162, 100%, 50%;
+    --primary-800: 162, 100%, 70%;
+
+    --secondary-50: 318, 85%, 25%;
+    --secondary-100: 318, 85%, 35%;
+    --secondary-400: 318, 65%, 50%;
+    --secondary-600: 318, 45%, 65%;
+
+    /* Dark Theme Gray Scale */
+    --gray-50: 210, 20%, 20%;
+    --gray-100: 210, 15%, 25%;
+    --gray-200: 210, 10%, 35%;
+    --gray-300: 210, 8%, 45%;
+    --gray-400: 210, 7%, 55%;
+    --gray-500: 210, 6%, 65%;
+    --gray-600: 210, 5%, 75%;
+    --gray-700: 210, 4%, 85%;
+    --gray-800: 210, 3%, 90%;
+    --gray-900: 210, 2%, 95%;
+  }
+
+  /* 기본 스타일 적용 */
+  * {
+    word-break: keep-all;
+    @apply border-border;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    @apply bg-background font-sans text-foreground;
   }
 }
 
-/* 재사용하는 구조적인 스타일링 */
+/* 재사용할 구조적 스타일링 */
 @layer components {
+  /* 예시로 필요한 스타일 추가 가능 */
 }
 
-/* 하나의 속성에 대해 스타일 */
+/* 유틸리티 클래스 */
 @layer utilities {
   .node {
     position: absolute;
@@ -109,7 +167,6 @@
   .tracker {
     position: absolute;
     margin: -35px 0 0 -30px;
-    /* display: none; */
     cursor: pointer;
     z-index: 3;
   }
@@ -128,8 +185,6 @@
     width: 60px;
     height: 60px;
     background-image: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/balloon.png);
-    -ms-transform-origin: 50% 34px;
-    -webkit-transform-origin: 50% 34px;
     transform-origin: 50% 34px;
   }
 }
