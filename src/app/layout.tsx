@@ -24,7 +24,7 @@ const RootLayout = ({
       <body className={`font-sans`}>
         <QueryProvider>
           <Header />
-          <main className='w-full h-full'>{children}</main>
+          <main className='w-full h-full p-4'>{children}</main>
           <Footer />
         </QueryProvider>
         <Script

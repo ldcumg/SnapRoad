@@ -10,9 +10,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
-type GroupMapProps = {
-  groupId: string;
-};
 
 const SEARCH_INPUT = 'searchInput';
 
@@ -109,7 +106,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
     const centerLatLng = map.getCenter();
     if (!centerLatLng) return;
-    route.push(`/group/${groupId}/tour?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+    route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
   };
 
   /** 마커로 화면 이동 */
@@ -213,7 +210,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         )}
       </Map>
       <button onClick={handleFindUserLocation}>내 위치</button>
-      {isPostsView || <button onClick={handleSelectSpot}>추가하기</button>}
+      <br/>
+      {isPostsView || (
+        <button onClick={handleSelectSpot}>
+        추가하기
+       
+        </button>
+      )}
     </>
   );
 };

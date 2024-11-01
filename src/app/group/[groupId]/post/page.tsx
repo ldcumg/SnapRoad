@@ -4,6 +4,8 @@ import ImageSlide from '@/components/post/ImageSlide';
 import PostForm from '@/components/post/PostForm';
 import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
@@ -11,6 +13,13 @@ type Props = {
 };
 
 const PostPage = ({ params: { groupId } }: Props) => {
+  const searchParams = useSearchParams();
+  
+  const lat = searchParams.get('lat');
+  const lng = searchParams.get('lng');
+  const latNumber = lat ? parseFloat(lat) : undefined;
+  const lngNumber = lng ? parseFloat(lng) : undefined;
+
   const { data: user, isLoading: userLoading, error: userError } = useUserQuery();
   const { images } = useImageUploadStore();
 
@@ -32,6 +41,8 @@ const PostPage = ({ params: { groupId } }: Props) => {
         userId={userId}
         groupId={groupId}
         imagesData={images}
+        lat={latNumber}
+        lng={lngNumber}
       />
     </div>
   );

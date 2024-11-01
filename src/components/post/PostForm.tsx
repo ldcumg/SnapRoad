@@ -8,15 +8,25 @@ import { useEffect, useState } from 'react';
 type PostFormProps = {
   groupId: string;
   userId: string;
+  lat?: number;
+  lng?: number;
   imagesData: UploadedImageData[];
 };
 
-const PostForm = ({ groupId, userId, imagesData }: PostFormProps) => {
+const PostForm = ({ lat, lng, groupId, userId, imagesData }: PostFormProps) => {
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (lat && lng) {
+      console.log('위도:', lat);
+      console.log('경도:', lng);
+
+    }
+  }, [lat, lng]);
 
   // 이미지 URL 생성
   useEffect(() => {
