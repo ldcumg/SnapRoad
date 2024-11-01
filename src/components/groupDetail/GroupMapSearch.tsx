@@ -151,6 +151,7 @@ const GroupMapSearch = ({ groupId }: { groupId: string }) => {
   //   route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
   // };
 
+  /** 게시물을 추가할 장소 선택 주소 버전 */
   const handleSelectSpot = async () => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');

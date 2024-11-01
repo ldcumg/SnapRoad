@@ -11,9 +11,11 @@ type PostFormProps = {
   lat?: number;
   lng?: number;
   imagesData: UploadedImageData[];
+  addressName?: string;
 };
 
-const PostForm = ({ lat, lng, groupId, userId, imagesData }: PostFormProps) => {
+const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFormProps) => {
+  const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
@@ -24,9 +26,11 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData }: PostFormProps) => {
     if (lat && lng) {
       console.log('위도:', lat);
       console.log('경도:', lng);
-
     }
-  }, [lat, lng]);
+    if (addressName) {
+      console.log('주소:', addressName);
+    }
+  }, [lat, lng, addressName]);
 
   // 이미지 URL 생성
   useEffect(() => {
@@ -124,6 +128,8 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData }: PostFormProps) => {
   return (
     <div className='PostForm'>
       <h1>그룹 {groupId} 포스트 작성</h1>
+
+      <p>{decodedAddressName && <p>주소: {decodedAddressName}</p>}</p>
       <form
         className='w-full border border-black flex flex-col'
         onSubmit={submitPost}

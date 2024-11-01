@@ -14,11 +14,14 @@ type Props = {
 
 const PostPage = ({ params: { groupId } }: Props) => {
   const searchParams = useSearchParams();
-  
+
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
+  const addressName = searchParams.get('address_name');
   const latNumber = lat ? parseFloat(lat) : undefined;
   const lngNumber = lng ? parseFloat(lng) : undefined;
+
+  console.log('URL로부터 받은 address_name:', addressName);
 
   const { data: user, isLoading: userLoading, error: userError } = useUserQuery();
   const { images } = useImageUploadStore();
@@ -43,6 +46,7 @@ const PostPage = ({ params: { groupId } }: Props) => {
         imagesData={images}
         lat={latNumber}
         lng={lngNumber}
+        addressName={decodeURIComponent(addressName)}
       />
     </div>
   );
