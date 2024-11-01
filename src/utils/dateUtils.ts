@@ -35,3 +35,20 @@ export const formatDateToPostgres = (dateString: string): string => {
   const milliseconds = date.getMilliseconds().toString().padStart(6, '0');
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 };
+
+/**
+ * 게시글 상세 페이지의 날짜 정보 노출 형식
+ * @param dateString 예: 2024-10-29T16:18:09.87699+00:00
+ * @returns 예: 2024년 10월 30일 오전 1:18
+ */
+export const formatDateToPostDetail = (dateString: string | number | Date) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  }).format(date);
+};

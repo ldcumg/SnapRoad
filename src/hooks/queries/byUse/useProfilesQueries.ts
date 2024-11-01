@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useProfilesQuery = (userId: string) => {
   return useQuery({
-    queryKey: ['images', userId],
+    queryKey: ['profiles', userId],
     queryFn: () => getProfile(userId),
   });
 };
