@@ -15,12 +15,11 @@ const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), {
 
 type Props = Readonly<{ params: { groupId: string } }>;
 
-// const MODE = { map: 'map', album: 'album', member: 'member' };
-
 const GroupPage = ({ params: { groupId } }: Props) => {
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.member);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
+  console.log('groupInfo =>', groupInfo);
 
   if (isPending) return <>로딩</>;
 
@@ -35,20 +34,8 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   //   if (loading) return;
   // }, [loading]);
 
-  const handleChangeMode = () => {
-    switch (mode) {
-      case GroupDetailMode.map:
-        return <button onClick={() => setMode(GroupDetailMode.album)}>앨범</button>;
-      case GroupDetailMode.album:
-        return <button onClick={() => setMode(GroupDetailMode.map)}>지도</button>;
-      case GroupDetailMode.member:
-        return <button onClick={() => setMode(GroupDetailMode.album)}>X</button>;
-      default:
-        throw new Error('잘못된 요청입니다.');
-    }
-  };
-
-  const changeMode = () => {
+  /** 컴포넌트 조건부 렌더링 */
+  const groupDetailMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
         return <GroupMap groupId={groupId} />;
@@ -61,7 +48,21 @@ const GroupPage = ({ params: { groupId } }: Props) => {
           />
         );
       case GroupDetailMode.member:
-        return <MemberList />;
+        return <MemberList groupInfo={groupInfo} />;
+      default:
+        throw new Error('잘못된 요청입니다.');
+    }
+  };
+
+  /** 조건부 렌더링 버튼 */
+  const handleChangeMode = () => {
+    switch (mode) {
+      case GroupDetailMode.map:
+        return <button onClick={() => setMode(GroupDetailMode.album)}>앨범</button>;
+      case GroupDetailMode.album:
+        return <button onClick={() => setMode(GroupDetailMode.map)}>지도</button>;
+      case GroupDetailMode.member:
+        return <button onClick={() => setMode(GroupDetailMode.album)}>X</button>;
       default:
         throw new Error('잘못된 요청입니다.');
     }
@@ -77,7 +78,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         <h3>{groupInfo.group_title}</h3>
         {handleChangeMode()}
       </header>
-      {changeMode()}
+      {groupDetailMode()}
     </>
   );
 };

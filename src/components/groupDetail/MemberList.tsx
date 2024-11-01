@@ -1,8 +1,11 @@
+import type { GroupInfo } from '@/types/groupTypes';
 
-const MemberList = () => {
-  return (
-    <div>MemberList</div>
-  )
-}
+type Props = {
+  groupInfo: GroupInfo;
+};
 
-export default MemberList
+const MemberList = ({ groupInfo }: Props) => {
+  return <div>MemberList</div>;
+};
+
+export default MemberList;
