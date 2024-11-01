@@ -11,7 +11,7 @@ const getGroupDetails = async (group_id: string) => {
     .eq('group_id', group_id)
     .single();
   if (state.status !== 200) throw state.error;
-  const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, state.data?.group_image_url);
+  const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, state.data?.group_image_url as string);
   if (state.data) {
     return { ...state.data, group_image_url: signedImgUrl };
   }
@@ -30,7 +30,7 @@ const getGroupPostLists = async (user_id: string) => {
 
 const getPostListsByGroupId = async (group_id: string) => {
   const supabase = createClient();
-  const { data, error } = await supabase.from('post').select('post_thumbnail_image').eq('group_id', group_id).single();
+  const { data, error } = await supabase.from('posts').select('post_thumbnail_image').eq('group_id', group_id).single();
   if (error) throw error;
   return data;
 };
@@ -44,13 +44,13 @@ const getRandomGroupId = async (userId: string) => {
   return null;
 };
 
-const getRandomThumbnail = async (groupId: string) => {
-  const supabase = createClient();
-  const { data, error } = await supabase.rpc('get_group_thumbnail_by_group_id', {
-    input_group_id: groupId,
-  });
-  if (data) return data as string;
-  return null;
-};
+// const getRandomThumbnail = async (groupId: string) => {
+//   const supabase = createClient();
+//   const { data, error } = await supabase.rpc('get_group_thumbnail_by_group_id', {
+//     input_group_id: groupId,
+//   });
+//   if (data) return data as string;
+//   return null;
+// };
 
-export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId, getRandomThumbnail };
+export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId };
