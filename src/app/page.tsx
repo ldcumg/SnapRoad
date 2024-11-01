@@ -1,9 +1,9 @@
 'use client';
 
-import Tabs from '@/components/ui/Tabs';
 import { Buttomsheet } from '@/components/ui/buttomsheet';
 import Buttons from '@/components/ui/buttons';
 import Colors from '@/components/ui/colors';
+import Tabs from '@/components/ui/tabs';
 import { Tab } from '@/stories/Tab';
 
 const Page = () => {
