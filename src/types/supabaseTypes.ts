@@ -97,6 +97,7 @@ export type Database = {
         Row: {
           created_at: string
           deleted_at: string | null
+          group_id: string | null
           id: number
           is_cover: boolean
           origin_created_at: string
@@ -112,6 +113,7 @@ export type Database = {
         Insert: {
           created_at?: string
           deleted_at?: string | null
+          group_id?: string | null
           id?: number
           is_cover?: boolean
           origin_created_at?: string
@@ -127,6 +129,7 @@ export type Database = {
         Update: {
           created_at?: string
           deleted_at?: string | null
+          group_id?: string | null
           id?: number
           is_cover?: boolean
           origin_created_at?: string
@@ -140,6 +143,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "images_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["group_id"]
+          },
           {
             foreignKeyName: "images_post_id_fkey"
             columns: ["post_id"]
@@ -156,58 +166,20 @@ export type Database = {
           },
         ]
       }
-      images_test: {
-        Row: {
-          created_at: string
-          id: number
-          is_cover: boolean
-          post_id: string | null
-          post_image_name: string
-          post_image_url: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          is_cover?: boolean
-          post_id?: string | null
-          post_image_name?: string
-          post_image_url?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          is_cover?: boolean
-          post_id?: string | null
-          post_image_name?: string
-          post_image_url?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "images_test_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["post_id"]
-          },
-        ]
-      }
       posts: {
         Row: {
           created_at: string
           deleted_at: string | null
           group_id: string | null
-          post_address: string | null
-          post_desc: string | null
+          image_array: Json | null
+          post_address: string
+          post_date: string
+          post_desc: string
           post_id: string
-          post_lat: string | null
-          post_lng: string | null
-          post_thumbnail_image: string | null
+          post_lat: string
+          post_lng: string
+          post_thumbnail_image: string
+          post_time: string
           updated_at: string | null
           user_id: string | null
         }
@@ -215,12 +187,15 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           group_id?: string | null
-          post_address?: string | null
-          post_desc?: string | null
+          image_array?: Json | null
+          post_address?: string
+          post_date?: string
+          post_desc?: string
           post_id?: string
-          post_lat?: string | null
-          post_lng?: string | null
-          post_thumbnail_image?: string | null
+          post_lat?: string
+          post_lng?: string
+          post_thumbnail_image?: string
+          post_time?: string
           updated_at?: string | null
           user_id?: string | null
         }
@@ -228,12 +203,15 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           group_id?: string | null
-          post_address?: string | null
-          post_desc?: string | null
+          image_array?: Json | null
+          post_address?: string
+          post_date?: string
+          post_desc?: string
           post_id?: string
-          post_lat?: string | null
-          post_lng?: string | null
-          post_thumbnail_image?: string | null
+          post_lat?: string
+          post_lng?: string
+          post_thumbnail_image?: string
+          post_time?: string
           updated_at?: string | null
           user_id?: string | null
         }
@@ -286,22 +264,22 @@ export type Database = {
       }
       tags: {
         Row: {
-          group_id: string | null
+          group_id: string
+          id: string
           post_id: string
-          tag_id: string
-          tag_title: string | null
+          tag_title: string
         }
         Insert: {
-          group_id?: string | null
-          post_id?: string
-          tag_id?: string
-          tag_title?: string | null
+          group_id: string
+          id?: string
+          post_id: string
+          tag_title?: string
         }
         Update: {
-          group_id?: string | null
+          group_id?: string
+          id?: string
           post_id?: string
-          tag_id?: string
-          tag_title?: string | null
+          tag_title?: string
         }
         Relationships: [
           {
