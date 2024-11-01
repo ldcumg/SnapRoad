@@ -1,6 +1,6 @@
-import { generateUniqueFileName } from '@/services/client-action/fileActions';
 import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/imageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
+import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 

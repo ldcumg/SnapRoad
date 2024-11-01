@@ -1,4 +1,6 @@
-import { generateUniqueFileName } from './fileActions';
+'./fileActions';
+
+import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
 
 const BUCKET_NAME = 'tour_images';

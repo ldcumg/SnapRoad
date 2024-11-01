@@ -1,7 +1,7 @@
 import SortableImage from './SortableImage';
-import { useDeleteImage } from '@/hooks/queries/byUse/useDeleteImageMutation';
-import { useSetCoverImage } from '@/hooks/queries/byUse/useSetCoverImageMutation';
-import { useUploadImage } from '@/hooks/queries/byUse/useUploadImageMutation';
+import { useDeleteImage } from '@/hooks/queries/byUse/usePostDeleteImageMutation';
+import { useSetCoverImage } from '@/hooks/queries/byUse/usePostSetCoverImageMutation';
+import { useUploadImage } from '@/hooks/queries/byUse/usePostUploadImageMutation';
 import { fetchSignedUrl } from '@/services/client-action/imageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import browserClient from '@/utils/supabase/client';
