@@ -1,11 +1,13 @@
 'use client';
 
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
-import GroupMap from '@/components/groupDetail/GroupMap';
+import GroupMapSearch from '@/components/groupDetail/GroupMapSearch';
+// import GroupMap from '@/components/groupDetail/GroupMap';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useKakaoLoader } from 'react-kakao-maps-sdk';
+
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -35,7 +37,8 @@ const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } 
         <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
 
-      {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />}
+      {/* {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />} */}
+      {isMap ? <GroupMapSearch groupId={groupId} /> : <GroupAlbum />}
       <div>
         <Link href={`/group/${groupId}/post`}>
           <button>포스트 작성</button>
