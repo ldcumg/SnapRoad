@@ -58,7 +58,7 @@ export default function Page() {
                 op: 'test',
               },
               async () => {
-                const res = await fetch('/api/sentry-example-api');
+                const res = await fetch('/api/sentry');
                 if (!res.ok) {
                   throw new Error('Sentry Example Frontend Error');
                 }

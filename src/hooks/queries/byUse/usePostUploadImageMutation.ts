@@ -53,6 +53,7 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
             id: savedData.id,
             userId: savedData.user_id,
             isCover: savedData.is_cover,
+            postImageName: uniqueFileName,
             createdAt: currentDate,
             filename: uniqueFileName,
             latitude: exifData.latitude,
