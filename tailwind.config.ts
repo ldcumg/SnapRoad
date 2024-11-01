@@ -177,6 +177,7 @@ const config: Config = {
       boxShadow: {
         BG_S: '0px 0px 4px rgba(0, 0, 0, 0.25)',
         BG_grn: '0px 0px 4px #009E6C',
+        BG_TopButton: '0px 0px 8px rgba(86, 48, 86, 35)',
       },
       borderRadius: {
         lg: 'var(--radius)',

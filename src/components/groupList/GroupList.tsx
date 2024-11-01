@@ -19,11 +19,11 @@ const GroupList = () => {
   const FlattedData = data?.pages.flat();
   if (isFetchNextPageError) throw new Error('에러 발생!');
   return (
-    <div className='mx-4'>
+    <div className='w-full px-4 flex justify-between'>
       {isFetching && !data ? (
         <GroupItemSkeleton />
       ) : FlattedData?.length ? (
-        <ul className='grid grid-cols-2 gap-[15px]'>
+        <ul className='grid grid-cols-2 gap-4 justify-items-center w-full'>
           {FlattedData.map((el) => {
             return (
               <GroupItem

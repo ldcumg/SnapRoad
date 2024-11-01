@@ -3,13 +3,14 @@
 import Modal from '../_common/Modal';
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
+import { Button } from '@/stories/Button';
 import { useRouter } from 'next/navigation';
 
 const GroupAddButton = () => {
   const [isBottomSheetOpen, handleBottomSheetOpen] = useIsOpen();
   const router = useRouter();
   return (
-    <div className='flex flex-row gap-[17px] mx-4'>
+    <div className='flex flex-row w-full justify-between gap-4 px-4 py-5'>
       <Modal
         isModalOpen={isBottomSheetOpen}
         handleModalOpen={handleBottomSheetOpen}
@@ -19,18 +20,25 @@ const GroupAddButton = () => {
           handleBottomSheetOpen={handleBottomSheetOpen}
         />
       </Modal>
-      <button
-        className='bg-white text-black border border-solid border-black p-[10px] w-[160px] h-[56px]'
+      <Button
+        label='초대코드 입력'
+        variant='outlineGray'
         onClick={handleBottomSheetOpen}
       >
-        초대 코드 입력하기
-      </button>
-      <button
-        className='bg-black text-white p-[10px] w-[160px] h-[56px]'
+        <img
+          src='/svgs/User_Group.svg'
+          alt=''
+        />
+      </Button>
+      <Button
+        label='그룹 생성하기'
         onClick={() => router.push('/makegroup')}
       >
-        + 그룹 생성하기
-      </button>
+        <img
+          src='/svgs/Plus_LG.svg'
+          alt=''
+        />
+      </Button>
     </div>
   );
 };
