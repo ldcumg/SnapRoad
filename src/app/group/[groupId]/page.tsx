@@ -19,7 +19,6 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.member);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
-  console.log('groupInfo =>', groupInfo);
 
   if (isPending) return <>로딩</>;
 
@@ -75,7 +74,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         <Link href='/'>
           <Logo />
         </Link>
-        <h3>{groupInfo.group_title}</h3>
+        <h2>{groupInfo.group_title}</h2>
         {handleChangeMode()}
       </header>
       {groupDetailMode()}
