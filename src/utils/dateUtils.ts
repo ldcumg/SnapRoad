@@ -37,6 +37,20 @@ export const formatDateToPostgres = (dateString: string): string => {
 };
 
 /**
+ * 날짜를 YY.MM.DD형식으로 변환
+ * @param dateString = created_at과 같은 Date형식의 문자열
+ */
+export const formatDateToYY_MM_DD = (dateString: string | undefined): string => {
+  if (!dateString) return '';
+  const dateObj = new Date(dateString);
+  if (isNaN(dateObj.getTime())) return '';
+  const year = String(dateObj.getFullYear()).slice(-2);
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}.${month}.${day}`;
+};
+
+/**
  * 게시글 상세 페이지의 날짜 정보 노출 형식
  * @param dateString 예: 2024-10-29T16:18:09.87699+00:00
  * @returns 예: 2024년 10월 30일 오전 1:18

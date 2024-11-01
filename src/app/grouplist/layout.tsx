@@ -1,3 +1,4 @@
+import TopButton from '@/components/_common/TopButton';
 import GroupListHeader from '@/components/groupList/GroupListHeader';
 import type { Metadata } from 'next';
 
@@ -12,6 +13,7 @@ type Props = Readonly<{ children: React.ReactNode }>;
 const GroupDetailLayout = ({ children }: Props) => {
   return (
     <>
+      <TopButton />
       <GroupListHeader />
       {children}
     </>

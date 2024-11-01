@@ -7,7 +7,7 @@ type Props = {
 
 export const metadata: Metadata = {
   title: '그룹 생성 페이지',
-  description: '우리 그룹을 만들어 추억을 서로 공유해봐요!',
+  description: '그룹을 만들어 추억을 서로 공유해봐요!',
 };
 
 const MakeGroupPage = ({ searchParams: { update_for } }: Props) => {
