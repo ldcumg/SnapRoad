@@ -48,7 +48,7 @@ const LoginForm = () => {
         <Button
           type='submit'
           label='로그인'
-          primary={true}
+          variant='primary'
         />
       </form>
       <p>소셜 계정으로 로그인</p>

@@ -50,7 +50,7 @@ const PasswordResetForm = () => {
         <Button
           type='submit'
           label='변경하기'
-          primary={true}
+          variant='primary'
         />
       </form>
     </div>

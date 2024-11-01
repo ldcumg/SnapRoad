@@ -1,5 +1,5 @@
 import { fetchDeleteComment, fetchInsertComment, fetchUpdateComment } from '@/services/server-action/commentAction';
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 /** 댓글 등록 */
 export const usePostComment = () => {

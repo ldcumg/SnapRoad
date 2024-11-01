@@ -5,23 +5,7 @@ import CommentForm from './CommentForm';
 import { useCommentsQuery } from '@/hooks/queries/byUse/useCommentQueries';
 import React from 'react';
 
-// interface Comment {
-//   comment_id: string;
-//   post_id: string;
-//   parent_id: string | null;
-//   user_id: string;
-//   comment_desc: string;
-//   created_at: string;
-//   updated_at: string;
-//   deleted_at: string | null;
-//   profiles: {
-//     user_id: string;
-//     user_nickname: string;
-//   };
-// }
-
 interface CommentsProps {
-  // comments: Comment[];
   postId: string;
   userId: string;
 }
@@ -30,8 +14,8 @@ const Comments = ({ postId, userId }: CommentsProps) => {
   /** 댓글 조회 */
   const { data: comments, isLoading, isError } = useCommentsQuery(postId);
 
-  if (isError) return <>임시 오류,,</>;
-  if (isLoading) return <>로딩중...</>;
+  if (isError) return <>임시 오류 ...</>;
+  if (isLoading) return <>임시 로딩중...</>;
 
   return (
     <ul className='flex flex-col gap-5 border-t'>

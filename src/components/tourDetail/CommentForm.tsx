@@ -14,8 +14,9 @@ const CommentForm = ({
 
   const { mutate: fetchPostComment } = usePostComment();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     fetchPostComment({
       postId: newComment.postId,
       userId: newComment.userId,

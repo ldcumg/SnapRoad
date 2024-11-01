@@ -1,10 +1,8 @@
-import OptionsMenu from './OptionsMenu';
 import { useDeleteComment, useUpdateComment } from '@/hooks/queries/byUse/useCommentMutation';
 import { useGetProfileImageUrl } from '@/hooks/queries/byUse/useStorageQueries';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-// TODO 타입
 const Comment = ({
   commentId,
   userId,
@@ -18,14 +16,27 @@ const Comment = ({
 }) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [newCommentDesc, setNewCommentDesc] = useState<string>(commentDesc!);
-  // const []
-  console.log('author :>> ', author);
-  console.log('commentId :>> ', commentId);
+  const [isVisible, setIsVisible] = useState(false);
 
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: updateComment } = useUpdateComment();
+  const { data: profileImageUrl } = useGetProfileImageUrl(author?.user_image_url);
 
-  const [isVisible, setIsVisible] = useState(false);
+  const commentMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (commentMenuRef.current && !commentMenuRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsVisible((prev) => !prev);
@@ -36,12 +47,9 @@ const Comment = ({
     setIsEditMode(false);
   };
 
-  const { data: profileImageUrl } = useGetProfileImageUrl(author?.user_image_url);
-
   return (
     <div className='flex items-center gap-1 w-full'>
       <div>
-        {' '}
         <Image
           alt='프로필 이미지'
           src={profileImageUrl!}
@@ -61,35 +69,42 @@ const Comment = ({
               <button onClick={handleUpdateComment}>수정</button>
             </>
           ) : (
-            <p>{commentDesc}</p>
-          )}
-
-          <div className='relative flex'>
-            <button onClick={toggleMenu}>
-              <Image
-                src={'/svgs/Dots.svg'}
-                alt='더보기'
-                width={20}
-                height={20}
-              />
-            </button>
-            {isVisible && (
-              <div className='flex flex-col absolute border border-black bg-white z-10 top-5 right-1 w-20'>
-                <button
-                  onClick={(e) => setIsEditMode(true)}
-                  className='border-b border-black'
-                >
-                  수정하기
+            <>
+              <p>{commentDesc}</p>
+              <div
+                className='relative flex'
+                ref={commentMenuRef}
+              >
+                <button onClick={toggleMenu}>
+                  <Image
+                    src={'/svgs/Dots.svg'}
+                    alt='더보기'
+                    width={20}
+                    height={20}
+                  />
                 </button>
-                <button
-                  onClick={() => deleteComment(commentId)}
-                  className='text-red-600'
-                >
-                  삭제하기
-                </button>
+                {isVisible && (
+                  <div className='flex flex-col absolute border border-black bg-white z-10 top-5 right-1 w-20'>
+                    <button
+                      onClick={() => {
+                        setIsEditMode(true);
+                        setIsVisible(false);
+                      }}
+                      className='border-b border-black'
+                    >
+                      수정하기
+                    </button>
+                    <button
+                      onClick={() => deleteComment(commentId)}
+                      className='text-red-600'
+                    >
+                      삭제하기
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>
