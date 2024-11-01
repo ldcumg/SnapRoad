@@ -19,7 +19,7 @@ const GroupList = () => {
   const FlattedData = data?.pages.flat();
   if (isFetchNextPageError) throw new Error('에러 발생!');
   return (
-    <div>
+    <div className='mx-4'>
       {isFetching && !data ? (
         <GroupItemSkeleton />
       ) : FlattedData?.length ? (

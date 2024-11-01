@@ -9,7 +9,7 @@ const GroupAddButton = () => {
   const [isBottomSheetOpen, handleBottomSheetOpen] = useIsOpen();
   const router = useRouter();
   return (
-    <div className='flex flex-row gap-[17px]'>
+    <div className='flex flex-row gap-[17px] mx-4'>
       <Modal
         isModalOpen={isBottomSheetOpen}
         handleModalOpen={handleBottomSheetOpen}
