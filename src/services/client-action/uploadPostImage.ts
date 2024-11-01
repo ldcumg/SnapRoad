@@ -1,9 +1,6 @@
-'./fileActions';
-
+import { BUCKET_NAME } from '@/constants/constants';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
-
-const BUCKET_NAME = 'tour_images';
 
 /**
  * 다중 파일 업로드
