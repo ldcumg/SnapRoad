@@ -55,7 +55,7 @@ const SignUpForm = () => {
         <Button
           type='submit'
           label='회원가입'
-          primary={true}
+          variant='primary'
         />
       </form>
       <p>

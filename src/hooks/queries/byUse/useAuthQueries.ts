@@ -1,4 +1,4 @@
-import { getSession } from '@/services/server-action/authActions';
+import { getSession, getUserData } from '@/services/server-action/authActions';
 import { useQuery } from '@tanstack/react-query';
 
 /** 사용자 세션 */
