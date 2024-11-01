@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useKakaoLoader } from 'react-kakao-maps-sdk';
 
-
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
 type Props = Readonly<{
@@ -39,11 +38,6 @@ const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } 
 
       {/* {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />} */}
       {isMap ? <GroupMapSearch groupId={groupId} /> : <GroupAlbum />}
-      <div>
-        <Link href={`/group/${groupId}/post`}>
-          <button>포스트 작성</button>
-        </Link>
-      </div>
     </>
   );
 };

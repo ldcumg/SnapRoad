@@ -95,9 +95,6 @@ const Nav = () => {
         <li>
           <Link href={`/group/a6706b3b-6a01-4ffc-ac68-49d8872dbd5d/post`}>포스트 쓰기</Link>
         </li>
-        <li>
-          <Link href={`/guide`}>스타일 가이드</Link>
-        </li>
         {!session ? (
           <>
             <li>
@@ -117,6 +114,12 @@ const Nav = () => {
             </li>
             <li>
               <Link href={`/mypage`}>mypage</Link>
+            </li>
+            <li>
+              <Link href={`/guide`}>스타일 가이드</Link>
+            </li>
+            <li>
+              <Link href={'/admin'}>어드민</Link>
             </li>
             <li>
               <span>{userName}님</span>

@@ -3,6 +3,7 @@
 import { UploadedImageData } from './type';
 import { fetchSignedUrl } from '@/services/client-action/imageActions';
 import browserClient from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type PostFormProps = {
@@ -15,6 +16,7 @@ type PostFormProps = {
 };
 
 const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFormProps) => {
+  const router = useRouter();
   const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
@@ -54,8 +56,10 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFo
     // 대표 이미지 설정 및 위치 정보
     const coverImage = imagesData.find((image) => image.isCover);
     const locationImage = imagesData.find((image) => image.latitude && image.longitude);
-    const postLat = locationImage?.latitude || null;
-    const postLng = locationImage?.longitude || null;
+    const defaultLat = '위도 없음';
+    const defaultLng = '경도 없음';
+    const postLat = locationImage?.latitude || defaultLat;
+    const postLng = locationImage?.longitude || defaultLng;
     const imageArray = imagesData.map((image) => image.filename);
 
     // 제출 데이터 준비
@@ -69,6 +73,7 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFo
       post_lng: postLng,
       post_thumbnail_image: coverImage?.filename || null,
       image_array: imageArray,
+      post_address: decodedAddressName || null,
     };
 
     try {
@@ -84,7 +89,7 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFo
         return;
       }
 
-      console.log('포스트가 성공적으로 제출되었습니다. post_id:', post);
+      console.log('포스트가 성공적으로 제출되었습니다. post_id:', post, postData);
 
       // 생성된 post_id
       const postId = post.post_id;
@@ -119,17 +124,20 @@ const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFo
         } else {
           console.log('태그가 성공적으로 저장되었습니다.');
         }
+
+        // router.push(`/group/${groupId}`);
       }
     } catch (error) {
       console.error('포스트 제출 중 오류 발생:', error);
     }
   };
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <div className='PostForm'>
-      <h1>그룹 {groupId} 포스트 작성</h1>
-
-      <p>{decodedAddressName && <p>주소: {decodedAddressName}</p>}</p>
       <form
         className='w-full border border-black flex flex-col'
         onSubmit={submitPost}

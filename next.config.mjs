@@ -4,7 +4,14 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: [`${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: `${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`,
+        port: '',
+        pathname: '**',
+      },
+    ],
   },
 };
 

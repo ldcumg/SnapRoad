@@ -1,11 +1,11 @@
 'use client';
 
-import ImageSlide from '@/components/post/ImageSlide';
 import PostForm from '@/components/post/PostForm';
+import PostImageSlide from '@/components/post/PostImageSlide';
 import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
@@ -14,14 +14,13 @@ type Props = {
 
 const PostPage = ({ params: { groupId } }: Props) => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
   const addressName = searchParams.get('address_name');
   const latNumber = lat ? parseFloat(lat) : undefined;
   const lngNumber = lng ? parseFloat(lng) : undefined;
-
-  console.log('URL로부터 받은 address_name:', addressName);
 
   const { data: user, isLoading: userLoading, error: userError } = useUserQuery();
   const { images } = useImageUploadStore();
@@ -33,9 +32,26 @@ const PostPage = ({ params: { groupId } }: Props) => {
   const userId = user.id;
   const uploadSessionId = uuidv4();
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <div className='w-full'>
-      <ImageSlide
+      {/* 상단 헤더 영역 */}
+
+      <div className='flex items-center justify-between p-4 border-b border-gray-300'>
+        {addressName && <p className='text-gray-500'>{decodeURIComponent(addressName)}</p>}
+        <button
+          type='button'
+          className='back-button'
+          onClick={handleGoBack}
+        >
+          뒤로 가기
+        </button>
+      </div>
+      <h1>그룹 {groupId} 포스트 작성</h1>
+      <PostImageSlide
         userId={userId}
         groupId={groupId}
         uploadSessionId={uploadSessionId}
@@ -46,7 +62,7 @@ const PostPage = ({ params: { groupId } }: Props) => {
         imagesData={images}
         lat={latNumber}
         lng={lngNumber}
-        addressName={decodeURIComponent(addressName)}
+        addressName={addressName ? decodeURIComponent(addressName) : undefined}
       />
     </div>
   );

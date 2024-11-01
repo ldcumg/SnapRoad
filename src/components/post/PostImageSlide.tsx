@@ -4,9 +4,10 @@ import { useSetCoverImage } from '@/hooks/queries/byUse/useSetCoverImageMutation
 import { useUploadImage } from '@/hooks/queries/byUse/useUploadImageMutation';
 import { fetchSignedUrl } from '@/services/client-action/imageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
+import browserClient from '@/utils/supabase/client';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface ImageListProps {
   userId: string;
@@ -14,10 +15,41 @@ interface ImageListProps {
   uploadSessionId: string;
 }
 
-const ImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) => {
-  const { images, addImages, deleteImage, setImages } = useImageUploadStore();
+const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) => {
+  const { images, addImages, deleteImage, setImages, resetImages } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const prevGroupIdRef = useRef<string | null>(null);
+
+  const loadImagesForGroup = async (groupId: string) => {
+    try {
+      const { data, error } = await browserClient
+        .from('images')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('upload_session_id', uploadSessionId);
+
+      if (error) {
+        console.error('이미지 로드 오류:', error.message);
+        return [];
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('이미지 로드 중 오류 발생:', error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    if (prevGroupIdRef.current !== groupId) {
+      resetImages(); // 그룹이 바뀔 때 이미지 상태 초기화
+      prevGroupIdRef.current = groupId;
+
+      // 그룹에 맞는 이미지를 로드
+      loadImagesForGroup(groupId);
+    }
+  }, [groupId, resetImages]);
 
   const bucketName = 'tour_images';
   const folderName = groupId;
@@ -158,20 +190,26 @@ const ImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) => {
           </div>
         ))}
         {images.length < 10 && (
-          <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
-            <input
-              type='file'
-              accept='image/*'
-              multiple
-              className='hidden'
-              onChange={(e) => handleImageUpload(e.target.files)}
-            />
-            <span className='text-2xl font-bold text-gray-400'>+</span>
-          </label>
+          <form
+            onSubmit={() => {
+              console.log('hh');
+            }}
+          >
+            <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
+              <input
+                type='file'
+                accept='image/*'
+                multiple
+                className='hidden'
+                onChange={(e) => handleImageUpload(e.target.files)}
+              />
+              <span className='text-2xl font-bold text-gray-400'>+</span>
+            </label>
+          </form>
         )}
       </div>
     </section>
   );
 };
 
-export default ImageSlide;
+export default PostImageSlide;

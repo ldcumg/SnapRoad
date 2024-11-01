@@ -1,6 +1,6 @@
 export interface UploadedImageData {
   id: number;
-  // path: string;
+  postId?: string;
   blobUrl: string;
   filename: string;
   latitude?: string;
