@@ -44,3 +44,9 @@ export type GroupInfo = {
     };
   }[];
 };
+
+export enum GroupDetailMode {
+  map = 'map',
+  album = 'album',
+  member = 'member',
+}

@@ -1,15 +1,16 @@
 'use client';
 
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import type { GroupInfo } from '@/types/groupTypes';
+import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
 type Props = {
   groupId: string;
   groupInfo: GroupInfo;
+  setMode: React.Dispatch<React.SetStateAction<GroupDetailMode>>;
 };
 
-const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_desc } }: Props) => {
+const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_desc }, setMode }: Props) => {
   const { data: postsImages, isPending, isError, error } = getGroupPostsImagesQuery(groupId);
 
   if (isPending) return;
@@ -25,7 +26,7 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
       <div>
         <img src={group_image_url} />
         <div>
-          <p>사람 {user_group.length}</p>
+          <button onClick={() => setMode(GroupDetailMode.member)}>사람 {user_group.length}</button>
           <div>설정</div>
           <p>{group_desc}</p>
         </div>
