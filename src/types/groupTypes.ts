@@ -26,6 +26,6 @@ export type GroupWithCounts = {
   group_id: string;
   group_image_url: string;
   group_title: string;
-  updated_at: Date;
+  updated_at: string;
   user_count: number;
 };

@@ -22,6 +22,10 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
         input_invite_code: value.inviteCode,
         input_user_id: userId,
       });
+      if (!existingMember) {
+        alert('현재 가입할수 없습니다! 잠시후 재시도해주세요.');
+        return;
+      }
       const { returned_group_id, is_member } = existingMember[0];
       if (!returned_group_id) {
         alert('초대코드를 다시 확인해주세요!');

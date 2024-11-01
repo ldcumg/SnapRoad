@@ -1,5 +1,6 @@
 'use server';
 
+import { getSignedImgUrl } from './getSignedImgUrl';
 import { SUCCESS_LOGIN, SUCCESS_SIGN_UP } from '@/constants/authMessage';
 import { getErrorMessage } from '@/constants/supabaseErrorCode';
 import { createClient } from '@/utils/supabase/server';
@@ -63,5 +64,22 @@ export const resetPassword = async (newPassword: string) => {
     password: newPassword,
   });
   if (error) throw new Error(error.message);
+  return data;
+};
+
+export const getUserData = async (userId: string) => {
+  const supabase = createClient();
+  let { data, error } = await supabase
+    .from('profiles')
+    .select('user_nickname, user_image_url')
+    .eq('user_id', userId)
+    .single();
+  if (error) throw new Error(error.message);
+  if (data?.user_image_url) {
+    const signedImgUrl = await getSignedImgUrl('avatars', 60 * 60 * 24, data.user_image_url);
+    if (signedImgUrl) {
+      data = { ...data, user_image_url: signedImgUrl };
+    }
+  }
   return data;
 };

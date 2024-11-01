@@ -4,6 +4,7 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   reactStrictMode: false,
   images: {
+    // domains: [`${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`],
     remotePatterns: [
       {
         protocol: 'https',
@@ -14,7 +15,7 @@ const nextConfig = {
     ],
   },
 };
-
+// https://seftmlefjwyijhjjjzpt.supabase.co/storage/v1/object/sign/group_image/6f274ddf-d7a3-42eb-b775-849b61
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options

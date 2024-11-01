@@ -81,11 +81,11 @@ const TourImages = ({ images }: TourImagesProps) => {
           )}
         </div>
       </div>
+      {/* PC 버전 */}
       {/* <div className='flex justify-around'>
         <button onClick={handleMovePrev}>앞</button>
         <button onClick={handleMoveNext}>뒤</button>
       </div> */}
-
       <ul className='flex gap-1 justify-center'>
         {images.map((_, index) => {
           return (

@@ -1,7 +1,6 @@
 import { getGroupSignedImageUrls } from '@/services/groupServices';
-import { getSignedImgUrl } from '@/services/server-action/getSignedImgUrl';
 import { getSignedImgUrls } from '@/services/server-action/getSignedImgUrls';
-import { getGroupDetails, getRandomGroupId, getRandomThumbnail } from '@/services/server-action/groupServerActions';
+import { getGroupDetails } from '@/services/server-action/groupServerActions';
 import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -77,7 +76,6 @@ const useGroupRandomImageQuery = () => {
           { input_user_id: userId },
         );
         if (postDataList?.length) {
-          console.log('postDataList :>> ', postDataList);
           //TODO - tour_image버킷 폴더구조 변경 후 요청url변경필요
           const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
           const signedUrls = await getSignedImgUrls('tour_images', 60 * 60, imgNameArray);
