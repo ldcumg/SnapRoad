@@ -1,4 +1,4 @@
-import { resetCoverImage, setCoverImage } from '@/services/client-action/imageActions';
+import { resetCoverImage, setCoverImage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

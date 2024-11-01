@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 const meta = {
-  title: 'Components/BottomSheet',
+  title: 'Ui/BottomSheet',
   component: BottomSheet,
   parameters: {
     layout: 'centered',

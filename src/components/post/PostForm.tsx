@@ -1,7 +1,7 @@
 'use client';
 
 import { UploadedImageData } from './type';
-import { fetchSignedUrl } from '@/services/client-action/imageActions';
+import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import browserClient from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';

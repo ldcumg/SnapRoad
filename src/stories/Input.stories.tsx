@@ -1,9 +1,8 @@
-// Input.stories.tsx
 import { Input } from './Input';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Input> = {
-  title: 'Example/Input',
+  title: 'UI/Input',
   component: Input,
   parameters: {
     layout: 'centered',
@@ -22,45 +21,96 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: 'Username',
-    placeholder: 'Enter your username',
+    label: '라벨',
+    placeholder: '플레이스 홀더',
+  },
+};
+
+export const WithHelperText: Story = {
+  args: {
+    label: '비밀번호',
+    placeholder: '비밀번호를 입력하세요',
+    helperText: '8자 이상 작성하세요',
+  },
+};
+
+export const WithDeleteButton: Story = {
+  args: {
+    label: '삭제 가능한 입력',
+    placeholder: '텍스트를 입력하세요',
+    helperText: '이 입력 필드에는 삭제 버튼이 있습니다.',
+    onDeleteClick: () => console.log('삭제 버튼 클릭됨'),
   },
 };
 
 export const Disabled: Story = {
   args: {
-    label: 'Username',
-    placeholder: 'Enter your username',
+    label: '라벨',
+    placeholder: '입력 불가',
     disabled: true,
-  },
-};
-
-export const WithCustomPlaceholder: Story = {
-  args: {
-    label: 'Email',
-    placeholder: 'you@example.com',
+    helperText: '이것은 입력 불가 입력 필드입니다',
   },
 };
 
 export const Large: Story = {
   args: {
-    label: 'Username',
-    placeholder: 'Enter your username',
+    label: '라벨',
+    placeholder: '플레이스 홀더',
     size: 'large',
-  },
-};
-export const medium: Story = {
-  args: {
-    label: 'Username',
-    placeholder: 'Enter your username',
-    size: 'medium',
+    helperText: '이것은 큰 입력 필드입니다',
   },
 };
 
-export const Small: Story = {
+export const Medium: Story = {
   args: {
-    label: 'Username',
-    placeholder: 'Enter your username',
-    size: 'small',
+    label: '라벨',
+    placeholder: '플레이스 홀더',
+    size: 'medium',
+    helperText: '이것은 중간 크기의 입력 필드입니다',
+  },
+};
+
+export const Primary: Story = {
+  args: {
+    label: 'Primary 입력',
+    placeholder: 'Primary 스타일',
+    variant: 'primary',
+    helperText: 'Primary 색상 스타일입니다.',
+  },
+};
+
+export const Danger: Story = {
+  args: {
+    label: 'Danger 입력',
+    placeholder: '경고 스타일',
+    variant: 'danger',
+    helperText: '경고 색상 스타일입니다.',
+  },
+};
+
+export const OutlinePink: Story = {
+  args: {
+    label: 'Outline Pink 입력',
+    placeholder: '분홍색 테두리 스타일',
+    variant: 'outlinePink',
+    helperText: '분홍색 테두리 스타일입니다.',
+  },
+};
+
+export const OutlineGray: Story = {
+  args: {
+    label: 'Outline Gray 입력',
+    placeholder: '회색 테두리 스타일',
+    variant: 'outlineGray',
+    helperText: '회색 테두리 스타일입니다.',
+  },
+};
+
+export const DefaultVariant: Story = {
+  args: {
+    label: 'Default 입력',
+    placeholder: '기본 스타일',
+    variant: 'default',
+    helperText: '기본 색상 스타일입니다.',
   },
 };

@@ -2,7 +2,7 @@ import SortableImage from './SortableImage';
 import { useDeleteImage } from '@/hooks/queries/byUse/usePostDeleteImageMutation';
 import { useSetCoverImage } from '@/hooks/queries/byUse/usePostSetCoverImageMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/usePostUploadImageMutation';
-import { fetchSignedUrl } from '@/services/client-action/imageActions';
+import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import browserClient from '@/utils/supabase/client';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
@@ -143,7 +143,7 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
   return (
     <section className='flex flex-col items-center gap-4 p-4'>
       <div className='text-center text-gray-600 mb-2'>
-        <span className='text-sm'>이미지 업로드: {images.length} / 10</span>
+        <span className='text-sm m-'>이미지 업로드: {images.length} / 10</span>
       </div>
 
       <div className='w-full m-auto overflow-auto'>

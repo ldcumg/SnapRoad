@@ -1,4 +1,4 @@
-import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/imageActions';
+import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

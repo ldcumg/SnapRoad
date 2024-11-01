@@ -16,7 +16,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   onBlur?: () => void;
 }
 
-/** Primary UI component for user interaction */
 export const Button = ({
   type = 'button',
   variant = 'primary',
