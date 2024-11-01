@@ -35,3 +35,17 @@ export const formatDateToPostgres = (dateString: string): string => {
   const milliseconds = date.getMilliseconds().toString().padStart(6, '0');
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 };
+
+/**
+ * 날짜를 YY.MM.DD형식으로 변환
+ * @param dateString = created_at과 같은 Date형식의 문자열
+ */
+export const formatDateToYY_MM_DD = (dateString: string | undefined): string => {
+  if (!dateString) return '';
+  const dateObj = new Date(dateString);
+  if (isNaN(dateObj.getTime())) return '';
+  const year = String(dateObj.getFullYear()).slice(-2);
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}.${month}.${day}`;
+};
