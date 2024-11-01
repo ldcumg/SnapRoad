@@ -1,7 +1,8 @@
 'use client';
 
 import { Card, CardContent } from '../ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import RandomImageSkeleton from './RandomImageSkeleton';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { useGroupRandomImageQuery } from '@/hooks/queries/byUse/useGroupQueries';
 import { formatDateToYY_MM_DD } from '@/utils/dateUtils';
 import { getSlicedAddress } from '@/utils/getSlicedAddress';
@@ -10,12 +11,7 @@ import Autoplay from 'embla-carousel-autoplay';
 const RandomImage = () => {
   const { data: RandomData, isLoading } = useGroupRandomImageQuery();
 
-  if (isLoading)
-    return (
-      <div className='w-full flex justify-center items-center'>
-        <div className='w-[220px] h-[220px] bg-slate-400'>1</div>
-      </div>
-    );
+  if (isLoading) return <RandomImageSkeleton />;
   return (
     <>
       {RandomData?.length ? (
