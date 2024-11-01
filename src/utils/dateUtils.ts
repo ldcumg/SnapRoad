@@ -48,7 +48,8 @@ export const formatDateToYY_MM_DD = (dateString: string | undefined): string => 
   const month = String(dateObj.getMonth() + 1).padStart(2, '0');
   const day = String(dateObj.getDate()).padStart(2, '0');
   return `${year}.${month}.${day}`;
-  
+};
+
 /**
  * 게시글 상세 페이지의 날짜 정보 노출 형식
  * @param dateString 예: 2024-10-29T16:18:09.87699+00:00
