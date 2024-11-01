@@ -37,6 +37,8 @@ const TourDetail = async ({
     .eq('post_id', postId)
     .single();
 
+  console.log('posts 에서 가져온 글 data :>> ', data);
+
   if (error) console.error('error :>> ', error);
 
   if (!data) return <p>데이터 없음</p>;

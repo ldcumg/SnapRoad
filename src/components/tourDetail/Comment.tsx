@@ -1,5 +1,6 @@
 import OptionsMenu from './OptionsMenu';
 import { useDeleteComment, useUpdateComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { useGetProfileImageUrl } from '@/hooks/queries/byUse/useStorageQueries';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
@@ -7,7 +8,7 @@ import React, { useState } from 'react';
 const Comment = ({
   commentId,
   userId,
-  author,
+  author, // 댓글 작성자
   commentDesc,
 }: {
   commentId: string;
@@ -35,9 +36,19 @@ const Comment = ({
     setIsEditMode(false);
   };
 
+  const { data: profileImageUrl } = useGetProfileImageUrl(author?.user_image_url);
+
   return (
     <div className='flex items-center gap-1 w-full'>
-      <div>이미지</div>
+      <div>
+        {' '}
+        <Image
+          alt='프로필 이미지'
+          src={profileImageUrl!}
+          height={20}
+          width={20}
+        />
+      </div>
       <div className='w-full'>
         <span className='font-bold'>{author?.user_nickname}</span>
         <div className='flex justify-between'>

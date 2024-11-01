@@ -22,17 +22,23 @@ const Profile = ({ userId }: { userId: string }) => {
   // 1. 프로필 정보 조회(user_image_url) 사진명이 들어가있음
   const { data: profileData, isLoading: profileLoading, isError } = useProfilesQuery(userId);
 
+  console.log('profileData :>> ', profileData);
+
   /**
    * 2. 디비의 user_image_url (사진명) 으로 이미지 url 얻기
    * 1번에서 사용자 정보를 불러왔으면, profiles 의 user_image_url 이 null 인지 아닌지에 따라 분기처리됨
    * null : public 버킷에 있는 default 이미지를 불러옴
    * null 아님 : 해당 이미지명으로 private 에 있는 사진을 찾아서 signed url 로 만들어서 줌
    */
-  const { data: profileImageUrl, isLoading: imageLoading, error: imageError } = useGetProfileImageUrl(profileData);
+  // const {
+  //   data: profileImageUrl,
+  //   isLoading: imageLoading,
+  //   error: imageError,
+  // } = useGetProfileImageUrl(profileData?.[0]?.user_image_url || null);
 
   useEffect(() => {
-    if (profileData && profileData[0]?.user_nickname) {
-      setNewNickname(profileData[0].user_nickname);
+    if (profileData && profileData.profiles[0]?.user_nickname) {
+      setNewNickname(profileData.profiles[0].user_nickname);
     }
   }, [profileData]);
 
@@ -64,7 +70,7 @@ const Profile = ({ userId }: { userId: string }) => {
     } else {
       updateProfile({
         userId,
-        imageName: profileData?.[0]?.user_image_url,
+        imageName: profileData?.profiles?.[0]?.user_image_url!,
         newNickname,
       });
     }
@@ -72,7 +78,7 @@ const Profile = ({ userId }: { userId: string }) => {
     setIdEditMode(false);
   };
 
-  if (profileLoading || imageLoading) return <>loading...</>;
+  if (profileLoading) return <>로딩중...</>;
   //   if (profileImageUrl === undefined) return <>이미지 불러오는중</>;
 
   return (
@@ -91,7 +97,7 @@ const Profile = ({ userId }: { userId: string }) => {
           ) : (
             <Image
               alt='프로필 이미지'
-              src={profileImageUrl!}
+              src={profileData?.profileImageUrl!}
               height={100}
               width={100}
             />
@@ -125,14 +131,16 @@ const Profile = ({ userId }: { userId: string }) => {
         <>
           {/* 읽기모드 */}
           <div>
-            <Image
-              alt='프로필 이미지'
-              src={profileImageUrl!}
-              height={100}
-              width={100}
-            />
+            {profileData?.profileImageUrl ? (
+              <Image
+                alt='프로필 이미지'
+                src={profileData?.profileImageUrl!}
+                height={100}
+                width={100}
+              />
+            ) : null}
           </div>
-          <span>{profileData?.[0].user_nickname || '닉네임 없음'}</span>
+          <span>{profileData?.profiles[0].user_nickname || '닉네임 없음'}</span>
           <button onClick={() => setIdEditMode(true)}>프로필 수정</button>
           <Link href={'/mypage/account-setting'}>계정설정</Link>
         </>
