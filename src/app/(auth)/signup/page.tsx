@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 const SignUpPage = () => {
   return (
     <div className='px-4 mb-32'>
+      {/* TODO 분리하면 좋을듯 */}
       <div className='flex flex-col items-center gap-4 pt-10 pb-5'>
         <img
           src='/svgs/Logo.svg'

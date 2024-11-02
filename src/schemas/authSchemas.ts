@@ -17,12 +17,11 @@ const signUpSchema = z
   });
 
 const loginSchema = z.object({
-  email: z.string().min(1, {
-    message: '이메일을 입력해주세요.',
+  // TODO 중복되는거 공통으로 뺄 수 있나
+  email: z.string().email({
+    message: '유효하지 않은 이메일 형식이에요!',
   }),
-  password: z.string().min(1, {
-    message: '비밀번호를 입력해주세요.',
-  }),
+  password: z.string().regex(passwordRegex, '문자,숫자,특수문자 포함 6자리 이상을 입력해주세요!'),
 });
 
 export { signUpSchema, loginSchema };
