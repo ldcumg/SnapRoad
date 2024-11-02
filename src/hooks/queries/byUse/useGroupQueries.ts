@@ -60,6 +60,7 @@ type PostData = {
   created_at: string;
   post_address: string;
   post_thumbnail_image: string;
+  post_id: string;
   group_id: string;
 };
 type PostDataListType = PostData[] | null;
