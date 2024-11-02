@@ -1,5 +1,3 @@
-export type LocationInfo = Location & Latlng;
-
 export type Location = {
   id: string;
   placeName: string;
@@ -10,6 +8,8 @@ export type Latlng = {
   lat: number;
   lng: number;
 };
+
+export type LocationInfo = Location & Latlng;
 
 export type SearchResult = {
   id: string;

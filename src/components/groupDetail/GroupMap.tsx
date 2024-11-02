@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
 
 const SEARCH_INPUT = 'searchInput';
 
@@ -25,7 +25,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
-  console.log('postsPreView =>', postsPreView);
 
   //TODO - 객체로
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
@@ -33,6 +32,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
+  const polyline: Latlng[] = [];
 
   const {
     register,
@@ -137,10 +137,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     setSpotInfo({ placeName: '', address, lat, lng });
   };
 
-  /** 게시물을 추가 라우팅 */
+  /** 게시물 추가 라우팅 */
   const handleAddPostRoute = () => {
     if (isPostsView) {
-      //TODO - 라우트 주소 고치기
+      //TODO - 라우트 주소 수정하기
       route.push(`/group/${groupId}/임시`);
       return;
     }
@@ -149,6 +149,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     const { lat, lng, placeName, address } = spotInfo;
     const place = placeName || address;
 
+    //TODO - 라우트 주소 수정하기
     route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
@@ -216,12 +217,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
               },
             ]}
             disableClickZoom={true}
+            onClustered={(test) => console.log(test)}
             // onClusterclick={}
           >
-            {postsCoverImages.map(({ id, post_id, post_image_url, post_lat, post_lng }) => {
+            {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
+              polyline.push({ lat: post_lat, lng: post_lng });
+              // setPolyline((prev) => [...prev, { lat: post_lat, lng: post_lng }]);
               return (
                 <MapMarker
-                  key={id}
+                  key={post_image_url}
                   position={{ lat: post_lat, lng: post_lng }}
                   onClick={() => {
                     moveToMarker({ lat: post_lat, lng: post_lng });
@@ -259,6 +263,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
+        <Polyline
+          path={[polyline]}
+          strokeWeight={5} // 선의 두께 입니다
+          strokeColor={'#FFAE00'} // 선의 색깔입니다
+          strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+          strokeStyle={'solid'} // 선의 스타일입니다
+        />
       </Map>
       <button onClick={handleFindUserLocation}>
         <Geolocation_btn />

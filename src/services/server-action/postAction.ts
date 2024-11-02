@@ -35,7 +35,7 @@ export const getPostsCoverImagesPerGroup = async ({
 
   const { status, data, error } = await supabase
     .from('images')
-    .select('id, post_id, post_image_name, post_image_url, post_lat, post_lng')
+    .select('post_id, post_image_name, post_image_url, post_lat, post_lng')
     .eq('group_id', groupId)
     .eq('is_cover', true)
     .is('deleted_at', null);
