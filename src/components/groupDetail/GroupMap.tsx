@@ -1,8 +1,9 @@
 'use client';
 
+import { getGroupPostsQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { keywordSearch } from '@/services/server-action/mapAction';
-import type { LocationInfo } from '@/types/placesTypes';
+import type { LocationInfo } from '@/types/placeTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -16,7 +17,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
-  const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
@@ -33,15 +33,21 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     resolver: zodResolver(searchPlaceSchema),
   });
 
+  useEffect(() => {
+    //TODO - 데스크탑에서만 동작하게
+    setFocus(SEARCH_INPUT);
+  }, []);
+
   const { searchTerm: searchTermInvalidate } = errors;
   if (searchTermInvalidate) {
     toast.error(searchTermInvalidate.message as string);
   }
 
-  //TODO - 데스크탑에서만 적용되게 하기
-  useEffect(() => {
-    setFocus(SEARCH_INPUT);
-  }, []);
+  const { data: groupPosts, isPending, isError, error } = getGroupPostsQuery(groupId);
+
+  if (isPending) return <>로딩</>;
+
+  if (isError) throw new Error(error.message);
 
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput, more }: FieldValues) => {
@@ -115,7 +121,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       return;
     }
 
-    map.setLevel(6, { animate: true });
+    map.setLevel(3, { animate: true });
     map.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
   };
 
@@ -148,7 +154,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
         className='w-full h-[80vh]'
-        // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
+        // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
         level={13}
@@ -172,22 +178,28 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             disableClickZoom={true} // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정
             // onClusterclick={}
           >
-            {/* {postMarkers.map((marker) => (
-              <MapMarker
-                key={`marker-${marker.title}-${marker.position.lat},${marker.position.lng}`}
-                position={marker.position}
-                onClick={() => setInfo(marker)}
-                image={{
-                  // 기본 마커 이미지
-                  src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                  size: {
-                    width: 24,
-                    height: 35,
-                  }, // 마커이미지의 크기
-                }}
-                title={marker.title} // 마우스 호버 시 표시
-              ></MapMarker>
-            ))} */}
+            {/* {groupPosts.map(({ post_id, images }) => {
+              const { post_image_url, post_image_name, post_lat, post_lng } = images.find(
+                (image: PostImage) => image.is_cover,
+              );
+              return (
+                <MapMarker
+                  key={post_id}
+                  position={{ lat: post_lat, lng: post_lng }}
+                  // onClick={() => setInfo(post)}
+                  image={{
+                    // 기본 마커 이미지
+                    src: post_image_url,
+                    size: {
+                      width: 24,
+                      height: 35,
+                    }, // 마커이미지의 크기
+                    options: { alt: post_image_name },
+                  }}
+                  // title={post_image_name} // 마우스 호버 시 표시
+                />
+              );
+            })} */}
           </MarkerClusterer>
         ) : (
           <>

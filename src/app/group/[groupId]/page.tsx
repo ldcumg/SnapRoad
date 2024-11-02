@@ -1,8 +1,11 @@
 'use client';
 
+import Logo from '@/../public/svgs/Logo.svg';
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
-import GroupMapSearch from '@/components/groupDetail/GroupMapSearch';
-// import GroupMap from '@/components/groupDetail/GroupMap';
+import GroupMap from '@/components/groupDetail/GroupMap';
+import MemberList from '@/components/groupDetail/MemberList';
+import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
+import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -10,13 +13,16 @@ import { useKakaoLoader } from 'react-kakao-maps-sdk';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
-type Props = Readonly<{
-  params: { groupId: string };
-  searchParams: { 위치명: string; lat: string; lng: string };
-}>;
+type Props = Readonly<{ params: { groupId: string } }>;
 
-const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } }: Props) => {
-  const [isMap, setIsMap] = useState<boolean>(true);
+const GroupPage = ({ params: { groupId } }: Props) => {
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.member);
+
+  const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
+
+  if (isPending) return <>로딩</>;
+
+  if (isError) throw new Error(error.message);
 
   // const [loading, error] = useKakaoLoader({
   //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
@@ -27,17 +33,51 @@ const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } 
   //   if (loading) return;
   // }, [loading]);
 
+  /** 컴포넌트 조건부 렌더링 */
+  const groupDetailMode = () => {
+    switch (mode) {
+      case GroupDetailMode.map:
+        return <GroupMap groupId={groupId} />;
+      case GroupDetailMode.album:
+        return (
+          <GroupAlbum
+            groupId={groupId}
+            groupInfo={groupInfo}
+            setMode={setMode}
+          />
+        );
+      case GroupDetailMode.member:
+        return <MemberList groupInfo={groupInfo} />;
+      default:
+        throw new Error('잘못된 요청입니다.');
+    }
+  };
+
+  /** 조건부 렌더링 버튼 */
+  const handleChangeMode = () => {
+    switch (mode) {
+      case GroupDetailMode.map:
+        return <button onClick={() => setMode(GroupDetailMode.album)}>앨범</button>;
+      case GroupDetailMode.album:
+        return <button onClick={() => setMode(GroupDetailMode.map)}>지도</button>;
+      case GroupDetailMode.member:
+        return <button onClick={() => setMode(GroupDetailMode.album)}>X</button>;
+      default:
+        throw new Error('잘못된 요청입니다.');
+    }
+  };
+
   return (
     <>
       <ToastContainer />
       <header className='flex justify-between px-5'>
-        <Link href='/'>로고</Link>
-        <h4>그룹명</h4>
-        <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
+        <Link href='/'>
+          <Logo />
+        </Link>
+        <h2>{groupInfo.group_title}</h2>
+        {handleChangeMode()}
       </header>
-
-      {/* {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />} */}
-      {isMap ? <GroupMapSearch groupId={groupId} /> : <GroupAlbum />}
+      {groupDetailMode()}
     </>
   );
 };

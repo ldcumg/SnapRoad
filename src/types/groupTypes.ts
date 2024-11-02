@@ -29,3 +29,24 @@ export type GroupWithCounts = {
   updated_at: string;
   user_count: number;
 };
+
+export type GroupInfo = {
+  group_desc: string;
+  group_image_url: string;
+  group_invite_code: string;
+  group_title: string;
+  user_group: {
+    is_owner: boolean;
+    profiles: {
+      user_email: string;
+      user_image_url: string;
+      user_nickname: string;
+    };
+  }[];
+};
+
+export enum GroupDetailMode {
+  map = 'map',
+  album = 'album',
+  member = 'member',
+}

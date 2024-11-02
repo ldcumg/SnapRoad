@@ -1,6 +1,7 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import type { GroupInfo } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
 const getGroupDetails = async (group_id: string) => {
@@ -53,4 +54,21 @@ const getRandomGroupId = async (userId: string) => {
 //   return null;
 // };
 
-export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId };
+const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Promise<GroupInfo> => {
+  const supabase = createClient();
+
+  const { status, data, error } = await supabase
+    .from('group')
+    .select(
+      'group_title, group_desc, group_image_url, group_invite_code, user_group(is_owner, profiles(user_image_url, user_nickname, user_email))',
+    )
+    .eq('group_id', groupId)
+    .is('deleted_at', null)
+    .single();
+
+  if (status !== 200 && error) throw new Error(error.message);
+
+  return data as GroupInfo;
+};
+
+export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId, getGroupInfo };

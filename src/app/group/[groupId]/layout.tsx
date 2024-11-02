@@ -9,7 +9,7 @@ export const generateMetadata = async () => {
 type Props = Readonly<{
   children: React.ReactNode;
   params: { groupId: string };
-  // searchParams: { 위치명: string; lat: string; lng: string };
+  // searchParams: {  lat: string; lng: string };
 }>;
 
 const GroupDetailLayout = ({ children, params: { groupId } }: Props) => {
