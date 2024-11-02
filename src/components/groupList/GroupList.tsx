@@ -6,7 +6,6 @@ import GroupItem from './GroupItem';
 import GroupItemSkeleton from './GroupItemSkeleton';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { useGroupListInfiniteQuery } from '@/hooks/queries/byUse/useGroupQueries';
-import Link from 'next/link';
 
 const GroupList = () => {
   const { isFetching, data, hasNextPage, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
@@ -23,7 +22,8 @@ const GroupList = () => {
   if (isFetchNextPageError) throw new Error('에러 발생!');
   return (
     <>
-      <GroupAddButton dataLen={dataLen} />
+      {/* 데이터 fetching중 버튼이 깜빡이지 않도록 */}
+      {!isFetching ? <GroupAddButton dataLen={dataLen} /> : <div className='h-4'></div>}
       <div className='w-full px-4 flex flex-col justify-between'>
         {isFetching && !data ? (
           <GroupItemSkeleton />
