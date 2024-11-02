@@ -2,24 +2,24 @@
 
 import { Buttomsheet } from '@/components/ui/buttomsheet';
 import Buttons from '@/components/ui/buttons';
-import Colors from '@/components/ui/colors';
 import Example from '@/components/ui/example';
 import Inputs from '@/components/ui/inputs';
 import Modals from '@/components/ui/modals';
+import Palettes from '@/components/ui/palettes';
 import Tabs from '@/components/ui/tabs';
 import { Tab } from '@/stories/Tab';
 
 const GuidePage = () => {
   return (
-    <>
+    <section className='p-4'>
       <h1 className='text-2xl font-bold mb-8'>공통 StoryBook 컴포넌트</h1>
       <Tab
         tabs={[
           {
-            label: 'color',
+            label: 'Palette',
             content: (
               <div>
-                <Colors />
+                <Palettes />
               </div>
             ),
             onClick: () => console.log('color'),
@@ -81,7 +81,7 @@ const GuidePage = () => {
           },
         ]}
       />
-    </>
+    </section>
   );
 };
 export default GuidePage;
