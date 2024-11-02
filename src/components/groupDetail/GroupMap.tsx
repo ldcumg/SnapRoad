@@ -261,7 +261,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 position={{ lat: marker.lat, lng: marker.lng }}
                 onClick={() => moveToMarker(marker)}
                 image={{
-                  src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+                  src: '/svgs/Search_Result_Marker.svg',
                   size: {
                     width: 24,
                     height: 35,
