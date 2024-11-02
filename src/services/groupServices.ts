@@ -5,7 +5,7 @@ import { FieldValues } from 'react-hook-form';
 const makeGroupDataForUpdate = (value: FieldValues, update_for: string) => {
   return {
     group_id: update_for,
-    updated_at: new Date(),
+    updated_at: new Date().toISOString(),
     group_title: value.groupTitle,
     group_desc: value.groupDesc,
   };
@@ -17,7 +17,7 @@ const makeGroupDataToObj = (value: FieldValues): GroupObjType => {
     group_desc: value.groupDesc,
     group_invite_code: crypto.randomUUID(),
     group_status: 'recruiting',
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   };
 };
 
@@ -26,7 +26,7 @@ const makeUserGroupDataToObj = (userId: string, is_owner: boolean, group_id: str
     user_id: userId,
     group_id,
     is_owner,
-    joined_at: new Date(),
+    joined_at: new Date().toISOString(),
   };
 };
 

@@ -4,12 +4,12 @@ export type GroupObjType = {
   group_desc: string;
   group_invite_code: string;
   group_status: string;
-  created_at: Date;
+  created_at: string;
 };
 
 export type UpdateGroupObjType = {
   group_id: string;
-  updated_at: Date;
+  updated_at: string;
   group_title?: string;
   group_desc?: string;
 };
@@ -18,7 +18,7 @@ export type UserGroupType = {
   user_id: string;
   group_id: string;
   is_owner: boolean;
-  joined_at: Date;
+  joined_at: string;
 };
 
 export type GroupWithCounts = {
