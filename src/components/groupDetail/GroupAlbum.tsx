@@ -1,5 +1,6 @@
 'use client';
 
+import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
@@ -11,11 +12,20 @@ type Props = {
 };
 
 const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_desc }, setMode }: Props) => {
-  const { data: postsImages, isPending, isError, error } = getGroupPostsImagesQuery(groupId);
+  const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
+    getGroupPostsImagesQuery(groupId);
+  const observerRef = useIntersect(async (entry, observer) => {
+    observer.unobserve(entry.target);
+    if (hasNextPage && !isFetchingNextPage && !isFetching) {
+      fetchNextPage();
+    }
+  });
 
   if (isPending) return;
 
   if (isError) throw new Error(error.message);
+
+  const postsImages = data.pages.flat();
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -49,6 +59,11 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
           추억을 공유해보세요!
         </p>
       )}
+      {isFetchingNextPage && <div>fetching...</div>}
+      <div
+        id='observerTarget'
+        ref={observerRef}
+      ></div>
       <button onClick={handleScrollTop}>탑 스크롤</button>
     </>
   );

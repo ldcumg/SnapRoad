@@ -24,7 +24,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {
+      errors: { searchTerm: searchTermInvalidate },
+    },
     setFocus,
     getValues,
     resetField,
@@ -38,7 +40,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     setFocus(SEARCH_INPUT);
   }, []);
 
-  const { searchTerm: searchTermInvalidate } = errors;
   if (searchTermInvalidate) {
     toast.error(searchTermInvalidate.message as string);
   }
