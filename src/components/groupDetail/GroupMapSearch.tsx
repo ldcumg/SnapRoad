@@ -1,9 +1,8 @@
 'use client';
 
-import { getGroupPostsQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
-import { keywordSearch } from '@/services/server-action/mapAction';
-import type { LocationInfo } from '@/types/placeTypes';
+import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import type { LocationInfo } from '@/types/placesTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -13,10 +12,11 @@ import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 
 const SEARCH_INPUT = 'searchInput';
 
-const GroupMap = ({ groupId }: { groupId: string }) => {
+const GroupMapSearch = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [postMarkers, setPostMarkers] = useState();
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
@@ -33,23 +33,49 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     resolver: zodResolver(searchPlaceSchema),
   });
 
-  useEffect(() => {
-    //TODO - 데스크탑에서만 동작하게
-    setFocus(SEARCH_INPUT);
-  }, []);
-
   const { searchTerm: searchTermInvalidate } = errors;
   if (searchTermInvalidate) {
     toast.error(searchTermInvalidate.message as string);
   }
 
-  const { data: groupPosts, isPending, isError, error } = getGroupPostsQuery(groupId);
-
-  if (isPending) return <>로딩</>;
-
-  if (isError) throw new Error(error.message);
+  //TODO - 데스크탑에서만 적용되게 하기
+  useEffect(() => {
+    setFocus(SEARCH_INPUT);
+  }, []);
 
   /** 키워드 검색 */
+  // const searchLocation = async ({ searchInput, more }: FieldValues) => {
+  //   if (!map) {
+  //     toast.error('지도를 불러오지 못 했습니다.');
+  //     return;
+  //   }
+
+  //   isPostsView && setIsPostsView(false);
+
+  //   const keyword = searchInput ?? searchKeyword.current.keyword;
+  //   const {
+  //     results,
+  //     meta: { is_end },
+  //   } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+  //   setSearchResultMarkers((prev) => (more ? [...prev, ...results] : results));
+
+  //   // 검색된 장소 위치를 기준으로 지도 범위 재설정
+  //   const bounds = new kakao.maps.LatLngBounds();
+  //   results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+  //   map.panTo(bounds);
+
+  //   if (is_end) {
+  //     setHasMoreResults(false);
+  //     searchKeyword.current = { keyword: '', page: 1 };
+  //     return;
+  //   }
+
+  //   hasMoreResults || setHasMoreResults(true);
+  //   more
+  //     ? (searchKeyword.current.page = searchKeyword.current.page += 1)
+  //     : (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) });
+  // };
+
   const searchLocation = async ({ searchInput, more }: FieldValues) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
@@ -63,12 +89,23 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       results,
       meta: { is_end },
     } = await keywordSearch({ keyword, page: searchKeyword.current.page });
-    setSearchResultMarkers((prev) => (more ? [...prev, ...results] : results));
 
-    // 검색된 장소 위치를 기준으로 지도 범위 재설정
-    const bounds = new kakao.maps.LatLngBounds();
-    results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
-    map.panTo(bounds);
+    if (results.length > 0) {
+      const bounds = new kakao.maps.LatLngBounds();
+
+      // 각 결과에 주소 정보를 추가하고 범위를 확장하는 부분을 Promise.all로 비동기 처리
+      const updatedResults = await Promise.all(
+        results.map(async (result) => {
+          const address_name = await getAddress({ lat: result.lat, lng: result.lng });
+          result.address_name = address_name; // address_name 속성 추가
+          bounds.extend(new kakao.maps.LatLng(result.lat, result.lng));
+          return result;
+        }),
+      );
+
+      setSearchResultMarkers((prev) => (more ? [...prev, ...updatedResults] : updatedResults));
+      map.panTo(bounds);
+    }
 
     if (is_end) {
       setHasMoreResults(false);
@@ -103,15 +140,43 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   };
 
   /** 게시물을 추가할 장소 선택 */
-  const handleSelectSpot = () => {
+  // const handleSelectSpot = () => {
+  //   if (!map) {
+  //     toast.error('지도를 불러오지 못 했습니다.');
+  //     return;
+  //   }
+
+  //   const centerLatLng = map.getCenter();
+  //   if (!centerLatLng) return;
+  //   route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+  // };
+
+  /** 게시물을 추가할 장소 선택 주소 버전 */
+  const handleSelectSpot = async () => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
 
     const centerLatLng = map.getCenter();
-    if (!centerLatLng) return;
-    route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+    if (!centerLatLng) {
+      toast.error('중심 좌표를 가져올 수 없습니다.');
+      return;
+    }
+
+    const lat = centerLatLng.getLat();
+    const lng = centerLatLng.getLng();
+
+    try {
+      // getAddress 함수 호출 및 반환된 address 객체에서 address_name 속성 추출
+      const address = await getAddress({ lat, lng });
+      const address_name = address.address_name;
+
+      // 주소와 위도, 경도를 쿼리 파라미터로 추가하여 Post 페이지로 이동
+      route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&address_name=${encodeURIComponent(address_name)}`);
+    } catch (error) {
+      toast.error('주소를 불러오지 못 했습니다.');
+    }
   };
 
   /** 마커로 화면 이동 */
@@ -121,7 +186,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       return;
     }
 
-    map.setLevel(3, { animate: true });
+    map.setLevel(6, { animate: true });
     map.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
   };
 
@@ -154,7 +219,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
         className='w-full h-[80vh]'
-        // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
+        // NOTE 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
         level={13}
@@ -178,28 +243,22 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             disableClickZoom={true} // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정
             // onClusterclick={}
           >
-            {/* {groupPosts.map(({ post_id, images }) => {
-              const { post_image_url, post_image_name, post_lat, post_lng } = images.find(
-                (image: PostImage) => image.is_cover,
-              );
-              return (
-                <MapMarker
-                  key={post_id}
-                  position={{ lat: post_lat, lng: post_lng }}
-                  // onClick={() => setInfo(post)}
-                  image={{
-                    // 기본 마커 이미지
-                    src: post_image_url,
-                    size: {
-                      width: 24,
-                      height: 35,
-                    }, // 마커이미지의 크기
-                    options: { alt: post_image_name },
-                  }}
-                  // title={post_image_name} // 마우스 호버 시 표시
-                />
-              );
-            })} */}
+            {/* {postMarkers.map((marker) => (
+              <MapMarker
+                key={`marker-${marker.title}-${marker.position.lat},${marker.position.lng}`}
+                position={marker.position}
+                onClick={() => setInfo(marker)}
+                image={{
+                  // 기본 마커 이미지
+                  src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+                  size: {
+                    width: 24,
+                    height: 35,
+                  }, // 마커이미지의 크기
+                }}
+                title={marker.title} // 마우스 호버 시 표시
+              ></MapMarker>
+            ))} */}
           </MarkerClusterer>
         ) : (
           <>
@@ -227,4 +286,4 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   );
 };
 
-export default GroupMap;
+export default GroupMapSearch;

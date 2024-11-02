@@ -16,6 +16,7 @@ export type Location = {
 type Latlng = {
   lat: number;
   lng: number;
+  address_name?: string;
 };
 
 export type Meta = {

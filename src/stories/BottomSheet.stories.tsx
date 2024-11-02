@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 const meta = {
-  title: 'Components/BottomSheet',
+  title: 'UI/BottomSheet',
   component: BottomSheet,
   parameters: {
     layout: 'centered',
@@ -21,11 +21,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 반 높이 바텀시트
 export const HalfHeight: Story = {
   args: {
     isOpen: true,
-    title: 'Half Height BottomSheet',
+    title: '반 높이 바텀시트',
     buttonLabel: '확인',
     onButtonClick: fn(),
     height: 'half',
@@ -33,11 +32,10 @@ export const HalfHeight: Story = {
   },
 };
 
-// 전체 높이 바텀시트
 export const FullHeight: Story = {
   args: {
     isOpen: true,
-    title: 'Full Height BottomSheet',
+    title: '전체 높이 바텀시트',
     buttonLabel: '확인',
     onButtonClick: fn(),
     height: 'full',
@@ -45,11 +43,10 @@ export const FullHeight: Story = {
   },
 };
 
-// 반 높이 뒤로가기 버튼 포함 바텀시트
 export const HalfHeightWithBack: Story = {
   args: {
     isOpen: true,
-    title: 'Half Height with Back Button',
+    title: ' 반 높이 뒤로가기 버튼 포함 바텀시트',
     buttonLabel: '확인',
     onButtonClick: fn(),
     onBack: fn(), // 뒤로가기 버튼 동작 추가
@@ -58,11 +55,10 @@ export const HalfHeightWithBack: Story = {
   },
 };
 
-// 전체 높이 뒤로가기 버튼 포함 바텀시트
 export const FullHeightWithBack: Story = {
   args: {
     isOpen: true,
-    title: 'Full Height with Back Button',
+    title: '전체 높이 뒤로가기 버튼 포함 바텀시트',
     buttonLabel: '확인',
     onButtonClick: fn(),
     onBack: fn(), // 뒤로가기 버튼 동작 추가
