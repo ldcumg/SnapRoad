@@ -4,6 +4,8 @@ import { Buttomsheet } from '@/components/ui/buttomsheet';
 import Buttons from '@/components/ui/buttons';
 import Colors from '@/components/ui/colors';
 import Example from '@/components/ui/example';
+import Inputs from '@/components/ui/inputs';
+import Modals from '@/components/ui/modals';
 import Tabs from '@/components/ui/tabs';
 import { Tab } from '@/stories/Tab';
 
@@ -49,6 +51,24 @@ const GuidePage = () => {
               </div>
             ),
             onClick: () => console.log('BottomSheet'),
+          },
+          {
+            label: 'Input',
+            content: (
+              <div>
+                <Inputs />
+              </div>
+            ),
+            onClick: () => console.log('Input'),
+          },
+          {
+            label: 'modal',
+            content: (
+              <div>
+                <Modals />
+              </div>
+            ),
+            onClick: () => console.log('Modal'),
           },
           {
             label: 'example',

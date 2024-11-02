@@ -1,7 +1,7 @@
 import SortableImage from './SortableImage';
-import { useDeleteImage } from '@/hooks/queries/byUse/usePostDeleteImageMutation';
-import { useSetCoverImage } from '@/hooks/queries/byUse/usePostSetCoverImageMutation';
-import { useUploadImage } from '@/hooks/queries/byUse/usePostUploadImageMutation';
+import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
+import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
+import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import browserClient from '@/utils/supabase/client';
@@ -80,8 +80,10 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
         return;
       }
       uploadMutation.mutate(fileArray, {
-        onSuccess: (uploadedImages) => {
-          const newImages = uploadedImages.filter((newImage) => !images.some((img) => img.id === newImage.id));
+        onSuccess: (uploadedImages: any[]) => {
+          const newImages = uploadedImages.filter(
+            (newImage: { id: number }) => !images.some((img) => img.id === newImage.id),
+          );
           addImages(newImages);
           console.log('업로드된 이미지:', newImages);
           if (newImages.length > 0) {
@@ -103,7 +105,7 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
         });
         alert('대표 이미지가 설정되었습니다.');
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error('대표 이미지 설정 오류:', error);
         alert('대표 이미지 설정에 실패했습니다.');
       },
@@ -117,7 +119,7 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
         fetchImageUrls(); // 삭제 후 imageUrls 업데이트
         alert('이미지가 삭제되었습니다.');
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error('이미지 삭제 오류:', error);
         alert('이미지 삭제에 실패했습니다.');
       },

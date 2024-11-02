@@ -114,3 +114,12 @@ export const DefaultVariant: Story = {
     helperText: '기본 색상 스타일입니다.',
   },
 };
+
+export const PasswordInput: Story = {
+  args: {
+    label: '비밀번호',
+    type: 'password',
+    placeholder: '비밀번호를 입력하세요',
+    helperText: '비밀번호를 입력하고 보기 버튼을 눌러 확인하세요',
+  },
+};
