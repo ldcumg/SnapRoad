@@ -17,18 +17,18 @@ export const keywordSearch = async ({
   keyword: FieldValues;
   page: number;
 }): Promise<{ results: LocationInfo[]; is_end: boolean }> => {
-  const res = await fetch(`${MAP_BASE_URL}/search/keyword?query=${keyword}&page=${page}`, {
+  const response = await fetch(`${MAP_BASE_URL}/search/keyword?query=${keyword}&page=${page}`, {
     method: 'GET',
     cache: 'no-store',
     headers,
   });
 
-  if (!res.ok) throw new Error('키워드 검색에 실패했습니다.');
+  if (!response.ok) throw new Error('키워드 검색에 실패했습니다.');
 
   const {
     documents,
     meta: { is_end },
-  } = await res.json();
+  } = await response.json();
   const results = documents.map(({ id, place_name, road_address_name, address_name, y, x }: SearchResult) => {
     const address = road_address_name || address_name;
     return { id, placeName: place_name, address, lat: Number(y), lng: Number(x) };

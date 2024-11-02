@@ -10,6 +10,7 @@ import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPost
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import type { LocationInfo } from '@/types/placeTypes';
+import type { Toggle } from '@/types/postTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -22,13 +23,15 @@ const SEARCH_INPUT = 'searchInput';
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
-  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [toggle, setToggle] = useState<Toggle>({ isPostsView: true, isPostsPreView: false });
+  const { isPostsView, isPostsPreView } = toggle;
+
   //TODO - 객체로
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
 
-  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
+  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
 
   const {
     register,
@@ -44,19 +47,27 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     resolver: zodResolver(searchPlaceSchema),
   });
 
+  const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
+
   useEffect(() => {
     //TODO - 데스크탑에서만 동작하게
     setFocus(SEARCH_INPUT);
   }, []);
 
-  if (searchTermInvalidate) {
-    toast.error(searchTermInvalidate.message as string);
-  }
+  if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
 
-  const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
   if (isPending) return <>로딩</>;
 
   if (isError) throw new Error(error.message);
+
+  // if (map) {
+  //   //TODO - 게시물들을 기준으로 지도 범위 재설정
+  //   const bounds = new kakao.maps.LatLngBounds();
+  //   postsCoverImages.forEach(({ post_lat, post_lng }) =>
+  //     bounds.extend(new kakao.maps.LatLng(Number(post_lat), Number(post_lng))),
+  //   );
+  //   map.panTo(bounds);
+  // }
 
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput }: FieldValues) => {
@@ -64,17 +75,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
-    isPostsView && setIsPostsView(false);
+    isPostsView &&
+      setToggle((prev) => {
+        return { ...prev, isPostView: false };
+      });
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
     const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
     setSearchResultMarkers((prev) => (searchInput ? results : [...prev, ...results]));
     searchInput && moveToMarker(results[0]);
-
-    // 검색된 장소 위치를 기준으로 지도 범위 재설정
-    // const bounds = new kakao.maps.LatLngBounds();
-    // results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
-    // map.panTo(bounds);
 
     if (is_end) {
       setHasMoreResults(false);
@@ -104,7 +113,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       const { latitude: lat, longitude: lng } = position.coords;
       map.setLevel(5, { animate: true });
       map.panTo(new kakao.maps.LatLng(lat, lng));
-      isPostsView && setIsPostsView(false);
+      isPostsView &&
+        setToggle((prev) => {
+          return { ...prev, isPostView: false };
+        });
     });
   };
 
@@ -175,7 +187,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       )}
       <button
         onClick={() => {
-          setIsPostsView((prev) => !prev);
+          setToggle((prev) => {
+            return { ...prev, isPostView: !prev.isPostsView };
+          });
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
       >
@@ -196,7 +210,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={7} // 클러스터 할 최소 지도 레벨
+            minLevel={10} // 클러스터 할 최소 지도 레벨
             styles={[
               {
                 fontSize: '20px',

@@ -9,3 +9,5 @@ export type PostCoverImage = PostImage & {
   post_lat: string;
   post_lng: string;
 };
+
+export type Toggle = { isPostsView: boolean; isPostsPreView: boolean };
