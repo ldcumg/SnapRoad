@@ -15,6 +15,7 @@ interface ImageListProps {
 const ImageManager = ({ userId, uploadSessionId }: ImageListProps) => {
   const bucketName = 'tour_images';
   const folderName = 'group_name';
+
   const formattedDate = formatDateToNumber(new Date().toString()) || '';
   const { images } = useImageUploadStore();
 

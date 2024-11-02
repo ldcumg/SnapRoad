@@ -1,7 +1,8 @@
 'use client';
 
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
-import GroupMap from '@/components/groupDetail/GroupMap';
+import GroupMapSearch from '@/components/groupDetail/GroupMapSearch';
+// import GroupMap from '@/components/groupDetail/GroupMap';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -11,9 +12,10 @@ const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), {
 
 type Props = Readonly<{
   params: { groupId: string };
+  searchParams: { 위치명: string; lat: string; lng: string };
 }>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
+const GroupPage = ({ params: { groupId }, searchParams: { 위치명, lat, lng } }: Props) => {
   const [isMap, setIsMap] = useState<boolean>(true);
 
   // const [loading, error] = useKakaoLoader({
@@ -33,7 +35,9 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         <h4>그룹명</h4>
         <button onClick={() => setIsMap((prev) => !prev)}>전환</button>
       </header>
-      {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />}
+
+      {/* {isMap ? <GroupMap groupId={groupId} /> : <GroupAlbum />} */}
+      {isMap ? <GroupMapSearch groupId={groupId} /> : <GroupAlbum />}
     </>
   );
 };

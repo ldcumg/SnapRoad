@@ -13,7 +13,7 @@ const fetchUserGroup = async (userId: string) => {
     return null;
   }
 
-  return data && data.length > 0 ? data[0].group_id : null; // 첫 번째 그룹 ID 반환
+  return data && data.length > 0 ? data[0].group_id : null;
 };
 
 // 사용자 세션
@@ -88,12 +88,12 @@ const Nav = () => {
 
   return (
     <nav>
-      <ul className='flex flex-row gap-2'>
+      <ul className='flex flex-row gap-2 overflow-auto'>
         <li>
           <Link href={`/`}>메인</Link>
         </li>
         <li>
-          <Link href={`/post`}>포스트 쓰기</Link>
+          <Link href={`/group/a6706b3b-6a01-4ffc-ac68-49d8872dbd5d/post`}>포스트 쓰기</Link>
         </li>
         {!session ? (
           <>
@@ -114,6 +114,12 @@ const Nav = () => {
             </li>
             <li>
               <Link href={`/mypage`}>mypage</Link>
+            </li>
+            <li>
+              <Link href={`/guide`}>스타일 가이드</Link>
+            </li>
+            <li>
+              <Link href={'/admin'}>어드민</Link>
             </li>
             <li>
               <span>{userName}님</span>

@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        origin: 'hsl(var(--origin-background))',
+        origin: 'hsl(var(--origin))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         danger: 'hsl(var(--danger))',
@@ -29,10 +29,6 @@ const config: Config = {
           600: 'hsl(var(--secondary-600))',
         },
         gray: {
-          50: 'hsl(var(--gray-50))',
-          100: 'hsl(var(--gray-100))',
-          200: 'hsl(var(--gray-200))',
-          300: 'hsl(var(--gray-300))',
           400: 'hsl(var(--gray-400))',
           500: 'hsl(var(--gray-500))',
           600: 'hsl(var(--gray-600))',
@@ -40,7 +36,13 @@ const config: Config = {
           800: 'hsl(var(--gray-800))',
           900: 'hsl(var(--gray-900))',
         },
-        card: {
+      },
+      card: {
+        gray: {
+          50: 'hsl(var(--gray-50))',
+          100: 'hsl(var(--gray-100))',
+          200: 'hsl(var(--gray-200))',
+          300: 'hsl(var(--gray-300))',
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },

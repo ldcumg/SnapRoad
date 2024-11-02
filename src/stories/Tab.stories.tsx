@@ -2,7 +2,7 @@ import { Tab } from './Tab';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
-  title: 'Example/Tab',
+  title: 'Ui/Tab',
   component: Tab,
   parameters: {
     layout: 'centered',

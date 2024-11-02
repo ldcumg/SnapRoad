@@ -1,4 +1,5 @@
 import { formatDateToNumber } from '@/utils/dateUtils';
+import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
 
 /**
@@ -12,8 +13,9 @@ import browserClient from '@/utils/supabase/client';
 export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
   const { data, error } = await browserClient.storage
     .from(bucketName)
-    .createSignedUrl(`${folderName}/${filename}`, 60 * 60);
+    .createSignedUrl(`${folderName}/${filename}`, 60 * 60 * 1000);
   if (error) throw new Error('Signed URL 생성 실패');
+  console.log('singindUrl 성공', data.signedUrl);
   return data.signedUrl;
 };
 
@@ -56,7 +58,7 @@ export const saveImageMetadata = async (
   const { data, error } = await browserClient
     .from('images')
     .insert({
-      post_image_name: uniqueFileName,
+      post_image_name: removeFileExtension(uniqueFileName),
       post_image_url: signedUrl,
       created_at: currentDate,
       is_cover: false,

@@ -25,7 +25,6 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
   const [rendered, setRendered] = useState(isOpen);
 
-  // 애니메이션 트리거 설정
   useEffect(() => {
     if (isOpen) {
       setRendered(true);

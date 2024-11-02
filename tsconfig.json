@@ -27,9 +27,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/post/page.bak",
-    "src/app/post/page._tsx",
-    "src/app/post/ImageUpload.bak"
+    "src/app/group/[groupId]/post/page.bak",
+    "src/app/group/[groupId]/post/page._tsx",
+    "src/app/group/[groupId]/post/ImageUpload.bak",
+    "src/hooks/queries/byUse/useImageMutations.bak",
+    "src/hooks/queries/byUse/useImageQuery.bak"
   ],
   "exclude": ["node_modules"]
 }

@@ -2,7 +2,7 @@ import {
   getImageFileNameById,
   deleteFileFromStorage,
   deleteImageFromDatabase,
-} from '@/services/client-action/imageActions';
+} from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { useMutation } from '@tanstack/react-query';
 

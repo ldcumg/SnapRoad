@@ -1,6 +1,6 @@
-import { generateUniqueFileName } from '@/services/client-action/fileActions';
-import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/imageActions';
+import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
+import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function useUploadImage(bucketName: string, folderName: string, userId: string) {
   const queryClient = useQueryClient();
-  const { addImages, setImages } = useImageUploadStore();
+  const { setImages } = useImageUploadStore();
   const currentDate = new Date().toISOString();
   const uploadSessionId = uuidv4();
 
@@ -53,6 +53,7 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
             id: savedData.id,
             userId: savedData.user_id,
             isCover: savedData.is_cover,
+            postImageName: uniqueFileName,
             createdAt: currentDate,
             filename: uniqueFileName,
             latitude: exifData.latitude,
@@ -63,7 +64,6 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
         }),
       );
 
-      // addImages(uploadedImages);
       setImages(uploadedImages);
       return uploadedImages;
     },
