@@ -13,7 +13,8 @@ export const Buttomsheet = () => {
 
   return (
     <div className='p-4'>
-      <div className='flex gap-4 p-4'>
+      <h1 className='text-2xl font-bold mb-8'>바텀시트 예제</h1>
+      <div className='flex gap-4 pr-4'>
         {/* 반 높이 바텀시트 열기 버튼 */}
         <Button
           variant='primary'

@@ -46,8 +46,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   }
 
   const { data: groupPosts, isPending, isError, error } = getGroupPostsQuery(groupId);
-  console.log('groupPosts =>', groupPosts);
-
   if (isPending) return <>로딩</>;
 
   if (isError) throw new Error(error.message);
@@ -114,7 +112,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
     const centerLatLng = map.getCenter();
     if (!centerLatLng) return;
-    route.push(`/group/${groupId}/tour?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
+    route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
   };
 
   /** 마커로 화면 이동 */

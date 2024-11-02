@@ -16,7 +16,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   onBlur?: () => void;
 }
 
-/** Primary UI component for user interaction */
 export const Button = ({
   type = 'button',
   variant = 'primary',
@@ -46,7 +45,7 @@ export const Button = ({
 
   switch (variant) {
     case 'primary':
-      colorStyle = 'bg-primary-400 text-white  hover:bg-primary-600';
+      colorStyle = 'bg-primary-400 text-white hover:bg-primary-600';
       disabledStyle = 'bg-primary-200 text-white hover:bg-primary-200 cursor-not-allowed';
       loadingStyle = 'bg-primary-200 text-white hover:bg-primary-200 cursor-not-allowed';
       break;
