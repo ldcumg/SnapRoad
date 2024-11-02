@@ -1,11 +1,5 @@
 'use client';
 
-import Geolocation_btn from '@/../public/svgs/Geolocation_btn.svg';
-import Map_Search from '@/../public/svgs/Map_Search.svg';
-import Mappin from '@/../public/svgs/Mappin.svg';
-import Reset_input from '@/../public/svgs/Reset_input.svg';
-import Switch_btn_to_image_marker from '@/../public/svgs/Switch_btn_to_image_marker.svg';
-import Switch_btn_to_mappin_marker from '@/../public/svgs/Switch_btn_to_mappin_marker.svg';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
@@ -174,11 +168,11 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             type='button'
             onClick={() => resetField(SEARCH_INPUT)}
           >
-            <Reset_input />
+            <img src='/svgs/Reset_input.svg' />
           </button>
         )}
         <button type='submit'>
-          <Map_Search />
+          <img src='/svgs/Map_Search.svg' />
         </button>
       </form>
       {searchResult.hasMore && (
@@ -195,9 +189,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
       >
-        {isPostsView ? <Switch_btn_to_mappin_marker /> : <Switch_btn_to_image_marker />}
+        {isPostsView ? (
+          <img src='/svgs/Switch_btn_to_mappin_marker.svg' />
+        ) : (
+          <img src='/svgs/Switch_btn_to_image_marker.svg' />
+        )}
       </button>
-      {isPostsView || <Mappin />}
+      {isPostsView || <img src='/svgs/Mappin.svg' />}
       <Map
         className='w-full h-[50vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
@@ -280,7 +278,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         />
       </Map>
       <button onClick={handleFindUserLocation}>
-        <Geolocation_btn />
+        <img src='/svgs/Geolocation_btn.svg' />
       </button>
       <div>
         {!!spotInfo && (

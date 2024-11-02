@@ -1,8 +1,5 @@
 'use client';
 
-import Group_Member from '@/../public/svgs/Group_Member.svg';
-import Setting from '@/../public/svgs/Setting.svg';
-import Top_Btn from '@/../public/svgs/Top_Btn.svg';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
@@ -40,9 +37,9 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
         <img src={group_image_url} />
         <div>
           <button onClick={() => setMode(GroupDetailMode.member)}>
-            <Group_Member /> {user_group.length}
+            <img src='/svgs/Group_Member.svg' /> {user_group.length}
           </button>
-          <Setting />
+          <img src='/svgs/Setting.svg' />
           <p>{group_desc}</p>
         </div>
       </div>
@@ -70,7 +67,7 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
         ref={observerRef}
       ></div>
       <button onClick={handleScrollTop}>
-        <Top_Btn />
+        <img src='/svgs/Top_Btn.svg' />
       </button>
     </>
   );

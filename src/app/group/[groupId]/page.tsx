@@ -1,9 +1,6 @@
 'use client';
 
 import Close_Member_List from '@/../public/svgs/Close_Member_List.svg';
-import Logo from '@/../public/svgs/Logo.svg';
-import Swap_Btn_To_Album from '@/../public/svgs/Swap_Btn_To_Album.svg';
-import Swap_Btn_To_Map from '@/../public/svgs/Swap_Btn_To_Map.svg';
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
 import MemberList from '@/components/groupDetail/MemberList';
@@ -62,13 +59,13 @@ const GroupPage = ({ params: { groupId } }: Props) => {
       case GroupDetailMode.map:
         return (
           <button onClick={() => setMode(GroupDetailMode.album)}>
-            <Swap_Btn_To_Album />
+            <img src='/svgs/Swap_Btn_To_Album.svg' />
           </button>
         );
       case GroupDetailMode.album:
         return (
           <button onClick={() => setMode(GroupDetailMode.map)}>
-            <Swap_Btn_To_Map />
+            <img src='/svgs/Swap_Btn_To_Map.svg' />
           </button>
         );
       case GroupDetailMode.member:
@@ -87,7 +84,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
       <ToastContainer />
       <header className='flex justify-between px-5'>
         <Link href='/'>
-          <Logo />
+          <img src='/svgs/Logo.svg' />
         </Link>
         <h2>{groupInfo.group_title}</h2>
         {handleChangeMode()}
