@@ -9,10 +9,10 @@ import Switch_btn_to_mappin_marker from '@/../public/svgs/Switch_btn_to_mappin_m
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
-import type { LocationInfo } from '@/types/placeTypes';
-import type { Toggle } from '@/types/postTypes';
+import type { Latlng, Location, LocationInfo } from '@/types/placeTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
@@ -23,8 +23,9 @@ const SEARCH_INPUT = 'searchInput';
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
-  const [toggle, setToggle] = useState<Toggle>({ isPostsView: true, isPostsPreView: false });
-  const { isPostsView, isPostsPreView } = toggle;
+  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
+  console.log('postsPreView =>', postsPreView);
 
   //TODO - 객체로
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
@@ -64,7 +65,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   //   //TODO - 게시물들을 기준으로 지도 범위 재설정
   //   const bounds = new kakao.maps.LatLngBounds();
   //   postsCoverImages.forEach(({ post_lat, post_lng }) =>
-  //     bounds.extend(new kakao.maps.LatLng(Number(post_lat), Number(post_lng))),
+  //     bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
   //   );
   //   map.panTo(bounds);
   // }
@@ -75,10 +76,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
-    isPostsView &&
-      setToggle((prev) => {
-        return { ...prev, isPostView: false };
-      });
+    isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
     const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
@@ -113,22 +111,19 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       const { latitude: lat, longitude: lng } = position.coords;
       map.setLevel(5, { animate: true });
       map.panTo(new kakao.maps.LatLng(lat, lng));
-      isPostsView &&
-        setToggle((prev) => {
-          return { ...prev, isPostView: false };
-        });
+      isPostsView && setIsPostsView(false);
     });
   };
 
   /** 마커로 화면 이동 */
-  const moveToMarker = ({ placeName, address, lat, lng }: LocationInfo) => {
+  const moveToMarker = ({ placeName, address, lat, lng }: Partial<Location> & Latlng) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
     map.setLevel(4, { animate: true });
     map.panTo(new kakao.maps.LatLng(lat, lng));
-    setSpotInfo({ placeName, address, lat, lng });
+    placeName && address && setSpotInfo({ placeName, address, lat, lng });
   };
 
   /** 중심 좌표의 장소 정보 요청 */
@@ -187,9 +182,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       )}
       <button
         onClick={() => {
-          setToggle((prev) => {
-            return { ...prev, isPostView: !prev.isPostsView };
-          });
+          setIsPostsView((prev) => !prev);
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
       >
@@ -199,7 +192,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       <Map
         className='w-full h-[50vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
-        center={{ lat: 35.5, lng: 127.5 }}
+        center={{ lat: 35.95, lng: 128.25 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
@@ -225,15 +218,18 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             disableClickZoom={true}
             // onClusterclick={}
           >
-            {postsCoverImages.map((image) => {
+            {postsCoverImages.map(({ id, post_id, post_image_url, post_lat, post_lng }) => {
               return (
                 <MapMarker
-                  key={image.id}
-                  position={{ lat: Number(image.post_lat), lng: Number(image.post_lng) }}
-                  // onClick={() => setInfo(post)}
+                  key={id}
+                  position={{ lat: post_lat, lng: post_lng }}
+                  onClick={() => {
+                    moveToMarker({ lat: post_lat, lng: post_lng });
+                    setPostsPreview([{ postId: post_id, postImageUrl: post_image_url }]);
+                  }}
                   image={{
                     // 기본 마커 이미지
-                    src: image.post_image_url,
+                    src: post_image_url,
                     size: {
                       width: 50,
                       height: 50,
@@ -274,7 +270,18 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             <p>{spotInfo.placeName && spotInfo.address}</p>
           </>
         )}
-        <button onClick={handleAddPostRoute}>추가하기</button>
+        {!!postsPreView.length ? (
+          postsPreView.map((post) => (
+            <Link
+              href={`/${post.postId}`}
+              key={post.postId}
+            >
+              <img src={post.postImageUrl} />
+            </Link>
+          ))
+        ) : (
+          <button onClick={handleAddPostRoute}>추가하기</button>
+        )}
       </div>
     </>
   );
