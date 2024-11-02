@@ -1,3 +1,5 @@
+'use client';
+
 import type { GroupInfo } from '@/types/groupTypes';
 import { toast } from 'garlic-toast';
 
