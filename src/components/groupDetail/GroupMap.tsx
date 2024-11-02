@@ -28,9 +28,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
 
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
-  const [spotInfo, setSpotInfo] = useState<LocationInfo>();
-  console.log('spotInfo =>', spotInfo);
-
+  const [spotInfo, setSpotInfo] = useState<{ placeName: string; address: string } & Latlng>();
   const {
     register,
     handleSubmit,
@@ -55,7 +53,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   }
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
-  // console.log('groupPosts =>', postsCoverImages);
   if (isPending) return <>로딩</>;
 
   if (isError) throw new Error(error.message);
@@ -69,10 +66,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
-    const {
-      results,
-      meta: { is_end },
-    } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+    const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
     setSearchResultMarkers((prev) => (searchInput ? results : [...prev, ...results]));
     searchInput && moveToMarker(results[0]);
 
@@ -113,34 +107,35 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     });
   };
 
-  /** 게시물을 추가할 장소 선택 */
-  const handleSelectSpot = () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    const centerLatLng = map.getCenter();
-    if (!centerLatLng) return;
-    route.push(`/group/${groupId}/post?lat=${centerLatLng.getLat()}&lng=${centerLatLng.getLng()}`);
-  };
-
   /** 마커로 화면 이동 */
-  const moveToMarker = (marker: LocationInfo) => {
+  const moveToMarker = ({ placeName, address, lat, lng }: LocationInfo) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
     map.setLevel(4, { animate: true });
-    map.panTo(new kakao.maps.LatLng(marker.lat, marker.lng));
-    setSpotInfo(marker);
+    map.panTo(new kakao.maps.LatLng(lat, lng));
+    setSpotInfo({ placeName, address, lat, lng });
   };
 
   /** 중심 좌표의 장소 정보 요청 */
   const getSpotInfo = async ({ lat, lng }: Latlng) => {
     const address = await getAddress({ lat, lng });
-    console.log("address =>", address);
-    
+    setSpotInfo({ placeName: '', address, lat, lng });
+  };
+
+  /** 게시물을 추가 라우팅 */
+  const handleAddPostRoute = () => {
+    if (isPostsView) {
+      route.push(`/group/${groupId}/임시`);
+      return;
+    }
+
+    if (!spotInfo) return;
+    const { lat, lng, placeName, address } = spotInfo;
+    const place = placeName || address;
+
+    route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   return (
@@ -176,7 +171,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || <Mappin />}
       <Map
-        className='w-full h-[50vh]'
+        className='w-full h-[30vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
@@ -202,7 +197,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 positon: 'getCenter',
               },
             ]}
-            // onClustered={(test) => console.log(test)}
             disableClickZoom={true}
             // onClusterclick={}
           >
@@ -249,8 +243,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         <Geolocation_btn />
       </button>
       <div>
-        {!!spotInfo && <p>{spotInfo.place_name || spotInfo.road_address_name || spotInfo.address_name}</p>}
-        <button onClick={handleSelectSpot}>추가하기</button>
+        {!!spotInfo && (
+          <>
+            <h5>{spotInfo.placeName || spotInfo.address}</h5>
+            <p>{spotInfo.placeName && spotInfo.address}</p>
+          </>
+        )}
+        <button onClick={handleAddPostRoute}>추가하기</button>
       </div>
     </>
   );

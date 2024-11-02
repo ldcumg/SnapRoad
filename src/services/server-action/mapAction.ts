@@ -1,6 +1,6 @@
 'use server';
 
-import type { LocationInfo, Location, Meta, Address, Latlng } from '@/types/placeTypes';
+import type { LocationInfo, Latlng, SearchResult } from '@/types/placeTypes';
 import type { FieldValues } from 'react-hook-form';
 
 const MAP_BASE_URL = 'https://dapi.kakao.com/v2/local';
@@ -16,7 +16,7 @@ export const keywordSearch = async ({
 }: {
   keyword: FieldValues;
   page: number;
-}): Promise<{ results: LocationInfo[]; meta: Meta }> => {
+}): Promise<{ results: LocationInfo[]; is_end: boolean }> => {
   const res = await fetch(`${MAP_BASE_URL}/search/keyword?query=${keyword}&page=${page}`, {
     method: 'GET',
     cache: 'no-store',
@@ -25,12 +25,16 @@ export const keywordSearch = async ({
 
   if (!res.ok) throw new Error('키워드 검색에 실패했습니다.');
 
-  const { documents, meta } = await res.json();
-  const results = documents.map((location: Location & { y: string; x: string }) => {
-    return { ...location, lat: Number(location.y), lng: Number(location.x) };
+  const {
+    documents,
+    meta: { is_end },
+  } = await res.json();
+  const results = documents.map(({ id, place_name, road_address_name, address_name, y, x }: SearchResult) => {
+    const address = road_address_name || address_name;
+    return { id, placeName: place_name, address, lat: Number(y), lng: Number(x) };
   });
 
-  return { results, meta };
+  return { results, is_end };
 };
 
 /** 위도, 경도로 주소 요청 */
