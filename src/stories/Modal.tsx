@@ -8,9 +8,9 @@ interface ModalProps {
 }
 
 const modalOverlayClass =
-  'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300';
+  'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 px-4';
 const modalContentClass =
-  'relative z-10 bg-white rounded-xl p-4 shadow-lg max-w-md w-full transition-transform duration-300';
+  'relative z-10 bg-white rounded-xl pb-4 px-4 shadow-lg max-w-md w-full transition-transform duration-300';
 const closeButtonClass = 'absolute z-12 top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none';
 const closeIconClass = 'w-5 h-5';
 
@@ -42,8 +42,8 @@ export const Modal = ({ isModalOpen, handleModalOpen, children }: ModalProps) =>
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
+            width='19'
+            height='19'
             viewBox='0 0 24 24'
             fill='none'
           >

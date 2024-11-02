@@ -379,6 +379,7 @@ export type Database = {
         Returns: {
           post_thumbnail_image: string
           post_address: string
+          post_id: string
           created_at: string
           group_id: string
         }[]

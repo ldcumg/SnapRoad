@@ -1,9 +1,10 @@
 'use client';
 
-import Modal from '../_common/Modal';
+// import Modal from '../_common/Modal';
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { Button } from '@/stories/Button';
+import { Modal } from '@/stories/Modal';
 import { useRouter } from 'next/navigation';
 
 type Props = {
