@@ -1,6 +1,9 @@
 'use client';
 
+import Close_Member_List from '@/../public/svgs/Close_Member_List.svg';
 import Logo from '@/../public/svgs/Logo.svg';
+import Swap_Btn_To_Album from '@/../public/svgs/Swap_Btn_To_Album.svg';
+import Swap_Btn_To_Map from '@/../public/svgs/Swap_Btn_To_Map.svg';
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
 import MemberList from '@/components/groupDetail/MemberList';
@@ -20,10 +23,6 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  if (isPending) return <>로딩</>;
-
-  if (isError) throw new Error(error.message);
-
   // const [loading, error] = useKakaoLoader({
   //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
   //   libraries: ['services', 'clusterer'],
@@ -32,6 +31,10 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   // useEffect(() => {
   //   if (loading) return;
   // }, [loading]);
+
+  if (isPending) return <>로딩</>;
+
+  if (isError) throw new Error(error.message);
 
   /** 컴포넌트 조건부 렌더링 */
   const groupDetailMode = () => {
@@ -57,11 +60,23 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const handleChangeMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
-        return <button onClick={() => setMode(GroupDetailMode.album)}>앨범</button>;
+        return (
+          <button onClick={() => setMode(GroupDetailMode.album)}>
+            <Swap_Btn_To_Album />
+          </button>
+        );
       case GroupDetailMode.album:
-        return <button onClick={() => setMode(GroupDetailMode.map)}>지도</button>;
+        return (
+          <button onClick={() => setMode(GroupDetailMode.map)}>
+            <Swap_Btn_To_Map />
+          </button>
+        );
       case GroupDetailMode.member:
-        return <button onClick={() => setMode(GroupDetailMode.album)}>X</button>;
+        return (
+          <button onClick={() => setMode(GroupDetailMode.album)}>
+            <Close_Member_List />
+          </button>
+        );
       default:
         throw new Error('잘못된 요청입니다.');
     }

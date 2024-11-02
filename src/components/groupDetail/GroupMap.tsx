@@ -1,10 +1,15 @@
 'use client';
 
+import Geolocation_btn from '@/../public/svgs/Geolocation_btn.svg';
+import Map_Search from '@/../public/svgs/Map_Search.svg';
+import Mappin from '@/../public/svgs/Mappin.svg';
+import Reset_input from '@/../public/svgs/Reset_input.svg';
+import Switch_btn_to_image_marker from '@/../public/svgs/Switch_btn_to_image_marker.svg';
+import Switch_btn_to_mappin_marker from '@/../public/svgs/Switch_btn_to_mappin_marker.svg';
 import { getGroupPostsQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { keywordSearch } from '@/services/server-action/mapAction';
 import type { LocationInfo } from '@/types/placeTypes';
-import type { PostImage } from '@/types/postTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -46,6 +51,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   }
 
   const { data: groupPosts, isPending, isError, error } = getGroupPostsQuery(groupId);
+  console.log('groupPosts =>', groupPosts);
   if (isPending) return <>로딩</>;
 
   if (isError) throw new Error(error.message);
@@ -56,7 +62,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
-
     isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
@@ -139,10 +144,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             type='button'
             onClick={() => resetField(SEARCH_INPUT)}
           >
-            X
+            <Reset_input />
           </button>
         )}
-        <button type='submit'>돋보기</button>
+        <button type='submit'>
+          <Map_Search />
+        </button>
       </form>
       {hasMoreResults && (
         <button
@@ -152,7 +159,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           더보기
         </button>
       )}
-      <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
+      <button onClick={() => setIsPostsView((prev) => !prev)}>
+        {isPostsView ? <Switch_btn_to_mappin_marker /> : <Switch_btn_to_image_marker />}
+      </button>
+      {isPostsView || <Mappin />}
       <Map
         className='w-full h-[70vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
@@ -161,9 +171,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         level={13}
         isPanto={true}
       >
-        {isPostsView ? (
+        {isPostsView && !!groupPosts.length ? (
           <MarkerClusterer
-            averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+            averageCenter={true}
             minLevel={5} // 클러스터 할 최소 지도 레벨
             styles={[
               {
@@ -176,17 +186,18 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 positon: 'getCenter',
               },
             ]}
-            disableClickZoom={true} // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정
+            // onClustered={}
+            disableClickZoom={true}
             // onClusterclick={}
           >
             {groupPosts.map(({ post_id, images }) => {
-              const { post_image_url, post_image_name, post_lat, post_lng } = images.find(
-                (image: PostImage) => image.is_cover,
-              );
+              const primaryImage = images.find((image) => image.is_cover);
+              if (!primaryImage) return;
+              const { post_image_url, post_image_name, post_lat, post_lng } = primaryImage;
               return (
                 <MapMarker
                   key={post_id}
-                  position={{ lat: post_lat, lng: post_lng }}
+                  position={{ lat: Number(post_lat), lng: Number(post_lng) }}
                   // onClick={() => setInfo(post)}
                   image={{
                     // 기본 마커 이미지
@@ -221,7 +232,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </>
         )}
       </Map>
-      <button onClick={handleFindUserLocation}>내 위치</button>
+      <button onClick={handleFindUserLocation}>
+        <Geolocation_btn />
+      </button>
       <button onClick={handleSelectSpot}>추가하기</button>
     </>
   );
