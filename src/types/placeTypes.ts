@@ -13,10 +13,9 @@ export type Location = {
   road_address_name: string;
 };
 
-type Latlng = {
+export type Latlng = {
   lat: number;
   lng: number;
-  address_name?: string;
 };
 
 export type Meta = {
@@ -31,12 +30,6 @@ export type Meta = {
 };
 
 export type Address = {
-  address_name: string;
-  region_1depth_name: string;
-  region_2depth_name: string;
-  region_3depth_name: string;
-  mountain_yn: string;
-  main_address_no: string;
-  sub_address_no: string;
-  zip_code: string;
+  roadAddress: string | null;
+  address: string;
 };

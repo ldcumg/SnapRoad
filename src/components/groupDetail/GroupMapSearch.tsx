@@ -76,12 +76,12 @@ const GroupMapSearch = ({ groupId }: { groupId: string }) => {
   //     : (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) });
   // };
 
-  const searchLocation = async ({ searchInput, more }: FieldValues) => {
+   /** 키워드 검색 */
+   const searchLocation = async ({ searchInput, more }: FieldValues) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
-
     isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
@@ -89,23 +89,12 @@ const GroupMapSearch = ({ groupId }: { groupId: string }) => {
       results,
       meta: { is_end },
     } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+    setSearchResultMarkers((prev) => (more ? [...prev, ...results] : results));
 
-    if (results.length > 0) {
-      const bounds = new kakao.maps.LatLngBounds();
-
-      // 각 결과에 주소 정보를 추가하고 범위를 확장하는 부분을 Promise.all로 비동기 처리
-      const updatedResults = await Promise.all(
-        results.map(async (result) => {
-          const address_name = await getAddress({ lat: result.lat, lng: result.lng });
-          result.address_name = address_name; // address_name 속성 추가
-          bounds.extend(new kakao.maps.LatLng(result.lat, result.lng));
-          return result;
-        }),
-      );
-
-      setSearchResultMarkers((prev) => (more ? [...prev, ...updatedResults] : updatedResults));
-      map.panTo(bounds);
-    }
+    // 검색된 장소 위치를 기준으로 지도 범위 재설정
+    const bounds = new kakao.maps.LatLngBounds();
+    results.forEach((result) => bounds.extend(new kakao.maps.LatLng(result.lat, result.lng)));
+    map.panTo(bounds);
 
     if (is_end) {
       setHasMoreResults(false);

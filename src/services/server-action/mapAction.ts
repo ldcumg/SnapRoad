@@ -1,6 +1,6 @@
 'use server';
 
-import type { LocationInfo, Location, Meta, Address } from '@/types/placeTypes';
+import type { LocationInfo, Location, Meta, Address, Latlng } from '@/types/placeTypes';
 import type { FieldValues } from 'react-hook-form';
 
 const MAP_BASE_URL = 'https://dapi.kakao.com/v2/local';
@@ -26,15 +26,15 @@ export const keywordSearch = async ({
   if (!res.ok) throw new Error('키워드 검색에 실패했습니다.');
 
   const { documents, meta } = await res.json();
-  const results = documents.map((space: Location & { y: string; x: string }) => {
-    return { ...space, lat: Number(space.y), lng: Number(space.x) };
+  const results = documents.map((location: Location & { y: string; x: string }) => {
+    return { ...location, lat: Number(location.y), lng: Number(location.x) };
   });
 
   return { results, meta };
 };
 
 /** 위도, 경도로 주소 요청 */
-export const getAddress = async ({ lat, lng }: { lat: number; lng: number }): Promise<Address> => {
+export const getAddress = async ({ lat, lng }: Latlng): Promise<string> => {
   const res = await fetch(`${MAP_BASE_URL}/geo/coord2address?y=${lat}&x=${lng}`, {
     method: 'GET',
     cache: 'no-store',
@@ -44,8 +44,13 @@ export const getAddress = async ({ lat, lng }: { lat: number; lng: number }): Pr
   if (!res.ok) throw new Error('주소를 불러오지 못 했습니다.');
 
   const {
-    documents: [{ address }],
+    documents: [
+      {
+        road_address,
+        address: { address_name: address },
+      },
+    ],
   } = await res.json();
 
-  return address;
+  return road_address?.address_name ?? address;
 };
