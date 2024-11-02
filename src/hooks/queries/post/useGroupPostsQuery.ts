@@ -10,11 +10,13 @@ export const getGroupPostsQuery = (groupId: string) => {
   });
 };
 
-//TODO - infiniteQuery
 /** 그룹 게시물들의 이미지 요청 쿼리 */
 export const getGroupPostsImagesQuery = (groupId: string) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: queryKeys.group.postsImages(groupId),
-    queryFn: ({ queryKey }) => getPostsImagesPerGroup({ queryKey }),
+    queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam) =>
+      !!lastPage.length && lastPage.length === 15 ? lastPageParam + 1 : null,
   });
 };
