@@ -1,8 +1,9 @@
 import { useInviteGroupForm } from '@/hooks/byUse/useGroupForm';
 import { useInsertUserGroupMutation } from '@/hooks/queries/byUse/useGroupMutations';
 import { makeUserGroupDataToObj } from '@/services/groupServices';
+import { Button } from '@/stories/Button';
 import browserClient from '@/utils/supabase/client';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, useFormState } from 'react-hook-form';
 
 type Props = {
   isBottomSheetOpen: boolean;
@@ -11,13 +12,13 @@ type Props = {
 
 const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) => {
   const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
-  const { register, handleSubmit, formState } = useInviteGroupForm();
+  const { register, handleSubmit, formState, control } = useInviteGroupForm();
 
   const onSubmit = async (value: FieldValues) => {
     const { data } = await browserClient.auth.getUser();
     if (data.user?.id) {
       const userId = data.user.id;
-      //NOTE - 유저가 이미 해당 그룹에 속해있는지 검사 / 체크도 tanstack query로 관리해야하나? 의미가 있을지 의문
+      //NOTE - 유저가 이미 해당 그룹에 속해있는지 검사
       const { data: existingMember } = await browserClient.rpc('check_user_membership', {
         input_invite_code: value.inviteCode,
         input_user_id: userId,
@@ -40,38 +41,38 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
     }
   };
 
+  const { isValid } = useFormState({ control });
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white pt-[16px] gap-[20px] rounded-t-[20px] w-[343px]`}
+      className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white gap-5 rounded-t-[20px] mt-14`}
     >
-      {/* NOTE - 바텀시트 본문 - 닫기 버튼 */}
-      <div className='flex justify-end items-center px-[20px] w-full'>
-        <button
-          className='w-[15px] h-[15px]'
-          onClick={handleBottomSheetOpen}
-        >
-          <img
-            src='/svgs/Close.svg'
-            alt='X'
-          />
-        </button>
+      <div className='flex flex-col items-start w-full gap-1'>
+        <h3 className='text-label_sm text-gray-900'>초대코드 입력</h3>
+        <input
+          type='text'
+          className='bg-[#E9E9E9] py-[8.5px] pl-[20px] pr-[10px] w-full'
+          placeholder='코드를 입력해주세요'
+          {...register('inviteCode')}
+        />
+        {formState.errors.inviteCode && (
+          <p className='text-[12px] text-red-600'>{formState.errors.inviteCode.message}</p>
+        )}
       </div>
-      {/* NOTE - 바텀시트 본문 - 입력 메인 */}
-      <h3>초대코드 입력하기</h3>
-      <input
-        type='text'
-        className='bg-[#E9E9E9] py-[8.5px] pl-[20px] pr-[10px]'
-        placeholder='코드를 입력해주세요'
-        {...register('inviteCode')}
-      />
-      {formState.errors.inviteCode && <p className='text-[12px] text-red-600'>{formState.errors.inviteCode.message}</p>}
-      <button
+      <Button
         type='submit'
-        className='w-full bg-black text-white p-[10px] z-10'
+        label='그룹 추가하기'
+        variant='primary'
+        size='large'
+        className='w-full'
+        disabled={!isValid}
       >
-        + 그룹 추가하기
-      </button>
+        <img
+          src='/svgs/Plus_LG.svg'
+          alt=''
+        />
+      </Button>
     </form>
   );
 };
