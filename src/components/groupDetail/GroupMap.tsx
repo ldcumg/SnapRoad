@@ -9,7 +9,7 @@ import Switch_btn_to_mappin_marker from '@/../public/svgs/Switch_btn_to_mappin_m
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
-import type { Latlng, LocationInfo } from '@/types/placeTypes';
+import type { LocationInfo } from '@/types/placeTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -27,8 +27,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
 
+  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
-  const [spotInfo, setSpotInfo] = useState<{ placeName: string; address: string } & Latlng>();
+
   const {
     register,
     handleSubmit,
@@ -119,7 +120,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   };
 
   /** 중심 좌표의 장소 정보 요청 */
-  const getSpotInfo = async ({ lat, lng }: Latlng) => {
+  const getSpotInfo = async () => {
+    if (!map) return;
+    const latlng = map.getCenter();
+
+    const lat = latlng.getLat();
+    const lng = latlng.getLng();
     const address = await getAddress({ lat, lng });
     setSpotInfo({ placeName: '', address, lat, lng });
   };
@@ -127,6 +133,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   /** 게시물을 추가 라우팅 */
   const handleAddPostRoute = () => {
     if (isPostsView) {
+      //TODO - 라우트 주소 고치기
       route.push(`/group/${groupId}/임시`);
       return;
     }
@@ -166,20 +173,24 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           더보기
         </button>
       )}
-      <button onClick={() => setIsPostsView((prev) => !prev)}>
+      <button
+        onClick={() => {
+          setIsPostsView((prev) => !prev);
+          isPostsView ? getSpotInfo() : setSpotInfo(undefined);
+        }}
+      >
         {isPostsView ? <Switch_btn_to_mappin_marker /> : <Switch_btn_to_image_marker />}
       </button>
       {isPostsView || <Mappin />}
       <Map
-        className='w-full h-[30vh]'
+        className='w-full h-[50vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
-        onDragEnd={(map) => {
-          const latlng = map.getCenter();
-          getSpotInfo({ lat: latlng.getLat(), lng: latlng.getLng() });
+        onDragEnd={() => {
+          isPostsView || getSpotInfo();
         }}
       >
         {isPostsView && !!postsCoverImages.length ? (
