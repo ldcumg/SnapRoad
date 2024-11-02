@@ -25,13 +25,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
-
-  //TODO - 객체로
-  const [searchResultMarkers, setSearchResultMarkers] = useState<LocationInfo[]>([]);
-  const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
-
+  const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
+    markers: [],
+    hasMore: false,
+  });
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
+
+  // const [polyline, setPolyline] = useState<Latlng[]>([]);
   const polyline: Latlng[] = [];
 
   const {
@@ -80,16 +81,23 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
     const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
-    setSearchResultMarkers((prev) => (searchInput ? results : [...prev, ...results]));
+    setSearchResult(({ markers, hasMore }) =>
+      searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
+    );
     searchInput && moveToMarker(results[0]);
 
     if (is_end) {
-      setHasMoreResults(false);
+      setSearchResult((prev) => {
+        return { ...prev, hasMore: false };
+      });
       searchKeyword.current = { keyword: '', page: 1 };
       return;
     }
 
-    hasMoreResults || setHasMoreResults(true);
+    searchResult.hasMore ||
+      setSearchResult((prev) => {
+        return { ...prev, hasMore: true };
+      });
     searchInput
       ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
       : (searchKeyword.current.page = searchKeyword.current.page += 1);
@@ -173,7 +181,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           <Map_Search />
         </button>
       </form>
-      {hasMoreResults && (
+      {searchResult.hasMore && (
         <button
           type='button'
           onClick={searchLocation}
@@ -247,7 +255,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </MarkerClusterer>
         ) : (
           <>
-            {searchResultMarkers.map((marker) => (
+            {searchResult.markers.map((marker) => (
               <MapMarker
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
