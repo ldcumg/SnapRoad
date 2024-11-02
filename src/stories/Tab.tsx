@@ -24,7 +24,7 @@ export const Tab = ({ tabs, variant = 'default', size = 'medium' }: TabsProps) =
 
   return (
     <div className='flex flex-col'>
-      <div className={`border-b ${tabContainerStyle}`}>
+      <div className={`border-b overflow-auto ${tabContainerStyle}`}>
         {tabs.map((tab, index) => (
           <button
             key={index}

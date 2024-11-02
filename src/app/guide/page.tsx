@@ -11,7 +11,7 @@ import { Tab } from '@/stories/Tab';
 
 const GuidePage = () => {
   return (
-    <div className='p-8'>
+    <>
       <h1 className='text-2xl font-bold mb-8'>공통 StoryBook 컴포넌트</h1>
       <Tab
         tabs={[
@@ -81,7 +81,7 @@ const GuidePage = () => {
           },
         ]}
       />
-    </div>
+    </>
   );
 };
 export default GuidePage;

@@ -96,7 +96,6 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Dark Theme Primary and Secondary Colors */
     /* White */
     --white: 0, 0%, 100%;
 
@@ -130,35 +129,13 @@
     --gray-700: 222, 10%, 27%;
     --gray-800: 220, 10%, 18%;
     --gray-900: 222, 10%, 8%;
-
-    /* Dark Theme Primary and Secondary Colors
-    --primary-50: 160, 60%, 30%;
-    --primary-200: 162, 60%, 40%;
-    --primary-400: 162, 100%, 50%;
-    --primary-800: 162, 100%, 70%;
-
-    --secondary-50: 318, 85%, 25%;
-    --secondary-100: 318, 85%, 35%;
-    --secondary-400: 318, 65%, 50%;
-    --secondary-600: 318, 45%, 65%;
-
-    Dark Theme Gray Scale 
-    --gray-50: 210, 20%, 20%;
-    --gray-100: 210, 15%, 25%;
-    --gray-200: 210, 10%, 35%;
-    --gray-300: 210, 8%, 45%;
-    --gray-400: 210, 7%, 55%;
-    --gray-500: 210, 6%, 65%;
-    --gray-600: 210, 5%, 75%;
-    --gray-700: 210, 4%, 85%;
-    --gray-800: 210, 3%, 90%;
-    --gray-900: 210, 2%, 95%; */
   }
 
-  /* 기본 스타일 적용 */
   * {
     word-break: keep-all;
-    @apply border-border;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   @media (prefers-color-scheme: dark) {

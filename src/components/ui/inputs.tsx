@@ -5,7 +5,7 @@ import { Input } from '@/stories/Input';
 const Inputs = () => {
   return (
     <div className='colors'>
-      <div className='p-8'>
+      <div className='p-4'>
         <h1 className='text-2xl font-bold mb-8'>입력 필드</h1>
         <div className='grid grid-cols-3 gap-4'>
           <div>

@@ -5,7 +5,7 @@ import React from 'react';
 
 const Tabs = () => {
   return (
-    <div className='p-8'>
+    <div className='p-4'>
       <h1 className='text-2xl font-bold mb-8'>탭 기능 예제</h1>
       <Tab
         variant='full'

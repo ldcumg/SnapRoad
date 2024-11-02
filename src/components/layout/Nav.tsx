@@ -88,7 +88,7 @@ const Nav = () => {
 
   return (
     <nav>
-      <ul className='flex flex-row gap-2'>
+      <ul className='flex flex-row gap-2 overflow-auto'>
         <li>
           <Link href={`/`}>메인</Link>
         </li>

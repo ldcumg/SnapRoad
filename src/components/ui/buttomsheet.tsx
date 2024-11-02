@@ -12,7 +12,7 @@ export const Buttomsheet = () => {
   const handleFullClose = () => setIsFullHeightOpen(false);
 
   return (
-    <div className='p-8'>
+    <div className='p-4'>
       <h1 className='text-2xl font-bold mb-8'>바텀시트 예제</h1>
       <div className='flex gap-4 pr-4'>
         {/* 반 높이 바텀시트 열기 버튼 */}

@@ -33,9 +33,9 @@ const colorsData = [
 const colors = () => {
   return (
     <div className='colors'>
-      <div className='p-8'>
+      <div className='p-4'>
         <h1 className='text-2xl font-bold mb-8'>Color</h1>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid md:grid-cols-3 grid-cols-2 gap-4'>
           {colorsData.map((color) => (
             <div
               key={color.label}

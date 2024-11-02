@@ -1,5 +1,5 @@
-import { Button } from '@/stories/Button';
 import { Modal } from '@/stories/Modal';
+import { ModalContent } from '@/stories/ModalContentProps';
 import { useState } from 'react';
 
 const Modals = () => {
@@ -10,34 +10,25 @@ const Modals = () => {
   };
 
   return (
-    <div className='p-8'>
+    <div className='p-4'>
       <h1 className='text-2xl font-bold mb-8'>모달</h1>
-      <div className='flex flex-col items-center'>
-        <Button
-          type='button'
-          variant='primary'
-          size='large'
-          label='모달 열기'
+      <div className='p-4 flex flex-col items-center'>
+        <button
           onClick={handleModalOpen}
-          className='transition'
-        />
+          className='mt-4 px-4 py-2 bg-primary-400 text-white rounded hover:bg-primary-600 rounded-md transition'
+        >
+          모달 열기
+        </button>
 
         <Modal
           isModalOpen={isModalOpen}
           handleModalOpen={handleModalOpen}
         >
-          <div className='p-4 bg-white max-w-md w-full'>
-            <h2 className='text-lg font-semibold mb-2'>모달 타이틀</h2>
-            <p className='text-gray-700 mb-4'>모달 내부의 컨텐츠입니다.</p>
-            <Button
-              type='button'
-              variant='primary'
-              size='large'
-              label='닫기'
-              onClick={handleModalOpen}
-              className='transition w-full'
-            />
-          </div>
+          <ModalContent
+            title='모달 타이틀'
+            content='Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex iste inventore rem sunt vel at, odio, nam eligendi itaque, molestias mollitia delectus culpa possimus accusantium voluptatibus ab in! Amet, minima!'
+            onClose={handleModalOpen}
+          />
         </Modal>
       </div>
     </div>
