@@ -4,6 +4,7 @@ import { getGroupPostsQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { keywordSearch } from '@/services/server-action/mapAction';
 import type { LocationInfo } from '@/types/placeTypes';
+import type { PostImage } from '@/types/postTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
@@ -24,12 +25,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors: { searchTerm: searchTermInvalidate },
-    },
     setFocus,
     getValues,
     resetField,
+    formState: {
+      errors: { searchTerm: searchTermInvalidate },
+    },
   } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(searchPlaceSchema),
@@ -45,6 +46,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   }
 
   const { data: groupPosts, isPending, isError, error } = getGroupPostsQuery(groupId);
+  console.log('groupPosts =>', groupPosts);
 
   if (isPending) return <>로딩</>;
 
@@ -154,12 +156,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       )}
       <button onClick={() => setIsPostsView((prev) => !prev)}>{isPostsView ? '마커 찍기' : '게시물 보기'}</button>
       <Map
-        className='w-full h-[80vh]'
+        className='w-full h-[70vh]'
         // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.5, lng: 127.5 }}
         onCreate={setMap}
         level={13}
-        isPanto
+        isPanto={true}
       >
         {isPostsView ? (
           <MarkerClusterer
@@ -179,7 +181,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             disableClickZoom={true} // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정
             // onClusterclick={}
           >
-            {/* {groupPosts.map(({ post_id, images }) => {
+            {groupPosts.map(({ post_id, images }) => {
               const { post_image_url, post_image_name, post_lat, post_lng } = images.find(
                 (image: PostImage) => image.is_cover,
               );
@@ -200,7 +202,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                   // title={post_image_name} // 마우스 호버 시 표시
                 />
               );
-            })} */}
+            })}
           </MarkerClusterer>
         ) : (
           <>
@@ -222,7 +224,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         )}
       </Map>
       <button onClick={handleFindUserLocation}>내 위치</button>
-      {isPostsView || <button onClick={handleSelectSpot}>추가하기</button>}
+      <button onClick={handleSelectSpot}>추가하기</button>
     </>
   );
 };
