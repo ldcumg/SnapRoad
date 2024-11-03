@@ -1,4 +1,4 @@
-import { ImagesWithBlobUrl } from '@/types/postTypes';
+import { ImagesWithBlobUrl } from '@/types/projectType';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import React from 'react';

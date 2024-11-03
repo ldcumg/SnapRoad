@@ -1,10 +1,9 @@
 import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
-import { ImageUpload } from '@/types/postTypes';
+import { ImageUpload } from '@/types/projectType';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
-
 
 export function useUploadImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();

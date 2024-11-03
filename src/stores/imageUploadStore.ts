@@ -1,4 +1,4 @@
-import { ImagesWithBlobUrl } from '@/types/postTypes';
+import { ImagesWithBlobUrl } from '@/types/projectType';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
