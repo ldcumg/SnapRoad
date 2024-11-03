@@ -21,14 +21,14 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  // const [loading, error] = useKakaoLoader({
-  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-  //   libraries: ['services', 'clusterer'],
-  // });
+  const [mapLoading, mapError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+    libraries: ['services', 'clusterer'],
+  });
 
-  // useEffect(() => {
-  //   if (loading) return;
-  // }, [loading]);
+  useEffect(() => {
+    if (mapLoading) return;
+  }, [mapLoading]);
 
   if (isPending) return <>로딩</>;
 

@@ -19,13 +19,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
-  console.log('postsPreView =>', postsPreView);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],
     hasMore: false,
   });
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
+  // const bounds = useRef<kakao.maps.LatLngBounds>();
+  const bounds = new kakao.maps.LatLngBounds();
 
   // const [polyline, setPolyline] = useState<Latlng[]>([]);
   const polyline: Latlng[] = [];
@@ -45,26 +46,25 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
-
   useEffect(() => {
     //TODO - 데스크탑에서만 동작하게
     setFocus(SEARCH_INPUT);
   }, []);
+
+  // useEffect(() => {
+  //   if (!map || !postsCoverImages || !bounds) return;
+  //   postsCoverImages.forEach(({ post_lat, post_lng }) => {
+  //     if (!bounds) return;
+  //   bounds.extend(new kakao.maps.LatLng(post_lat, post_lng));
+  // });
+  // map.panTo(bounds);
+  // }, [map, postsCoverImages, bounds]);
 
   if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
 
   if (isPending) return <>로딩</>;
 
   if (isError) throw new Error(error.message);
-
-  // if (map) {
-  //   //TODO - 게시물들을 기준으로 지도 범위 재설정
-  //   const bounds = new kakao.maps.LatLngBounds();
-  //   postsCoverImages.forEach(({ post_lat, post_lng }) =>
-  //     bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
-  //   );
-  //   map.panTo(bounds);
-  // }
 
   //FIXME - 엔터 여러번 눌렀을 때
   /** 키워드 검색 */
@@ -200,7 +200,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       {isPostsView || <img src='/svgs/Mappin.svg' />}
       <Map
         className='w-full h-[50vh]'
-        // TODO - 불러온 데이터들의 중심좌표로 초기 좌표 변경 getCenter()
         center={{ lat: 35.95, lng: 128.25 }}
         onCreate={setMap}
         level={13}
@@ -228,17 +227,17 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ]}
             disableClickZoom={true}
             //TODO - 클러스터 시 폴리라인 재설정
-            // onClustered={(test) => console.log(test.getCalculator())}
             onClusterclick={(_, cluster) => {
-              // console.log(cluster.getBounds());
               setPostsPreview(
                 cluster.getMarkers().map((marker) => {
+                  bounds.extend(new kakao.maps.LatLng(marker.getPosition().getLat(), marker.getPosition().getLng()));
                   return {
                     postId: marker.getImage().Wh,
                     postImageUrl: marker.getImage().ok,
                   };
                 }),
               );
+              map && map.panTo(bounds);
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
