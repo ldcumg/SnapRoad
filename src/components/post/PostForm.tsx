@@ -1,22 +1,14 @@
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
+import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
-import { Images } from '@/types/projectType';
 import browserClient from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type PostFormProps = {
-  groupId: string;
-  userId: string;
-  lat?: number;
-  lng?: number;
-  imagesData: Images[];
-  addressName?: string;
-};
-
-const PostForm = ({ groupId, imagesData }: PostFormProps) => {
-  const { userId, lat, lng, addressName } = usePostDataStore();
-  if (!userId || !lat || !lng || !addressName) return <div>로딩 중...</div>;
+const PostForm = () => {
+  const { userId, groupId, lat, lng, addressName } = usePostDataStore();
+  const { images: imagesData } = useImageUploadStore();
+  if (!groupId || !userId) return <div>로딩 중...</div>;
 
   const router = useRouter();
   const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;

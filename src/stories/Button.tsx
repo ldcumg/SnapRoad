@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import React from 'react';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   variant?: 'primary' | 'secondary' | 'outlinePink' | 'outlineGray';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
@@ -9,6 +9,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   label: string;
   children?: React.ReactNode;
   className?: string;
+  type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -92,8 +93,8 @@ export const Button = ({
         '로딩 중...'
       ) : (
         <>
-          {children && <span className={cn('mr-2 flex items-center')}>{children}</span>} {/* 아이콘 */}
-          {label} {/* 버튼 텍스트 */}
+          {children && <span className={cn('mr-2 flex items-center')}>{children}</span>}
+          {label}
         </>
       )}
     </button>
