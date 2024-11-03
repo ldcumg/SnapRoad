@@ -64,7 +64,7 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
             {...register('inviteCode')}
           />
           <button
-            className='p-1'
+            className=''
             type='button'
             onClick={clearInputValue}
           >
