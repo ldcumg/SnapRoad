@@ -19,6 +19,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
+  console.log('postsPreView =>', postsPreView);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],
     hasMore: false,
@@ -65,6 +66,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   //   map.panTo(bounds);
   // }
 
+  //FIXME - 엔터 여러번 눌렀을 때
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput }: FieldValues) => {
     if (!map) {
@@ -213,6 +215,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             minLevel={10} // 클러스터 할 최소 지도 레벨
             styles={[
               {
+                textAlign: 'center',
+                lineHeight: '54px',
                 fontSize: '20px',
                 color: 'black',
                 width: '100px',
@@ -223,8 +227,19 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
               },
             ]}
             disableClickZoom={true}
-            onClustered={(test) => console.log(test)}
-            // onClusterclick={}
+            //TODO - 클러스터 시 폴리라인 재설정
+            // onClustered={(test) => console.log(test.getCalculator())}
+            onClusterclick={(_, cluster) => {
+              // console.log(cluster.getBounds());
+              setPostsPreview(
+                cluster.getMarkers().map((marker) => {
+                  return {
+                    postId: marker.getImage().Wh,
+                    postImageUrl: marker.getImage().ok,
+                  };
+                }),
+              );
+            }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
               polyline.push({ lat: post_lat, lng: post_lng });
@@ -244,9 +259,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                       width: 50,
                       height: 50,
                     }, // 마커이미지의 크기
-                    // options: { alt: image.post_image_name },
+                    options: { alt: post_id },
                   }}
-                  // title={image.post_image_name} // 마우스 호버 시 표시
+                  // title={post_id} // 마우스 호버 시 표시
                 />
               );
             })}
@@ -271,10 +286,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         )}
         <Polyline
           path={[polyline]}
-          strokeWeight={5} // 선의 두께 입니다
-          strokeColor={'#FFAE00'} // 선의 색깔입니다
-          strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-          strokeStyle={'solid'} // 선의 스타일입니다
+          strokeWeight={5} // 선 두께
+          strokeColor={'#FFAE00'} // 선 색깔
+          strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
+          strokeStyle={'solid'} // 선 스타일
         />
       </Map>
       <button onClick={handleFindUserLocation}>
@@ -289,6 +304,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         )}
         {!!postsPreView.length ? (
           postsPreView.map((post) => (
+            // TODO 게시물 상세  페이지로 이동
             <Link
               href={`/${post.postId}`}
               key={post.postId}

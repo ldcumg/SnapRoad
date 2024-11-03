@@ -4,6 +4,7 @@ import Close_Member_List from '@/../public/svgs/Close_Member_List.svg';
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
 import MemberList from '@/components/groupDetail/MemberList';
+import URLS from '@/constants/urls';
 import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
@@ -83,7 +84,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
     <>
       <ToastContainer />
       <header className='flex justify-between px-5'>
-        <Link href='/'>
+        <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
         <h2>{groupInfo.group_title}</h2>
