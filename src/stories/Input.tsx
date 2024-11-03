@@ -11,6 +11,7 @@ export interface InputProps {
   helperText?: string;
   variant?: 'primary' | 'danger' | 'outlinePink' | 'outlineGray' | 'default';
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDeleteClick?: () => void;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -25,6 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       variant = 'default',
       onChange,
+      onDeleteClick,
       ...props
     },
     ref,
@@ -33,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const [showPassword, setShowPassword] = useState(false);
 
     const handleDeleteClick = () => {
-      setInputValue(''); // 인풋 값 초기화
+      setInputValue('');
       if (onChange) {
         onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
       }
@@ -87,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className='relative'>
           <input
             ref={ref}
-            type={type === 'password' && showPassword ? 'text' : type} // 비밀번호 표시 전환
+            type={type === 'password' && showPassword ? 'text' : type}
             placeholder={placeholder}
             disabled={disabled}
             value={inputValue}

@@ -12,13 +12,12 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import { useEffect, useState, useRef } from 'react';
 
 interface ImageListProps {
-  groupId: string;
   uploadSessionId: string;
 }
 
-const PostImageSlide = ({ groupId, uploadSessionId }: ImageListProps) => {
-  const { userId } = usePostDataStore();
-  if (!userId) return <div>로딩 중...</div>;
+const PostImageSlide = ({ uploadSessionId }: ImageListProps) => {
+  const { userId, groupId } = usePostDataStore();
+  if (!groupId || !userId) return <div>로딩 중...</div>;
 
   const { images, addImages, deleteImage, setImages, resetImages, updateImage } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);

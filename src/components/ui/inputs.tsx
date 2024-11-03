@@ -67,6 +67,16 @@ const Inputs = () => {
               helperText='비밀번호를 입력하고 보기 버튼을 눌러 확인하세요'
             />
           </div>
+
+          <div>
+            <Input
+              label='이메일'
+              type='email'
+              placeholder='이메일 입력하세요...'
+              onDeleteClick={() => console.log('삭제 버튼 클릭됨')}
+              helperText='이메일 입력하고 보기 버튼을 눌러 확인하세요'
+            />
+          </div>
         </div>
       </div>
     </div>

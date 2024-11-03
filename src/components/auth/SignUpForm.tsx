@@ -4,7 +4,7 @@ import { useSignUpForm } from '@/hooks/byUse/useAuthForm';
 import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
 import { signUpSchema } from '@/schemas/authSchemas';
 import { Button } from '@/stories/Button';
-import { Input } from '@/stories/Input';
+import { Input } from '@/stories/InputZod';
 import Link from 'next/link';
 import React from 'react';
 import { FieldValues } from 'react-hook-form';
