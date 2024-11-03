@@ -19,13 +19,13 @@ const PostPage = ({ params: { groupId } }: Props) => {
   // 쿼리 파라미터로부터 값을 가져와 상태로 저장
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
-  const addressName = searchParams.get('address_name');
+  const place = searchParams.get('place'); // 'address_name' 대신 'place' 사용
   const latNumber = lat ? parseFloat(lat) : undefined;
   const lngNumber = lng ? parseFloat(lng) : undefined;
 
   // 디코딩된 주소를 상태에 저장
   const [decodedAddressName, setDecodedAddressName] = useState<string | undefined>(
-    addressName ? decodeURIComponent(addressName) : undefined,
+    place ? decodeURIComponent(place) : undefined, // 'place'를 디코딩
   );
 
   const { data: user, isLoading: userLoading, error: userError } = useUserQuery();

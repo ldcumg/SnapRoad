@@ -1,3 +1,4 @@
+import { ImageUpload } from '@/types/postTypes';
 import { formatDateToNumber } from '@/utils/dateUtils';
 import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
@@ -14,7 +15,10 @@ export const fetchSignedUrl = async (bucketName: string, folderName: string, fil
   const { data, error } = await browserClient.storage
     .from(bucketName)
     .createSignedUrl(`${folderName}/${filename}`, 60 * 60 * 1000);
-  if (error) throw new Error('Signed URL 생성 실패');
+  if (error) {
+    console.error('Signed URL 생성 오류:', error);
+    throw new Error('Signed URL 생성 실패');
+  }
   console.log('singindUrl 성공', data.signedUrl);
   return data.signedUrl;
 };
@@ -52,9 +56,10 @@ export const saveImageMetadata = async (
   signedUrl: string,
   exifData: any,
   userId: string,
+  groupId: string,
   currentDate: string,
   uploadSessionId: string,
-) => {
+): Promise<ImageUpload> => {
   const { data, error } = await browserClient
     .from('images')
     .insert({
@@ -66,42 +71,18 @@ export const saveImageMetadata = async (
       post_lng: exifData.longitude,
       origin_created_at: formatDateToNumber(exifData.dateTaken),
       user_id: userId,
+      group_id: groupId,
       upload_session_id: uploadSessionId,
     })
     .select();
 
-  if (error) throw new Error('이미지 메타데이터 저장 실패');
-  return data[0];
-};
-
-/**
- * 사용자 ID를 기준으로 모든 이미지의 is_cover 상태를 false로 설정
- * @param userId 사용자 ID
- * @param createdAt 특정 시간 (ISO 문자열)
- */
-
-export async function resetCoverImage(userId: string, uploadSessionId: string) {
-  const { error, data } = await browserClient
-    .from('images')
-    .update({ is_cover: false })
-    .eq('user_id', userId)
-    .eq('upload_session_id', uploadSessionId);
-
   if (error) {
-    console.error('대표 이미지 초기화 실패:', error.message);
-    throw new Error('대표 이미지 초기화 실패');
+    console.error('이미지 메타데이터 저장 실패:', error.message);
+    throw new Error('이미지 메타데이터 저장 실패');
   }
-  console.log('대표 이미지 초기화 성공:', data);
-}
-/**
- * 특정 ID의 이미지를 대표 이미지로 설정
- * @param id 이미지 ID
- */
 
-export async function setCoverImage(id: number) {
-  const { error } = await browserClient.from('images').update({ is_cover: true }).eq('id', id);
-  if (error) throw new Error('대표 이미지 설정 실패');
-}
+  return data[0] as ImageUpload;
+};
 
 /**
  * 특정 사용자와 업로드 세션의 이미지를 초기화한 후, 특정 이미지를 대표 이미지로 설정합니다.
@@ -111,50 +92,34 @@ export async function setCoverImage(id: number) {
  * 이거 수정 각
  */
 
-// 모든 이미지를 초기화하는 함수
-// async function resetCoverImages(userId: string, uploadSessionId: string) {
-//   const { error } = await browserClient
-//     .from('images')
-//     .update({ is_cover: false })
-//     .eq('user_id', userId)
-//     .eq('upload_session_id', uploadSessionId); // 특정 업로드 세션 ID 추가
+async function resetCoverImages(userId: string, uploadSessionId: string) {
+  const { error } = await browserClient
+    .from('images')
+    .update({ is_cover: false })
+    .eq('user_id', userId)
+    .eq('upload_session_id', uploadSessionId);
 
-//   if (error) {
-//     console.error('대표 이미지 초기화 실패:', error.message);
-//     throw new Error('대표 이미지 초기화 실패');
-//   }
-// }
+  if (error) {
+    console.error('대표 이미지 초기화 실패:', error.message);
+    throw new Error('대표 이미지 초기화 실패');
+  }
+}
 
-// 특정 이미지를 대표 이미지로 설정하는 함수
-// async function setCoverImage(userId: string, imageId: number, uploadSessionId: string) {
-//   const { error, data } = await browserClient
-//     .from('images')
-//     .update({ is_cover: true })
-//     .eq('id', imageId)
-//     .eq('user_id', userId)
-//     .eq('upload_session_id', uploadSessionId) // 특정 업로드 세션 ID 추가
-//     .select('*');
+async function setCoverImage(imageId: number) {
+  const { error } = await browserClient.from('images').update({ is_cover: true }).eq('id', imageId);
 
-//   if (error) {
-//     console.error('대표 이미지 설정 실패:', error.message);
-//     throw new Error('대표 이미지 설정 실패');
-//   }
+  if (error) {
+    console.error('대표 이미지 설정 실패:', error.message);
+    throw new Error('대표 이미지 설정 실패');
+  }
+}
 
-//   if (!data) {
-//     console.error('조건에 맞는 행이 없습니다.');
-//     throw new Error('조건에 맞는 행이 없습니다.');
-//   }
-
-//   console.log('대표 이미지 설정 성공:', data);
-// }
-
-// 최종적으로 호출하는 메인 함수
-// export async function updateCoverImage(userId: string, imageId: number, uploadSessionId: string) {
-//   console.log('Updating cover image with:', { userId, imageId, uploadSessionId });
-//   await resetCoverImages(userId, uploadSessionId);
-//   await setCoverImage(userId, imageId, uploadSessionId);
-// }
-
+export async function updateCoverImage(userId: string, imageId: number, uploadSessionId: string) {
+  console.log('Updating cover image with:', { userId, imageId, uploadSessionId });
+  await resetCoverImages(userId, uploadSessionId);
+  await setCoverImage(imageId);
+  console.log('대표 이미지가 설정되었습니다.');
+}
 /**
  * 이미지 ID로 데이터베이스에서 파일 이름을 가져옴
  * @param id 이미지 ID

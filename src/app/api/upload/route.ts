@@ -23,8 +23,8 @@ export async function POST(request: Request) {
 
         results.push({
           name: file.name,
-          latitude: latitude || '위도 없음',
-          longitude: longitude || '경도 없음',
+          latitude: latitude || null,
+          longitude: longitude || null,
           dateTaken: dateTaken || '촬영 날짜 없음',
           thumbnail: thumbnailBase64 || '썸네일 없음',
         });
@@ -33,6 +33,5 @@ export async function POST(request: Request) {
       }
     }
   }
-
   return NextResponse.json(results);
 }

@@ -1,4 +1,4 @@
-import { resetCoverImage, setCoverImage } from '@/services/client-action/postImageActions';
+import { updateCoverImage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -8,25 +8,29 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
  * @param uploadSessionId 업로드 세션 ID
  * @returns 이미지 대표 설정을 위한 mutation 함수
  */
-
 export function useSetCoverImage(userId: string, uploadSessionId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (imageId: number) => {
-      await resetCoverImage(userId, uploadSessionId);
-      await setCoverImage(imageId);
+      await updateCoverImage(userId, imageId, uploadSessionId);
     },
     onMutate: async (imageId) => {
       const { updateImage, images } = useImageUploadStore.getState();
-
-      updateImage(imageId, { isCover: true });
+      updateImage(imageId, { is_cover: true });
       images.forEach((image) => {
-        if (image.id !== imageId) updateImage(image.id, { isCover: false });
+        if (image.id !== imageId) updateImage(image.id!, { is_cover: false });
       });
+
+      return { previousImages: images };
     },
-    onError: (error) => {
+    onError: (error, _, context) => {
       console.error('대표 이미지 설정 오류:', error);
+
+      if (context?.previousImages) {
+        const { setImages } = useImageUploadStore.getState();
+        setImages(context.previousImages);
+      }
     },
     onSuccess: () => {
       console.log('대표 이미지 설정 성공');

@@ -104,8 +104,8 @@ export type Database = {
           post_id: string | null
           post_image_name: string
           post_image_url: string
-          post_lat: string | null
-          post_lng: string | null
+          post_lat: number | null
+          post_lng: number | null
           updated_at: string
           upload_session_id: string
           user_id: string
@@ -120,8 +120,8 @@ export type Database = {
           post_id?: string | null
           post_image_name?: string
           post_image_url?: string
-          post_lat?: string | null
-          post_lng?: string | null
+          post_lat?: number | null
+          post_lng?: number | null
           updated_at?: string
           upload_session_id?: string
           user_id?: string
@@ -136,8 +136,8 @@ export type Database = {
           post_id?: string | null
           post_image_name?: string
           post_image_url?: string
-          post_lat?: string | null
-          post_lng?: string | null
+          post_lat?: number | null
+          post_lng?: number | null
           updated_at?: string
           upload_session_id?: string
           user_id?: string
@@ -176,8 +176,8 @@ export type Database = {
           post_date: string
           post_desc: string
           post_id: string
-          post_lat: string
-          post_lng: string
+          post_lat: number | null
+          post_lng: number | null
           post_thumbnail_image: string
           post_time: string
           updated_at: string | null
@@ -192,8 +192,8 @@ export type Database = {
           post_date?: string
           post_desc?: string
           post_id?: string
-          post_lat?: string
-          post_lng?: string
+          post_lat?: number | null
+          post_lng?: number | null
           post_thumbnail_image?: string
           post_time?: string
           updated_at?: string | null
@@ -208,8 +208,8 @@ export type Database = {
           post_date?: string
           post_desc?: string
           post_id?: string
-          post_lat?: string
-          post_lng?: string
+          post_lat?: number | null
+          post_lng?: number | null
           post_thumbnail_image?: string
           post_time?: string
           updated_at?: string | null

@@ -1,35 +1,23 @@
+import { ImagesWithBlobUrl } from '@/types/postTypes';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 /**
- * @images 현재 저장된 이미지 배열
- * @addImages 새로운 이미지 배열에 추가
- * @updateImage 특정 이미지의 정보를 업데이트
- * @deleteImage 특정 이미지를 배열에서 삭제
- * @setImages 이미지 배열을 새 배열로 설정
- * @resetImages 이미지 배열을 빈 배열로 초기화
+ * @description 이미지 업로드 상태를 관리하는 zustand 스토어
+ * @property {ImagesWithBlobUrl[]} images - 현재 저장된 이미지 배열
+ * @method addImages - 새로운 이미지를 추가
+ * @method updateImage - 특정 이미지의 정보를 업데이트
+ * @method deleteImage - 특정 이미지를 배열에서 삭제
+ * @method setImages - 이미지 배열을 새 배열로 설정
+ * @method resetImages - 이미지 배열을 빈 배열로 초기화
  */
 
-interface ImageData {
-  id: number;
-  blobUrl: string;
-  filename: string;
-  latitude?: string;
-  longitude?: string;
-  dateTaken?: string;
-  isCover?: boolean;
-  userId?: string;
-  createdAt: string;
-  uploadSessionId: string;
-  postImageName: string;
-}
-
 interface ImageUploadStore {
-  images: ImageData[]; //
-  addImages: (newImages: ImageData[]) => void;
-  updateImage: (id: number, updates: Partial<ImageData>) => void;
+  images: ImagesWithBlobUrl[]; // ImagesWithBlobUrl 타입 사용
+  addImages: (newImages: ImagesWithBlobUrl[]) => void;
+  updateImage: (id: number, updates: Partial<ImagesWithBlobUrl>) => void;
   deleteImage: (id: number) => void;
-  setImages: (newImages: ImageData[]) => void;
+  setImages: (newImages: ImagesWithBlobUrl[]) => void;
   resetImages: () => void;
 }
 

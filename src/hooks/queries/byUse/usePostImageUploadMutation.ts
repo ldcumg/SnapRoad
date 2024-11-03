@@ -1,27 +1,19 @@
 import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/imageUploadStore';
+import { ImageUpload } from '@/types/postTypes';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-/**
- * 이미지 자동 업로드를 처리
- * 파일의 메타데이터(EXIF)를 가져와 데이터베이스에 저장하고,
- * 생성된 URL을 통해 이미지의 Blob URL을 반환
- * @param bucketName 버킷 이름
- * @param folderName 폴더 이름
- * @param userId 사용자 ID
- * @returns 업로드된 이미지 목록을 포함한 React Query Mutation 객체
- */
 
-export function useUploadImage(bucketName: string, folderName: string, userId: string) {
+export function useUploadImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
   const currentDate = new Date().toISOString();
   const uploadSessionId = uuidv4();
 
   return useMutation({
-    mutationFn: async (files: File[]) => {
+    mutationFn: async (files: File[]): Promise<ImageUpload[]> => {
       const formData = new FormData();
       files.forEach((file) => formData.append('photos', file));
 
@@ -44,6 +36,7 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
             signedUrl,
             exifData,
             userId,
+            groupId,
             currentDate,
             uploadSessionId,
           );
@@ -51,16 +44,19 @@ export function useUploadImage(bucketName: string, folderName: string, userId: s
           return {
             blobUrl,
             id: savedData.id,
-            userId: savedData.user_id,
-            isCover: savedData.is_cover,
-            postImageName: uniqueFileName,
-            createdAt: currentDate,
-            filename: uniqueFileName,
-            latitude: exifData.latitude,
-            longitude: exifData.longitude,
-            dateTaken: exifData.dateTaken,
-            uploadSessionId,
-          };
+            user_id: savedData.user_id,
+            is_cover: savedData.is_cover,
+            post_image_name: uniqueFileName,
+            created_at: currentDate,
+            deleted_at: null,
+            updated_at: currentDate,
+            origin_created_at: exifData.dateTaken,
+            post_image_url: signedUrl,
+            post_lat: exifData.latitude,
+            post_lng: exifData.longitude,
+            upload_session_id: uploadSessionId,
+            group_id: groupId,
+          } as ImageUpload;
         }),
       );
 
