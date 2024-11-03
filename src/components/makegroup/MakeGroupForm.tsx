@@ -1,6 +1,5 @@
 'use client';
 
-import Spinner from '../_common/Spinner';
 import InputSection from '@/components/makegroup/InputSection';
 import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
 import {
@@ -10,6 +9,7 @@ import {
 } from '@/hooks/queries/byUse/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQueries';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
+import Spinner from '@/stories/Spinner';
 import browserClient from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { FieldValues } from 'react-hook-form';

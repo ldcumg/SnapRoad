@@ -11,6 +11,17 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
   return (
     <>
       <h1>그룹 멤버</h1>
+      <button
+        onClick={() =>
+          toast.alert('초대 코드를 복사했어요!', {
+            position: 'b-c',
+            autoClose: true,
+          })
+        }
+      >
+        <img src='/svgs/User_Plus.svg' />
+        초대코드 복사
+      </button>
       <ol>
         {user_group.map(({ is_owner, profiles: { user_image_url, user_nickname, user_email } }) => (
           <li className='flex'>
@@ -21,16 +32,6 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
           </li>
         ))}
       </ol>
-      <button
-        onClick={() =>
-          toast.alert('초대 코드를 복사했어요!', {
-            position: 'b-c',
-            autoClose: true,
-          })
-        }
-      >
-        초대코드 복사
-      </button>
     </>
   );
 };

@@ -36,8 +36,10 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
       <div>
         <img src={group_image_url} />
         <div>
-          <button onClick={() => setMode(GroupDetailMode.member)}>사람 {user_group.length}</button>
-          <div>설정</div>
+          <button onClick={() => setMode(GroupDetailMode.member)}>
+            <img src='/svgs/Group_Member.svg' /> {user_group.length}
+          </button>
+          <img src='/svgs/Setting.svg' />
           <p>{group_desc}</p>
         </div>
       </div>
@@ -64,7 +66,9 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
         id='observerTarget'
         ref={observerRef}
       ></div>
-      <button onClick={handleScrollTop}>탑 스크롤</button>
+      <button onClick={handleScrollTop}>
+        <img src='/svgs/Top_Btn.svg' />
+      </button>
     </>
   );
 };
