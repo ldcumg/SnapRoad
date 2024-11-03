@@ -42,9 +42,9 @@ export interface UserGroupWithRequiredFields extends Required<UserGroup> {
 
 export interface ImageUpload {
   post_image_name?: string;
-  created_at?: string;
-  deleted_at?: string | null;
-  group_id?: string | null;
+  created_at: string;
+  deleted_at: string;
+  group_id?: string;
   id: number;
   is_cover?: boolean;
   origin_created_at?: string;
@@ -58,6 +58,6 @@ export interface ImageUpload {
   blobUrl?: string;
 }
 
-export interface ImagesWithBlobUrl extends ImageUpload {
-  blobUrl?: string;
+export interface ImagesWithBlobUrl extends Images {
+  blobUrl: string;
 }

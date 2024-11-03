@@ -1,4 +1,5 @@
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
+import { usePostDataStore } from '@/stores/usePostDataStore';
 import { Images } from '@/types/projectType';
 import browserClient from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -13,7 +14,10 @@ type PostFormProps = {
   addressName?: string;
 };
 
-const PostForm = ({ lat, lng, groupId, userId, imagesData, addressName }: PostFormProps) => {
+const PostForm = ({ groupId, imagesData }: PostFormProps) => {
+  const { userId, lat, lng, addressName } = usePostDataStore();
+  if (!userId || !lat || !lng || !addressName) return <div>로딩 중...</div>;
+
   const router = useRouter();
   const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;
   const [description, setDescription] = useState('');
