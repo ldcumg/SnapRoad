@@ -39,6 +39,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       if (onChange) {
         onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
       }
+
+      if (onDeleteClick) {
+        onDeleteClick();
+      }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +88,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const disabledLabelStyle = disabled ? 'text-gray-400' : labelColorStyles[variant];
 
     return (
-      <fieldset className='mb-4'>
+      <fieldset>
         <label className={cn('block font-bold mb-2', disabledLabelStyle)}>{label}</label>
         <div className='relative'>
           <input

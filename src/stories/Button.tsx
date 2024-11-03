@@ -3,7 +3,7 @@ import React from 'react';
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   variant?: 'primary' | 'secondary' | 'outlinePink' | 'outlineGray';
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'full';
   disabled?: boolean;
   loading?: boolean;
   label: string;
@@ -38,6 +38,7 @@ export const Button = ({
     small: 'px-4 py-2 text-label_sm rounded-[4px]',
     medium: 'px-5 py-3 text-label_md rounded-[8px]',
     large: 'px-6 py-3 text-title_lg rounded-[12px]',
+    full: 'px-5 py-3 text-label_md rounded-[8px] w-full',
   }[size];
 
   let colorStyle;

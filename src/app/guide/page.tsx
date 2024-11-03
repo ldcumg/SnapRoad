@@ -5,6 +5,7 @@ import Buttons from '@/components/ui/buttons';
 import Example from '@/components/ui/example';
 import Inputs from '@/components/ui/inputs';
 import Modals from '@/components/ui/modals';
+import MyForm from '@/components/ui/myForm';
 import Palettes from '@/components/ui/palettes';
 import Spinners from '@/components/ui/spinners';
 import Tabs from '@/components/ui/tabs';
@@ -79,6 +80,15 @@ const GuidePage = () => {
               </div>
             ),
             onClick: () => console.log('example 폴더 복붙해서 편집해서 넣으셔도 되요! 레이아웃 고정되어 있어요!'),
+          },
+          {
+            label: 'zod..?',
+            content: (
+              <div>
+                <MyForm />
+              </div>
+            ),
+            onClick: () => console.log('MyForm'),
           },
           {
             label: 'example',
