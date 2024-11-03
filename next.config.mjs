@@ -14,6 +14,14 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
+  },
 };
 // https://seftmlefjwyijhjjjzpt.supabase.co/storage/v1/object/sign/group_image/6f274ddf-d7a3-42eb-b775-849b61
 export default withSentryConfig(nextConfig, {

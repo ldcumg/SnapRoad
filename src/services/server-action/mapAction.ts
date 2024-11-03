@@ -1,6 +1,6 @@
 'use server';
 
-import type { LocationInfo, Location, Meta, Address } from '@/types/placesTypes';
+import type { LocationInfo, Latlng, SearchResult } from '@/types/placeTypes';
 import type { FieldValues } from 'react-hook-form';
 
 const MAP_BASE_URL = 'https://dapi.kakao.com/v2/local';
@@ -16,25 +16,29 @@ export const keywordSearch = async ({
 }: {
   keyword: FieldValues;
   page: number;
-}): Promise<{ results: LocationInfo[]; meta: Meta }> => {
-  const res = await fetch(`${MAP_BASE_URL}/search/keyword?query=${keyword}&page=${page}`, {
+}): Promise<{ results: LocationInfo[]; is_end: boolean }> => {
+  const response = await fetch(`${MAP_BASE_URL}/search/keyword?query=${keyword}&page=${page}`, {
     method: 'GET',
     cache: 'no-store',
     headers,
   });
 
-  if (!res.ok) throw new Error('키워드 검색에 실패했습니다.');
+  if (!response.ok) throw new Error('키워드 검색에 실패했습니다.');
 
-  const { documents, meta } = await res.json();
-  const results = documents.map((space: Location & { y: string; x: string }) => {
-    return { ...space, lat: Number(space.y), lng: Number(space.x) };
+  const {
+    documents,
+    meta: { is_end },
+  } = await response.json();
+  const results = documents.map(({ id, place_name, road_address_name, address_name, y, x }: SearchResult) => {
+    const address = road_address_name || address_name;
+    return { id, placeName: place_name, address, lat: Number(y), lng: Number(x) };
   });
 
-  return { results, meta };
+  return { results, is_end };
 };
 
 /** 위도, 경도로 주소 요청 */
-export const getAddress = async ({ lat, lng }: { lat: number; lng: number }): Promise<Address> => {
+export const getAddress = async ({ lat, lng }: Latlng): Promise<string> => {
   const res = await fetch(`${MAP_BASE_URL}/geo/coord2address?y=${lat}&x=${lng}`, {
     method: 'GET',
     cache: 'no-store',
@@ -44,8 +48,13 @@ export const getAddress = async ({ lat, lng }: { lat: number; lng: number }): Pr
   if (!res.ok) throw new Error('주소를 불러오지 못 했습니다.');
 
   const {
-    documents: [{ address }],
+    documents: [
+      {
+        road_address,
+        address: { address_name: address },
+      },
+    ],
   } = await res.json();
 
-  return address;
+  return road_address?.address_name ?? address;
 };

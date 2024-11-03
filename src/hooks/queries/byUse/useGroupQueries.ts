@@ -1,6 +1,7 @@
+import queryKeys from '../queryKeys';
 import { getGroupSignedImageUrls } from '@/services/groupServices';
 import { getSignedImgUrls } from '@/services/server-action/getSignedImgUrls';
-import { getGroupDetails } from '@/services/server-action/groupServerActions';
+import { getGroupDetails, getGroupInfo } from '@/services/server-action/groupServerActions';
 import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -59,6 +60,7 @@ type PostData = {
   created_at: string;
   post_address: string;
   post_thumbnail_image: string;
+  post_id: string;
   group_id: string;
 };
 type PostDataListType = PostData[] | null;
@@ -92,4 +94,17 @@ const useGroupRandomImageQuery = () => {
   });
 };
 
-export { useGroupDetailQueryForUpdate, useGroupDetailQuery, useGroupListInfiniteQuery, useGroupRandomImageQuery };
+const useGroupInfoQuery = (groupId: string) => {
+  return useQuery({
+    queryKey: queryKeys.group.info(groupId),
+    queryFn: ({ queryKey }) => getGroupInfo({ queryKey }),
+  });
+};
+
+export {
+  useGroupDetailQueryForUpdate,
+  useGroupDetailQuery,
+  useGroupListInfiniteQuery,
+  useGroupRandomImageQuery,
+  useGroupInfoQuery,
+};
