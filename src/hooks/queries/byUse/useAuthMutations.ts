@@ -1,4 +1,4 @@
-import { HOME, LOGIN_PAGE } from '@/constants/urls';
+import URLS from '@/constants/urls';
 import { signUp, login } from '@/services/server-action/authActions';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -9,9 +9,8 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: signUp,
-    onSuccess: (data) => {
-      alert(data.message);
-      router.push(LOGIN_PAGE);
+    onSuccess: () => {
+      router.push(URLS.signupSuccess);
     },
     onError: (error) => {
       alert(error.message);
@@ -27,7 +26,7 @@ export const useLogin = () => {
     mutationFn: login,
     onSuccess: (data) => {
       alert(data.message);
-      router.push(HOME);
+      router.push(URLS.home);
     },
     onError: (error) => {
       alert(error.message);

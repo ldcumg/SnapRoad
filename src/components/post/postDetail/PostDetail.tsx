@@ -3,11 +3,6 @@ import PostDetailHeader from './PostDetailHeader';
 import React from 'react';
 
 const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }) => {
-  console.log('postData :>> ', postData);
-
-  console.log('userDetail.profiles.user_id :>> ', userDetail.profiles.user_nickname);
-  console.log('postData.user_id:>> ', postData.user_id);
-
   return (
     <div className='border-b'>
       {/* 상단 영역 */}
@@ -16,11 +11,9 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }) =
         postData={postData}
         userDetail={userDetail}
       />
-
       {/* 이미지 영역*/}
       {/* <PostImages images={signedImageUrls} /> */}
       <PostDetailCarousel images={signedImageUrls} />
-
       {/* 게시글 내용 */}
       <div className='py-4 flex flex-col gap-4'>
         <div className='flex gap-4 items-center'>
@@ -33,11 +26,9 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }) =
           </div>
           <span className='text-gray-900 text-label_md'>{userDetail.profiles.user_nickname}</span>
         </div>
-
         <div>
           <p className='text-black text-body_md'>{postData.post_desc}</p>
         </div>
-
         {/* 태그 영역 */}
         <div className='flex gap-1'>
           {postData.tags.map((tag: string, id: string) => {

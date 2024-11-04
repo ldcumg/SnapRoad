@@ -44,51 +44,11 @@ const PostDetailCarousel = ({ images }) => {
                 backgroundImage: `url(${image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                height: '300px', // 이미지 슬라이드의 높이를 원하는 대로 설정하세요
+                height: '300px',
               }}
             />
           ))}
-          {/* <div className='keen-slider__slide number-slide1'>1</div>
-          <div
-            className='keen-slider__slide number-slide2'
-            style={{ height: 100 }}
-          >
-            2
-          </div>
-          <div
-            className='keen-slider__slide number-slide3'
-            style={{ height: 150 }}
-          >
-            3
-          </div>
-          <div className='keen-slider__slide number-slide4'>4</div>
-          <div
-            className='keen-slider__slide number-slide5'
-            style={{ height: 75 }}
-          >
-            5
-          </div>
-          <div
-            className='keen-slider__slide number-slide6'
-            style={{ height: 100 }}
-          >
-            6
-          </div> */}
         </div>
-        {/* {loaded && instanceRef.current && (
-          <>
-            <Arrow
-              left
-              onClick={(e: any) => e.stopPropagation() || instanceRef.current?.prev()}
-              disabled={currentSlide === 0}
-            />
-
-            <Arrow
-              onClick={(e: any) => e.stopPropagation() || instanceRef.current?.next()}
-              disabled={currentSlide === instanceRef.current.track.details.slides.length - 1}
-            />
-          </>
-        )} */}
       </div>
       {loaded && instanceRef.current && (
         <div className='dots'>

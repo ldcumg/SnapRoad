@@ -23,7 +23,6 @@ const TourDetail = async ({
   // const userId = 'cee8906c-ac2c-496c-a108-1dba7081f345';
 
   const user = await getSession();
-  console.log('user :>> ', user);
 
   const getSignedImgUrls = async (bucketName: string, expiration: number, folderName: string, imageNames: string[]) => {
     const signedUrls = await Promise.all(

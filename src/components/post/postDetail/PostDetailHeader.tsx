@@ -16,12 +16,6 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }) => {
               width={24}
               height={24}
             />
-            {/* <Image
-              src={'/svgs/state=Mappin.svg'}
-              alt='지도 마커'
-              width={15}
-              height={15}
-            /> */}
             <span className='text-gray-900 text-label_sm'>{postData.post_address}</span>
           </div>
           <span className='text-gray-500 text-caption_light_lg'>{coverImageDate}</span>

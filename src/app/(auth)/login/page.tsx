@@ -14,10 +14,8 @@ const LoginPage = () => {
     <div className='flex flex-col gap-8 px-4 mt-10 mb-16'>
       <div className='flex justify-center'>
         <img
-          src='/svgs/Logo.svg'
+          src='/svgs/Logo_Big.svg'
           alt='로고'
-          width={114}
-          height={72}
         />
       </div>
       <LoginForm />
