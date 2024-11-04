@@ -1,17 +1,16 @@
 import ImagePreview from './ImagePreview';
-import { FormState, UseFormClearErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import LengthInput from '@/stories/LengthInput';
+import { FormState, UseFormRegister } from 'react-hook-form';
+
+interface FormValues {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: null;
+}
 
 type Props = {
-  register: UseFormRegister<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
-  formState: FormState<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
+  register: UseFormRegister<FormValues>;
+  formState: FormState<FormValues>;
   imgPreview: string | null;
   groupTitleLen: number;
   groupDescLen: number;
@@ -34,29 +33,13 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
         />
       </div>
       <div className='flex flex-col justify-center gap-6 w-full'>
-        <div className='flex flex-row w-full border-b border-solid border-gray-100 py-4'>
-          <input
-            id='group_title'
-            className='w-full placeholder:text-gray-400 text-body_lg outline-none'
-            {...register('groupTitle')}
-            type='text'
-            placeholder='그룹 이름을 입력해주세요.'
-            maxLength={8}
-          />
-          <div className='flex flex-row items-center gap-2'>
-            <button
-              className='w-6 h-6'
-              type='button'
-              onClick={clearInputValue}
-            >
-              <img
-                src='/svgs/Close_Circle.svg'
-                alt=''
-              />
-            </button>
-            <p className='flex justify-center items-center text-[#bdbdbd]'>{groupTitleLen}/8</p>
-          </div>
-        </div>
+        <LengthInput
+          register={register}
+          name='groupTitle'
+          clearInputValue={clearInputValue}
+          curLength={groupTitleLen}
+          maxLength={8}
+        />
         {/* <p className='text-red-600 min-h-[20px] text-[14px]'>
           {formState.errors.groupTitle && formState.errors.groupTitle.message}
         </p> */}
