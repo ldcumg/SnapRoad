@@ -1,4 +1,5 @@
 import ImagePreview from './ImagePreview';
+import LengthInput from '@/stories/LengthInput';
 import { FormState, UseFormClearErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 type Props = {
@@ -34,7 +35,14 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
         />
       </div>
       <div className='flex flex-col justify-center gap-6 w-full'>
-        <div className='flex flex-row w-full border-b border-solid border-gray-100 py-4'>
+        <LengthInput
+          register={register}
+          name='groupTitle'
+          clearInputValue={clearInputValue}
+          curLength={groupTitleLen}
+          maxLength={8}
+        />
+        {/* <div className='flex flex-row w-full border-b border-solid border-gray-100 py-4'>
           <input
             id='group_title'
             className='w-full placeholder:text-gray-400 text-body_lg outline-none'
@@ -56,7 +64,7 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
             </button>
             <p className='flex justify-center items-center text-[#bdbdbd]'>{groupTitleLen}/8</p>
           </div>
-        </div>
+        </div> */}
         {/* <p className='text-red-600 min-h-[20px] text-[14px]'>
           {formState.errors.groupTitle && formState.errors.groupTitle.message}
         </p> */}
