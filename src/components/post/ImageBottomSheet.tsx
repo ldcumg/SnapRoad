@@ -21,7 +21,7 @@ const ImageBottomSheet = ({ uploadSessionId }: ImageListProps) => {
         height='full'
       >
         <div>
-          <PostImage uploadSessionId={uploadSessionId} />
+          <PostImage />
         </div>
       </BottomSheet>
 

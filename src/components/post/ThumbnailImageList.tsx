@@ -1,13 +1,17 @@
+import { BUCKET_NAME } from '@/constants/constants';
+import { useFetchImageUrls } from '@/hooks/queries/byUse/useImageFetchUrlsQuery';
+import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/byUse/useImageHandlersHooks';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
+import { usePostDataStore } from '@/stores/usePostDataStore';
 
-interface ThumbnailImageListProps {
-  imageUrls: string[];
-  handleDelete: (id: number) => void;
-  handleImageUpload: (files: FileList | null) => void;
-}
+const ThumbnailImageList = () => {
+  const { userId, groupId, uploadSessionId } = usePostDataStore();
+  if (!groupId || !userId || !uploadSessionId) return <div>로딩 중...</div>;
 
-const ThumbnailImageList = ({ imageUrls, handleDelete, handleImageUpload }: ThumbnailImageListProps) => {
   const { images } = useImageUploadStore();
+  const { handleDelete } = useImageDeleteLogic(BUCKET_NAME, groupId);
+  const { handleImageUpload } = useImageUploadLogic(BUCKET_NAME, groupId, userId, groupId);
+  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
 
   return (
     <div className='w-full flex justify-start gap-4 my-12 overflow-x-auto overflow-y-hidden'>

@@ -3,39 +3,19 @@ import ImageUploadCounter from './ImageUploadCounter';
 import Skeleton from './Skeleton';
 import ThumbnailImageList from './ThumbnailImageList';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useBusinessImageActions } from '@/hooks/queries/byUse/useBusinessImageMutation';
-// import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
-// import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
-// import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
 import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
-import { updateCoverImage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-interface ImageListProps {
-  uploadSessionId: string;
-}
-
-const PostImage = ({ uploadSessionId }: ImageListProps) => {
-  const { userId, groupId } = usePostDataStore();
-  if (!groupId || !userId) return <div>로딩 중...</div>;
+const PostImage = () => {
+  const { userId, groupId, uploadSessionId } = usePostDataStore();
+  if (!groupId || !userId || !uploadSessionId) return <div>로딩 중...</div>;
 
   const folderName = groupId;
   const bucketName = BUCKET_NAME;
-
-  const { images, addImages, deleteImage, setImages, updateImage, resetImages } = useImageUploadStore();
-  const [selectedCover, setSelectedCover] = useState<number | null>(null);
-
-  const { uploadBusinessImage, deleteBusinessImage, coverBusinessImage } = useBusinessImageActions(
-    bucketName,
-    folderName,
-    userId,
-    groupId,
-  );
+  const { images, resetImages } = useImageUploadStore();
 
   const {
     data: imageUrls,
@@ -55,71 +35,6 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
       resetImages();
     };
   }, [groupId]);
-
-  const handleImageUpload = (files: FileList | null) => {
-    if (!files) return;
-
-    const fileArray = Array.from(files);
-    if (fileArray.length + images.length > 10) {
-      alert('최대 10장의 이미지만 업로드할 수 있습니다.');
-      return;
-    }
-
-    uploadBusinessImage.mutate(fileArray, {
-      onSuccess: (uploadedImages) => {
-        addImages(uploadedImages);
-        if (uploadedImages.length > 0) {
-          handleSetCover(uploadedImages[0].id);
-        }
-      },
-    });
-  };
-
-  const handleSetCover = (id: number) => {
-    coverBusinessImage.mutate(id, {
-      onSuccess: () => {
-        images.forEach((image) => {
-          updateImage(image.id, { is_cover: image.id === id });
-        });
-        setSelectedCover(id);
-        alert('대표 이미지가 설정되었습니다.');
-      },
-      onError: (error) => {
-        console.error('대표 이미지 설정 오류:', error);
-      },
-    });
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = images.findIndex((img) => img.id === active.id);
-      const newIndex = images.findIndex((img) => img.id === over.id);
-      const sortedImages = arrayMove(images, oldIndex, newIndex);
-      setImages(sortedImages);
-
-      const firstImageId = sortedImages[0]?.id;
-      if (firstImageId) {
-        try {
-          await updateCoverImage(firstImageId, userId, uploadSessionId);
-          setSelectedCover(firstImageId);
-          console.log('첫 번째 이미지를 대표 이미지로 설정했습니다:', firstImageId);
-        } catch (error) {
-          console.error('대표 이미지 설정 오류:', error);
-        }
-      }
-    }
-  };
-
-  const handleDelete = (id: number) => {
-    deleteBusinessImage.mutate(id, {
-      onSuccess: () => {
-        deleteImage(id);
-        alert('이미지가 삭제되었습니다.');
-      },
-    });
-  };
 
   if (isLoading) {
     return (
@@ -142,18 +57,8 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
         imageCount={images.length}
         maxImages={10}
       />
-      <DraggableImageList
-        imageUrls={imageUrls || []}
-        onDragEnd={handleDragEnd}
-        onSetCover={handleSetCover}
-        selectedCover={selectedCover}
-      />
-
-      <ThumbnailImageList
-        imageUrls={imageUrls || []}
-        handleDelete={handleDelete}
-        handleImageUpload={handleImageUpload}
-      />
+      <DraggableImageList />
+      <ThumbnailImageList />
     </article>
   );
 };

@@ -3,30 +3,33 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 /**
- * @description 이미지 업로드 상태를 관리하는 zustand 스토어
+ * @description 이미지 업로드 상태를 관리
  * @property {ImagesAllWithoutPostId[]} images - 현재 저장된 이미지 배열
+ * @property {number | null} selectedCover - 선택된 커버 이미지의 ID
  * @method addImages - 새로운 이미지를 추가
  * @method updateImage - 특정 이미지의 정보를 업데이트
  * @method deleteImage - 특정 이미지를 배열에서 삭제
  * @method setImages - 이미지 배열을 새 배열로 설정
  * @method resetImages - 이미지 배열을 빈 배열로 초기화
+ * @method setSelectedCover - 선택된 커버 이미지의 ID를 설정
  */
 
 interface ImageUploadStore {
   images: ImagesAllWithoutPostId[];
+  selectedCover: number | null;
   addImages: (newImages: ImagesAllWithoutPostId[]) => void;
   updateImage: (id: number, updates: Partial<ImagesAllWithoutPostId>) => void;
   deleteImage: (id: number) => void;
   setImages: (newImages: ImagesAllWithoutPostId[]) => void;
   resetImages: () => void;
-  // getImageCount: () => number;
-  // getCoverImage: () => ImagesAllWithoutPostId | undefined;
+  setSelectedCover: (id: number | null) => void;
 }
 
 export const useImageUploadStore = create<ImageUploadStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       images: [],
+      selectedCover: null,
       addImages: (newImages) =>
         set((state) => {
           const uniqueImages = newImages.filter((newImage) => !state.images.some((image) => image.id === newImage.id));
@@ -35,14 +38,13 @@ export const useImageUploadStore = create<ImageUploadStore>()(
       updateImage: (id, updates) =>
         set((state) => {
           const updatedImages = state.images.map((image) => (image.id === id ? { ...image, ...updates } : image));
-          console.log('업데이트된 결과 확인:', updatedImages);
           return { images: updatedImages };
         }),
       deleteImage: (id) =>
         set((state) => ({
           images: state.images.filter((image) => image.id !== id),
         })),
-      resetImages: () => set({ images: [] }),
+      resetImages: () => set({ images: [], selectedCover: null }),
       setImages: (newImages) => {
         const updatedImages = newImages.map((image, index) => ({
           ...image,
@@ -51,8 +53,8 @@ export const useImageUploadStore = create<ImageUploadStore>()(
 
         set({ images: updatedImages });
       },
+      setSelectedCover: (id) => set({ selectedCover: id }),
     }),
-
     {
       name: 'image-upload-storage',
       storage: createJSONStorage(() => localStorage),
