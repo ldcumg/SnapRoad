@@ -53,7 +53,7 @@ export const BottomSheet = ({
       {/* 바텀시트 */}
       {rendered && (
         <div
-          className={cn(baseStyle, heightStyle, visibilityStyle, 'pb-16')}
+          className={cn(baseStyle, heightStyle, visibilityStyle, 'pb-16 z-50')}
           {...props}
         >
           <div className='w-12 h-1 bg-gray-300 mx-auto my-2'></div>

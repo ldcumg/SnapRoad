@@ -13,7 +13,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
  */
 
 interface ImageUploadStore {
-  images: ImagesWithBlobUrl[]; // ImagesWithBlobUrl 타입 사용
+  images: ImagesWithBlobUrl[];
   addImages: (newImages: ImagesWithBlobUrl[]) => void;
   updateImage: (id: number, updates: Partial<ImagesWithBlobUrl>) => void;
   deleteImage: (id: number) => void;
@@ -23,7 +23,7 @@ interface ImageUploadStore {
 
 export const useImageUploadStore = create<ImageUploadStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       images: [],
       addImages: (newImages) =>
         set((state) => {
@@ -41,6 +41,7 @@ export const useImageUploadStore = create<ImageUploadStore>()(
       setImages: (newImages) => set({ images: newImages }),
       resetImages: () => set({ images: [] }),
     }),
+
     {
       name: 'image-upload-storage',
       storage: createJSONStorage(() => localStorage),

@@ -1,5 +1,6 @@
-import { Buttomsheet } from '../ui/buttomsheet';
-import SortableImage from './SortableImage';
+import DraggableImageList from './DraggableImageList';
+import ImageUplaodCounter from './ImageUplaodCounter';
+import ThumbnailImageList from './ThumbnailImageList';
 import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
 import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
@@ -7,19 +8,19 @@ import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
 import browserClient from '@/utils/supabase/client';
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect, useState, useRef } from 'react';
 
 interface ImageListProps {
   uploadSessionId: string;
 }
 
-const PostImageSlide = ({ uploadSessionId }: ImageListProps) => {
+const PostImage = ({ uploadSessionId }: ImageListProps) => {
   const { userId, groupId } = usePostDataStore();
+  const { images, addImages, deleteImage, setImages, resetImages, updateImage } = useImageUploadStore();
   if (!groupId || !userId) return <div>로딩 중...</div>;
 
-  const { images, addImages, deleteImage, setImages, resetImages, updateImage } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const prevGroupIdRef = useRef<string | null>(null);
@@ -64,10 +65,10 @@ const PostImageSlide = ({ uploadSessionId }: ImageListProps) => {
       images.map(async (image) => {
         try {
           const url = await fetchSignedUrl(bucketName, folderName, image.post_image_name!);
-          console.log(`URL fetched for image ${image.id}:`, url);
+          console.log(`이미지의 URL을 가져왔습니다 ${image.id}:`, url);
           return url;
         } catch (error) {
-          console.error(`Error fetching URL for image ${image.id}:`, error);
+          console.error(`이미지의 URL을 가져오는 중 오류가 발생했습니다 ${image.id}:`, error);
           return '';
         }
       }),
@@ -158,85 +159,103 @@ const PostImageSlide = ({ uploadSessionId }: ImageListProps) => {
   };
 
   return (
-    <section className='flex flex-col items-center gap-4 p-4'>
-      <Buttomsheet />
-      <div className='text-center text-gray-600 mb-2'>
-        <span className='text-sm '>이미지 업로드: {images.length} / 10</span>
-      </div>
-      <div className='w-full m-auto overflow-auto'>
-        <h2 className='text-center text-sm text-gray-500 mb-2'>대표 이미지 선택</h2>
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={images.map((image) => image.id).filter((id): id is number => id !== undefined)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className='flex gap-4'>
-              {images.map(
-                (image, index) =>
-                  image.id !== undefined && (
-                    <SortableImage
-                      key={image.id}
-                      image={{
-                        ...image,
-                        blobUrl: imageUrls[index],
-                        post_image_name: image.post_image_name!,
-                        id: image.id,
-                      }}
-                      onSetCover={() => handleSetCover(image.id)}
-                      selectedCover={selectedCover}
-                    />
-                  ),
-              )}
-            </div>
-          </SortableContext>
-        </DndContext>
-      </div>
-      <div className='flex flex-wrap gap-4 mt-4'>
-        {images.map(
-          (image, index) =>
-            image.id !== undefined && (
-              <div
-                key={image.id}
-                className='relative w-24 h-24 border overflow-hidden'
-              >
-                <img
-                  src={imageUrls[index]}
-                  alt='미리보기 이미지'
-                  className='w-full h-full object-cover'
-                />
-                <button
-                  onClick={() => handleDelete(image.id)}
-                  className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
-                >
-                  ×
-                </button>
-              </div>
-            ),
-        )}
-        {images.length < 10 && (
-          <form
-            onSubmit={() => {
-              console.log('hh');
-            }}
-          >
-            <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
-              <input
-                type='file'
-                accept='image/*'
-                multiple
-                className='hidden'
-                onChange={(e) => handleImageUpload(e.target.files)}
-              />
-              <span className='text-2xl font-bold text-gray-400'>+</span>
-            </label>
-          </form>
-        )}
-      </div>
-    </section>
+    <article className='flex flex-col items-center gap-4 p-4'>
+      <ImageUplaodCounter imageCount={images.length} />
+
+      <DraggableImageList
+        imageUrls={imageUrls}
+        onDragEnd={handleDragEnd}
+        onSetCover={(id) => setSelectedCover(id)}
+        selectedCover={selectedCover}
+      />
+      <ThumbnailImageList
+        imageUrls={imageUrls}
+        handleDelete={handleDelete}
+        handleImageUpload={handleImageUpload}
+      />
+    </article>
   );
 };
 
-export default PostImageSlide;
+export default PostImage;
+
+//  return (
+//     <article className='flex flex-col items-center gap-4 p-4'>
+//       <div className='text-center text-gray-600 mb-2'>
+//         <span className='text-sm '>이미지 업로드: {images.length} / 10</span>
+//       </div>
+
+//       <div className='w-full m-auto'>
+//         <DndContext
+//           collisionDetection={closestCenter}
+//           onDragEnd={handleDragEnd}
+//         >
+//           <SortableContext
+//             items={images.map((image) => image.id).filter((id): id is number => id !== undefined)}
+//             strategy={verticalListSortingStrategy}
+//           >
+//             <div className='flex gap-4 overflow-x-auto overflow-y-hidden'>
+//               {images.map(
+//                 (image, index) =>
+//                   image.id !== undefined && (
+//                     <SortableImage
+//                       key={image.id}
+//                       image={{
+//                         ...image,
+//                         blobUrl: imageUrls[index],
+//                         post_image_name: image.post_image_name!,
+//                         id: image.id,
+//                       }}
+//                       onSetCover={() => handleSetCover(image.id)}
+//                       selectedCover={selectedCover}
+//                     />
+//                   ),
+//               )}
+//             </div>
+//           </SortableContext>
+//         </DndContext>
+//       </div>
+
+//       <div className='flex flex-wrap gap-4 mt-4'>
+//         {images.map(
+//           (image, index) =>
+//             image.id !== undefined && (
+//               <div
+//                 key={image.id}
+//                 className='relative w-24 h-24 border overflow-hidden'
+//               >
+//                 <img
+//                   src={imageUrls[index]}
+//                   alt='미리보기 이미지'
+//                   className='w-full h-full object-cover'
+//                 />
+//                 <button
+//                   onClick={() => handleDelete(image.id)}
+//                   className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
+//                 >
+//                   ×
+//                 </button>
+//               </div>
+//             ),
+//         )}
+//         {images.length < 10 && (
+//           <form
+//             onSubmit={() => {
+//               console.log('hh');
+//             }}
+//           >
+//             <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
+//               <input
+//                 type='file'
+//                 accept='image/*'
+//                 multiple
+//                 className='hidden'
+//                 onChange={(e) => handleImageUpload(e.target.files)}
+//               />
+//               <span className='text-2xl font-bold text-gray-400'>+</span>
+//             </label>
+//           </form>
+//         )}
+//       </div>
+//     </article>
+//   );

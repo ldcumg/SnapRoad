@@ -60,4 +60,9 @@ export interface ImageUpload {
 
 export interface ImagesWithBlobUrl extends Images {
   blobUrl: string;
+  // 업로드용
+  id: number;
+  post_image_name: string;
+  is_cover: boolean;
+  isUploaded: boolean;
 }
