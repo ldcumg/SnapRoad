@@ -1,4 +1,4 @@
-export const LOGIN_PAGE = '/login';
+export const LOGIN_PAGE = '/login'; // TODO 삭제 후 아래 것으로 통일
 export const HOME = '/';
 
 enum URLS {

@@ -20,8 +20,8 @@ const Profile = ({ userId }: { userId: string }) => {
           className='object-cover w-full h-full'
         />
       </div>
-      <span className='mt-6 text-black text-title_xl'>{profileData?.profiles[0].user_nickname || '닉네임 없음'}</span>
-      <span className='mt-2 text-black text-body_lg'>{profileData?.profiles[0].user_email}</span>
+      <span className='mt-6 text-black text-title_xl'>{profileData?.profiles.user_nickname || '닉네임 없음'}</span>
+      <span className='mt-2 text-black text-body_lg'>{profileData?.profiles.user_email}</span>
       <div className='mt-8'>
         <Link href={'/mypage/edit'}>
           <Button

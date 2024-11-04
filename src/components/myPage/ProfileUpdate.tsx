@@ -26,9 +26,9 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
   const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfilesQuery(userId);
 
   useEffect(() => {
-    if (profileData && profileData.profiles[0]?.user_nickname) {
-      setValue('nickname', profileData.profiles[0].user_nickname);
-      setCount(profileData.profiles[0].user_nickname.length);
+    if (profileData && profileData.profiles?.user_nickname) {
+      setValue('nickname', profileData.profiles.user_nickname);
+      setCount(profileData.profiles.user_nickname.length);
     }
   }, [profileData]);
 
