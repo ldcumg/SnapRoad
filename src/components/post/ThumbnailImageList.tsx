@@ -10,7 +10,7 @@ const ThumbnailImageList = ({ imageUrls, handleDelete, handleImageUpload }: Thum
   const { images } = useImageUploadStore();
 
   return (
-    <div className='w-full flex flex-wrap justify-start gap-4 my-12 overflow-x-auto overflow-y-hidden'>
+    <div className='w-full flex justify-start gap-4 my-12 overflow-x-auto overflow-y-hidden'>
       {images.length < 10 && (
         <form
           onSubmit={(e) => {
@@ -36,7 +36,7 @@ const ThumbnailImageList = ({ imageUrls, handleDelete, handleImageUpload }: Thum
           image.id !== undefined && (
             <div
               key={image.id}
-              className='relative w-24 h-24 border overflow-hidden'
+              className='relative w-24 h-24 border overflow-hidden flex-shrink-0'
             >
               <img
                 src={imageUrls[index]}

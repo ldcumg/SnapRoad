@@ -3,9 +3,10 @@ import ImageUploadCounter from './ImageUploadCounter';
 import Skeleton from './Skeleton';
 import ThumbnailImageList from './ThumbnailImageList';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
-import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
-import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
+import { useBusinessImageActions } from '@/hooks/queries/byUse/useBusinessImageMutation';
+// import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
+// import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
+// import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
 import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
 import { updateCoverImage } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
@@ -29,9 +30,12 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
   const { images, addImages, deleteImage, setImages, updateImage, resetImages } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
 
-  const uploadMutation = useUploadImage(bucketName, folderName, userId, groupId);
-  const deleteMutation = useDeleteImage(bucketName, folderName);
-  const setCoverMutation = useSetCoverImage(userId, uploadSessionId);
+  const { uploadBusinessImage, deleteBusinessImage, coverBusinessImage } = useBusinessImageActions(
+    bucketName,
+    folderName,
+    userId,
+    groupId,
+  );
 
   const {
     data: imageUrls,
@@ -61,7 +65,7 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
       return;
     }
 
-    uploadMutation.mutate(fileArray, {
+    uploadBusinessImage.mutate(fileArray, {
       onSuccess: (uploadedImages) => {
         addImages(uploadedImages);
         if (uploadedImages.length > 0) {
@@ -72,7 +76,7 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
   };
 
   const handleSetCover = (id: number) => {
-    setCoverMutation.mutate(id, {
+    coverBusinessImage.mutate(id, {
       onSuccess: () => {
         images.forEach((image) => {
           updateImage(image.id, { is_cover: image.id === id });
@@ -109,7 +113,7 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
   };
 
   const handleDelete = (id: number) => {
-    deleteMutation.mutate(id, {
+    deleteBusinessImage.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
         alert('이미지가 삭제되었습니다.');
