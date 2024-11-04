@@ -1,18 +1,16 @@
 import ImagePreview from './ImagePreview';
 import LengthInput from '@/stories/LengthInput';
-import { FormState, UseFormClearErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { FormState, UseFormRegister } from 'react-hook-form';
+
+interface FormValues {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: null;
+}
 
 type Props = {
-  register: UseFormRegister<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
-  formState: FormState<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
+  register: UseFormRegister<FormValues>;
+  formState: FormState<FormValues>;
   imgPreview: string | null;
   groupTitleLen: number;
   groupDescLen: number;
