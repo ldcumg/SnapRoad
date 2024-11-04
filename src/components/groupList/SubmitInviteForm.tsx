@@ -55,8 +55,10 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
       className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white gap-5 rounded-t-[20px] mt-14`}
     >
       <div className='flex flex-col items-start w-full gap-1'>
-        <h3 className='text-label_sm text-gray-900'>초대코드 입력</h3>
-        <div className='flex flex-row w-full border border-solid border-gray-100 rounded-xl py-4 px-3'>
+        <h3 className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'}`}>초대코드 입력</h3>
+        <div
+          className={`flex flex-row w-full border border-solid ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl py-4 px-3`}
+        >
           <input
             type='text'
             className=' bg-white w-full outline-none focus:outline-none rounded-xl'
