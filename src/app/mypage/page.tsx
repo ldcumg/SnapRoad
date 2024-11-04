@@ -2,7 +2,6 @@ import MyPageOptions from '@/components/myPage/MyPageOptions';
 import Profile from '@/components/myPage/Profile';
 import { getSession } from '@/services/server-action/authActions';
 import { Metadata } from 'next';
-import Image from 'next/image';
 import React from 'react';
 
 export const metadata: Metadata = {

@@ -1,19 +1,31 @@
-import { loginSchema, signUpSchema } from '@/schemas/authSchemas';
+import { loginSchema, resetPasswordSchema, sendEmailSchema, signUpSchema } from '@/schemas/authSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-const useSignUpForm = () => {
+export const useSignUpForm = () => {
   return useForm({
     mode: 'onChange',
     resolver: zodResolver(signUpSchema),
   });
 };
 
-const useLoginForm = () => {
+export const useLoginForm = () => {
   return useForm({
     mode: 'onChange',
     resolver: zodResolver(loginSchema),
   });
 };
 
-export { useSignUpForm, useLoginForm };
+export const useSendEmailForm = () => {
+  return useForm({
+    mode: 'onChange',
+    resolver: zodResolver(sendEmailSchema),
+  });
+};
+
+export const useResetPasswordForm = () => {
+  return useForm({
+    mode: 'onChange',
+    resolver: zodResolver(resetPasswordSchema),
+  });
+};
