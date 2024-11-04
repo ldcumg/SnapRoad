@@ -25,7 +25,7 @@ const PostPage = ({ params: { groupId } }: Props) => {
       {/* <h1>그룹 {groupId} 포스트 작성</h1> */}
       <ImageBottomSheet uploadSessionId={uploadSessionId} />
       <hr />
-      <PostImage uploadSessionId={uploadSessionId} />
+      <PostImage shorwImages={true} />
       <hr />
       {/* <PostImageSlide uploadSessionId={uploadSessionId} /> */}
       <PostForm />

@@ -17,8 +17,9 @@ const TourDetail = async ({
   };
 }) => {
   // TODO 테스트용
-  const postId = 'af1ce7b5-fbe8-4e3a-835b-5ad5e07a69dc';
-  const userId = 'cee8906c-ac2c-496c-a108-1dba7081f345';
+  console.log('postId:', searchParams.postId);
+  const postId = '2c490ad4-b406-4b26-90f2-caea6abd7dc6';
+  const userId = '06cd93f0-c785-45c9-8007-fe0929d9d8e1';
 
   /** posts 정보 조회 */
   const data = await fetchPostData(postId);

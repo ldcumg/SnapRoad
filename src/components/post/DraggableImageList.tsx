@@ -37,7 +37,7 @@ const DraggableImageList = () => {
   };
 
   return (
-    <div className='border bg-red-500'>
+    <div className='w-full border border-b overflow-x-auto overflow-y-hidden h-52'>
       <DndContext
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
@@ -46,7 +46,7 @@ const DraggableImageList = () => {
           items={images.map((image) => image.id).filter((id): id is number => id !== undefined)}
           strategy={verticalListSortingStrategy}
         >
-          <div className='flex gap-4 overflow-x-auto overflow-y-hidden'>
+          <div className='flex gap-4 '>
             {
               images.length > 0
                 ? images.map(

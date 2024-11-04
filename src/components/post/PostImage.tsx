@@ -47,7 +47,7 @@ const PostImage = ({ showImages }: { showImages: boolean }) => {
   if (error) return <p>이미지 URL 로드 중 오류 발생: {error.message}</p>;
 
   return (
-    <article className='flex flex-col items-center gap-4 p-4'>
+    <article className='flex flex-col items-start gap-4 p-4'>
       {showImages && (
         <>
           <ImageUploadCounter

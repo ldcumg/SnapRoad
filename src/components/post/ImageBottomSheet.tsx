@@ -33,12 +33,12 @@ const ImageBottomSheet = ({ uploadSessionId }: ImageListProps) => {
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>
-        <DraggableImageList />
         {images.length === 0 && (
           <div className='w-[200px] h-[200px] flex flex-shrink-0 items-center justify-center border border-gray-300 text-gray-400'>
             <span>이미지를 추가하세요</span>
           </div>
         )}
+        <DraggableImageList />
       </div>
     </article>
   );
