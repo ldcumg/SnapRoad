@@ -42,15 +42,11 @@ export const useImageUploadStore = create<ImageUploadStore>()(
         set((state) => ({
           images: state.images.filter((image) => image.id !== id),
         })),
-      // setImages: (newImages) => set({ images: newImages }),
       resetImages: () => set({ images: [] }),
-      // getImageCount: () => get().images.length,
-      // getCoverImage: () => get().images.find((image) => image.is_cover),
       setImages: (newImages) => {
-        // newImages 배열에서 첫 번째 이미지만 is_cover: true로 설정하고 나머지는 모두 false로 설정
         const updatedImages = newImages.map((image, index) => ({
           ...image,
-          is_cover: index === 0, // 첫 번째 이미지는 true, 나머지는 false
+          is_cover: index === 0,
         }));
 
         set({ images: updatedImages });

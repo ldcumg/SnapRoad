@@ -1,13 +1,18 @@
-import SortableImage from './SortableImage';
+import DraggableImageList from './DraggableImageList';
+import ImageUploadCounter from './ImageUploadCounter';
+import Skeleton from './Skeleton';
+import ThumbnailImageList from './ThumbnailImageList';
+import { BUCKET_NAME } from '@/constants/constants';
 import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutation';
 import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
+import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
 import { updateCoverImage } from '@/services/client-action/postImageActions';
-import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 interface ImageListProps {
@@ -18,46 +23,34 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
   const { userId, groupId } = usePostDataStore();
   if (!groupId || !userId) return <div>로딩 중...</div>;
 
+  const folderName = groupId;
+  const bucketName = BUCKET_NAME;
+
   const { images, addImages, deleteImage, setImages, updateImage, resetImages } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-
-  const bucketName = 'tour_images';
-  const folderName = groupId;
 
   const uploadMutation = useUploadImage(bucketName, folderName, userId, groupId);
   const deleteMutation = useDeleteImage(bucketName, folderName);
   const setCoverMutation = useSetCoverImage(userId, uploadSessionId);
 
-  const fetchImageUrls = async () => {
-    const urls = await Promise.all(
-      images.map(async (image) => {
-        try {
-          const url = await fetchSignedUrl(bucketName, folderName, image.post_image_name!);
-          return url;
-        } catch (error) {
-          console.error(`이미지의 URL을 가져오는 중 오류 발생 ${image.id}:`, error);
-          return '';
-        }
-      }),
-    );
-    setImageUrls(urls);
-  };
+  const {
+    data: imageUrls,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['imageUrls', images, bucketName, folderName],
+    queryFn: () => fetchImageUrls(images, bucketName, folderName),
+    enabled: images.length > 0,
+  });
 
   useEffect(() => {
-    // 그룹이 변경되거나 이미지 목록이 변경될 때 URL 초기화 및 로드
-    setImageUrls([]);
-    fetchImageUrls();
-  }, [images, groupId]);
+    resetImages();
+    console.log('이미지와 URL 초기화됨');
 
-  useEffect(() => {
-    // 컴포넌트 언마운트 시 이미지와 URL 초기화
     return () => {
       resetImages();
-      setImageUrls([]);
-      console.log('이미지와 URL 초기화됨');
     };
-  }, []);
+  }, [groupId]);
 
   const handleImageUpload = (files: FileList | null) => {
     if (!files) return;
@@ -71,7 +64,6 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
     uploadMutation.mutate(fileArray, {
       onSuccess: (uploadedImages) => {
         addImages(uploadedImages);
-        fetchImageUrls();
         if (uploadedImages.length > 0) {
           handleSetCover(uploadedImages[0].id);
         }
@@ -86,7 +78,6 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
           updateImage(image.id, { is_cover: image.id === id });
         });
         setSelectedCover(id);
-        fetchImageUrls();
         alert('대표 이미지가 설정되었습니다.');
       },
       onError: (error) => {
@@ -98,7 +89,6 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    // 드래그된 요소와 놓을 위치의 요소가 다를 때만 순서 변경
     if (over && active.id !== over.id) {
       const oldIndex = images.findIndex((img) => img.id === active.id);
       const newIndex = images.findIndex((img) => img.id === over.id);
@@ -122,83 +112,44 @@ const PostImage = ({ uploadSessionId }: ImageListProps) => {
     deleteMutation.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
-        fetchImageUrls();
         alert('이미지가 삭제되었습니다.');
       },
     });
   };
 
+  if (isLoading) {
+    return (
+      <div className='overflow-x-auto overflow-y-hidden w-full flex gap-4'>
+        {Array.from({ length: images.length || 5 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            className='min-w-[200px] max-w-[200px] h-[200px] cursor-pointer flex flex-col items-center'
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) return <p>이미지 URL 로드 중 오류 발생</p>;
+
   return (
     <article className='flex flex-col items-center gap-4 p-4'>
-      <div className='text-center text-gray-600 mb-2'>
-        <span className='text-sm'>이미지 업로드: {images.length} / 10</span>
-      </div>
+      <ImageUploadCounter
+        imageCount={images.length}
+        maxImages={10}
+      />
+      <DraggableImageList
+        imageUrls={imageUrls || []}
+        onDragEnd={handleDragEnd}
+        onSetCover={handleSetCover}
+        selectedCover={selectedCover}
+      />
 
-      <div className='w-full m-auto overflow-x-auto'>
-        <h2 className='text-center text-sm text-gray-500 mb-2'>대표 이미지 선택</h2>
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={images.map((image) => image.id).filter((id): id is number => id !== undefined)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className='flex gap-4'>
-              {images.map((image, index) =>
-                image.id !== undefined ? (
-                  <SortableImage
-                    key={image.id}
-                    image={{
-                      ...image,
-                      blobUrl: imageUrls[index],
-                      post_image_name: image.post_image_name!,
-                      id: image.id,
-                    }}
-                    onSetCover={() => handleSetCover(image.id)}
-                    selectedCover={selectedCover}
-                  />
-                ) : null,
-              )}
-            </div>
-          </SortableContext>
-        </DndContext>
-      </div>
-
-      <div className='flex flex-wrap gap-4 mt-4'>
-        {images.map((image, index) =>
-          image.id !== undefined ? (
-            <div
-              key={image.id}
-              className='relative w-24 h-24 border overflow-hidden'
-            >
-              <img
-                src={imageUrls[index]}
-                alt='미리보기 이미지'
-                className='w-full h-full object-cover'
-              />
-              <button
-                onClick={() => handleDelete(image.id)}
-                className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
-              >
-                ×
-              </button>
-            </div>
-          ) : null,
-        )}
-        {images.length < 10 && (
-          <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
-            <input
-              type='file'
-              accept='image/*'
-              multiple
-              className='hidden'
-              onChange={(e) => handleImageUpload(e.target.files)}
-            />
-            <span className='text-2xl font-bold text-gray-400'>+</span>
-          </label>
-        )}
-      </div>
+      <ThumbnailImageList
+        imageUrls={imageUrls || []}
+        handleDelete={handleDelete}
+        handleImageUpload={handleImageUpload}
+      />
     </article>
   );
 };
