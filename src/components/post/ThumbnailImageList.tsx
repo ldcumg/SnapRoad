@@ -5,9 +5,7 @@ import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
 
 const ThumbnailImageList = () => {
-  const { userId, groupId, uploadSessionId } = usePostDataStore();
-  if (!groupId || !userId || !uploadSessionId) return <div>로딩 중...</div>;
-
+  const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images } = useImageUploadStore();
   const { handleDelete } = useImageDeleteLogic(BUCKET_NAME, groupId);
   const { handleImageUpload } = useImageUploadLogic(BUCKET_NAME, groupId, userId, groupId);

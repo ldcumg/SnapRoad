@@ -1,6 +1,7 @@
-// import DraggableImageList from './DraggableImageList';
+import DraggableImageList from './DraggableImageList';
 import PostImage from './PostImage';
 import useBottomSheetStore from '@/stores/useBottomSheetStore';
+import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 
 interface ImageListProps {
@@ -9,6 +10,7 @@ interface ImageListProps {
 
 const ImageBottomSheet = ({ uploadSessionId }: ImageListProps) => {
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
+  const { images } = useImageUploadStore();
 
   return (
     <article className='p-4'>
@@ -21,18 +23,22 @@ const ImageBottomSheet = ({ uploadSessionId }: ImageListProps) => {
         height='full'
       >
         <div>
-          <PostImage />
+          <PostImage showImages={true} />
         </div>
       </BottomSheet>
-
-      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+      <div className='flex item-start content-center gap-4 overflow-x-auto '>
         <button
           onClick={handleFullOpen}
-          className='flex items-center justify-center w-[200px] h-[200px] border cursor-pointer'
+          className='flex items-center flex-shrink-0 justify-center max-w-[200px] min-w-[200px] h-[200px] border cursor-pointer'
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>
-        {/* <DraggableImageList /> */}
+        <DraggableImageList />
+        {images.length === 0 && (
+          <div className='w-[200px] h-[200px] flex flex-shrink-0 items-center justify-center border border-gray-300 text-gray-400'>
+            <span>이미지를 추가하세요</span>
+          </div>
+        )}
       </div>
     </article>
   );
