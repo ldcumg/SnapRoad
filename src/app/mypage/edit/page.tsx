@@ -1,6 +1,5 @@
 import ProfileUpdate from '@/components/myPage/ProfileUpdate';
 import { getSession } from '@/services/server-action/authActions';
-import { Button } from '@/stories/Button';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -17,7 +16,7 @@ const MyPageEditPage = async () => {
       <div className='flex items-center py-4 relative'>
         <img
           src='/svgs/Logo.svg'
-          alt='Image'
+          alt='로고'
           className='absolute left-0'
         />
         <span className='text-gray-900 text-label_md mx-auto'>마이페이지</span>

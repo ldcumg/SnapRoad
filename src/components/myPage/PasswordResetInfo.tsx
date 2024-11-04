@@ -1,15 +1,24 @@
 'use client';
 
+import { useSendEmailForm } from '@/hooks/byUse/useAuthForm';
 import { sendEmailResetPassword } from '@/services/client-action/authClientAction';
+import { Button } from '@/stories/Button';
+import { Input } from '@/stories/Input';
 import React, { useState } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 const PasswordResetInfo = () => {
-  const [email, setEmail] = useState<string>('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useSendEmailForm();
+
   const [success, setSuccess] = useState<boolean>(false);
 
-  const handleSendEmailResetPassword = async () => {
+  const handleSendEmailResetPassword = async (value: FieldValues) => {
     try {
-      const resetData = await sendEmailResetPassword(email);
+      await sendEmailResetPassword(value.email);
       setSuccess(true);
     } catch (error) {
       console.log(error);
@@ -18,15 +27,22 @@ const PasswordResetInfo = () => {
 
   return (
     <div className='flex flex-col'>
-      <p>가입시 사용했던 이메일 주소를 입력해주세요! 비밀번호 재설정 링크를 전송해 드립니다.</p>
-      <input
-        className='text-black'
-        type='email'
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-      />
-      {success && <div>이메일을 확인하세요</div>}
-      <button onClick={handleSendEmailResetPassword}>재설정 링크 전송하기</button>
+      <form onSubmit={handleSubmit(handleSendEmailResetPassword)}>
+        <Input
+          label={'이메일 주소'}
+          placeholder={'이메일 주소 입력'}
+          errorText={errors.email && String(errors.email.message)}
+          {...register('email')}
+        />
+        <div className='text-sm mt-1'>{success && <span>이메일을 확인하세요!</span>}</div>
+        <div className='flex flex-col mt-10'>
+          <Button
+            type='submit'
+            label='재설정 링크 전송하기'
+            variant='primary'
+          />
+        </div>
+      </form>
     </div>
   );
 };

@@ -1,19 +1,23 @@
-'use client';
-
-import { signOut } from '@/services/server-action/authActions';
-import Link from 'next/link';
+import AccountSetting from '@/components/myPage/AccountSetting';
+import MyPageBack from '@/components/myPage/MyPageBack';
+import { Metadata } from 'next';
 import React from 'react';
 
-const AccountSetting = () => {
-  const handleSignOut = async () => {
-    await signOut();
-  };
+export const metadata: Metadata = {
+  title: '계정 설정',
+  description: '계정 설정페이지 입니다.',
+};
+
+const AccountSettingPage = () => {
   return (
-    <div className='flex flex-col'>
-      <Link href={'/mypage/password'}>비밀번호 변경</Link>
-      <button onClick={handleSignOut}>로그아웃 </button>
+    <div className='px-4'>
+      <div className='flex items-center py-4 relative'>
+        <MyPageBack />
+        <span className='text-gray-900 text-label_md mx-auto'>계정설정</span>
+      </div>
+      <AccountSetting />
     </div>
   );
 };
 
-export default AccountSetting;
+export default AccountSettingPage;
