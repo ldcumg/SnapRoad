@@ -1,6 +1,5 @@
 import ProfileUpdate from '@/components/myPage/ProfileUpdate';
 import { getSession } from '@/services/server-action/authActions';
-import { Button } from '@/stories/Button';
 import { Metadata } from 'next';
 import React from 'react';
 

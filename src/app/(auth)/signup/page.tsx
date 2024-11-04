@@ -1,6 +1,5 @@
 import SignUpForm from '@/components/auth/SignUpForm';
 import { Metadata } from 'next';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: '회원가입 페이지',

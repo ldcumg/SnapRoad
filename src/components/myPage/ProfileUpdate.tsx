@@ -1,29 +1,34 @@
 'use client';
 
+import { useProfileForm } from '@/hooks/byUse/useProfileForm';
 import { useUpdateProfile } from '@/hooks/queries/byUse/useProfileMutation';
 import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { useUploadImage } from '@/hooks/queries/byUse/useStorageMutation';
 import { Button } from '@/stories/Button';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 const ProfileUpdate = ({ userId }: { userId: string }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useProfileForm();
+
   const router = useRouter();
 
   const [previewImage, setPreviewImage] = useState<string>('');
-
-  const [nickname, setNickname] = useState<string>(''); // 기존 넥네임
-  const [newNickname, setNewNickname] = useState<string>(''); // 새로운 닉네임
-
   const [newImage, setNewImage] = useState<File | null>(null);
-
   const [count, setCount] = useState<number>(0);
 
   const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfilesQuery(userId);
 
   useEffect(() => {
     if (profileData && profileData.profiles[0]?.user_nickname) {
-      setNickname(profileData.profiles[0].user_nickname);
+      setValue('nickname', profileData.profiles[0].user_nickname);
+      setCount(profileData.profiles[0].user_nickname.length);
     }
   }, [profileData]);
 
@@ -35,7 +40,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
   };
 
   const handleDeleteNewNickname = () => {
-    setNewNickname('');
+    setValue('nickname', '');
     setCount(0);
   };
 
@@ -44,9 +49,8 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
 
   /** 프로필 수정 */
   // TODO 더 깔끔하게 개선..
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    let imageName = crypto.randomUUID();
+  const handleUpdateProfile = async (value: FieldValues) => {
+    let imageName = crypto.randomUUID(); // TODO 변경
     const storage = 'avatars';
 
     if (newImage) {
@@ -55,13 +59,13 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
       updateProfile({
         userId,
         imageName,
-        newNickname,
+        newNickname: value.nickname,
       });
     } else {
       updateProfile({
         userId,
         imageName: profileData?.profiles?.[0]?.user_image_url!,
-        newNickname,
+        newNickname: value.nickname,
       });
     }
     router.push('/mypage');
@@ -73,7 +77,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
   // TODO 분리
   return (
     <div className='flex flex-col mt-12'>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className='flex flex-col items-center'>
           <div className='relative w-[184px] h-[184px]'>
             <div className='w-full h-full overflow-hidden rounded-full '>
@@ -107,14 +111,15 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
         <div className='mt-14 flex flex-col'>
           <div className='relative'>
             <input
-              // value={newNickname || nickname}
-              value={'해당 기능 작업중...'}
-              onChange={(e) => {
-                setNewNickname(e.target.value);
-                setCount(count + 1);
-              }}
+              {...register('nickname', {
+                onChange: (e) => {
+                  setCount(e.target.value.length);
+                },
+              })}
               className='border-b border-gray-100 w-full text-body_lg text-gray-900'
+              maxLength={10}
             />
+            <p className='text-red-500'>{errors.nickname && String(errors.nickname.message)}</p>
             <div className='absolute right-3 top-0 flex items-center gap-2'>
               <button
                 type='button'
