@@ -50,7 +50,7 @@ export const getPostsCoverImagesPerGroup = async ({
   return tempData as PostCoverImage[];
 };
 
-/** 댓글 삭제 */
+/** 게시글 삭제 */
 export const fetchDeletePost = async (postId: string) => {
   const supabase = createClient();
 
