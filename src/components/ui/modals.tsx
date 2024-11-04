@@ -15,7 +15,7 @@ const Modals = () => {
       <div className='p-4 flex flex-col items-center'>
         <button
           onClick={handleModalOpen}
-          className='mt-4 px-4 py-2 bg-primary-400 text-white rounded hover:bg-primary-600 rounded-md transition'
+          className='mt-4 px-4 py-2 bg-primary-400 text-white hover:bg-primary-600 rounded-md transition'
         >
           모달 열기
         </button>

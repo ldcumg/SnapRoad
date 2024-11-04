@@ -5,7 +5,7 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   const router = useRouter();
   return (
     <li
-      className='flex flex-col p-4 bg-white w-[164px] h-[244px] gap-2 cursor-pointer rounded-xl border border-solid border-gray-100'
+      className='flex flex-col items-center p-4 min-h-[244px] bg-white gap-2 cursor-pointer rounded-xl border border-solid border-gray-100'
       onClick={() => router.push(`/group/${el?.group_id}`)}
     >
       <img
@@ -15,7 +15,7 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
         fetchPriority='high'
       />
       <div className='flex flex-col gap-2 w-full h-full'>
-        <div className='text-[14px] flex flex-row justify-between'>
+        <div className='flex flex-row justify-between'>
           <p className='max-w-[100px] truncate text-label_sm text-gray-900'>{el?.group_title}</p>
           <p className='flex flex-row justify-center items-center'>
             <img
