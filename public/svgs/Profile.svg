@@ -1,0 +1,14 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Profile">
+<g clip-path="url(#clip0_1328_6098)">
+<rect width="180" height="180" rx="90" fill="#DDDFE3"/>
+<circle id="Ellipse 33" cx="90" cy="72" r="36" fill="#F9FAFA"/>
+<path id="Ellipse 34" d="M162 189H18C18 149.235 50.2355 117 90 117C129.765 117 162 149.235 162 189Z" fill="#F9FAFA"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_1328_6098">
+<rect width="180" height="180" rx="90" fill="white"/>
+</clipPath>
+</defs>
+</svg>
