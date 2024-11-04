@@ -1,25 +1,25 @@
 import ImagePreview from './ImagePreview';
+import LengthInput from '@/stories/LengthInput';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
+interface FormValues {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: null;
+}
+
 type Props = {
-  register: UseFormRegister<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
-  formState: FormState<{
-    groupTitle: string;
-    groupDesc: string;
-    groupImg: null;
-  }>;
+  register: UseFormRegister<FormValues>;
+  formState: FormState<FormValues>;
   imgPreview: string | null;
   groupTitleLen: number;
   groupDescLen: number;
+  clearInputValue: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
-const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDescLen }: Props) => {
+const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDescLen, clearInputValue }: Props) => {
   return (
-    <section className='flex flex-col justify-center items-center gap-[30px]'>
+    <section className='flex flex-col justify-center items-center gap-2 w-full'>
       <div>
         <label htmlFor='group_image'>
           <ImagePreview imgPreview={imgPreview} />
@@ -32,34 +32,30 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
           {...register('groupImg')}
         />
       </div>
-      <div className='p-[10px] flex flex-col justify-center gap-[3px]'>
-        <div className='h-[44px] flex flex-row items-center px-[5px] border-b border-solid border-black'>
-          <input
-            id='group_title'
-            className='w-[323px] text-[20px]'
-            {...register('groupTitle')}
-            type='text'
-            placeholder='그룹 이름을 입력해주세요.'
-            maxLength={8}
-          />
-          <p className='right-[6px] text-[#bdbdbd]'>{groupTitleLen}/8</p>
-        </div>
-        <p className='text-red-600 min-h-[20px] text-[14px]'>
+      <div className='flex flex-col justify-center gap-6 w-full'>
+        <LengthInput
+          register={register}
+          name='groupTitle'
+          clearInputValue={clearInputValue}
+          curLength={groupTitleLen}
+          maxLength={8}
+        />
+        {/* <p className='text-red-600 min-h-[20px] text-[14px]'>
           {formState.errors.groupTitle && formState.errors.groupTitle.message}
-        </p>
-        <div className='relative flex justify-center'>
+        </p> */}
+        <div className='relative flex justify-center w-full'>
           <textarea
             id='group_desc'
-            className='w-[343px] h-[169px] bg-[#bdbdbd] text-black text-[14px] py-[16px] px-[20px] placeholder:text-white resize-none'
+            className='w-full h-[140px] bg-white text-gray-900 text-body-md p-3 placeholder:text-gray-400 resize-none outline-none border border-solid border-gray-100 rounded-xl '
             {...register('groupDesc')}
             placeholder='이 그룹에 대해서 설명해주세요.'
             maxLength={40}
           />
-          <p className='absolute bottom-[9px] right-[16px] text-white'>{groupDescLen}/40</p>
+          <p className='absolute bottom-3 right-3 text-gray-300'>{groupDescLen}/40</p>
         </div>
-        <p className='text-red-600 min-h-[20px] text-[14px]'>
+        {/* <p className='text-red-600 min-h-[20px] text-[14px]'>
           {formState.errors.groupDesc && formState.errors.groupDesc.message}
-        </p>
+        </p> */}
       </div>
     </section>
   );

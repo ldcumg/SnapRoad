@@ -9,6 +9,7 @@ export interface InputProps {
   size?: 'medium' | 'large';
   backgroundColor?: string;
   helperText?: string;
+  errorText?: string;
   variant?: 'primary' | 'danger' | 'outlinePink' | 'outlineGray' | 'default';
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDeleteClick?: () => void;
@@ -24,6 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       size = 'medium',
       backgroundColor,
       helperText,
+      errorText,
       variant = 'default',
       onChange,
       onDeleteClick,
@@ -84,10 +86,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const disabledStyle = 'cursor-not-allowed opacity-50';
-    const activeStyle = disabled ? disabledStyle : colorStyles[variant];
-    const disabledLabelStyle = disabled ? 'text-gray-400' : labelColorStyles[variant];
+    const activeStyle = disabled
+      ? disabledStyle
+      : inputValue && errorText
+        ? colorStyles['danger']
+        : colorStyles[variant];
+    const disabledLabelStyle = disabled
+      ? 'text-gray-400'
+      : inputValue && errorText
+        ? colorStyles['danger']
+        : labelColorStyles[variant];
 
     return (
+      // <fieldset className='mb-4'>
       <fieldset>
         <label className={cn('block font-bold mb-2', disabledLabelStyle)}>{label}</label>
         <div className='relative'>
@@ -220,7 +231,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </button>
           )}
         </div>
-        {helperText && <p className={cn('text-sm mt-1', helperTextColorStyles[variant])}>{helperText}</p>}
+
+        {inputValue && errorText ? (
+          <p className={cn('text-sm mt-1', helperTextColorStyles['danger'])}>{errorText}</p>
+        ) : (
+          helperText && <p className={cn('text-sm mt-1', helperTextColorStyles[variant])}>{helperText}</p>
+        )}
+        {/* {helperText && <p className={cn('text-sm mt-1', helperTextColorStyles[variant])}>{helperText}</p>} */}
       </fieldset>
     );
   },

@@ -19,7 +19,7 @@ type Props = {
 };
 
 const MakeGroupForm = ({ update_for }: Props) => {
-  const { register, handleSubmit, formState, watch, reset } = useMakeGroupForm();
+  const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
   const { isError: insertGroupDataError, mutateAsync: insertGroupDataMutate } = useInsertGroupMutation();
@@ -85,6 +85,11 @@ const MakeGroupForm = ({ update_for }: Props) => {
       setImgPreview(URL.createObjectURL(groupThumbnail['0']));
     }
   }, [groupThumbnail]);
+  const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setValue('groupTitle', '');
+    clearErrors('groupTitle');
+  };
 
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
@@ -96,7 +101,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-col justify-center items-center gap-[30px]'
+        className='flex flex-col justify-center items-center gap-6 px-4 pt-4'
       >
         <InputSection
           register={register}
@@ -104,9 +109,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
           imgPreview={imgPreview}
           groupTitleLen={groupTitleLen}
           groupDescLen={groupDescLen}
+          clearInputValue={clearInputValue}
         />
         <button
-          className='cursor-pointer bg-black text-white w-[343px] h-[56px] text-[20px]'
+          className='cursor-pointer bg-primary-400 w-full py-4 rounded-xl text-white text-title_lg'
           type='submit'
         >
           {update_for ? '수정 완료' : '그룹 만들기'}

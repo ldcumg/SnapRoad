@@ -11,25 +11,34 @@ export const getProfile = async (userId: string) => {
   const { data: profiles, error } = await supabase.from('profiles').select('*').eq('user_id', userId);
   if (error) throw new Error(error.message);
 
-  let profileImageUrl = '';
-  if (profiles && profiles.length > 0) {
-    const userProfile = profiles[0];
+  // let profileImageUrl = '';
+  // if (profiles && profiles.length > 0) {
+  //   const userProfile = profiles[0];
 
-    if (userProfile.user_image_url) {
-      // signed URL
-      profileImageUrl = (await getSignedImgUrl('avatars', 86400, userProfile.user_image_url)) || '';
-    } else {
-      // 기본 이미지
-      const publicImageUrl = await getDefaultImageUrl();
-      profileImageUrl = publicImageUrl.publicUrl;
-    }
-  }
+  //   if (userProfile.user_image_url) {
+  //     // signed URL
+  //     profileImageUrl = (await getSignedImgUrl('avatars', 86400, userProfile.user_image_url)) || '';
+  //   } else {
+  //     // 기본 이미지
+  //     const publicImageUrl = await getDefaultImageUrl();
+  //     profileImageUrl = publicImageUrl.publicUrl;
+  //   }
+  // }
 
-  return { profiles: profiles, profileImageUrl: profileImageUrl };
+  const userProfile = profiles[0];
+  const signedImgUrl = await getSignedImgUrl('avatars', 86400, userProfile.user_image_url as string);
+
+  return { profiles: profiles, profileImageUrl: signedImgUrl };
 };
 
 export const updateProfile = async (userId: string, imageName: string, newNickname: string) => {
   const supabase = createClient();
+
+  // const { error: userError } = await supabase.auth.updateUser({
+  //   data: {
+  //     full_name: newNickname,
+  //   },
+  // });
 
   const { data, error } = await supabase
     .from('profiles')

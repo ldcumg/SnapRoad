@@ -1,35 +1,14 @@
 import { createClient } from '@/utils/supabase/client';
 
-/** 카카오 로그인 */
-export const signInWithKakao = async () => {
+/**
+ * 소셜로그인
+ * @param provider 제공 기관 (kakao,google,github)
+ */
+export const signInWithOAuth = async (loginProvider: 'kakao' | 'google' | 'github') => {
   const supabase = createClient();
 
   await supabase.auth.signInWithOAuth({
-    provider: 'kakao',
-    options: {
-      redirectTo: window.origin + '/api/auth/callback',
-    },
-  });
-};
-
-/** 구글 로그인 */
-export const signInWithGoogle = async () => {
-  const supabase = createClient();
-
-  await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.origin + '/api/auth/callback',
-    },
-  });
-};
-
-/** 깃허브 로그인 */
-export const signInWithGithub = async () => {
-  const supabase = createClient();
-
-  return await supabase.auth.signInWithOAuth({
-    provider: 'github',
+    provider: loginProvider,
     options: {
       redirectTo: window.origin + '/api/auth/callback',
     },

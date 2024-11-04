@@ -25,7 +25,7 @@ const RootLayout = ({
         <QueryProvider>
           <Header />
           <main className='w-full h-full'>{children}</main>
-          <Footer />
+          {/* <Footer /> */}
         </QueryProvider>
         <Script
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&libraries=services,clusterer&autoload=false`}

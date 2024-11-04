@@ -10,19 +10,19 @@ import Autoplay from 'embla-carousel-autoplay';
 import Link from 'next/link';
 
 const RandomImage = () => {
-  const { data: RandomData, isLoading } = useGroupRandomImageQuery();
-
+  const { data: randomData, isLoading } = useGroupRandomImageQuery();
+  console.log('randomData :>> ', randomData);
   if (isLoading) return <RandomImageSkeleton />;
   return (
     <>
-      {RandomData?.length ? (
+      {randomData?.length ? (
         <Carousel
           className='w-full max-w-sm md:max-w-lg lg:max-w-full'
           plugins={[Autoplay({ delay: 3000 })]}
           opts={{ loop: true }}
         >
           <CarouselContent className='flex gap-4 pl-4'>
-            {RandomData?.map((data, index) => (
+            {randomData?.map((data, index) => (
               <CarouselItem
                 key={index}
                 className='basis-[220px] md:basis-[300px] lg:basis-[400px] rounded-xl p-0'
