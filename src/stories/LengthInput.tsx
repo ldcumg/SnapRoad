@@ -39,16 +39,18 @@ const LengthInput = <T extends FieldValues>({
         maxLength={maxLength}
       />
       <div className='flex flex-row items-center gap-2'>
-        <button
-          className='w-6 h-6'
-          type='button'
-          onClick={clearInputValue}
-        >
-          <img
-            src='/svgs/Close_Circle.svg'
-            alt=''
-          />
-        </button>
+        {curLength > 0 && (
+          <button
+            className='w-6 h-6'
+            type='button'
+            onClick={clearInputValue}
+          >
+            <img
+              src='/svgs/Close_Circle.svg'
+              alt=''
+            />
+          </button>
+        )}
         <p
           className={`flex justify-center items-center ${curLength ? 'text-gray-900' : 'text-gray-300'} text-[#bdbdbd]`}
         >
