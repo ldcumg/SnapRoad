@@ -13,7 +13,7 @@ export function useSetCoverImage(userId: string, uploadSessionId: string) {
 
   return useMutation({
     mutationFn: async (imageId: number) => {
-      await updateCoverImage(userId, imageId, uploadSessionId);
+      await updateCoverImage(imageId, userId, uploadSessionId);
     },
     onMutate: async (imageId) => {
       const { updateImage, images } = useImageUploadStore.getState();

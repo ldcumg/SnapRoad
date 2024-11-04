@@ -1,9 +1,9 @@
-import { ImagesWithBlobUrl } from '@/types/projectType';
+import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface SortableImageProps {
-  image: ImagesWithBlobUrl;
+  image: ImagesAllWithoutPostId;
   onSetCover: (id: number) => void;
   selectedCover: number | null;
 }

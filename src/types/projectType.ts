@@ -58,11 +58,22 @@ export interface ImageUpload {
   blobUrl?: string;
 }
 
-export interface ImagesWithBlobUrl extends Images {
+export interface ImagesWithAll extends Images {
   blobUrl: string;
-  // 업로드용
   id: number;
   post_image_name: string;
   is_cover: boolean;
   isUploaded: boolean;
+}
+
+export interface ImagesAllWithoutPostId extends Omit<Images, 'post_id'> {
+  blobUrl: string;
+  id: number;
+  post_image_name: string;
+  is_cover: boolean;
+  isUploaded: boolean;
+}
+
+export interface ImagesWithoutPostId extends Omit<Comment, 'post_id'> {
+  post_id?: Images['post_id'] | null;
 }
