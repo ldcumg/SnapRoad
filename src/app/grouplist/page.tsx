@@ -1,4 +1,3 @@
-import GroupAddButton from '@/components/groupList/GroupAddButton';
 import GroupList from '@/components/groupList/GroupList';
 import RandomImage from '@/components/groupList/RandomImage';
 import { Metadata } from 'next';
@@ -10,9 +9,8 @@ export const metadata: Metadata = {
 
 const GroupListPage = async () => {
   return (
-    <div className='flex flex-col items-center mt-[24px]'>
+    <div className='flex flex-col items-center mt-[24px] mx-auto max-w-5xl'>
       <RandomImage />
-      {/* <GroupAddButton /> */}
       <GroupList />
     </div>
   );
