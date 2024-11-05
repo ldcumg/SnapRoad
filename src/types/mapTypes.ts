@@ -35,3 +35,24 @@ export type ClusterStyle = {
 export interface CustomMarker extends kakao.maps.Marker {
   getImage: () => { Wh: string; ok: string };
 }
+
+export interface CustomMarkerClusterer extends kakao.maps.MarkerClusterer {
+  _clusters: kakao.maps.Cluster[];
+  T: { ok: string };
+}
+
+export interface CustomLatLng extends kakao.maps.LatLng {
+  Ma: number;
+  La: number;
+}
+
+export interface CustomLatLngBounds extends kakao.maps.LatLngBounds {
+  ha: number;
+  qa: number;
+  oa: number;
+  pa: number;
+}
+
+export interface CustomCluster extends kakao.maps.Cluster {
+  _markers: CustomMarkerClusterer[];
+}

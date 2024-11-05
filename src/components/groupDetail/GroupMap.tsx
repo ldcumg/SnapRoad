@@ -3,7 +3,17 @@
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
-import type { ClusterStyle, CustomMarker, Latlng, Location, LocationInfo } from '@/types/mapTypes';
+import type {
+  ClusterStyle,
+  CustomCluster,
+  CustomLatLng,
+  CustomLatLngBounds,
+  CustomMarker,
+  CustomMarkerClusterer,
+  Latlng,
+  Location,
+  LocationInfo,
+} from '@/types/mapTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
@@ -26,6 +36,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
+  console.log("clusterStyle =>", clusterStyle);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
@@ -182,9 +193,11 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
-    marker._clusters.forEach((cluster) => {
-      const { Ma, La } = cluster.getCenter();
-      clusterStyle.some((style) => style.background === `url("${cluster._markers[0].T.ok}") no-repeat`) ||
+    const customMarker = marker as CustomMarkerClusterer;
+    customMarker._clusters.forEach((cluster) => {
+      const customCluster = cluster as CustomCluster;
+      const { Ma, La } = cluster.getCenter() as CustomLatLng;
+      clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
         setClusterStyle((prev) => [
           ...prev,
           {
@@ -195,7 +208,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             color: 'black',
             width: '100px',
             height: '100px',
-            background: `url("${cluster._markers[0].T.ok}") no-repeat`,
+            background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
             backgroundSize: 'contain',
             positon: 'getCenter',
           },
@@ -206,7 +219,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
   const clusterCalculator = () => {
     if (!map) return;
-    const { ha, qa, oa, pa } = map.getBounds();
+    const { ha, qa, oa, pa } = map.getBounds() as CustomLatLngBounds;
     const viewport = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
 
     let index;
@@ -279,7 +292,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
-            calculator={() => clusterCalculator()}
+            calculator={clusterCalculator() as number[] | undefined}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
             }}
