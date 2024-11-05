@@ -135,7 +135,68 @@ const ScrollSections = () => {
         <div className='w-full max-w-[400px]'>
           <img
             src='/images/landing/03_landing.jpg'
-            alt='그룹리스트페이지 예시 사진'
+            alt='그룹 앨범 예시 사진'
+            className='w-full h-auto'
+          />
+        </div>
+      </section>
+      <section
+        ref={section4Ref}
+        className='h-screen pt-24 flex flex-col items-center gap-7'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md text-gray-900'>피드에 업로드한 게시물들은</p>
+          <p className='text-label_md'>
+            <span className='text-primary-400'>시간순으로 지도위에 연결되어 표시</span>
+            <span className='text-gray-900'>돼요!</span>
+          </p>
+        </div>
+        <div className='w-full max-w-[400px]'>
+          <img
+            src='/images/landing/04_landing.jpg'
+            alt='그룹 지도 예시 사진'
+            className='w-full h-auto'
+          />
+        </div>
+      </section>
+      <section
+        ref={section5Ref}
+        className='h-screen pt-24 flex flex-col items-center gap-7'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md'>
+            <span className='text-primary-400'>사진을 게시</span>
+            <span className='text-gray-900'>하여</span>
+          </p>
+          <p className='text-label_md'>
+            <span className='text-gray-900'>그 곳에서의</span>
+            <span className='text-primary-400'>추억을 글로</span>
+            <span className='text-gray-900'>남겨봐요!</span>
+          </p>
+        </div>
+        <div className='w-full max-w-[400px]'>
+          <img
+            src='/images/landing/05_landing.jpg'
+            alt='게시글 상세 예시 사진'
+            className='w-full h-auto'
+          />
+        </div>
+      </section>
+      <section
+        ref={section6Ref}
+        className='h-screen pt-24 flex flex-col items-center gap-7'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md text-gray-900'>그룹내 멤버들과</p>
+          <p className='text-label_md'>
+            <span className='text-primary-400'>댓글을 남기며 추억</span>
+            <span className='text-gray-900'>을 나눠봐요!</span>
+          </p>
+        </div>
+        <div className='w-full max-w-[400px]'>
+          <img
+            src='/images/landing/06_landing.jpg'
+            alt='그룹 지도 예시 사진'
             className='w-full h-auto'
           />
         </div>
