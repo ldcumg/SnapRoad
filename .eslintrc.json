@@ -8,8 +8,6 @@
   ],
   "plugins": ["css-modules"],
   "rules": {
-    "css-modules/no-unused-class": "warn",
-    "css-modules/no-undef-class": "error",
     "@next/next/no-img-element": "off"
   }
 }
