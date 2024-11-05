@@ -1,5 +1,5 @@
 import { updateCoverImage } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 /**

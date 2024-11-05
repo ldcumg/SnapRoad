@@ -3,16 +3,13 @@ import ImageUploadCounter from './ImageUploadCounter';
 import Skeleton from './Skeleton';
 import ThumbnailImageList from './ThumbnailImageList';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useFetchImageUrls } from '@/hooks/queries/byUse/useImageFetchUrlsQuery';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
-import { usePostDataStore } from '@/stores/usePostDataStore';
+import { useFetchImageUrls } from '@/hooks/queries/write/useImageFetchUrlsQuery';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { usePostDataStore } from '@/stores/write/usePostDataStore';
 import { useEffect } from 'react';
 
 const PostImage = ({ showImages }: { showImages: boolean }) => {
-  const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
-
-  const folderName = groupId;
-  const bucketName = BUCKET_NAME;
+  const { groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, resetImages } = useImageUploadStore();
   const { data: imageUrls = [], isLoading, error } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
 

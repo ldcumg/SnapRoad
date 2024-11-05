@@ -1,8 +1,8 @@
 import { BUCKET_NAME } from '@/constants/constants';
-import { useFetchImageUrls } from '@/hooks/queries/byUse/useImageFetchUrlsQuery';
-import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/byUse/useImageHandlersHooks';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
-import { usePostDataStore } from '@/stores/usePostDataStore';
+import { useFetchImageUrls } from '@/hooks/queries/write/useImageFetchUrlsQuery';
+import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/write/useImageHandlersHooks';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { usePostDataStore } from '@/stores/write/usePostDataStore';
 
 const ThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();

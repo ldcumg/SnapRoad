@@ -1,10 +1,9 @@
 import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
-
 
 async function getBlobUrl(signedUrl: string): Promise<string> {
   const response = await fetch(signedUrl);
@@ -12,12 +11,7 @@ async function getBlobUrl(signedUrl: string): Promise<string> {
   return URL.createObjectURL(await response.blob());
 }
 
-export function useUploadImage(
-  bucketName: string,
-  folderName: string,
-  userId: string,
-  groupId: string,
-) {
+export function useUploadImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
   const currentDate = new Date().toISOString();

@@ -1,15 +1,14 @@
+import useUserAndLocation from '@/hooks/queries/write/useUserAndLocation';
 import { useRouter } from 'next/navigation';
 
-interface PostHeaderProps {
-  addressName: string;
+interface groupIdProps {
+  groupId: string;
 }
 
-const PostAddress = ({ addressName }: PostHeaderProps) => {
+const PostAddress = ({ groupId }: groupIdProps) => {
+  const { addressName } = useUserAndLocation(groupId);
   const router = useRouter();
-
-  const handleGoBack = () => {
-    router.back();
-  };
+  const handleGoBack = () => router.back();
 
   return (
     <div className='flex items-center justify-between p-4 border-b border-gray-300'>

@@ -1,4 +1,4 @@
-import useBottomSheetStore from '@/stores/useBottomSheetStore';
+import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 
