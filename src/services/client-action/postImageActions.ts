@@ -1,4 +1,4 @@
-import { ImagesAllWithoutPostId } from '@/types/projectType';
+import { ImagesAllWithoutPostId, ImagesWithoutPostId } from '@/types/projectType';
 import { formatDateToNumber } from '@/utils/dateUtils';
 import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
@@ -57,28 +57,24 @@ export const saveImageMetadata = async (
   exifData: any,
   userId: string,
   groupId: string,
-  uploadSessionId: string,
   currentDate: string,
-  postId?: string,
+  uploadSessionId: string,
 ): Promise<ImagesAllWithoutPostId> => {
-  const insertData: any = {
-    post_image_name: removeFileExtension(uniqueFileName),
-    post_image_url: signedUrl,
-    created_at: currentDate,
-    is_cover: false,
-    post_lat: exifData.latitude,
-    post_lng: exifData.longitude,
-    origin_created_at: formatDateToNumber(exifData.dateTaken),
-    user_id: userId,
-    group_id: groupId,
-    upload_session_id: uploadSessionId,
-  };
-
-  if (postId) {
-    insertData.post_id = postId;
-  }
-
-  const { data, error } = await browserClient.from('images').insert(insertData).select();
+  const { data, error } = await browserClient
+    .from('images')
+    .insert({
+      post_image_name: removeFileExtension(uniqueFileName),
+      post_image_url: signedUrl,
+      created_at: currentDate,
+      is_cover: false,
+      post_lat: exifData.latitude,
+      post_lng: exifData.longitude,
+      origin_created_at: formatDateToNumber(exifData.dateTaken),
+      user_id: userId,
+      group_id: groupId,
+      upload_session_id: uploadSessionId,
+    })
+    .select();
 
   if (error) {
     console.error('이미지 메타데이터 저장 실패:', error.message);

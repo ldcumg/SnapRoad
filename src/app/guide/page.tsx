@@ -2,6 +2,7 @@
 
 import { Buttomsheet } from '@/components/ui/buttomsheet';
 import Buttons from '@/components/ui/buttons';
+import DropdownMenu from '@/components/ui/dropdownMenu';
 import Example from '@/components/ui/example';
 import Inputs from '@/components/ui/inputs';
 import Modals from '@/components/ui/modals';
@@ -89,6 +90,15 @@ const GuidePage = () => {
               </div>
             ),
             onClick: () => console.log('MyForm'),
+          },
+          {
+            label: 'DropdownMenu',
+            content: (
+              <div>
+                <DropdownMenu />
+              </div>
+            ),
+            onClick: () => console.log('DropdownMenu'),
           },
           {
             label: 'example',

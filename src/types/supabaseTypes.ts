@@ -101,7 +101,7 @@ export type Database = {
           id: number
           is_cover: boolean
           origin_created_at: string
-          post_id: string
+          post_id: string | null
           post_image_name: string
           post_image_url: string
           post_lat: number | null
@@ -117,7 +117,7 @@ export type Database = {
           id?: number
           is_cover?: boolean
           origin_created_at?: string
-          post_id: string
+          post_id?: string | null
           post_image_name?: string
           post_image_url?: string
           post_lat?: number | null
@@ -133,7 +133,7 @@ export type Database = {
           id?: number
           is_cover?: boolean
           origin_created_at?: string
-          post_id?: string
+          post_id?: string | null
           post_image_name?: string
           post_image_url?: string
           post_lat?: number | null

@@ -1,31 +1,17 @@
 'use client';
 
-import { usePostForm } from '@/hooks/byUse/usePostForm';
 import {
   useCreatePostMutation,
   useSaveTagsMutation,
   useUpdateImagesPostIdMutation,
 } from '@/hooks/queries/post/usePostFormMutation';
-import { postSchema, PostFormData } from '@/schemas/postSchema';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
-import { Button } from '@/stories/Button';
-import { Input } from '@/stories/Input';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
 
 const PostForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PostFormData>({
-    resolver: zodResolver(postSchema),
-  });
-
   const { userId, groupId, lat, lng, addressName } = usePostDataStore();
   const { images: imagesData } = useImageUploadStore();
   const router = useRouter();
@@ -56,8 +42,8 @@ const PostForm = () => {
     fetchImageUrls();
   }, [imagesData, groupId, userId]);
 
-  const submitPost = (e: FieldValues) => {
-    // e.preventDefault();
+  const submitPost = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!groupId || !userId) {
       console.error('그룹 ID와 사용자 ID가 필요합니다.');
       return;
@@ -99,48 +85,57 @@ const PostForm = () => {
 
   return (
     <div className='PostForm'>
-      <form
-        className='w-full border border-black flex flex-col'
-        onSubmit={handleSubmit(submitPost)}
-      >
-        <label htmlFor='description'>대표</label>
-        <textarea
-          id='description'
-          {...register('description')}
-          maxLength={1000}
-          placeholder='여행을 떠나고 싶은 마음으로.'
-          className='description-textarea'
-        />
-        {errors.description && <p className='text-danger text-sm'>{errors.description.message}</p>}
-
-        <Input
-          type='text'
-          label='해시태그'
-          {...register('hashtag')}
-          placeholder='예: 여행 친구랑'
-        />
-        {errors.hashtag && <p className='text-danger text-sm'>{errors.hashtag.message}</p>}
-
-        <Input
-          type='date'
-          label='날짜'
-          {...register('date')}
-        />
-        {errors.date && <p className='text-danger text-sm'>{errors.date.message}</p>}
-
-        <Input
-          type='time'
-          label='시간'
-          {...register('time')}
-        />
-        {errors.time && <p className='text-danger text-sm'>{errors.time.message}</p>}
-
-        <Button
-          type='submit'
-          label='제출하기'
-        />
-      </form>
+      {!groupId || !userId ? (
+        <div>로딩 중...</div>
+      ) : (
+        <form
+          className='w-full border border-black flex flex-col'
+          onSubmit={submitPost}
+        >
+          <label htmlFor='description'>대표</label>
+          <textarea
+            id='description'
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={1000}
+            placeholder='여행을 떠나고 싶은 마음으로.'
+            className='description-textarea'
+          />
+          <label htmlFor='hashtag'>해시태그</label>
+          <input
+            type='text'
+            id='hashtag'
+            value={hashtag}
+            onChange={(e) => setHashtag(e.target.value)}
+            placeholder='예: 여행 친구랑'
+            className='hashtag-input'
+          />
+          <label htmlFor='date'>날짜</label>
+          <input
+            type='date'
+            id='date'
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className='date-input'
+          />
+          <label htmlFor='time'>시간</label>
+          <input
+            type='time'
+            id='time'
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className='time-input'
+          />
+          <button
+            type='submit'
+            className='submit-button'
+          >
+            포스트 제출
+          </button>
+        </form>
+      )}
     </div>
   );
 };
+
 export default PostForm;

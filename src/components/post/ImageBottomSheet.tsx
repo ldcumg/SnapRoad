@@ -23,20 +23,14 @@ const ImageBottomSheet = () => {
         </div>
       </BottomSheet>
 
-      <div className='flex item-start content-center gap-4 overflow-x-auto'>
+      <div className='flex item-start content-center overflow-x-auto'>
+        <DraggableImageList />
         <button
           onClick={handleFullOpen}
-          className='flex items-center flex-shrink-0 justify-center max-w-[200px] min-w-[200px] h-[200px] border cursor-pointer'
+          className='flex items-center flex-shrink-0 justify-center max-w-[200px] min-w-[200px] h-[200px] border cursor-pointer bg-gray-50 border-gray-100'
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>
-
-        {images.length === 0 && (
-          <div className='w-[200px] h-[200px] flex flex-shrink-0 items-center justify-center border border-gray-300 text-gray-400'>
-            <span>이미지를 추가하세요</span>
-          </div>
-        )}
-        <DraggableImageList />
       </div>
     </article>
   );

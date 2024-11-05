@@ -15,7 +15,7 @@ const writePage = ({ params: { groupId } }: Props) => {
       {/* <h1>{groupId}</h1> */}
       <PostAddress groupId={groupId} />
       <ImageBottomSheet />
-      <PostImage showImages={true} />
+      <PostImage showImages={false} />
       <PostForm />
     </div>
   );

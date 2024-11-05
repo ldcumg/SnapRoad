@@ -37,5 +37,5 @@
     "src/stories/Modal.stories.bak",
     "src/components/post/_PostForm copy.baK"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }

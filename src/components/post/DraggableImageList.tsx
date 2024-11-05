@@ -32,7 +32,7 @@ const DraggableImageList = () => {
   };
 
   return (
-    <div className='w-full border border-b overflow-x-auto overflow-y-hidden h-52'>
+    <div className='overflow-x-auto overflow-y-hidden h-52'>
       <DndContext
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
