@@ -1,5 +1,5 @@
 export type PostImage = {
-  id: string;
+  id: number;
   post_id: string;
   post_image_name: string;
   post_image_url: string;

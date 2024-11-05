@@ -21,7 +21,7 @@ export const getPostsImagesPerGroup = async ({
     .range(15 * pageParam, 15 * pageParam + 14);
 
   if (status !== 200 && error) throw new Error(error.message);
-  //NOTE - 나중에 nullable 해제하면 해결
+
   return data as PostImage[];
 };
 
