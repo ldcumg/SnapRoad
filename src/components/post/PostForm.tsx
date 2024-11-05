@@ -43,7 +43,7 @@ const PostForm = () => {
     return <div>로딩 중...</div>;
   }
 
-  const onHandlePostSubmit = async (data: PostFormData /*FieldValues*/) => {
+  const onHandlePostSubmit = async (data: FieldValues /*PostFormData*/) => {
     // const parsedData: PostFormData = postSchema.parse(data);
 
     const coverImage = imagesData.find((image) => image.is_cover);
@@ -88,7 +88,7 @@ const PostForm = () => {
         console.error('이미지에 post_id 업데이트에 실패했습니다:', imageError.message);
       }
 
-      const tagData = data.hashtag.map((tag) => ({
+      const tagData = data.hashtag.map((tag: any) => ({
         tag_title: tag,
         post_id: postId,
         group_id: groupId,
@@ -140,7 +140,7 @@ const PostForm = () => {
         {errors.date && <p className='text-danger text-sm'>{String(errors.date.message)}</p>}
 
         <Input
-          type='time'
+          type={'time'}
           label={'시간'}
           errorText={errors.time ? String(errors.time.message) : undefined}
           {...register('time')}

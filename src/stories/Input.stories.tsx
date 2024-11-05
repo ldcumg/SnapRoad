@@ -123,3 +123,29 @@ export const PasswordInput: Story = {
     helperText: '비밀번호를 입력하고 보기 버튼을 눌러 확인하세요',
   },
 };
+
+export const TextInput: Story = {
+  args: {
+    label: '텍스트 입력',
+    type: 'text',
+    placeholder: '텍스트를 입력하세요',
+  },
+};
+
+export const EmailInput: Story = {
+  args: {
+    label: '이메일 입력',
+    type: 'email',
+    placeholder: '이메일을 입력하세요',
+    helperText: '유효한 이메일 주소를 입력하세요',
+  },
+};
+
+export const TextareaInput: Story = {
+  args: {
+    label: '텍스트 에어리어',
+    type: 'textarea',
+    placeholder: '내용을 입력하세요',
+    helperText: '긴 텍스트를 작성하세요',
+  },
+};

@@ -18,7 +18,7 @@ export async function POST(request: Request) {
           ? `data:image/jpg;base64,${Buffer.from(thumbnailBuffer).toString('base64')}`
           : null;
 
-        console.log('EXIF 데이터:', exifData, '썸네일 버퍼:', thumbnailBuffer, 'base64로 인코딩:', thumbnailBase64);
+        // console.log('EXIF 데이터:', exifData, '썸네일 버퍼:', thumbnailBuffer, 'base64로 인코딩:', thumbnailBase64);
         const { latitude, longitude, DateTimeOriginal: dateTaken } = exifData || {};
 
         results.push({
