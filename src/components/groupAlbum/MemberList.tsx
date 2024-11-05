@@ -13,7 +13,7 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
       <div className='flex flex-row justify-between p-4'>
         <h1 className='text-xl font-semibold'>그룹 멤버</h1>
         <button
-          className='flex gap-2 rounded border border-black px-4 py-2'
+          className='flex items-center gap-2 rounded border border-black px-4 py-2'
           //TODO - 코드 자동 복사
           onClick={() =>
             toast.alert('초대 코드를 복사했어요!', {
@@ -23,21 +23,31 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
           }
         >
           <img src='/svgs/User_Plus.svg' />
-          <p>초대코드 복사</p>
+          <p className='text-[14px] font-semibold leading-[135%]'>초대코드 복사</p>
         </button>
       </div>
-      <ol>
+      <ol className='flex flex-col justify-center gap-6 p-4'>
         {user_group
           .sort((a, b) => {
             if (a.is_owner === b.is_owner) return 0;
             return a.is_owner ? -1 : 1;
           })
           .map(({ is_owner, profiles: { user_image_url, user_nickname, user_email } }) => (
-            <li className='flex'>
-              <img src={user_image_url} />
-              <p>{is_owner ? '그룹장' : '멤버'}</p>
-              <p>{user_nickname}</p>
-              <p>{user_email}</p>
+            <li className='flex flex-row items-center gap-2 rounded-full'>
+              <img
+                className='h-10 w-10'
+                src={user_image_url}
+                alt='프로필 이미지'
+              />
+              <div className='flex gap-2'>
+                <p className='rounded-xl bg-gray-50 px-2 py-1 text-[10px] font-light leading-[150%] text-gray-500'>
+                  {is_owner ? '그룹장' : '멤버'}
+                </p>
+                <div className='flex items-center gap-1'>
+                  <p className='text-[12px] font-semibold leading-[135%] text-gray-700'>{user_nickname}</p>
+                  <p className='text-[10px] font-light leading-[150%] text-gray-500'>{user_email}</p>
+                </div>
+              </div>
             </li>
           ))}
       </ol>
