@@ -228,6 +228,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
     }
 
+    console.log('index =>', index);
     return index;
   };
 
@@ -292,7 +293,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
-            calculator={clusterCalculator() as number[] | undefined}
+            calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
             }}
