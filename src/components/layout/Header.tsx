@@ -9,7 +9,7 @@ type UserDataType = {
   user_image_url: string | null;
 } | null;
 
-const ScrollableComponent = () => {
+const Header = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [userInfo, setUserInfo] = useState<UserDataType>(null);
   useEffect(() => {
@@ -67,4 +67,4 @@ const ScrollableComponent = () => {
   );
 };
 
-export default ScrollableComponent;
+export default Header;
