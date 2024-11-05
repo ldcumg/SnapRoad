@@ -183,12 +183,17 @@ const config: Config = {
       boxShadow: {
         BG_S: '0px 0px 4px rgba(0, 0, 0, 0.25)',
         BG_grn: '0px 0px 4px #009E6C',
-        BG_TopButton: '0px 0px 8px rgba(86, 48, 86, 35)',
+        BG_TopButton: '0px 0px 8px rgba(86, 48, 86, 0.6)',
+        BG_Broad: '0px 0px 10px rgba(0,0,0,0.1)',
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      backgroundImage: {
+        'white-to-transparent-to-white':
+          'linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.5) 22.5%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 55%,rgba(255, 255, 255, 0.5) 77.5%, white 90%)',
       },
     },
   },
