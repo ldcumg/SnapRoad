@@ -9,8 +9,7 @@ import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useKakaoLoader } from 'react-kakao-maps-sdk';
+import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -20,15 +19,6 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
-
-  const [mapLoading, mapError] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-    libraries: ['services', 'clusterer'],
-  });
-
-  useEffect(() => {
-    if (mapLoading) return;
-  }, [mapLoading]);
 
   if (isPending) return <>로딩</>;
 
