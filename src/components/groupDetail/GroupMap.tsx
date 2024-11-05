@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
+import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
 
 const SEARCH_INPUT = 'searchInput';
 
@@ -55,6 +55,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
+
+  const [mapLoading, mapError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+    libraries: ['services', 'clusterer'],
+  });
+
+  useEffect(() => {
+    if (mapLoading) return;
+  }, [mapLoading]);
 
   // useEffect(() => {
   //   //TODO - 데스크탑에서만 동작하게
