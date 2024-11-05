@@ -1,8 +1,8 @@
 import { usePostForm } from '@/hooks/byUse/usePostForm';
 import { PostFormData, postSchema } from '@/schemas/postSchema';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
-import { usePostDataStore } from '@/stores/usePostDataStore';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { usePostDataStore } from '@/stores/write/usePostDataStore';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import browserClient from '@/utils/supabase/client';
@@ -115,7 +115,7 @@ const PostForm = () => {
       >
         <label htmlFor='description'>대표</label>
         <textarea
-          label={'글쓰기'}
+          id='글쓰기'
           {...register('description')}
           maxLength={1000}
           placeholder='여행을 떠나고 싶은 마음으로.'

@@ -1,16 +1,11 @@
 import SortableImage from './SortableImage';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useFetchImageUrls } from '@/hooks/queries/byUse/useImageFetchUrlsQuery';
-import { useSetCoverLogic } from '@/hooks/queries/byUse/useImageHandlersHooks';
-import { useImageUploadStore } from '@/stores/useImageUploadStore';
-import { usePostDataStore } from '@/stores/usePostDataStore';
+import { useFetchImageUrls } from '@/hooks/queries/write/useImageFetchUrlsQuery';
+import { useSetCoverLogic } from '@/hooks/queries/write/useImageHandlersHooks';
+import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { usePostDataStore } from '@/stores/write/usePostDataStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-
-// interface imageUrlProps {
-//   imageUrls: string[];
-//   { imageUrls }: imageUrlProps
-// }
 
 const DraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
@@ -47,30 +42,25 @@ const DraggableImageList = () => {
           strategy={verticalListSortingStrategy}
         >
           <div className='flex gap-4 '>
-            {
-              images.length > 0
-                ? images.map(
-                    (image, index) =>
-                      image.id !== undefined && (
-                        <SortableImage
-                          key={image.id}
-                          image={{
-                            ...image,
-                            blobUrl: imageUrls[index],
-                            post_image_name: image.post_image_name!,
-                          }}
-                          onSetCover={() => {
-                            setSelectedCover(image.id);
-                          }}
-                          selectedCover={selectedCover}
-                        />
-                      ),
-                  )
-                : null
-              // <div className='w-[200px] h-[200px] flex items-center justify-center border border-gray-300 text-gray-400'>
-              //   이미지를 추가하세요
-              // </div>
-            }
+            {images.length > 0
+              ? images.map(
+                  (image, index) =>
+                    image.id !== undefined && (
+                      <SortableImage
+                        key={image.id}
+                        image={{
+                          ...image,
+                          blobUrl: imageUrls[index],
+                          post_image_name: image.post_image_name!,
+                        }}
+                        onSetCover={() => {
+                          setSelectedCover(image.id);
+                        }}
+                        selectedCover={selectedCover}
+                      />
+                    ),
+                )
+              : null}
           </div>
         </SortableContext>
       </DndContext>
