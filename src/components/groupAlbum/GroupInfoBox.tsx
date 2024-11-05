@@ -14,20 +14,21 @@ const GroupInfoBox = ({ groupInfo: { group_image_url, user_group, group_desc }, 
         <img
           className='h-[132px] w-[132px]'
           src={group_image_url}
+          alt='그룹 이미지'
         />
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row justify-between'>
             <button onClick={() => setMode(GroupDetailMode.member)}>
-              <div className='flex flex-row gap-1 rounded-xl border border-gray-100 px-2 py-1'>
+              <div className='flex flex-row items-center gap-1 rounded-xl border border-gray-100 px-2 py-1'>
                 <img src='/svgs/Group_Member.svg' />
-                <p>{user_group.length}</p>
+                <p className='text-label_sm'>{user_group.length}</p>
               </div>
             </button>
             <button>
               <img src='/svgs/Setting.svg' />
             </button>
           </div>
-          <p className='word-break: break-all'>{group_desc}</p>
+          <p className='word-break: break-all text-caption_light_lg'>{group_desc}</p>
         </div>
       </div>
     </div>
