@@ -1,14 +1,11 @@
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
+import ScrollableComponent from '@/components/layout/Header';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  title: 'Snap Road',
+  description: 'Snap-Road: 우리들의 여행기록',
 };
 
 const RootLayout = ({
@@ -23,9 +20,8 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          <Header />
+          <ScrollableComponent />
           <main className='w-full h-full'>{children}</main>
-          {/* <Footer /> */}
         </QueryProvider>
       </body>
     </html>
