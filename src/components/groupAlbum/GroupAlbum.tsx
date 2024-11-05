@@ -65,7 +65,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
           ></div>
         </>
       ) : (
-        <div className='mt-40 flex h-full flex-col items-center font-semibold text-gray-500'>
+        <div className='mt-40 flex h-full flex-col items-center text-title_lg text-gray-500'>
           <p>게시물이 없습니다.</p>
           <p>추억을 공유해보세요!</p>
         </div>

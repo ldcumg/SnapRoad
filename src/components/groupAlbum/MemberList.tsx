@@ -11,7 +11,7 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
   return (
     <>
       <div className='flex flex-row justify-between p-4'>
-        <h1 className='text-xl font-semibold'>그룹 멤버</h1>
+        <h1 className='text-title_xl'>그룹 멤버</h1>
         <button
           className='flex items-center gap-2 rounded border border-black px-4 py-2'
           //TODO - 코드 자동 복사
@@ -23,7 +23,7 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
           }
         >
           <img src='/svgs/User_Plus.svg' />
-          <p className='text-[14px] font-semibold leading-[135%]'>초대코드 복사</p>
+          <p className='text-label_sm text-gray-700'>초대코드 복사</p>
         </button>
       </div>
       <ol className='flex flex-col justify-center gap-6 p-4'>
@@ -40,12 +40,12 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
                 alt='프로필 이미지'
               />
               <div className='flex gap-2'>
-                <p className='rounded-xl bg-gray-50 px-2 py-1 text-[10px] font-light leading-[150%] text-gray-500'>
+                <p className='rounded-xl bg-gray-50 px-2 py-1 text-caption_light_md text-gray-500'>
                   {is_owner ? '그룹장' : '멤버'}
                 </p>
                 <div className='flex items-center gap-1'>
-                  <p className='text-[12px] font-semibold leading-[135%] text-gray-700'>{user_nickname}</p>
-                  <p className='text-[10px] font-light leading-[150%] text-gray-500'>{user_email}</p>
+                  <p className='text-caption_bold_lg text-gray-700'>{user_nickname}</p>
+                  <p className='text-caption_light_md text-gray-500'>{user_email}</p>
                 </div>
               </div>
             </li>
