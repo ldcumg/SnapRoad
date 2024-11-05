@@ -36,11 +36,11 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
-  // const bounds = useRef<kakao.maps.LatLngBounds>();
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
+  console.log('clusterStyle =>', clusterStyle);
   const {
     register,
     handleSubmit,
@@ -277,8 +277,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                       fontSize: '20px',
                       color: 'black',
                       width: '100px',
-                      height: '70px',
+                      height: '100px',
                       background: `url("${cluster._markers[0].T.ok}") no-repeat`,
+                      backgroundSize: 'contain',
                       positon: 'getCenter',
                     },
                   ]);
@@ -287,14 +288,17 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             calculator={() => {
               if (!map) return;
               const { ha, qa, oa, pa } = map.getBounds();
-              const bounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
+              const viewport = new kakao.maps.LatLngBounds(
+                new kakao.maps.LatLng(qa, ha),
+                new kakao.maps.LatLng(pa, oa),
+              );
+
               let index;
               for (let i = 0; i < clusterStyle.length; i++) {
                 const { lat, lng } = clusterStyle[i].centerLatLng;
-                if (bounds.contain(new kakao.maps.LatLng(lat, lng))) index = i;
+                if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
               }
-              console.log(clusterStyle);
-              console.log('index', index);
+
               return index;
             }}
             onClusterclick={(marker, cluster) => {
