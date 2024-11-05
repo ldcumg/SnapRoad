@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
-import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
+import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
 
 const SEARCH_INPUT = 'searchInput';
 
@@ -36,7 +36,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  console.log('clusterStyle =>', clusterStyle);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
@@ -55,6 +54,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
+
+  const [mapLoading, mapError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+    libraries: ['services', 'clusterer'],
+  });
+
+  useEffect(() => {
+    if (mapLoading) return;
+  }, [mapLoading]);
 
   // useEffect(() => {
   //   //TODO - 데스크탑에서만 동작하게
@@ -227,7 +235,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       const { lat, lng } = clusterStyle[i].centerLatLng;
       if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
     }
-
     return index;
   };
 
@@ -292,7 +299,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
-            calculator={clusterCalculator() as number[] | undefined}
+            calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
             }}
