@@ -152,7 +152,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     const place = placeName || address;
 
     //TODO - 라우트 주소 수정하기
-    route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
+    route.push(`/group/${groupId}/write?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   return (
