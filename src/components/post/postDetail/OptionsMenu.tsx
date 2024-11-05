@@ -30,30 +30,31 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
   }, []);
 
   return (
-    <div
-      className='relative flex'
-      ref={menuRef}
-    >
-      <button onClick={toggleMenu}>
-        <Image
-          src={'/svgs/Dots.svg'}
+    <>
+      <div
+        className='relative flex'
+        ref={menuRef}
+      >
+        <img
+          src='/svgs/Dots.svg'
           alt='더보기'
-          width={20}
-          height={20}
+          onClick={toggleMenu}
+          className='cursor-pointer'
         />
-      </button>
-      {isVisible && (
-        <div className='flex flex-col absolute border border-black bg-white z-10 top-5 right-1 w-20'>
-          <button className='border-b border-black'>수정하기</button>
-          <button
-            onClick={() => deletePost(postId)}
-            className='text-red-600'
-          >
-            삭제하기
-          </button>
-        </div>
-      )}
-    </div>
+
+        {isVisible && (
+          <div className='flex flex-col absolute bg-white z-10 top-5 right-1 rounded-md'>
+            <button className='text-gray-900 text-body_md p-2.5 whitespace-nowrap'>게시물 수정</button>
+            <button
+              onClick={() => deletePost(postId)}
+              className='text-danger text-body_md p-2.5'
+            >
+              게시물 삭제
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

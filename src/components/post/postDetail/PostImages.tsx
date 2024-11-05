@@ -3,11 +3,11 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-type TourImagesProps = {
+type PostImagesProps = {
   images: (string | undefined)[];
 };
 
-const TourImages = ({ images }: TourImagesProps) => {
+const PostImages = ({ images }: PostImagesProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchX, setTouchX] = useState(0);
   const [touchY, setTouchY] = useState(0);
@@ -100,4 +100,4 @@ const TourImages = ({ images }: TourImagesProps) => {
   );
 };
 
-export default TourImages;
+export default PostImages;

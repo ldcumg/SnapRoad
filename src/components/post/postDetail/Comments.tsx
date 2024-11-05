@@ -18,7 +18,7 @@ const Comments = ({ postId, userId }: CommentsProps) => {
   if (isLoading) return <>임시 로딩중...</>;
 
   return (
-    <ul className='flex flex-col gap-5 border-t'>
+    <ul className='flex flex-col gap-5'>
       {comments &&
         comments
           .filter((comment) => comment.parent_id === null)

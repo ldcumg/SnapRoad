@@ -20,7 +20,10 @@ const Comment = ({
 
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: updateComment } = useUpdateComment();
+
+  // TODO 아래 것 사용하기
   const { data: profileImageUrl } = useGetProfileImageUrl(author?.user_image_url);
+  // const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfilesQuery(userId);
 
   const commentMenuRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +59,12 @@ const Comment = ({
           height={20}
           width={20}
         />
+        {/* 
+        <img
+          alt='프로필 이미지'
+          src={profileData?.profileImageUrl || '/svgs/Profile.svg'}
+          className='object-cover w-full h-full'
+        /> */}
       </div>
       <div className='w-full'>
         <span className='font-bold'>{author?.user_nickname}</span>
