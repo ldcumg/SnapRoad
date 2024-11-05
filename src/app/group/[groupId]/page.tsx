@@ -24,26 +24,6 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   if (isError) throw new Error(error.message);
 
-  /** 컴포넌트 조건부 렌더링 */
-  const groupDetailMode = () => {
-    switch (mode) {
-      case GroupDetailMode.map:
-        return <GroupMap groupId={groupId} />;
-      case GroupDetailMode.album:
-        return (
-          <GroupAlbum
-            groupId={groupId}
-            groupInfo={groupInfo}
-            setMode={setMode}
-          />
-        );
-      case GroupDetailMode.member:
-        return <MemberList groupInfo={groupInfo} />;
-      default:
-        throw new Error('잘못된 요청입니다.');
-    }
-  };
-
   /** 조건부 렌더링 버튼 */
   const handleChangeMode = () => {
     switch (mode) {
@@ -61,10 +41,36 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         );
       case GroupDetailMode.member:
         return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
-            <img src='/svgs/Close_Member_List.svg' />
+          <button
+            className='h-10 w-10'
+            onClick={() => setMode(GroupDetailMode.album)}
+          >
+            <img
+              className='mx-auto'
+              src='/svgs/Close_Member_List.svg'
+            />
           </button>
         );
+      default:
+        throw new Error('잘못된 요청입니다.');
+    }
+  };
+
+  /** 컴포넌트 조건부 렌더링 */
+  const groupDetailMode = () => {
+    switch (mode) {
+      case GroupDetailMode.map:
+        return <GroupMap groupId={groupId} />;
+      case GroupDetailMode.album:
+        return (
+          <GroupAlbum
+            groupId={groupId}
+            groupInfo={groupInfo}
+            setMode={setMode}
+          />
+        );
+      case GroupDetailMode.member:
+        return <MemberList groupInfo={groupInfo} />;
       default:
         throw new Error('잘못된 요청입니다.');
     }
