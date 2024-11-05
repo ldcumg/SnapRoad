@@ -3,10 +3,8 @@
 import { useLoginForm } from '@/hooks/byUse/useAuthForm';
 import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
 import { loginSchema } from '@/schemas/authSchemas';
-import { signInWithGithub, signInWithGoogle, signInWithKakao } from '@/services/client-action/socialAuthAction';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
-import Link from 'next/link';
 import React from 'react';
 import { FieldValues } from 'react-hook-form';
 
@@ -25,57 +23,32 @@ const LoginForm = () => {
 
   return (
     <div>
-      <div>로고 영역</div>
       <form
         onSubmit={handleSubmit(handleLogin)}
-        className='flex flex-col gap-5 w-96'
+        className='flex flex-col gap-8'
       >
-        <Input
-          label={'Email'}
-          placeholder={'이메일'}
-          {...register('email')}
-        />
-        {errors.email && <p className='text-red-500 text-sm pl-1'>{String(errors.email.message)}</p>}
-
-        <Input
-          label={'비밀번호'}
-          type={'password'}
-          placeholder={'비밀번호'}
-          {...register('password')}
-        />
-        {errors.password && <p className='text-red-500 text-sm pl-1'>{String(errors.password.message)}</p>}
-
+        <div className='flex flex-col gap-4'>
+          <Input
+            label={'이메일 주소'}
+            placeholder={'이메일 주소 입력'}
+            errorText={errors.email && String(errors.email.message)}
+            {...register('email')}
+          />
+          <Input
+            label={'비밀번호'}
+            type={'password'}
+            placeholder={'비밀번호'}
+            helperText={'문자,숫자,특수문자 포함 8자리 이상'}
+            errorText={errors.password && String(errors.password.message)}
+            {...register('password')}
+          />
+        </div>
         <Button
           type='submit'
           label='로그인'
           variant='primary'
         />
       </form>
-      <p>소셜 계정으로 로그인</p>
-      <div className='flex flex-col'>
-        <button
-          type='button'
-          onClick={signInWithKakao}
-        >
-          카카오 로그인
-        </button>
-        <button
-          onClick={signInWithGoogle}
-          type='button'
-        >
-          구글 로그인
-        </button>
-        <button
-          onClick={signInWithGithub}
-          type='button'
-        >
-          깃허브 로그인
-        </button>
-      </div>
-      <div className='flex'>
-        <Link href={'/mypage/password-reset'}>비밀번호 찾기</Link>
-        <Link href={'/signup'}>회원가입</Link>
-      </div>
     </div>
   );
 };

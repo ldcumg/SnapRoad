@@ -3,6 +3,7 @@ import { useInsertUserGroupMutation } from '@/hooks/queries/byUse/useGroupMutati
 import { makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import browserClient from '@/utils/supabase/client';
+import React, { MouseEvent } from 'react';
 import { FieldValues, useFormState } from 'react-hook-form';
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 
 const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) => {
   const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
-  const { register, handleSubmit, formState, control } = useInviteGroupForm();
+  const { register, handleSubmit, formState, control, setValue, clearErrors } = useInviteGroupForm();
 
   const onSubmit = async (value: FieldValues) => {
     const { data } = await browserClient.auth.getUser();
@@ -43,22 +44,41 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
 
   const { isValid } = useFormState({ control });
 
+  const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setValue('inviteCode', '');
+    clearErrors('inviteCode');
+  };
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white gap-5 rounded-t-[20px] mt-14`}
     >
       <div className='flex flex-col items-start w-full gap-1'>
-        <h3 className='text-label_sm text-gray-900'>초대코드 입력</h3>
-        <input
-          type='text'
-          className='bg-[#E9E9E9] py-[8.5px] pl-[20px] pr-[10px] w-full'
-          placeholder='코드를 입력해주세요'
-          {...register('inviteCode')}
-        />
-        {formState.errors.inviteCode && (
+        <h3 className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'}`}>초대코드 입력</h3>
+        <div
+          className={`flex flex-row w-full border border-solid ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl py-4 px-3`}
+        >
+          <input
+            type='text'
+            className=' bg-white w-full outline-none focus:outline-none rounded-xl'
+            placeholder='코드를 입력해주세요'
+            {...register('inviteCode')}
+          />
+          <button
+            className=''
+            type='button'
+            onClick={clearInputValue}
+          >
+            <img
+              src='/svgs/Close_Circle.svg'
+              alt=''
+            />
+          </button>
+        </div>
+        {/* {formState.errors.inviteCode && (
           <p className='text-[12px] text-red-600'>{formState.errors.inviteCode.message}</p>
-        )}
+        )} */}
       </div>
       <Button
         type='submit'

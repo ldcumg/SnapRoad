@@ -1,6 +1,6 @@
 'use client';
 
-import { useResetPasswordForm } from '@/hooks/byUse/usePasswordResetForm';
+import { useResetPasswordForm } from '@/hooks/byUse/useAuthForm';
 import { resetPassword } from '@/services/server-action/authActions';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
@@ -18,8 +18,8 @@ const PasswordResetForm = () => {
   } = useResetPasswordForm();
 
   const handleConfirmPasswords = async (value: FieldValues) => {
-    const data = await resetPassword(value.password);
-    alert('변경이 완료되었습니다.');
+    await resetPassword(value.password);
+    // alert('변경이 완료되었습니다.');
 
     router.push('/mypage');
   };
@@ -28,25 +28,27 @@ const PasswordResetForm = () => {
     <div className='flex flex-col'>
       <form
         onSubmit={handleSubmit(handleConfirmPasswords)}
-        className='flex flex-col gap-5 w-96'
+        className='flex flex-col gap-10'
       >
-        <Input
-          label={'새 비밀번호'}
-          type={'password'}
-          placeholder={'비밀번호'}
-          {...register('password')}
-        />
-        {errors.password && <p className='text-red-500 text-sm pl-1'>{String(errors.password.message)}</p>}
+        <div className='flex flex-col gap-4'>
+          <Input
+            label={'비밀번호'}
+            type={'password'}
+            placeholder={'비밀번호'}
+            helperText={'문자,숫자,특수문자 포함 8자리 이상'}
+            errorText={errors.password && String(errors.password.message)}
+            {...register('password')}
+          />
 
-        <Input
-          label={'비밀번호 확인'}
-          type={'password'}
-          placeholder={'비밀번호'}
-          {...register('confirmPassword')}
-        />
-        {errors.confirmPassword && (
-          <p className='text-red-500 text-sm pl-1'>{String(errors.confirmPassword.message)}</p>
-        )}
+          <Input
+            label={'비밀번호 확인'}
+            type={'password'}
+            placeholder={'비밀번호 확인'}
+            errorText={errors.confirmPassword && String(errors.confirmPassword.message)}
+            {...register('confirmPassword')}
+          />
+        </div>
+
         <Button
           type='submit'
           label='변경하기'

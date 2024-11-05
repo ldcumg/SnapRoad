@@ -16,7 +16,6 @@ const GroupList = () => {
       fetchNextPage();
     }
   });
-
   const FlattedData = data?.pages.flat();
   const dataLen = FlattedData?.length;
   if (isFetchNextPageError) throw new Error('에러 발생!');
@@ -28,7 +27,7 @@ const GroupList = () => {
         {isFetching && !data ? (
           <GroupItemSkeleton />
         ) : FlattedData?.length ? (
-          <ul className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center w-full'>
+          <ul className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
             {FlattedData.map((el) => {
               return (
                 <GroupItem
