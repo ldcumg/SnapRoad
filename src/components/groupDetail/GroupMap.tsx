@@ -36,11 +36,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
+  const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
-  const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  console.log('clusterStyle =>', clusterStyle);
   const {
     register,
     handleSubmit,
@@ -57,10 +56,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
-  useEffect(() => {
-    //TODO - 데스크탑에서만 동작하게
-    setFocus(SEARCH_INPUT);
-  }, []);
+  // useEffect(() => {
+  //   //TODO - 데스크탑에서만 동작하게
+  //   setFocus(SEARCH_INPUT);
+  // }, []);
 
   //QUESTION - 왜 안되지...
   useEffect(() => {
@@ -156,7 +155,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   };
 
   /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
-  const handleClusterEvent = (cluster: kakao.maps.Cluster) => {
+  const clusterClickEvent = (cluster: kakao.maps.Cluster) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
@@ -165,7 +164,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
     const clusterMarkersInfo = cluster.getMarkers().map((marker) => {
       const customMarker = marker as CustomMarker;
-      // customMarker.getBounds()
+
       bounds.extend(new kakao.maps.LatLng(customMarker.getPosition().getLat(), customMarker.getPosition().getLng()));
       return {
         postId: customMarker.getImage().Wh,
@@ -192,18 +191,28 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
-  // const selectClusterStyle = () => {
-  //   const test = clusterStyle.entries();
-  // };
+  const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
+    marker._clusters.forEach((cluster) => {
+      const { Ma, La } = cluster.getCenter()
+      clusterStyle.some((style) => style.background === `url("${cluster._markers[0].T.ok}") no-repeat`) ||
+        setClusterStyle((prev) => [
+          ...prev,
+          {
+            centerLatLng: { lat: Ma, lng: La },
+            textAlign: 'center',
+            lineHeight: '54px',
+            fontSize: '20px',
+            color: 'black',
+            width: '100px',
+            height: '100px',
+            background: `url("${cluster._markers[0].T.ok}") no-repeat`,
+            backgroundSize: 'contain',
+            positon: 'getCenter',
+          },
+        ]);
+    });
+  };
 
-  function createCounter() {
-    let count = -1; // 함수 내부에 상태를 유지할 변수
-
-    return function () {
-      count += 1; // 호출할 때마다 증가
-      return count;
-    };
-  }
   return (
     <>
       <form onSubmit={handleSubmit(searchLocation)}>
@@ -264,27 +273,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             minLevel={5} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
-            onClustered={(marker) => {
-              marker._clusters.forEach((cluster) => {
-                const { Ma, La } = cluster.getCenter();
-                clusterStyle.some((style) => style.background === `url("${cluster._markers[0].T.ok}") no-repeat`) ||
-                  setClusterStyle((prev) => [
-                    ...prev,
-                    {
-                      centerLatLng: { lat: Ma, lng: La },
-                      textAlign: 'center',
-                      lineHeight: '54px',
-                      fontSize: '20px',
-                      color: 'black',
-                      width: '100px',
-                      height: '100px',
-                      background: `url("${cluster._markers[0].T.ok}") no-repeat`,
-                      backgroundSize: 'contain',
-                      positon: 'getCenter',
-                    },
-                  ]);
-              });
-            }}
+            onClustered={(marker) => onClusteredEvent(marker)}
             calculator={() => {
               if (!map) return;
               const { ha, qa, oa, pa } = map.getBounds();
@@ -302,7 +291,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
               return index;
             }}
             onClusterclick={(marker, cluster) => {
-              handleClusterEvent(cluster);
+              clusterClickEvent(cluster);
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
