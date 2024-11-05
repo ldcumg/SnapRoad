@@ -61,34 +61,34 @@ export type Database = {
         Row: {
           created_at: string
           deleted_at: string | null
-          group_desc: string | null
+          group_desc: string
           group_id: string
           group_image_url: string | null
-          group_invite_code: string | null
-          group_status: string | null
-          group_title: string | null
+          group_invite_code: string
+          group_status: string
+          group_title: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string
           deleted_at?: string | null
-          group_desc?: string | null
+          group_desc?: string
           group_id?: string
           group_image_url?: string | null
-          group_invite_code?: string | null
-          group_status?: string | null
-          group_title?: string | null
+          group_invite_code?: string
+          group_status?: string
+          group_title?: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string
           deleted_at?: string | null
-          group_desc?: string | null
+          group_desc?: string
           group_id?: string
           group_image_url?: string | null
-          group_invite_code?: string | null
-          group_status?: string | null
-          group_title?: string | null
+          group_invite_code?: string
+          group_status?: string
+          group_title?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -97,15 +97,15 @@ export type Database = {
         Row: {
           created_at: string
           deleted_at: string | null
-          group_id: string | null
+          group_id: string
           id: number
           is_cover: boolean
           origin_created_at: string
-          post_id: string | null
+          post_id: string
           post_image_name: string
           post_image_url: string
-          post_lat: string | null
-          post_lng: string | null
+          post_lat: number | null
+          post_lng: number | null
           updated_at: string
           upload_session_id: string
           user_id: string
@@ -113,15 +113,15 @@ export type Database = {
         Insert: {
           created_at?: string
           deleted_at?: string | null
-          group_id?: string | null
+          group_id: string
           id?: number
           is_cover?: boolean
           origin_created_at?: string
-          post_id?: string | null
+          post_id: string
           post_image_name?: string
           post_image_url?: string
-          post_lat?: string | null
-          post_lng?: string | null
+          post_lat?: number | null
+          post_lng?: number | null
           updated_at?: string
           upload_session_id?: string
           user_id?: string
@@ -129,15 +129,15 @@ export type Database = {
         Update: {
           created_at?: string
           deleted_at?: string | null
-          group_id?: string | null
+          group_id?: string
           id?: number
           is_cover?: boolean
           origin_created_at?: string
-          post_id?: string | null
+          post_id?: string
           post_image_name?: string
           post_image_url?: string
-          post_lat?: string | null
-          post_lng?: string | null
+          post_lat?: number | null
+          post_lng?: number | null
           updated_at?: string
           upload_session_id?: string
           user_id?: string
@@ -176,8 +176,8 @@ export type Database = {
           post_date: string
           post_desc: string
           post_id: string
-          post_lat: string
-          post_lng: string
+          post_lat: number | null
+          post_lng: number | null
           post_thumbnail_image: string
           post_time: string
           updated_at: string | null
@@ -192,8 +192,8 @@ export type Database = {
           post_date?: string
           post_desc?: string
           post_id?: string
-          post_lat?: string
-          post_lng?: string
+          post_lat?: number | null
+          post_lng?: number | null
           post_thumbnail_image?: string
           post_time?: string
           updated_at?: string | null
@@ -208,8 +208,8 @@ export type Database = {
           post_date?: string
           post_desc?: string
           post_id?: string
-          post_lat?: string
-          post_lng?: string
+          post_lat?: number | null
+          post_lng?: number | null
           post_thumbnail_image?: string
           post_time?: string
           updated_at?: string | null
@@ -302,21 +302,21 @@ export type Database = {
         Row: {
           group_id: string | null
           id: number
-          is_owner: boolean | null
+          is_owner: boolean
           joined_at: string
           user_id: string | null
         }
         Insert: {
           group_id?: string | null
           id?: number
-          is_owner?: boolean | null
+          is_owner: boolean
           joined_at?: string
           user_id?: string | null
         }
         Update: {
           group_id?: string | null
           id?: number
-          is_owner?: boolean | null
+          is_owner?: boolean
           joined_at?: string
           user_id?: string | null
         }
