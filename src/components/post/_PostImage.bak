@@ -3,20 +3,22 @@ import { useSetCoverImage } from '@/hooks/queries/byUse/usePostImageCoverMutatio
 import { useDeleteImage } from '@/hooks/queries/byUse/usePostImageDeleteMutation';
 import { useUploadImage } from '@/hooks/queries/byUse/usePostImageUploadMutation';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/imageUploadStore';
+import { useImageUploadStore } from '@/stores/useImageUploadStore';
+import { usePostDataStore } from '@/stores/usePostDataStore';
 import browserClient from '@/utils/supabase/client';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { useEffect, useState, useRef } from 'react';
 
 interface ImageListProps {
-  userId: string;
-  groupId: string;
   uploadSessionId: string;
 }
 
-const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) => {
-  const { images, addImages, deleteImage, setImages, resetImages } = useImageUploadStore();
+const PostImage = ({ uploadSessionId }: ImageListProps) => {
+  const { userId, groupId } = usePostDataStore();
+  if (!groupId || !userId) return <div>로딩 중...</div>;
+
+  const { images, addImages, deleteImage, setImages, resetImages, updateImage } = useImageUploadStore();
   const [selectedCover, setSelectedCover] = useState<number | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const prevGroupIdRef = useRef<string | null>(null);
@@ -43,10 +45,8 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
 
   useEffect(() => {
     if (prevGroupIdRef.current !== groupId) {
-      resetImages(); // 그룹이 바뀔 때 이미지 상태 초기화
+      resetImages();
       prevGroupIdRef.current = groupId;
-
-      // 그룹에 맞는 이미지를 로드
       loadImagesForGroup(groupId);
     }
   }, [groupId, resetImages]);
@@ -54,15 +54,21 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
   const bucketName = 'tour_images';
   const folderName = groupId;
 
-  const uploadMutation = useUploadImage(bucketName, folderName, userId);
+  const uploadMutation = useUploadImage(bucketName, folderName, userId, groupId);
   const deleteMutation = useDeleteImage(bucketName, folderName);
   const setCoverMutation = useSetCoverImage(userId, uploadSessionId);
 
   const fetchImageUrls = async () => {
     const urls = await Promise.all(
       images.map(async (image) => {
-        const url = await fetchSignedUrl(bucketName, folderName, image.filename);
-        return url;
+        try {
+          const url = await fetchSignedUrl(bucketName, folderName, image.post_image_name!);
+          console.log(`URL fetched for image ${image.id}:`, url);
+          return url;
+        } catch (error) {
+          console.error(`Error fetching URL for image ${image.id}:`, error);
+          return '';
+        }
       }),
     );
     setImageUrls(urls);
@@ -79,15 +85,18 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
         alert('최대 10장의 이미지만 업로드할 수 있습니다.');
         return;
       }
+
       uploadMutation.mutate(fileArray, {
         onSuccess: (uploadedImages: any[]) => {
           const newImages = uploadedImages.filter(
             (newImage: { id: number }) => !images.some((img) => img.id === newImage.id),
           );
           addImages(newImages);
-          console.log('업로드된 이미지:', newImages);
+          fetchImageUrls();
+          console.log('업로드된 이미지:', uploadedImages);
+
           if (newImages.length > 0) {
-            handleSetCover(newImages[0].id);
+            handleSetCover(newImages[0].id!);
           }
         },
       });
@@ -98,25 +107,46 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
     setCoverMutation.mutate(id, {
       onSuccess: () => {
         setSelectedCover(id);
-        const { updateImage } = useImageUploadStore.getState();
-        updateImage(id, { isCover: true });
-        images.forEach((image) => {
-          if (image.id !== id) updateImage(image.id, { isCover: false });
+
+        const updatedImages = images.map((image) => ({
+          ...image,
+          is_cover: image.id === id,
+        }));
+
+        updatedImages.forEach((image) => {
+          updateImage(image.id!, { is_cover: image.is_cover });
         });
+
         alert('대표 이미지가 설정되었습니다.');
+        fetchImageUrls();
       },
-      onError: (error: any) => {
+      onError: (error) => {
         console.error('대표 이미지 설정 오류:', error);
         alert('대표 이미지 설정에 실패했습니다.');
       },
     });
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = images.findIndex((img) => img.id === active.id);
+      const newIndex = images.findIndex((img) => img.id === over.id);
+      const sortedImages = arrayMove(images, oldIndex, newIndex);
+      setImages(sortedImages);
+
+      if (sortedImages.length > 0) {
+        const firstImageId = sortedImages[0].id;
+        if (firstImageId !== undefined) handleSetCover(firstImageId);
+      }
+    }
+  };
+
   const handleDelete = (id: number) => {
     deleteMutation.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
-        fetchImageUrls(); // 삭제 후 imageUrls 업데이트
+        fetchImageUrls();
         alert('이미지가 삭제되었습니다.');
       },
       onError: (error: any) => {
@@ -126,71 +156,64 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
     });
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = images.findIndex((img) => img.id === active.id);
-      const newIndex = images.findIndex((img) => img.id === over.id);
-      const sortedImages = arrayMove(images, oldIndex, newIndex);
-      setImages(sortedImages);
-
-      if (sortedImages.length > 0) {
-        const firstImageId = sortedImages[0].id;
-        handleSetCover(firstImageId);
-      }
-    }
-  };
-
   return (
-    <section className='flex flex-col items-center gap-4 p-4'>
+    <article className='flex flex-col items-center gap-4 p-4'>
       <div className='text-center text-gray-600 mb-2'>
-        <span className='text-sm m-'>이미지 업로드: {images.length} / 10</span>
+        <span className='text-sm '>이미지 업로드: {images.length} / 10</span>
       </div>
-
-      <div className='w-full m-auto overflow-auto'>
+      <div className='w-full m-auto overflow-x-auto'>
         <h2 className='text-center text-sm text-gray-500 mb-2'>대표 이미지 선택</h2>
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={images.map((image) => image.id)}
+            items={images.map((image) => image.id).filter((id): id is number => id !== undefined)}
             strategy={verticalListSortingStrategy}
           >
             <div className='flex gap-4'>
-              {images.map((image, index) => (
-                <SortableImage
-                  key={image.id}
-                  image={{ ...image, blobUrl: imageUrls[index] }}
-                  onSetCover={() => handleSetCover(image.id)}
-                  selectedCover={selectedCover}
-                />
-              ))}
+              {images.map(
+                (image, index) =>
+                  image.id !== undefined && (
+                    <SortableImage
+                      key={image.id}
+                      image={{
+                        ...image,
+                        blobUrl: imageUrls[index],
+                        post_image_name: image.post_image_name!,
+                        id: image.id,
+                      }}
+                      onSetCover={() => handleSetCover(image.id)}
+                      selectedCover={selectedCover}
+                    />
+                  ),
+              )}
             </div>
           </SortableContext>
         </DndContext>
       </div>
-
       <div className='flex flex-wrap gap-4 mt-4'>
-        {images.map((image, index) => (
-          <div
-            key={image.id}
-            className='relative w-24 h-24 border overflow-hidden'
-          >
-            <img
-              src={imageUrls[index]}
-              alt='미리보기 이미지'
-              className='w-full h-full object-cover'
-            />
-            <button
-              onClick={() => handleDelete(image.id)}
-              className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
-            >
-              ×
-            </button>
-          </div>
-        ))}
+        {images.map(
+          (image, index) =>
+            image.id !== undefined && (
+              <div
+                key={image.id}
+                className='relative w-24 h-24 border overflow-hidden'
+              >
+                <img
+                  src={imageUrls[index]}
+                  alt='미리보기 이미지'
+                  className='w-full h-full object-cover'
+                />
+                <button
+                  onClick={() => handleDelete(image.id)}
+                  className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
+                >
+                  ×
+                </button>
+              </div>
+            ),
+        )}
         {images.length < 10 && (
           <form
             onSubmit={() => {
@@ -210,8 +233,8 @@ const PostImageSlide = ({ userId, groupId, uploadSessionId }: ImageListProps) =>
           </form>
         )}
       </div>
-    </section>
+    </article>
   );
 };
 
-export default PostImageSlide;
+export default PostImage;

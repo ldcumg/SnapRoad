@@ -1,15 +1,20 @@
+import useBottomSheetStore from '@/stores/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
-import { useState } from 'react';
+
+// import { useState } from 'react';
 
 export const Buttomsheet = () => {
-  const [isHalfHeightOpen, setIsHalfHeightOpen] = useState(false);
-  const [isFullHeightOpen, setIsFullHeightOpen] = useState(false);
+  // const [isHalfHeightOpen, setIsHalfHeightOpen] = useState(false);
 
-  const handleHalfOpen = () => setIsHalfHeightOpen(true);
-  const handleHalfClose = () => setIsHalfHeightOpen(false);
-  const handleFullOpen = () => setIsFullHeightOpen(true);
-  const handleFullClose = () => setIsFullHeightOpen(false);
+  // const [isFullHeightOpen, setIsFullHeightOpen] = useState(false);
+  // const handleHalfOpen = () => setIsHalfHeightOpen(true);
+  // const handleHalfClose = () => setIsHalfHeightOpen(false);
+  // const handleFullOpen = () => setIsFullHeightOpen(true);
+  // const handleFullClose = () => setIsFullHeightOpen(false);
+
+  const { isHalfHeightOpen, isFullHeightOpen, handleHalfOpen, handleHalfClose, handleFullOpen, handleFullClose } =
+    useBottomSheetStore();
 
   return (
     <div className='p-4'>

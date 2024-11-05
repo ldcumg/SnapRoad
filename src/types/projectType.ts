@@ -35,12 +35,45 @@ export interface ImagesWithAdditionalField extends Images {
 // 인터섹션: CombinedProfileAndPosts 타입 정의 (Profiles와 Posts를 합친 타입)
 export type CombinedProfileAndPosts = Profiles & Posts; // 인터섹션 타입
 
-// extends: TagsWithGroupId 타입 정의 (group_id 추가)
-export interface TagsWithGroupId extends Tags {
-  group_id?: string; // group_id를 선택적 필드로 추가
-}
-
 // Required: UserGroupWithRequiredFields 타입 정의 (모든 필드를 필수로 변경, group_id 추가)
 export interface UserGroupWithRequiredFields extends Required<UserGroup> {
-  group_id: string; // 필수 필드로 group_id 추가
+  group_id: string;
+}
+
+export interface ImageUpload {
+  post_image_name?: string;
+  created_at: string;
+  deleted_at: string;
+  group_id?: string;
+  id: number;
+  is_cover?: boolean;
+  origin_created_at?: string;
+  post_id?: string | null;
+  post_image_url?: string;
+  post_lat?: string | null;
+  post_lng?: string | null;
+  updated_at?: string;
+  upload_session_id?: string;
+  user_id?: string;
+  blobUrl?: string;
+}
+
+export interface ImagesWithAll extends Images {
+  blobUrl: string;
+  id: number;
+  post_image_name: string;
+  is_cover: boolean;
+  isUploaded: boolean;
+}
+
+export interface ImagesAllWithoutPostId extends Omit<Images, 'post_id'> {
+  blobUrl: string;
+  id: number;
+  post_image_name: string;
+  is_cover: boolean;
+  isUploaded: boolean;
+}
+
+export interface ImagesWithoutPostId extends Omit<Comment, 'post_id'> {
+  post_id?: Images['post_id'] | null;
 }

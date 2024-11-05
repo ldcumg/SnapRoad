@@ -143,7 +143,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const handleAddPostRoute = () => {
     if (isPostsView) {
       //TODO - 라우트 주소 수정하기
-      route.push(`/group/${groupId}/임시`);
+      route.push(`/group/${groupId}/`);
       return;
     }
 
@@ -152,7 +152,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     const place = placeName || address;
 
     //TODO - 라우트 주소 수정하기
-    route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
+    route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   return (

@@ -18,13 +18,13 @@ export async function POST(request: Request) {
           ? `data:image/jpg;base64,${Buffer.from(thumbnailBuffer).toString('base64')}`
           : null;
 
-        console.log('EXIF 데이터:', exifData, '썸네일 버퍼:', thumbnailBuffer, 'base64로 인코딩:', thumbnailBase64);
+        // console.log('EXIF 데이터:', exifData, '썸네일 버퍼:', thumbnailBuffer, 'base64로 인코딩:', thumbnailBase64);
         const { latitude, longitude, DateTimeOriginal: dateTaken } = exifData || {};
 
         results.push({
           name: file.name,
-          latitude: latitude || '위도 없음',
-          longitude: longitude || '경도 없음',
+          latitude: latitude || null,
+          longitude: longitude || null,
           dateTaken: dateTaken || '촬영 날짜 없음',
           thumbnail: thumbnailBase64 || '썸네일 없음',
         });
@@ -33,6 +33,5 @@ export async function POST(request: Request) {
       }
     }
   }
-
   return NextResponse.json(results);
 }

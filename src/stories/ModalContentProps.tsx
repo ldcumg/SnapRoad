@@ -10,7 +10,7 @@ interface ModalContentProps {
 
 export const ModalContent = ({ title, content, onClose, className }: ModalContentProps) => (
   <div className={cn('bg-white', className)}>
-    <h2 className={cn('text-lg font-semibold mb-2')}>{title}</h2>
+    <h2 className={cn('mt-8 text-lg font-semibold mb-2')}>{title}</h2>
     <p className={cn('text-gray-700 mb-4')}>{content}</p>
     <button
       onClick={onClose}
