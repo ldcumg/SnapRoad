@@ -1,5 +1,5 @@
 import { getSession, getUserData } from '@/services/server-action/authActions';
-import { UserData, UserDataType } from '@/types/userTypes';
+import { UserData } from '@/types/userTypes';
 import Link from 'next/link';
 
 const GroupListHeader = async () => {
@@ -15,7 +15,6 @@ const GroupListHeader = async () => {
         <img
           src='/svgs/Logo.svg'
           alt='유저이미지'
-          className='rounded-[]'
         />
       </Link>
       <Link href={'/mypage'}>

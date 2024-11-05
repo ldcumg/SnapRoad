@@ -1,9 +1,7 @@
+import ScrollSections from '@/components/landing/ScrollSections';
+
 const Page = () => {
-  return (
-    <>
-      <h1>메인</h1>
-    </>
-  );
+  return <ScrollSections />;
 };
 
 export default Page;
