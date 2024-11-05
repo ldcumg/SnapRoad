@@ -5,6 +5,10 @@ import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider, KeenSliderPlugin } from 'keen-slider/react';
 import React, { useState } from 'react';
 
+interface PostDetailCarouselProps {
+  images: (string | undefined)[];
+}
+
 const AdaptiveHeight: KeenSliderPlugin = (slider) => {
   function updateHeight() {
     slider.container.style.height = slider.slides[slider.track.details.rel].offsetHeight + 'px';
@@ -13,7 +17,7 @@ const AdaptiveHeight: KeenSliderPlugin = (slider) => {
   slider.on('slideChanged', updateHeight);
 };
 
-const PostDetailCarousel = ({ images }) => {
+const PostDetailCarousel = ({ images }: PostDetailCarouselProps) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
@@ -41,7 +45,7 @@ const PostDetailCarousel = ({ images }) => {
               key={index}
               className='keen-slider__slide'
               style={{
-                backgroundImage: `url(${image})`,
+                backgroundImage: image ? `url(${image})` : undefined,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 height: '300px',
@@ -52,7 +56,8 @@ const PostDetailCarousel = ({ images }) => {
       </div>
       {loaded && instanceRef.current && (
         <div className='dots'>
-          {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => {
+          {/* {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => { */}
+          {Array.from({ length: instanceRef.current.track.details.slides.length }, (_, idx) => {
             return (
               <button
                 key={idx}

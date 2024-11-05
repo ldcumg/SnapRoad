@@ -1,7 +1,21 @@
 import OptionsMenu from './OptionsMenu';
 import React from 'react';
 
-const PostDetailHeader = ({ postData, coverImageDate, userDetail }) => {
+interface PostDetailHeaderProps {
+  postData: {
+    post_address: string;
+    user_id: string | null;
+    post_id: string;
+  };
+  coverImageDate: string;
+  userDetail: {
+    profiles: {
+      user_id: string;
+    };
+  };
+}
+
+const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHeaderProps) => {
   return (
     <>
       {/* 옵션 메뉴를 포함한 상단 */}

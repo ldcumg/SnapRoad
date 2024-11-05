@@ -2,7 +2,26 @@ import PostDetailCarousel from './PostDetailCarousel';
 import PostDetailHeader from './PostDetailHeader';
 import React from 'react';
 
-const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }) => {
+interface PostDetailProps {
+  postData: {
+    post_id: string;
+    post_desc: string;
+    post_address: string;
+    user_id: string | null;
+    tags: { group_id: string; id: string; post_id: string; tag_title: string }[];
+  };
+  signedImageUrls: (string | undefined)[];
+  coverImageDate: string;
+  userDetail: {
+    profileImageUrl: string | undefined;
+    profiles: {
+      user_id: string;
+      user_nickname: string | null;
+    };
+  };
+}
+
+const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }: PostDetailProps) => {
   return (
     <div className='border-b'>
       {/* 상단 영역 */}
@@ -31,7 +50,7 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }) =
         </div>
         {/* 태그 영역 */}
         <div className='flex gap-1'>
-          {postData.tags.map((tag: string, id: string) => {
+          {postData.tags.map((tag, id) => {
             return (
               <span
                 className='bg-gray-50 p-2 rounded-lg'

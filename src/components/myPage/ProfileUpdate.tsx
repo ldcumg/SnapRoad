@@ -64,7 +64,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
     } else {
       updateProfile({
         userId,
-        imageName: profileData?.profiles?.[0]?.user_image_url!,
+        imageName: profileData?.profiles?.user_image_url!,
         newNickname: value.nickname,
       });
     }
@@ -107,7 +107,6 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
             </div>
           </div>
         </div>
-        {/* TODO 작업중 */}
         <div className='mt-14 flex flex-col'>
           <div className='relative'>
             <input
