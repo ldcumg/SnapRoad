@@ -3,7 +3,7 @@
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
-import type { Latlng, Location, LocationInfo } from '@/types/placeTypes';
+import type { CustomMarker, Latlng, Location, LocationInfo } from '@/types/mapTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
@@ -14,6 +14,17 @@ import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk'
 
 const SEARCH_INPUT = 'searchInput';
 
+type ClusterStyle = {
+  centerLatLng: { lat: number; lng: number };
+  textAlign: string;
+  lineHeight: string;
+  fontSize: string;
+  color: string;
+  width: string;
+  height: string;
+  background: string;
+  positon: string;
+};
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
@@ -26,11 +37,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   // const bounds = useRef<kakao.maps.LatLngBounds>();
-  const bounds = new kakao.maps.LatLngBounds();
+  //TODO - Set으로 관리
+  let polyline: Latlng[] = [];
 
-  // const [polyline, setPolyline] = useState<Latlng[]>([]);
-  const polyline: Latlng[] = [];
-
+  const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   const {
     register,
     handleSubmit,
@@ -46,19 +56,19 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
+
   useEffect(() => {
     //TODO - 데스크탑에서만 동작하게
     setFocus(SEARCH_INPUT);
   }, []);
 
-  // useEffect(() => {
-  //   if (!map || !postsCoverImages || !bounds) return;
-  //   postsCoverImages.forEach(({ post_lat, post_lng }) => {
-  //     if (!bounds) return;
-  //   bounds.extend(new kakao.maps.LatLng(post_lat, post_lng));
-  // });
-  // map.panTo(bounds);
-  // }, [map, postsCoverImages, bounds]);
+  //QUESTION - 왜 안되지...
+  useEffect(() => {
+    if (!map || !postsCoverImages) return;
+    const bounds = new kakao.maps.LatLngBounds();
+    postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
+    map.panTo(bounds);
+  }, [map, postsCoverImages]);
 
   if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
 
@@ -66,7 +76,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   if (isError) throw new Error(error.message);
 
-  //FIXME - 엔터 여러번 눌렀을 때
+  //FIXME - 엔터 여러번 눌렀을 때 지도 이동 막기
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput }: FieldValues) => {
     if (!map) {
@@ -132,13 +142,38 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   /** 중심 좌표의 장소 정보 요청 */
   const getSpotInfo = async () => {
-    if (!map) return;
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
     const latlng = map.getCenter();
 
     const lat = latlng.getLat();
     const lng = latlng.getLng();
     const address = await getAddress({ lat, lng });
     setSpotInfo({ placeName: '', address, lat, lng });
+  };
+
+  /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
+  const handleClusterEvent = (cluster: kakao.maps.Cluster) => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+    const bounds = new kakao.maps.LatLngBounds();
+
+    const clusterMarkersInfo = cluster.getMarkers().map((marker) => {
+      const customMarker = marker as CustomMarker;
+      // customMarker.getBounds()
+      bounds.extend(new kakao.maps.LatLng(customMarker.getPosition().getLat(), customMarker.getPosition().getLng()));
+      return {
+        postId: customMarker.getImage().Wh,
+        postImageUrl: customMarker.getImage().ok,
+      };
+    });
+    map.panTo(bounds);
+    setPostsPreview(clusterMarkersInfo);
   };
 
   /** 게시물 추가 라우팅 */
@@ -157,6 +192,18 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
+  // const selectClusterStyle = () => {
+  //   const test = clusterStyle.entries();
+  // };
+
+  function createCounter() {
+    let count = -1; // 함수 내부에 상태를 유지할 변수
+
+    return function () {
+      count += 1; // 호출할 때마다 증가
+      return count;
+    };
+  }
   return (
     <>
       <form onSubmit={handleSubmit(searchLocation)}>
@@ -200,7 +247,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       {isPostsView || <img src='/svgs/Mappin.svg' />}
       <Map
         className='w-full h-[50vh]'
-        center={{ lat: 35.95, lng: 128.25 }}
+        center={
+          // postsCoverImages ? { lat: 0, lng: 0 } :
+          { lat: 35.95, lng: 128.25 }
+        }
         onCreate={setMap}
         level={13}
         isPanto={true}
@@ -211,38 +261,48 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={10} // 클러스터 할 최소 지도 레벨
-            styles={[
-              {
-                textAlign: 'center',
-                lineHeight: '54px',
-                fontSize: '20px',
-                color: 'black',
-                width: '100px',
-                height: '70px',
-                // 클러스터 마커 이미지
-                background: 'url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png") no-repeat',
-                positon: 'getCenter',
-              },
-            ]}
+            minLevel={5} // 클러스터 할 최소 지도 레벨
+            styles={clusterStyle}
             disableClickZoom={true}
-            //TODO - 클러스터 시 폴리라인 재설정
-            onClusterclick={(_, cluster) => {
-              setPostsPreview(
-                cluster.getMarkers().map((marker) => {
-                  bounds.extend(new kakao.maps.LatLng(marker.getPosition().getLat(), marker.getPosition().getLng()));
-                  return {
-                    postId: marker.getImage().Wh,
-                    postImageUrl: marker.getImage().ok,
-                  };
-                }),
-              );
-              map && map.panTo(bounds);
+            onClustered={(marker) => {
+              marker._clusters.forEach((cluster) => {
+                const { Ma, La } = cluster.getCenter();
+                clusterStyle.some((style) => style.background === `url("${cluster._markers[0].T.ok}") no-repeat`) ||
+                  setClusterStyle((prev) => [
+                    ...prev,
+                    {
+                      centerLatLng: { lat: Ma, lng: La },
+                      textAlign: 'center',
+                      lineHeight: '54px',
+                      fontSize: '20px',
+                      color: 'black',
+                      width: '100px',
+                      height: '70px',
+                      background: `url("${cluster._markers[0].T.ok}") no-repeat`,
+                      positon: 'getCenter',
+                    },
+                  ]);
+              });
+            }}
+            calculator={() => {
+              if (!map) return;
+              const { ha, qa, oa, pa } = map.getBounds();
+              const bounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
+              let index;
+              for (let i = 0; i < clusterStyle.length; i++) {
+                const { lat, lng } = clusterStyle[i].centerLatLng;
+                if (bounds.contain(new kakao.maps.LatLng(lat, lng))) index = i;
+              }
+              console.log(clusterStyle);
+              console.log('index', index);
+              return index;
+            }}
+            onClusterclick={(marker, cluster) => {
+              handleClusterEvent(cluster);
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
               polyline.push({ lat: post_lat, lng: post_lng });
-              // setPolyline((prev) => [...prev, { lat: post_lat, lng: post_lng }]);
               return (
                 <MapMarker
                   key={post_image_url}
@@ -258,7 +318,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                       width: 50,
                       height: 50,
                     }, // 마커이미지의 크기
-                    options: { alt: post_id },
+                    options: { shape: 'circle', offset: { x: 30, y: 30 }, alt: post_id },
                   }}
                   // title={post_id} // 마우스 호버 시 표시
                 />
@@ -286,7 +346,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
-          strokeColor={'#FFAE00'} // 선 색깔
+          strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
         />
@@ -303,7 +363,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         )}
         {!!postsPreView.length ? (
           postsPreView.map((post) => (
-            // TODO 게시물 상세  페이지로 이동
+            // TODO 게시물 상세 페이지 라우트 주소 변경
             <Link
               href={`/${post.postId}`}
               key={post.postId}

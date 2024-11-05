@@ -19,3 +19,7 @@ export type SearchResult = {
   y: string;
   x: string;
 };
+
+export interface CustomMarker extends kakao.maps.Marker {
+  getImage: () => { Wh: string; ok: string };
+}
