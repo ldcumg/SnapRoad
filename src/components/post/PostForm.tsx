@@ -1,5 +1,5 @@
 import { usePostForm } from '@/hooks/byUse/usePostForm';
-import { postSchema } from '@/schemas/postSchema';
+import { PostFormData, postSchema } from '@/schemas/postSchema';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/useImageUploadStore';
 import { usePostDataStore } from '@/stores/usePostDataStore';
@@ -43,7 +43,9 @@ const PostForm = () => {
     return <div>로딩 중...</div>;
   }
 
-  const onSubmit = async (data: FieldValues) => {
+  const onHandlePostSubmit = async (data: PostFormData /*FieldValues*/) => {
+    // const parsedData: PostFormData = postSchema.parse(data);
+
     const coverImage = imagesData.find((image) => image.is_cover);
     const postLat = lat || null;
     const postLng = lng || null;
@@ -86,7 +88,7 @@ const PostForm = () => {
         console.error('이미지에 post_id 업데이트에 실패했습니다:', imageError.message);
       }
 
-      const tagData = data.hashtag.split(' ').map((tag) => ({
+      const tagData = data.hashtag.map((tag) => ({
         tag_title: tag,
         post_id: postId,
         group_id: groupId,
@@ -109,7 +111,7 @@ const PostForm = () => {
     <div className='PostForm'>
       <form
         className='w-full border border-black flex flex-col'
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onHandlePostSubmit)}
       >
         <label htmlFor='description'>대표</label>
         <textarea
