@@ -1,6 +1,7 @@
+import queryKeys from '../queryKeys';
 import { insertGroupData, insertUserGroupData, updateGroupData } from '@/services/client-action/groupActions';
 import { GroupObjType, UpdateGroupObjType, UserGroupType } from '@/types/groupTypes';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 type ErrorTypes = {
@@ -23,9 +24,11 @@ type updateGroupType = {
 
 const useUpdateGroupMutation = (group_id?: string) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ groupObj, groupImg }: updateGroupType) => await updateGroupData(groupObj, groupImg),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       router.push(`/group/${group_id}`);
       // console.log('data :>> ', data);
     },
@@ -35,9 +38,11 @@ const useUpdateGroupMutation = (group_id?: string) => {
 
 //TODO - invalidate필요시 쿼리키 추가 필요
 const useInsertGroupMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ groupObj, groupImg }: InsertGroupType) => await insertGroupData(groupObj, groupImg),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       // console.log('data :>> ', data);
     },
     onError: (error) => console.log('error :>> ', error),
@@ -46,9 +51,11 @@ const useInsertGroupMutation = () => {
 
 const useInsertUserGroupMutation = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (userGroupObj: UserGroupType) => await insertUserGroupData(userGroupObj),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       router.push(`/group/${data?.groupId}`);
     },
     onError: (error: ErrorTypes) => {

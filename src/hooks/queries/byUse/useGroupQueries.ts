@@ -6,16 +6,17 @@ import { GroupWithCounts } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-const useGroupDetailQueryForUpdate = (group_id?: string) => {
+const useGroupDetailQueryForUpdate = (group_id: string) => {
   return useQuery({
-    queryKey: ['groupDetail', group_id],
-    queryFn: () => (group_id ? getGroupDetails(group_id) : null),
+    queryKey: queryKeys.group.groupForUpdate(group_id),
+    queryFn: () => getGroupDetails(group_id),
+    enabled: (group_id) => !!group_id,
   });
 };
 
 const useGroupDetailQuery = (group_id: string) => {
   return useQuery({
-    queryKey: ['groupDetail', group_id],
+    queryKey: queryKeys.group.groupDetail(group_id),
     queryFn: () => getGroupDetails(group_id),
   });
 };
@@ -23,7 +24,7 @@ const useGroupDetailQuery = (group_id: string) => {
 const useGroupListInfiniteQuery = () => {
   return useInfiniteQuery({
     staleTime: 1000 * 60 * 10,
-    queryKey: ['group_list'],
+    queryKey: queryKeys.group.groupList(),
     queryFn: async ({ pageParam = 0 }) => {
       const { data } = await browserClient.auth.getUser();
       if (data.user?.id) {
@@ -67,7 +68,7 @@ type PostDataListType = PostData[] | null;
 
 const useGroupRandomImageQuery = () => {
   return useQuery({
-    queryKey: ['groupImages'],
+    queryKey: queryKeys.group.groupRandomPosts(),
     queryFn: async () => {
       const { data } = await browserClient.auth.getUser();
       let dataList: PostDataListType = [];
