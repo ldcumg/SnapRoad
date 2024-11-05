@@ -10,7 +10,7 @@ interface BottomSheetProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export const BottomSheet = ({
+export const BottomSheet2 = ({
   isOpen,
   onClose,
   title,
@@ -19,15 +19,18 @@ export const BottomSheet = ({
   children,
   ...props
 }: BottomSheetProps) => {
-  const [isVisible, setIsVisible] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+
     if (isOpen) {
-      setIsVisible(true);
+      timer = setTimeout(() => setIsVisible(true), 100); // 열릴 때 지연 시간 추가
     } else {
-      const timer = setTimeout(() => setIsVisible(false), 300); // 닫힐 때 300ms 지연
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setIsVisible(false), 300); // 닫힐 때 300ms 지연
     }
+
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
   return (
