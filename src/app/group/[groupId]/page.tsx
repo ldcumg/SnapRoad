@@ -5,7 +5,6 @@ import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
-// import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
