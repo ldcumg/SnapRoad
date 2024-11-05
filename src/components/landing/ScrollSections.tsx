@@ -1,12 +1,18 @@
 'use client';
 
+import { Button } from '@/stories/Button';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 const ScrollSections = () => {
+  const router = useRouter();
   const section1Ref = useRef<HTMLElement>(null);
   const section2Ref = useRef<HTMLElement>(null);
   const section3Ref = useRef<HTMLElement>(null);
-  const sections = [section1Ref, section2Ref, section3Ref];
+  const section4Ref = useRef<HTMLElement>(null);
+  const section5Ref = useRef<HTMLElement>(null);
+  const section6Ref = useRef<HTMLElement>(null);
+  const sections = [section1Ref, section2Ref, section3Ref, section4Ref, section5Ref, section6Ref];
 
   const totalPage = sections.length;
   const lastPage = totalPage - 1;
@@ -69,8 +75,28 @@ const ScrollSections = () => {
     <div>
       <section
         ref={section1Ref}
-        className='h-screen pt-14 bg-red-100'
-      ></section>
+        className='h-screen pt-24 flex flex-col justify-center items-center gap-5'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md text-gray-900'>스냅로드 지도위에</p>
+          <p>
+            <span className='text-title_lg text-primary-400'>추억</span>
+            <span className='text-label_md text-gray-900'>을 남겨보세요!</span>
+          </p>
+        </div>
+        <Button
+          label='로그인하여 시작'
+          onClick={() => router.push('/login')}
+        ></Button>
+        <div className='relative w-full max-w-[400px]'>
+          <img
+            src='/images/landing/01_landing.jpg'
+            alt=''
+            className='w-full h-auto'
+          />
+          <div className='absolute top-0 w-full h-full bg-white-to-transparent-to-white'></div>
+        </div>
+      </section>
       <section
         ref={section2Ref}
         className='h-screen pt-14 bg-green-100'

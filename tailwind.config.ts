@@ -190,6 +190,10 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      backgroundImage: {
+        'white-to-transparent-to-white':
+          'linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.5) 22.5%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 55%,rgba(255, 255, 255, 0.5) 77.5%, white 90%)',
+      },
     },
   },
   future: {
