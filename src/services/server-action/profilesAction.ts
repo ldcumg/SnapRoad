@@ -1,6 +1,5 @@
 'use server';
 
-import { getDefaultImageUrl } from '../client-action/storageAction';
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { createClient } from '@/utils/supabase/server';
 
@@ -8,24 +7,10 @@ export const getProfile = async (userId: string) => {
   const supabase = createClient();
 
   /** 프로필 정보 가져오기 */
-  const { data: profiles, error } = await supabase.from('profiles').select('*').eq('user_id', userId);
+  const { data: profiles, error } = await supabase.from('profiles').select('*').eq('user_id', userId).single();
   if (error) throw new Error(error.message);
 
-  // let profileImageUrl = '';
-  // if (profiles && profiles.length > 0) {
-  //   const userProfile = profiles[0];
-
-  //   if (userProfile.user_image_url) {
-  //     // signed URL
-  //     profileImageUrl = (await getSignedImgUrl('avatars', 86400, userProfile.user_image_url)) || '';
-  //   } else {
-  //     // 기본 이미지
-  //     const publicImageUrl = await getDefaultImageUrl();
-  //     profileImageUrl = publicImageUrl.publicUrl;
-  //   }
-  // }
-
-  const userProfile = profiles[0];
+  const userProfile = profiles;
   const signedImgUrl = await getSignedImgUrl('avatars', 86400, userProfile.user_image_url as string);
 
   return { profiles: profiles, profileImageUrl: signedImgUrl };

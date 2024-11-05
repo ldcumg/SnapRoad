@@ -1,6 +1,6 @@
 'use server';
 
-import type { LocationInfo, Latlng, SearchResult } from '@/types/placeTypes';
+import type { LocationInfo, Latlng, SearchResult } from '@/types/mapTypes';
 import type { FieldValues } from 'react-hook-form';
 
 const MAP_BASE_URL = 'https://dapi.kakao.com/v2/local';

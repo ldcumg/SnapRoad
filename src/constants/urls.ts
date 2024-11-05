@@ -1,6 +1,3 @@
-export const LOGIN_PAGE = '/login';
-export const HOME = '/';
-
 enum URLS {
   home = '/',
   signUp = '/signup',
@@ -10,6 +7,7 @@ enum URLS {
   groupList = '/grouplist',
   makeGroup = '/makegroup',
   myPage = '/mypage',
+  signupSuccess = '/signup/success',
 }
 
 export default URLS;
