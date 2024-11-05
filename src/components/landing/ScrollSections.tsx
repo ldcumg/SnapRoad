@@ -75,7 +75,7 @@ const ScrollSections = () => {
     <div>
       <section
         ref={section1Ref}
-        className='h-screen pt-24 flex flex-col justify-center items-center gap-5'
+        className='h-screen pt-24 flex flex-col items-center gap-5'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md text-gray-900'>스냅로드 지도위에</p>
@@ -91,7 +91,7 @@ const ScrollSections = () => {
         <div className='relative w-full max-w-[400px]'>
           <img
             src='/images/landing/01_landing.jpg'
-            alt=''
+            alt='지도 마커 예시 사진'
             className='w-full h-auto'
           />
           <div className='absolute top-0 w-full h-full bg-white-to-transparent-to-white'></div>
@@ -99,12 +99,47 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section2Ref}
-        className='h-screen pt-14 bg-green-100'
-      ></section>
+        className='h-screen pt-24 flex flex-col items-center gap-7'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md'>
+            <span className='text-gray-900'>우리들만의 </span>
+            <span className='text-primary-400'>프라이빗</span>
+            <span className='text-gray-900'>한 그룹을 만들어</span>
+          </p>
+          <p className='text-label_md'>
+            <span className='text-gray-900'>같이한 여행을 </span>
+            <span className='text-primary-400'>기록하고 공유</span>
+            <span className='text-gray-900'>해요!</span>
+          </p>
+        </div>
+        <div className='w-full max-w-[400px]'>
+          <img
+            src='/images/landing/02_landing.jpg'
+            alt='그룹리스트페이지 예시 사진'
+            className='w-full h-auto'
+          />
+        </div>
+      </section>
       <section
         ref={section3Ref}
-        className='h-screen pt-14 bg-blue-100'
-      ></section>
+        className='h-screen pt-24 flex flex-col items-center gap-7'
+      >
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-label_md'>
+            <span className='text-primary-400'>피드에 업로드한 게시물</span>
+            <span className='text-gray-900'>들은</span>
+          </p>
+          <p className='text-label_md text-gray-900'>시간 순으로 지도위에 연결되어 표시돼요!</p>
+        </div>
+        <div className='w-full max-w-[400px]'>
+          <img
+            src='/images/landing/03_landing.jpg'
+            alt='그룹리스트페이지 예시 사진'
+            className='w-full h-auto'
+          />
+        </div>
+      </section>
     </div>
   );
 };
