@@ -17,8 +17,6 @@ const ScrollSections = () => {
   const totalPage = sections.length;
   const lastPage = totalPage - 1;
   let page = 0;
-  let startY = 0;
-  let endY = 0;
 
   useEffect(() => {
     const handleScrolling = (e: WheelEvent) => {
@@ -36,43 +34,15 @@ const ScrollSections = () => {
       sections[page].current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      startY = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      endY = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = () => {
-      if (startY - endY > 50) {
-        page++;
-      } else if (startY - endY < -50) {
-        page--;
-      }
-      if (page < 0) {
-        page = 0;
-      } else if (page > lastPage) {
-        page = lastPage;
-      }
-      sections[page].current?.scrollIntoView({ behavior: 'smooth' });
-    };
-
     window.addEventListener('wheel', handleScrolling, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     return () => {
       window.removeEventListener('wheel', handleScrolling);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [sections, lastPage]);
 
   return (
-    <div>
+    <div className='flex flex-col gap-4'>
       <section
         ref={section1Ref}
         className='h-screen pt-24 flex flex-col items-center gap-5'
@@ -99,7 +69,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section2Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7'
+        className='h-screen pt-24 flex flex-col items-center gap-7 px-4'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md'>
@@ -113,7 +83,7 @@ const ScrollSections = () => {
             <span className='text-gray-900'>해요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px]'>
+        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
           <img
             src='/images/landing/02_landing.jpg'
             alt='그룹리스트페이지 예시 사진'
@@ -123,7 +93,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section3Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7'
+        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md'>
@@ -132,7 +102,7 @@ const ScrollSections = () => {
           </p>
           <p className='text-label_md text-gray-900'>시간 순으로 지도위에 연결되어 표시돼요!</p>
         </div>
-        <div className='w-full max-w-[400px]'>
+        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
           <img
             src='/images/landing/03_landing.jpg'
             alt='그룹 앨범 예시 사진'
@@ -142,7 +112,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section4Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7'
+        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md text-gray-900'>피드에 업로드한 게시물들은</p>
@@ -151,7 +121,7 @@ const ScrollSections = () => {
             <span className='text-gray-900'>돼요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px]'>
+        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
           <img
             src='/images/landing/04_landing.jpg'
             alt='그룹 지도 예시 사진'
@@ -161,7 +131,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section5Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7'
+        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md'>
@@ -174,7 +144,7 @@ const ScrollSections = () => {
             <span className='text-gray-900'>남겨봐요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px]'>
+        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
           <img
             src='/images/landing/05_landing.jpg'
             alt='게시글 상세 예시 사진'
@@ -184,7 +154,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section6Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7'
+        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
       >
         <div className='flex flex-col justify-center items-center'>
           <p className='text-label_md text-gray-900'>그룹내 멤버들과</p>
@@ -193,7 +163,7 @@ const ScrollSections = () => {
             <span className='text-gray-900'>을 나눠봐요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px]'>
+        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
           <img
             src='/images/landing/06_landing.jpg'
             alt='그룹 지도 예시 사진'
