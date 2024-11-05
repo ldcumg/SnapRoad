@@ -1,7 +1,7 @@
 import DraggableImageList from './DraggableImageList';
 import PostImage from './PostImage';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 
 const ImageBottomSheet = () => {

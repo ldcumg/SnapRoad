@@ -1,9 +1,9 @@
 import SortableImage from './SortableImage';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useFetchImageUrls } from '@/hooks/queries/write/useImageFetchUrlsQuery';
-import { useSetCoverLogic } from '@/hooks/queries/write/useImageHandlersHooks';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
-import { usePostDataStore } from '@/stores/write/usePostDataStore';
+import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
+import { useSetCoverLogic } from '@/hooks/queries/post/useImageHandlersHooks';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
+import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 

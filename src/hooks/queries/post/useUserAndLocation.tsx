@@ -1,5 +1,5 @@
 import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
-import { usePostDataStore } from '@/stores/write/usePostDataStore';
+import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';

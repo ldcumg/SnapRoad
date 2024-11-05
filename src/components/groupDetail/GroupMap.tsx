@@ -36,7 +36,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  console.log("clusterStyle =>", clusterStyle);
+  console.log('clusterStyle =>', clusterStyle);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
@@ -188,7 +188,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     const place = placeName || address;
 
     //TODO - 라우트 주소 수정하기
-    route.push(`/group/${groupId}/write?lat=${lat}&lng=${lng}&place=${place}`);
+    route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */

@@ -34,7 +34,8 @@ export const BottomSheet = ({
     }
   }, [isOpen]);
 
-  const baseStyle = 'fixed bottom-0 left-0 right-0 bg-white transition-all duration-500 ease-in-out';
+  const baseStyle =
+    'fixed bottom-0 left-0 right-0 bg-white transition-transform transition-opacity duration-500 ease-in-out';
   const heightStyle = height === 'full' ? 'h-full' : 'h-1/2';
   const visibilityStyle = isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0';
 
@@ -44,7 +45,7 @@ export const BottomSheet = ({
       {rendered && (
         <div
           className={`fixed inset-0 bg-black transition-opacity duration-500 ease-in-out ${
-            isOpen ? 'opacity-50' : 'opacity-0'
+            isOpen ? 'opacity-50' : 'opacity-0 hidden'
           }`}
           onClick={onClose}
         ></div>

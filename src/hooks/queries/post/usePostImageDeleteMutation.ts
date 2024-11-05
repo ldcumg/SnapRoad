@@ -3,7 +3,7 @@ import {
   deleteFileFromStorage,
   deleteImageFromDatabase,
 } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { useMutation } from '@tanstack/react-query';
 
 /**
