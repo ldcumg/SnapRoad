@@ -3,7 +3,6 @@ import { useInsertUserGroupMutation } from '@/hooks/queries/byUse/useGroupMutati
 import { makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import browserClient from '@/utils/supabase/client';
-import React, { MouseEvent } from 'react';
 import { FieldValues, useFormState } from 'react-hook-form';
 
 type Props = {

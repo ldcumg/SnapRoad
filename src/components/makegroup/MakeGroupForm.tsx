@@ -25,7 +25,9 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const { isError: insertGroupDataError, mutateAsync: insertGroupDataMutate } = useInsertGroupMutation();
   const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
 
-  const { isError: updateGroupDataError, mutateAsync: updateGroupDataMutate } = useUpdateGroupMutation(update_for);
+  const { isError: updateGroupDataError, mutateAsync: updateGroupDataMutate } = useUpdateGroupMutation(
+    update_for as string,
+  );
 
   const onSubmit = async (value: FieldValues) => {
     //TODO - 파일 확장자 관련 유효성 검사 필요
@@ -56,7 +58,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     return dataTransfer.files;
   };
 
-  const { data: groupDetailData, isPending, isLoading } = useGroupDetailQueryForUpdate(update_for);
+  const { data: groupDetailData, isPending, isLoading } = useGroupDetailQueryForUpdate(update_for as string);
 
   useEffect(() => {
     const fillGroupData = async () => {
