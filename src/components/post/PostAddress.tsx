@@ -1,4 +1,4 @@
-import useUserAndLocation from '@/hooks/queries/write/useUserAndLocation';
+import useUserAndLocation from '@/hooks/queries/post/useUserAndLocation';
 import { useRouter } from 'next/navigation';
 
 interface groupIdProps {
