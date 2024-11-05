@@ -1,5 +1,6 @@
 'use client';
 
+import GroupInfoBox from './GroupInfoBox';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
@@ -11,7 +12,7 @@ type Props = {
   setMode: React.Dispatch<React.SetStateAction<GroupDetailMode>>;
 };
 
-const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_desc }, setMode }: Props) => {
+const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
   const observerRef = useIntersect(async (entry, observer) => {
@@ -33,40 +34,46 @@ const GroupAlbum = ({ groupId, groupInfo: { group_image_url, user_group, group_d
 
   return (
     <>
-      <div>
-        <img src={group_image_url} />
-        <div>
-          <button onClick={() => setMode(GroupDetailMode.member)}>
-            <img src='/svgs/Group_Member.svg' /> {user_group.length}
-          </button>
-          <img src='/svgs/Setting.svg' />
-          <p>{group_desc}</p>
-        </div>
-      </div>
+      <GroupInfoBox
+        groupInfo={groupInfo}
+        setMode={setMode}
+      />
       {!!postsImages ? (
-        <ol>
-          {postsImages.map((image) => (
-            <li key={image.id}>
-              {/* NOTE - 임시 */}
-              <Link href={`/상세/${image.post_id}`}>
-                <img src={image.post_image_url} />
-              </Link>
-            </li>
-          ))}
-        </ol>
+        <>
+          <ol className='m-[15px] grid grid-cols-3 justify-items-center gap-1'>
+            {postsImages.map((image) => (
+              <li
+                className='h-[112px] w-[112px] rounded-[8px] bg-cover'
+                key={image.id}
+              >
+                <Link
+                  className='h-full w-full'
+                  href={`/group/${groupId}/post/${image.post_id}`}
+                >
+                  <img
+                    className='mx-auto my-auto h-full w-full rounded-[8px] object-cover'
+                    src={image.post_image_url}
+                  />
+                </Link>
+              </li>
+            ))}
+          </ol>
+          {isFetchingNextPage && <div className='mx-auto'>게시물을 불러오는 중입니다...</div>}
+          <div
+            id='observerTarget'
+            ref={observerRef}
+          ></div>
+        </>
       ) : (
-        <p>
-          게시물이 없습니다.
-          <br />
-          추억을 공유해보세요!
-        </p>
+        <div className='mt-40 flex h-full flex-col items-center font-semibold text-gray-500'>
+          <p>게시물이 없습니다.</p>
+          <p>추억을 공유해보세요!</p>
+        </div>
       )}
-      {isFetchingNextPage && <div>fetching...</div>}
-      <div
-        id='observerTarget'
-        ref={observerRef}
-      ></div>
-      <button onClick={handleScrollTop}>
+      <button
+        className='fixed bottom-4 right-4'
+        onClick={handleScrollTop}
+      >
         <img src='/svgs/Top_Btn.svg' />
       </button>
     </>

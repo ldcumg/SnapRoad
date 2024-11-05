@@ -16,7 +16,8 @@ const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), {
 type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  //TODO - zustand 관리
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -71,9 +72,9 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   };
 
   return (
-    <>
+    <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='flex justify-between px-5'>
+      <header className='flex items-center justify-between px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
@@ -81,7 +82,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         {handleChangeMode()}
       </header>
       {groupDetailMode()}
-    </>
+    </div>
   );
 };
 

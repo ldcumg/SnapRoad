@@ -20,7 +20,7 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          <Header />
+          {/* <Header /> */}
           <main className='w-full h-full'>{children}</main>
         </QueryProvider>
       </body>
