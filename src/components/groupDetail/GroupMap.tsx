@@ -3,7 +3,7 @@
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
-import type { CustomMarker, Latlng, Location, LocationInfo } from '@/types/mapTypes';
+import type { ClusterStyle, CustomMarker, Latlng, Location, LocationInfo } from '@/types/mapTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
@@ -14,17 +14,6 @@ import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk'
 
 const SEARCH_INPUT = 'searchInput';
 
-type ClusterStyle = {
-  centerLatLng: { lat: number; lng: number };
-  textAlign: string;
-  lineHeight: string;
-  fontSize: string;
-  color: string;
-  width: string;
-  height: string;
-  background: string;
-  positon: string;
-};
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
@@ -193,7 +182,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
     marker._clusters.forEach((cluster) => {
-      const { Ma, La } = cluster.getCenter()
+      const { Ma, La } = cluster.getCenter();
       clusterStyle.some((style) => style.background === `url("${cluster._markers[0].T.ok}") no-repeat`) ||
         setClusterStyle((prev) => [
           ...prev,
