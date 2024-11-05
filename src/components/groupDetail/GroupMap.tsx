@@ -180,6 +180,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     route.push(`/group/${groupId}/임시?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
+  /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
     marker._clusters.forEach((cluster) => {
       const { Ma, La } = cluster.getCenter();
@@ -200,6 +201,21 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           },
         ]);
     });
+  };
+
+  /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
+  const clusterCalculator = () => {
+    if (!map) return;
+    const { ha, qa, oa, pa } = map.getBounds();
+    const viewport = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
+
+    let index;
+    for (let i = 0; i < clusterStyle.length; i++) {
+      const { lat, lng } = clusterStyle[i].centerLatLng;
+      if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
+    }
+
+    return index;
   };
 
   return (
@@ -263,22 +279,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
-            calculator={() => {
-              if (!map) return;
-              const { ha, qa, oa, pa } = map.getBounds();
-              const viewport = new kakao.maps.LatLngBounds(
-                new kakao.maps.LatLng(qa, ha),
-                new kakao.maps.LatLng(pa, oa),
-              );
-
-              let index;
-              for (let i = 0; i < clusterStyle.length; i++) {
-                const { lat, lng } = clusterStyle[i].centerLatLng;
-                if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
-              }
-
-              return index;
-            }}
+            calculator={() => clusterCalculator()}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
             }}
