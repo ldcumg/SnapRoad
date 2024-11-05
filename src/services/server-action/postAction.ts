@@ -42,12 +42,7 @@ export const getPostsCoverImagesPerGroup = async ({
 
   if (status !== 200 && error) throw new Error(error.message);
 
-  //NOTE - 임시 형변환
-  const tempData = data?.map((data) => {
-    return { ...data, post_lat: Number(data.post_lat), post_lng: Number(data.post_lng) };
-  });
-
-  return tempData as PostCoverImage[];
+  return data as PostCoverImage[];
 };
 
 /** 게시글 삭제 */

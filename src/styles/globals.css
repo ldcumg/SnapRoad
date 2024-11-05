@@ -158,4 +158,7 @@
 
 /* 유틸리티 클래스 */
 @layer utilities {
+  #__react-kakao-maps-sdk___Map>div>div>div>div>img {
+    @apply rounded-full
+  }
 }

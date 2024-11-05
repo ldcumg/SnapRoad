@@ -3,6 +3,7 @@
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/groupDetail/GroupMap';
 import MemberList from '@/components/groupDetail/MemberList';
+import URLS from '@/constants/urls';
 import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
 import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
 import { GroupDetailMode } from '@/types/groupTypes';
@@ -20,14 +21,14 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  // const [loading, error] = useKakaoLoader({
-  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-  //   libraries: ['services', 'clusterer'],
-  // });
+  const [mapLoading, mapError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+    libraries: ['services', 'clusterer'],
+  });
 
-  // useEffect(() => {
-  //   if (loading) return;
-  // }, [loading]);
+  useEffect(() => {
+    if (mapLoading) return;
+  }, [mapLoading]);
 
   if (isPending) return <>로딩</>;
 
@@ -83,7 +84,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
     <>
       <ToastContainer />
       <header className='flex justify-between px-5'>
-        <Link href='/'>
+        <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
         <h2>{groupInfo.group_title}</h2>
