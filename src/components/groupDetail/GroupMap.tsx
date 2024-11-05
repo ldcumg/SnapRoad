@@ -36,7 +36,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  console.log('clusterStyle =>', clusterStyle);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
@@ -236,8 +235,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       const { lat, lng } = clusterStyle[i].centerLatLng;
       if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
     }
-
-    console.log('index =>', index);
     return index;
   };
 
