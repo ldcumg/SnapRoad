@@ -3,9 +3,9 @@ import ImageUploadCounter from './ImageUploadCounter';
 import Skeleton from './Skeleton';
 import ThumbnailImageList from './ThumbnailImageList';
 import { BUCKET_NAME } from '@/constants/constants';
-import { useFetchImageUrls } from '@/hooks/queries/write/useImageFetchUrlsQuery';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
-import { usePostDataStore } from '@/stores/write/usePostDataStore';
+import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
+import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { useEffect } from 'react';
 
 const PostImage = ({ showImages }: { showImages: boolean }) => {

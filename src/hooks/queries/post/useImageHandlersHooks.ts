@@ -3,7 +3,7 @@ import {
   useDeleteBusinessImage,
   useCoverBusinessImage,
 } from '@/hooks/queries/byUse/useBusinessImageMutation';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 
 // 이미지 업로드 처리
 export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {

@@ -1,5 +1,5 @@
 import { fetchSignedUrl, saveImageMetadata, uploadFileToStorage } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

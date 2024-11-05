@@ -1,15 +1,15 @@
 'use client';
 
-import ImageBottomSheet from '@/components/write/ImageBottomSheet';
-import PostAddress from '@/components/write/PostAddress';
-import PostForm from '@/components/write/PostForm';
-import PostImage from '@/components/write/PostImage';
+import ImageBottomSheet from '@/components/post/ImageBottomSheet';
+import PostAddress from '@/components/post/PostAddress';
+import PostForm from '@/components/post/PostForm';
+import PostImage from '@/components/post/PostImage';
 
 type Props = {
   params: { groupId: string };
 };
 
-const PostPage = ({ params: { groupId } }: Props) => {
+const writePage = ({ params: { groupId } }: Props) => {
   return (
     <div className='w-full'>
       {/* <h1>{groupId}</h1> */}
@@ -21,4 +21,4 @@ const PostPage = ({ params: { groupId } }: Props) => {
   );
 };
 
-export default PostPage;
+export default writePage;

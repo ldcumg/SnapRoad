@@ -1,8 +1,8 @@
 import { usePostForm } from '@/hooks/byUse/usePostForm';
 import { PostFormData, postSchema } from '@/schemas/postSchema';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
-import { useImageUploadStore } from '@/stores/write/useImageUploadStore';
-import { usePostDataStore } from '@/stores/write/usePostDataStore';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
+import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import browserClient from '@/utils/supabase/client';

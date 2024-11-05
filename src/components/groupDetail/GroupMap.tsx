@@ -36,7 +36,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  console.log("clusterStyle =>", clusterStyle);
+  console.log('clusterStyle =>', clusterStyle);
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
