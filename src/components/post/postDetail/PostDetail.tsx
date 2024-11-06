@@ -10,7 +10,10 @@ interface PostDetailProps {
     user_id: string | null;
     tags: { group_id: string; id: string; post_id: string; tag_title: string }[];
   };
-  signedImageUrls: (string | undefined)[];
+  signedImageUrls: {
+    signedImageUrl: string | undefined;
+    is_cover: boolean;
+  }[];
   coverImageDate: string;
   userDetail: {
     profileImageUrl: string | undefined;
@@ -19,9 +22,17 @@ interface PostDetailProps {
       user_nickname: string | null;
     };
   };
+  postAuthorDetail: {
+    // 글을 쓴 사람
+    profileImageUrl: string | undefined;
+    profiles: {
+      user_id: string;
+      user_nickname: string | null;
+    };
+  };
 }
 
-const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }: PostDetailProps) => {
+const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail, postAuthorDetail }: PostDetailProps) => {
   return (
     <div className='border-b'>
       {/* 상단 영역 */}
@@ -39,11 +50,11 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail }: P
           <div className='w-[40px] h-[40px] overflow-hidden rounded-full'>
             <img
               alt='프로필 이미지'
-              src={userDetail?.profileImageUrl || '/svgs/Profile.svg'}
+              src={postAuthorDetail?.profileImageUrl || '/svgs/Profile.svg'} // 이 글을 쓴 사람
               className='object-cover w-full h-full'
             />
           </div>
-          <span className='text-gray-900 text-label_md'>{userDetail.profiles.user_nickname}</span>
+          <span className='text-gray-900 text-label_md'>{postAuthorDetail.profiles.user_nickname}</span>
         </div>
         <div>
           <p className='text-black text-body_md'>{postData.post_desc}</p>

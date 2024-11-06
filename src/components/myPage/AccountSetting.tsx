@@ -1,12 +1,15 @@
 'use client';
 
+import { useSignOut } from '@/hooks/queries/byUse/useAuthMutations';
 import { signOut } from '@/services/server-action/authActions';
 import Link from 'next/link';
 import React from 'react';
 
 const AccountSetting = () => {
+  const { mutate: signOut } = useSignOut();
+
   const handleSignOut = async () => {
-    await signOut();
+    signOut();
   };
   return (
     <div className='flex flex-col items-start mt-12 gap-8'>
