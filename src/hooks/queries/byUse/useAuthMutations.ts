@@ -1,6 +1,7 @@
+import queryKeys from '../queryKeys';
 import URLS from '@/constants/urls';
 import { signUp, login, signOut } from '@/services/server-action/authActions';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 /** 회원 가입 */
@@ -36,10 +37,12 @@ export const useLogin = () => {
 /** 로그아웃 */
 export const useSignOut = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: signOut,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.userInfo() });
       router.push(URLS.home);
     },
     onError: (error) => {
