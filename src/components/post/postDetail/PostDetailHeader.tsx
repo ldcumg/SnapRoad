@@ -20,9 +20,9 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHe
   return (
     <>
       {/* 옵션 메뉴를 포함한 상단 */}
-      <div className='flex justify-between py-4 w-full'>
+      <div className='flex w-full justify-between px-4 py-4'>
         {/* 싱단 정보 */}
-        <div className='flex items-center gap-2 w-full relative'>
+        <div className='relative flex w-full items-center gap-2'>
           {/* 마커 아이콘과 위치명 */}
           <div className='flex items-center gap-2'>
             <img
@@ -31,9 +31,9 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHe
               width={24}
               height={24}
             />
-            <span className='text-gray-900 text-label_sm'>{postData.post_address}</span>
+            <span className='text-label_sm text-gray-900'>{postData.post_address}</span>
           </div>
-          <span className='text-gray-500 text-caption_light_lg'>{coverImageDate}</span>
+          <span className='text-caption_light_lg text-gray-500'>{coverImageDate}</span>
           {/* <div className='absolute top-0 right-0'>
             <DropdownMenu />
           </div> */}

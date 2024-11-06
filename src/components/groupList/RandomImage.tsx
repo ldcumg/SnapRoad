@@ -12,19 +12,28 @@ import Link from 'next/link';
 const RandomImage = () => {
   const { data: randomData, isLoading } = useGroupRandomImageQuery();
   if (isLoading) return <RandomImageSkeleton />;
+
+  const items = randomData ?? [];
+
+  const carouselOptions = {
+    loop: items.length > 2,
+    plugins: items.length > 2 ? [Autoplay({ delay: 3000 })] : [],
+  };
+  const itemClassName = items.length === 1 ? 'justify-center' : 'gap-4 pl-4';
+
   return (
     <>
-      {!!randomData?.length ? (
+      {!!items.length ? (
         <Carousel
           className='w-full max-w-sm md:max-w-lg lg:max-w-full'
-          plugins={[Autoplay({ delay: 3000 })]}
-          opts={{ loop: true }}
+          plugins={carouselOptions.plugins}
+          opts={{ loop: carouselOptions.loop }}
         >
-          <CarouselContent className='flex gap-4 pl-4'>
-            {randomData?.map((data, index) => (
+          <CarouselContent className={`flex ${itemClassName}`}>
+            {items.map((data, index) => (
               <CarouselItem
                 key={index}
-                className='basis-[220px] md:basis-[300px] lg:basis-[400px] rounded-xl p-0'
+                className='basis-[220px] rounded-xl p-0'
               >
                 <Card className='border-none'>
                   <CardContent
