@@ -64,7 +64,7 @@ const Comment = ({
   return (
     <>
       {isEditMode ? (
-        <div className='flex flex-col py-4 gap-3'>
+        <div className='flex flex-col py-4 gap-3 px-4'>
           <form
             className='flex flex-col gap-2'
             onSubmit={handleUpdateComment}
@@ -91,7 +91,7 @@ const Comment = ({
           </form>
         </div>
       ) : (
-        <div className='flex py-4 gap-3'>
+        <div className='flex py-4 gap-3 px-4'>
           <>
             <div className='w-[32px] h-[32px] overflow-hidden rounded-full'>
               <img
@@ -121,7 +121,7 @@ const Comment = ({
               <div>
                 {parentId === null ? (
                   <span
-                    className='text-gray-500 text-caption_bold_md'
+                    className='text-gray-500 text-caption_bold_md '
                     onClick={() => setIsWriteReplyMode && setIsWriteReplyMode(true)}
                   >
                     답글 쓰기

@@ -40,6 +40,7 @@ const TourDetail = async ({
     const signedUrls = await Promise.all(
       images.map(async (image) => {
         const imagePath = `${folderName}/${image.post_image_name}`;
+
         const signedUrl = await getSignedImgUrl(bucketName, expiration, imagePath);
 
         return {
@@ -65,12 +66,14 @@ const TourDetail = async ({
   }));
 
   const signedImageUrls = await getSignedImgUrls('tour_images', 86400, postData.group_id!, imageData); // 게시글 이미지들
+
+  console.log('signedImageUrls :>> ', signedImageUrls);
   const coverImage = postData.images.find((image: { is_cover: boolean }) => image.is_cover);
   const coverImageDate = coverImage ? formatDateToPostDetail(coverImage.created_at) : '날짜 없음';
 
   return (
-    <div className='px-4 '>
-      <div className='flex items-center py-4 relative'>
+    <div>
+      <div className='flex items-center py-4 relative mx-4'>
         <img
           src='/svgs/Logo.svg'
           alt='Image'
