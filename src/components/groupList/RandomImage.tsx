@@ -11,6 +11,7 @@ import Link from 'next/link';
 
 const RandomImage = () => {
   const { data: randomData, isLoading } = useGroupRandomImageQuery();
+  console.log('randomData :>> ', randomData);
   if (isLoading) return <RandomImageSkeleton />;
   return (
     <>
