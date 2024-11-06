@@ -29,12 +29,6 @@ export const updateSession = async (request: NextRequest) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (user && request.nextUrl.pathname === '/') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/grouplist';
-    return NextResponse.redirect(url);
-  }
-
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
@@ -45,7 +39,11 @@ export const updateSession = async (request: NextRequest) => {
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
-
+  if (user?.id && request.nextUrl.pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/grouplist';
+    return NextResponse.redirect(url);
+  }
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
   const isAdminUser = user?.id === process.env.ADMIN_USER_ID;
 
