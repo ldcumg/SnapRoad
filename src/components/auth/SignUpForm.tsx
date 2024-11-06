@@ -22,10 +22,10 @@ const SignUpForm = () => {
   const { mutate: signUp } = useSignUp();
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
-  /** 체크박스 상태 */
+  /** 모달 밖 체크박스 상태 */
   const [isChecked, setIsChecked] = useState(false);
 
-  /** BottomSheet 내부 체크박스 상태 */
+  /** 모달 안 체크박스 상태 */
   const [isCheckedInSheet, setIsCheckedInSheet] = useState(false);
 
   /** 폼 제출 핸들러 */
@@ -33,12 +33,18 @@ const SignUpForm = () => {
     signUp(signUpSchema.parse(value));
   };
 
-  /** 완료 버튼 핸들러
-   * BottomSheet 체크박스 상태 메인 체크박스에 반영
-   */
+  /** 완료 버튼 핸들러: 모달 안 상태를 모달 밖에 반영 */
   const handleComplete = () => {
-    setIsChecked(isCheckedInSheet);
+    setIsChecked(isCheckedInSheet); // 모달 안 상태를 모달 밖 상태에 반영
     handleFullClose();
+  };
+
+  const handleCheckboxToggle = () => {
+    setIsCheckedInSheet((prev) => {
+      const newState = !prev;
+      setIsChecked(newState); // 모달 밖 상태도 함께 업데이트
+      return newState;
+    });
   };
 
   return (
@@ -81,19 +87,19 @@ const SignUpForm = () => {
           />
         </div>
 
-        {/* TODO 약관 모달? */}
-        <div>
-          <input
-            type='checkbox'
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
-          />
-          <span
-            onClick={handleFullOpen}
-            className='cursor-pointer'
-          >
-            개인정보 수집·이용 약관 동의
-          </span>
+        {/* 모달 밖 체크박스 UI */}
+        <div
+          className='flex justify-between'
+          onClick={handleFullOpen}
+        >
+          <div className='flex items-center gap-4'>
+            <img
+              src={isChecked ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='w-[24px] h-[24px]'
+            />
+            <span className='cursor-pointer text-black text-caption_bold_lg'>개인정보 수집·이용 약관 동의</span>
+          </div>
+          <img src='/svgs/Arrow_Forward_LG.svg' />
         </div>
 
         {/* TODO 버튼 활성화 */}
@@ -108,6 +114,7 @@ const SignUpForm = () => {
         <Link href={'/login'}>로그인</Link>
       </div>
 
+      {/* 모달 UI */}
       <BottomSheet
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
@@ -117,14 +124,49 @@ const SignUpForm = () => {
         height='full'
       >
         <div className='flex flex-col gap-4'>
-          <p>여기에 개인정보 수집·이용 약관 내용을 입력하세요.</p>
-          <input
-            type='checkbox'
-            checked={isCheckedInSheet}
-            onChange={(e) => setIsCheckedInSheet(e.target.checked)}
-          />
-          <span>개인정보 수집·이용 약관에 동의합니다.</span>
-          <div className='flex gap-2'>
+          <div className='flex gap-3'>
+            <img
+              src={isCheckedInSheet ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='w-[24px] h-[24px]'
+              onClick={handleCheckboxToggle}
+            />
+
+            <div>
+              <span className='text-gray-900 text-label_md'>[필수] 개인정보 수집 및 이용에 대한 동의</span>
+              <div>
+                <span className='text-gray-900 text-body_sm'>
+                  1. 수집하는 개인정보 항목회원가입 및 서비스 이용을 위해 다음과 같은 개인정보를 수집합니다.
+                </span>
+                <span className='text-gray-700 text-label_sm'>- 필수 정보 : 이메일 주소, 비밀번호</span>
+              </div>
+
+              <div>
+                <span className='text-gray-900 text-body_sm'>2. 개인정보 수집 및 이용 목적</span>
+                <span className='text-gray-900 text-body_sm'>수집한 개인정보는 다음 목적을 위해 사용됩니다</span>
+                <span className='text-gray-700 text-label_sm'>- 회원가입 의사 확인 및 회원 식별</span>
+              </div>
+
+              <div>
+                <span className='text-gray-900 text-body_sm'>3. 개인정보 보유 및 이용 기간</span>
+                <span className='text-gray-900 text-body_sm'>
+                  원칙적으로, 개인정보는 수집 및 이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 다만,
+                  아래의 정보는 명시한 기간 동안 보관됩니다.
+                </span>
+
+                <span className='text-gray-700 text-label_sm'>- 회원가입 및 관리 : 회원 탈퇴 시까지 보유</span>
+              </div>
+
+              <div>
+                <span className='text-gray-900 text-body_sm'>4. 개인정보의 파기 절차 및 방법</span>
+                <span className='text-gray-900 text-body_sm'>
+                  원칙적으로, 개인정보 수집 및 이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 전자적 파일
+                  형태의 정보는 기록을 재생할 수 없느니술적 방법을 사용하여 삭제합니다. 종이에 출력된 정보는 분쇄기로
+                  분쇄하거나 속하여 파기합니다.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className='flex py-5 px-4 justify-center gap-2'>
             <Button
               label='취소'
               onClick={handleFullClose}
