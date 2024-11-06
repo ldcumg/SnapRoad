@@ -208,6 +208,45 @@
 <br/>
 
 ### 정민지
+#### 문제상황
+- 소셜 로그인 시 각 기관에서 제공하는 사용자의 이름을 public.profiles 에 저장하기 위해 트리거를 설정해주어야하는데 각 기관마다 사용자 이름을 제공하는 필드명이 달랐다.
+
+#### 문제 분석
+- 각 기관에서 어떤 응답으로 사용자의 정보를 주는지 분석
+- 분석 결과 full_name, user_name 등 다양했음
+
+#### 해결 방안
+```sql
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = ''
+as $$
+begin
+  insert into public.profiles(
+    user_id, 
+    user_email, 
+    user_nickname
+  )values (
+    new.id, 
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'user_name',new.raw_user_meta_data->>'user_nickname')
+
+  );
+
+  return new;
+end;
+$$;
+
+-- trigger the function every time a user is created
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row 
+  execute function public.handle_new_user();
+```
+
+- 트리거 함수 만들 때 수파베이스에서 제공하는 coalesce 를 사용하여 모든 경우에 대비하도록 함
+
 <br/>
 
 ## 개선 목표
