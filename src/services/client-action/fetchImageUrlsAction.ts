@@ -8,7 +8,8 @@ export const fetchImageUrls = async (images: ImagesAllWithoutPostId[], bucketNam
         const url = await fetchSignedUrl(bucketName, folderName, image.post_image_name!);
         return url;
       } catch (error) {
-        console.error(`이미지의 URL을 가져오는 중 오류 발생 ${image.id}:`, error);
+        // console.error(`이미지의 URL을 가져오는 중 오류 발생 ${image.id}:`, error);
+        console.error(`이미지 ${image.post_image_name}의 URL을 가져오는 중 오류 발생:`, error);
         return '';
       }
     }),

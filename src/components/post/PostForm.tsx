@@ -16,6 +16,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { FieldValues, useForm } from 'react-hook-form';
 
 const PostForm = () => {
   const {
@@ -29,7 +31,12 @@ const PostForm = () => {
   const { userId, groupId, lat, lng, addressName } = usePostDataStore();
   const { images: imagesData } = useImageUploadStore();
   const router = useRouter();
+  const router = useRouter();
   const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;
+  const [description, setDescription] = useState('');
+  const [hashtag, setHashtag] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [description, setDescription] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [date, setDate] = useState('');
@@ -58,6 +65,8 @@ const PostForm = () => {
 
   const submitPost = (e: FieldValues) => {
     // e.preventDefault();
+  const submitPost = (e: FieldValues) => {
+    // e.preventDefault();
     if (!groupId || !userId) {
       console.error('그룹 ID와 사용자 ID가 필요합니다.');
       return;
@@ -66,6 +75,9 @@ const PostForm = () => {
     const postData = {
       userId,
       groupId,
+      postDesc: description,
+      postDate: date,
+      postTime: time,
       postDesc: description,
       postDate: date,
       postTime: time,
@@ -79,9 +91,18 @@ const PostForm = () => {
     createPostMutation.mutate(postData, {
       onSuccess: async (data: { data: { post_id: string } }) => {
         const postId = data.data.post_id;
+      onSuccess: async (data: { data: { post_id: string } }) => {
+        const postId = data.data.post_id;
         const uploadSessionId = imagesData[0].upload_session_id!;
 
+
         updateImagesPostIdMutation.mutate({ postId, uploadSessionId });
+
+        const tags = hashtag
+          .split('#')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag);
+
 
         const tags = hashtag
           .split('#')
@@ -93,6 +114,7 @@ const PostForm = () => {
         });
 
         router.push(`/group/${groupId}`);
+        router.push(`/group/${groupId}`);
       },
     });
   };
@@ -100,6 +122,7 @@ const PostForm = () => {
   return (
     <div className='PostForm'>
       <form
+        className='w-full border border-black flex flex-col'
         className='w-full border border-black flex flex-col'
         onSubmit={handleSubmit(submitPost)}
       >

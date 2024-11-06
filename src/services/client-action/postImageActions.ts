@@ -16,8 +16,8 @@ export const fetchSignedUrl = async (bucketName: string, folderName: string, fil
     .from(bucketName)
     .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60 * 1000);
   if (error) {
-    console.error('Signed URL 생성 오류:', error);
-    throw new Error('Signed URL 생성 실패');
+    // console.error('Signed URL 생성 오류:', error);
+    throw new Error('Signed URL 생성 실패', error);
   }
   // console.log('singindUrl 성공', data.signedUrl);
   return data.signedUrl;
