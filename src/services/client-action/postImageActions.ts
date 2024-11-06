@@ -19,8 +19,8 @@ export const fetchSignedUrl = async (bucketName: string, folderName: string, fil
     // console.error('Signed URL 생성 오류:', error);
     throw new Error('Signed URL 생성 실패', error);
   }
-  // console.log('singindUrl 성공', data.signedUrl);
-  return data.signedUrl;
+  console.log('singindUrl 성공', data.signedUrl);
+  return data?.signedUrl;
 };
 
 /**
