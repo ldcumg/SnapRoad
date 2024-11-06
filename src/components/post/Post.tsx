@@ -27,12 +27,32 @@ const PostForm = () => {
 
   // 이미지 URL을 비동기로 가져오기
   useEffect(() => {
+    // const fetchImageUrls = async () => {
+    //   if (!groupId || !userId) return;
+    //   try {
+    //     const urls = await Promise.all(
+    //       imagesData.map(async (image) => {
+    //         const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
+    //         return url;
+    //       }),
+    //     );
+    //     return setImageUrls(urls);
+    //   } catch (error) {
+    //     console.error('이미지 URL 가져오기 오류:', error);
+    //   }
+    // };
+    // fetchImageUrls();
+
     const fetchImageUrls = async () => {
       if (!groupId || !userId) return;
       try {
         const urls = await Promise.all(
           imagesData.map(async (image) => {
-            const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
+            // URL을 가져올 때 post_image_name이 빈 문자열인지 체크
+            if (!image.post_image_name) {
+              return '/path/to/default/image.png'; // 기본 이미지 반환
+            }
+            const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name);
             return url;
           }),
         );
@@ -43,9 +63,10 @@ const PostForm = () => {
     };
     fetchImageUrls();
   }, [imagesData, groupId, userId]);
-  if (!groupId || !userId) {
-    return <div>로딩 중...</div>;
-  }
+
+  // if (!groupId || !userId) {
+  //   return <div>로딩 중...</div>;
+  // }
   // 포스트 데이터를 생성하는 함수
   const createPostData = (data: FieldValues) => {
     const coverImage = imagesData.find((image) => image.is_cover);
@@ -101,6 +122,11 @@ const PostForm = () => {
   };
   // 태그 저장 함수
   const saveTags = async (hashtags: string[], postId: string) => {
+    if (!groupId) {
+      console.error('groupId가 없습니다.');
+      throw new Error('groupId가 필요합니다.');
+    }
+
     const tagData = hashtags.map((tag) => ({
       tag_title: tag,
       post_id: postId,

@@ -46,11 +46,11 @@ const PostForm = () => {
     const fetchImageUrls = async () => {
       const urls = await Promise.all(
         imagesData.map(async (image) => {
-          const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
+          const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name);
           return url;
         }),
       );
-      setImageUrls(urls);
+      return setImageUrls(urls);
     };
 
     fetchImageUrls();

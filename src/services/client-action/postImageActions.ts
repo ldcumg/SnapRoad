@@ -11,16 +11,30 @@ import browserClient from '@/utils/supabase/client';
  * @returns 생성된 Signed URL
  */
 
+// export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
+//   const { data, error } = await browserClient.storage
+//     .from(bucketName)
+//     .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60); //1일
+//   if (error) {
+//     // console.error('Signed URL 생성 오류:', error);
+//     throw new Error('Signed URL 생성 실패', error);
+//   }
+//   console.log('singindUrl 성공', data.signedUrl);
+//   return data?.signedUrl;
+// };
+
 export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
   const { data, error } = await browserClient.storage
     .from(bucketName)
-    .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60 * 1000);
-  if (error) {
-    // console.error('Signed URL 생성 오류:', error);
-    throw new Error('Signed URL 생성 실패', error);
+    .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60); // 24시간 유효
+
+  if (error || !data?.signedUrl) {
+    console.error(`Signed URL 생성 오류: ${error?.message}`);
+    return '/path/to/default/image.png'; // URL 생성 실패 시 기본 이미지 반환
   }
-  console.log('singindUrl 성공', data.signedUrl);
-  return data?.signedUrl;
+
+  console.log('Signed URL 성공:', data.signedUrl);
+  return data.signedUrl;
 };
 
 /**
@@ -63,7 +77,7 @@ export const saveImageMetadata = async (
   const { data, error } = await browserClient
     .from('images')
     .insert({
-      post_image_name: removeFileExtension(uniqueFileName),
+      post_image_name: uniqueFileName,
       post_image_url: signedUrl,
       created_at: currentDate,
       is_cover: false,

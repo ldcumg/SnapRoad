@@ -17,8 +17,9 @@ const ImageBottomSheet = () => {
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
         title={title}
-        buttonLabel='확인'
-        onButtonClick={handleFullClose}
+        confirmLabel='확인'
+        onconfirmButtonClick={handleFullClose}
+        singleButton={true}
         height='full'
       >
         <div>

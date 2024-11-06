@@ -25,9 +25,9 @@ export const BottomSheet2 = ({
     let timer: NodeJS.Timeout;
 
     if (isOpen) {
-      timer = setTimeout(() => setIsVisible(true), 100); // 열릴 때 지연 시간 추가
+      timer = setTimeout(() => setIsVisible(true), 100);
     } else {
-      timer = setTimeout(() => setIsVisible(false), 300); // 닫힐 때 300ms 지연
+      timer = setTimeout(() => setIsVisible(false), 300);
     }
 
     return () => clearTimeout(timer);
@@ -56,9 +56,9 @@ export const BottomSheet2 = ({
           style={{ visibility: isOpen ? 'visible' : 'hidden' }}
           {...props}
         >
-          <div className='w-12 h-1 bg-gray-300 mx-auto my-2 rounded'></div>
+          <div className='mx-auto my-2 rounded'></div>
 
-          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-200'>
+          <div className='flex items-center justify-between px-4 py-2'>
             <h2 className='text-lg font-semibold'>{title}</h2>
             <button
               onClick={onClose}
