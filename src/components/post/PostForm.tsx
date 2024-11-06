@@ -56,7 +56,7 @@ const PostForm = () => {
     fetchImageUrls();
   }, [imagesData, groupId, userId]);
 
-  const submitPost = (e: FieldValues) => {
+  const submitPost = (e: PostFormData) => {
     // e.preventDefault();
     if (!groupId || !userId) {
       console.error('그룹 ID와 사용자 ID가 필요합니다.');
@@ -77,8 +77,8 @@ const PostForm = () => {
     };
 
     createPostMutation.mutate(postData, {
-      onSuccess: async (data: { data: { post_id: string } }) => {
-        const postId = data.data.post_id;
+      onSuccess: async (res: { data: { post_id: string } }) => {
+        const postId = res.data.post_id;
         const uploadSessionId = imagesData[0].upload_session_id!;
 
         updateImagesPostIdMutation.mutate({ postId, uploadSessionId });
@@ -91,16 +91,23 @@ const PostForm = () => {
         tags.forEach((tag) => {
           saveTagsMutation.mutate({ tag, postId, groupId });
         });
+        const place = decodedAddressName; // 예시로 주소 이름을 사용
+        const post_id = res.data.post_id; // post_id API 응답
+        console.log('Place:', place); // place 값 확인
+        console.log('post_id:', post_id); // post_id 값 확인
 
-        router.push(`/group/${groupId}`);
+        // router.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}/${postId}`);
+        // router.push(`/grouplist`);
+        router.push(`/group/${groupId}/post/${post_id}`);
+        // post?lat=${lat}&lng=${lng}&place=${place}/
       },
     });
   };
 
   return (
-    <div className='PostForm'>
+    <div className='PostForm p-4'>
       <form
-        className='w-full border border-black flex flex-col'
+        className='w-full flex flex-col space-y-2'
         onSubmit={handleSubmit(submitPost)}
       >
         <div className='relative border rounded-lg border-gray-300 focus:ring-2 focus:border-gray-300 overflow-hidden'>
@@ -119,7 +126,6 @@ const PostForm = () => {
         </div>
         <Input
           type='text'
-          label='해시태그'
           {...register('hashtag')}
           placeholder='# 해시태그를 추가해 보세요'
         />
@@ -128,18 +134,18 @@ const PostForm = () => {
         <input
           type='date'
           className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
-          // {...register('date')}
+          {...register('date')}
         />
-        {/* {errors.date && <p className='text-danger text-sm'>{errors.date.message}</p>} */}
+        {errors.date && <p className='text-danger text-sm'>{errors.date.message}</p>}
 
         <input
           type='time'
           className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
-          // {...register('time')}
+          {...register('time')}
         />
-        {/* {errors.time && <p className='text-danger text-sm'>{errors.time.message}</p>} */}
+        {errors.time && <p className='text-danger text-sm'>{errors.time.message}</p>}
 
-        <div className='border border-t border-gray-300 p-4'>
+        <div className='border-t border-gray-300 py-4'>
           <Button
             type='submit'
             label='제출하기'
