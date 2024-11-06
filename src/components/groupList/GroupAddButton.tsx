@@ -37,7 +37,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
             />
           </Button>
           <Button
-            label='그룹 생성하기'
+            label='그룹 만들기'
             onClick={() => router.push('/makegroup')}
           >
             <img

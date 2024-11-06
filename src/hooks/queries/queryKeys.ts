@@ -8,6 +8,9 @@ const queryKeys = {
     groupList: () => ['groupList'],
     groupRandomPosts: () => ['groupRandomPosts'],
   },
+  user: {
+    userInfo: () => ['userInfo'],
+  },
 };
 
 export default queryKeys;

@@ -1,28 +1,15 @@
-
-'use client';
-
-import BottomSheet from '@/components/ui/BottomSheett';
-import { useState } from 'react';
+import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
+import ScrollSections from '@/components/landing/ScrollSections';
+import LogoUserHeader from '@/components/layout/LogoUserHeader';
 
 const Page = () => {
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-
-  const openBottomSheet = () => setIsBottomSheetOpen(true);
-  const closeBottomSheet = () => setIsBottomSheetOpen(false);
-
   return (
-    <div className='h-screen flex flex-col items-center justify-center bg-gray-800 text-white'>
-      <button
-        onClick={openBottomSheet}
-        className='px-8 py-4 text-2xl font-semibold bg-gradient-to-r from-yellow-400 to-green-500 rounded-full shadow-lg hover:shadow-2xl transition duration-300'
-      >
-        Open Bottom Sheet
-      </button>
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={closeBottomSheet}
-      />
-    </div>
+    <>
+      <ScrollReactHeader>
+        <LogoUserHeader />
+      </ScrollReactHeader>
+      <ScrollSections />
+    </>
   );
 };
 
