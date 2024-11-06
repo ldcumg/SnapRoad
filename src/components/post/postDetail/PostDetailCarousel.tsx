@@ -6,7 +6,10 @@ import { useKeenSlider, KeenSliderPlugin } from 'keen-slider/react';
 import React, { useState } from 'react';
 
 interface PostDetailCarouselProps {
-  images: (string | undefined)[];
+  images: {
+    signedImageUrl: string | undefined;
+    is_cover: boolean;
+  }[];
 }
 
 const AdaptiveHeight: KeenSliderPlugin = (slider) => {
@@ -18,6 +21,8 @@ const AdaptiveHeight: KeenSliderPlugin = (slider) => {
 };
 
 const PostDetailCarousel = ({ images }: PostDetailCarouselProps) => {
+  const sortedImages = images.sort((a, b) => (b.is_cover ? 1 : 0) - (a.is_cover ? 1 : 0));
+
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
@@ -40,12 +45,12 @@ const PostDetailCarousel = ({ images }: PostDetailCarouselProps) => {
           ref={sliderRef}
           className='keen-slider'
         >
-          {images.map((image, index) => (
+          {sortedImages.map((image, index) => (
             <div
               key={index}
               className='keen-slider__slide'
               style={{
-                backgroundImage: image ? `url(${image})` : undefined,
+                backgroundImage: image ? `url(${image.signedImageUrl})` : undefined,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 height: '300px',
@@ -54,7 +59,7 @@ const PostDetailCarousel = ({ images }: PostDetailCarouselProps) => {
           ))}
         </div>
       </div>
-      {loaded && instanceRef.current && (
+      {loaded && instanceRef.current && images.length > 1 && (
         <div className='dots'>
           {/* {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => { */}
           {Array.from({ length: instanceRef.current.track.details.slides.length }, (_, idx) => {
