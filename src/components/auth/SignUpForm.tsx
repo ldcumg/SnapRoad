@@ -1,10 +1,13 @@
 'use client';
 
+import AgreeCheck from './AgreeList';
+import AgreeList from './AgreeList';
 import { useSignUpForm } from '@/hooks/byUse/useAuthForm';
 import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
 import { signUpSchema } from '@/schemas/authSchemas';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
-import { BottomSheet } from '@/stories/BottomSheet';
+import { AgreeBottomSheet } from '@/stories/AgreeBottomSheet';
+// import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import Link from 'next/link';
@@ -22,10 +25,10 @@ const SignUpForm = () => {
   const { mutate: signUp } = useSignUp();
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
-  /** 체크박스 상태 */
+  /** 모달 밖 체크박스 상태 */
   const [isChecked, setIsChecked] = useState(false);
 
-  /** BottomSheet 내부 체크박스 상태 */
+  /** 모달 안 체크박스 상태 */
   const [isCheckedInSheet, setIsCheckedInSheet] = useState(false);
 
   /** 폼 제출 핸들러 */
@@ -33,12 +36,18 @@ const SignUpForm = () => {
     signUp(signUpSchema.parse(value));
   };
 
-  /** 완료 버튼 핸들러
-   * BottomSheet 체크박스 상태 메인 체크박스에 반영
-   */
+  /** 완료 버튼 핸들러: 모달 안 상태를 모달 밖에 반영 */
   const handleComplete = () => {
-    setIsChecked(isCheckedInSheet);
+    setIsChecked(isCheckedInSheet); // 모달 안 상태를 모달 밖 상태에 반영
     handleFullClose();
+  };
+
+  const handleCheckboxToggle = () => {
+    setIsCheckedInSheet((prev) => {
+      const newState = !prev;
+      setIsChecked(newState); // 모달 밖 상태도 함께 업데이트
+      return newState;
+    });
   };
 
   return (
@@ -81,19 +90,19 @@ const SignUpForm = () => {
           />
         </div>
 
-        {/* TODO 약관 모달? */}
-        <div>
-          <input
-            type='checkbox'
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
-          />
-          <span
-            onClick={handleFullOpen}
-            className='cursor-pointer'
-          >
-            개인정보 수집·이용 약관 동의
-          </span>
+        {/* 모달 밖 체크박스 UI */}
+        <div
+          className='flex justify-between'
+          onClick={handleFullOpen}
+        >
+          <div className='flex items-center gap-4'>
+            <img
+              src={isChecked ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='w-[24px] h-[24px]'
+            />
+            <span className='cursor-pointer text-black text-caption_bold_lg'>개인정보 수집·이용 약관 동의</span>
+          </div>
+          <img src='/svgs/Arrow_Forward_LG.svg' />
         </div>
 
         {/* TODO 버튼 활성화 */}
@@ -108,7 +117,8 @@ const SignUpForm = () => {
         <Link href={'/login'}>로그인</Link>
       </div>
 
-      <BottomSheet
+      {/* 모달 UI */}
+      <AgreeBottomSheet
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
         title='개인정보 수집·이용 약관 동의'
@@ -117,14 +127,15 @@ const SignUpForm = () => {
         height='full'
       >
         <div className='flex flex-col gap-4'>
-          <p>여기에 개인정보 수집·이용 약관 내용을 입력하세요.</p>
-          <input
-            type='checkbox'
-            checked={isCheckedInSheet}
-            onChange={(e) => setIsCheckedInSheet(e.target.checked)}
-          />
-          <span>개인정보 수집·이용 약관에 동의합니다.</span>
-          <div className='flex gap-2'>
+          <div className='flex gap-3'>
+            <img
+              src={isCheckedInSheet ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='w-[24px] h-[24px]'
+              onClick={handleCheckboxToggle}
+            />
+            <AgreeList />
+          </div>
+          <div className='flex px-4 justify-center gap-2'>
             <Button
               label='취소'
               onClick={handleFullClose}
@@ -136,7 +147,7 @@ const SignUpForm = () => {
             />
           </div>
         </div>
-      </BottomSheet>
+      </AgreeBottomSheet>
     </div>
   );
 };

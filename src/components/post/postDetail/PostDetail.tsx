@@ -45,7 +45,7 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail, pos
       {/* <PostImages images={signedImageUrls} /> */}
       <PostDetailCarousel images={signedImageUrls} />
       {/* 게시글 내용 */}
-      <div className='py-4 flex flex-col gap-4'>
+      <div className='py-4 flex flex-col gap-4  px-4'>
         <div className='flex gap-4 items-center'>
           <div className='w-[40px] h-[40px] overflow-hidden rounded-full'>
             <img
@@ -60,7 +60,7 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail, pos
           <p className='text-black text-body_md'>{postData.post_desc}</p>
         </div>
         {/* 태그 영역 */}
-        <div className='flex gap-1'>
+        <div className='flex gap-1  px-4'>
           {postData.tags.map((tag, id) => {
             return (
               <span

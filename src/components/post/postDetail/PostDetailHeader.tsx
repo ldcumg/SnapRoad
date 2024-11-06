@@ -19,7 +19,7 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHe
   return (
     <>
       {/* 옵션 메뉴를 포함한 상단 */}
-      <div className='flex justify-between py-4'>
+      <div className='flex justify-between py-4 px-4'>
         {/* 싱단 정보 */}
         <div className='flex items-center gap-2'>
           {/* 마커 아이콘과 위치명 */}
