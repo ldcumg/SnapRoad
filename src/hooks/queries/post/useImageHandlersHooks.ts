@@ -2,7 +2,7 @@ import {
   useUploadBusinessImage,
   useDeleteBusinessImage,
   useCoverBusinessImage,
-} from '@/hooks/queries/byUse/useBusinessImageMutation';
+} from '@/hooks/queries/post/useBusinessImageMutation';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { toast } from 'garlic-toast';
 
