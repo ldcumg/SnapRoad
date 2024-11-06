@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const GroupListPage = async () => {
   return (
-    <div className='flex flex-col items-center mt-[24px] mx-auto max-w-5xl'>
+    <div className='flex flex-col items-center mt-14 pt-4 mx-auto max-w-5xl'>
       <RandomImage />
       <GroupList />
     </div>

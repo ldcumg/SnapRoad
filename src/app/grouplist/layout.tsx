@@ -1,5 +1,6 @@
+import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import TopButton from '@/components/_common/TopButton';
-import GroupListHeader from '@/components/groupList/GroupListHeader';
+import LogoUserHeader from '@/components/layout/LogoUserHeader';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,14 +11,16 @@ export const metadata: Metadata = {
 
 type Props = Readonly<{ children: React.ReactNode }>;
 
-const GroupDetailLayout = ({ children }: Props) => {
+const GroupListLayout = ({ children }: Props) => {
   return (
     <>
       <TopButton />
-      <GroupListHeader />
+      <ScrollReactHeader>
+        <LogoUserHeader />
+      </ScrollReactHeader>
       {children}
     </>
   );
 };
 
-export default GroupDetailLayout;
+export default GroupListLayout;

@@ -1,5 +1,5 @@
 import URLS from '@/constants/urls';
-import { signUp, login } from '@/services/server-action/authActions';
+import { signUp, login, signOut } from '@/services/server-action/authActions';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -25,7 +25,21 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      alert(data.message);
+      router.push(URLS.home);
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+};
+
+/** 로그아웃 */
+export const useSignOut = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
       router.push(URLS.home);
     },
     onError: (error) => {
