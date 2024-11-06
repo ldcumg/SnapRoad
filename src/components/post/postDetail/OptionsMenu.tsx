@@ -1,8 +1,10 @@
 'use client';
 
 import { useDeletePost } from '@/hooks/queries/byUse/usePostMutation';
+import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
 
 /** 상단 옵션 정보 */
 const OptionsMenu = ({ postId }: { postId: string }) => {
@@ -29,6 +31,15 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
     };
   }, []);
 
+  //포스트 경로 잇기
+
+  const router = useRouter();
+  const { groupId, lat, lng, addressName: place } = usePostDataStore();
+
+  const handlePosts = () => {
+    router.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
+  };
+
   return (
     <>
       <div
@@ -44,7 +55,7 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
 
         {isVisible && (
           <div className='flex flex-col absolute bg-white z-10 top-5 right-1 rounded-md'>
-            <button className='text-gray-900 text-body_md p-2.5 whitespace-nowrap'>게시물 수정</button>
+            <button className='text-gray-900 text-body_md p-2.5 whitespace-nowrap'             onClick={handlePosts}>게시물 수정</button>
             <button
               onClick={() => deletePost(postId)}
               className='text-danger text-body_md p-2.5'

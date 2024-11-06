@@ -1,5 +1,5 @@
 import OptionsMenu from './OptionsMenu';
-import DropdownMenu from '@/components/ui/dropdownMenu';
+// import DropdownMenu from '@/components/ui/dropdownMenu';
 import React from 'react';
 
 interface PostDetailHeaderProps {
@@ -17,7 +17,6 @@ interface PostDetailHeaderProps {
 }
 
 const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHeaderProps) => {
-
   return (
     <>
       {/* 옵션 메뉴를 포함한 상단 */}
@@ -35,9 +34,9 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHe
             <span className='text-gray-900 text-label_sm'>{postData.post_address}</span>
           </div>
           <span className='text-gray-500 text-caption_light_lg'>{coverImageDate}</span>
-          <div className='absolute top-0 right-0'>
+          {/* <div className='absolute top-0 right-0'>
             <DropdownMenu />
-          </div>
+          </div> */}
         </div>
         {userDetail.profiles.user_id === postData.user_id ? <OptionsMenu postId={postData.post_id} /> : null}
       </div>
