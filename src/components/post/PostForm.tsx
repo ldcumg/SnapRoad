@@ -1,160 +1,159 @@
+'use client';
+
 import { usePostForm } from '@/hooks/byUse/usePostForm';
-import { PostFormData, postSchema } from '@/schemas/postSchema';
+import {
+  useCreatePostMutation,
+  useSaveTagsMutation,
+  useUpdateImagesPostIdMutation,
+} from '@/hooks/queries/post/usePostFormMutation';
+import { postSchema, PostFormData } from '@/schemas/postSchema';
 import { fetchSignedUrl } from '@/services/client-action/postImageActions';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
-import browserClient from '@/utils/supabase/client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 
 const PostForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = usePostForm();
+  } = useForm<PostFormData>({
+    resolver: zodResolver(postSchema),
+  });
 
   const { userId, groupId, lat, lng, addressName } = usePostDataStore();
   const { images: imagesData } = useImageUploadStore();
   const router = useRouter();
   const decodedAddressName = addressName ? decodeURIComponent(addressName) : undefined;
+  const [description, setDescription] = useState('');
+  const [hashtag, setHashtag] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  const createPostMutation = useCreatePostMutation();
+  const updateImagesPostIdMutation = useUpdateImagesPostIdMutation();
+  const saveTagsMutation = useSaveTagsMutation();
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
 
   useEffect(() => {
     if (!groupId || !userId) return;
-
     const fetchImageUrls = async () => {
       const urls = await Promise.all(
         imagesData.map(async (image) => {
-          const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
+          const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name);
           return url;
         }),
       );
-      setImageUrls(urls);
+      return setImageUrls(urls);
     };
 
     fetchImageUrls();
   }, [imagesData, groupId, userId]);
 
-  if (!groupId || !userId) {
-    return <div>로딩 중...</div>;
-  }
-
-  const onHandlePostSubmit = async (data: FieldValues /*PostFormData*/) => {
-    // const parsedData: PostFormData = postSchema.parse(data);
-
-    const coverImage = imagesData.find((image) => image.is_cover);
-    const postLat = lat || null;
-    const postLng = lng || null;
-    const imageArray = imagesData.map((image) => image.post_image_name || '');
+  const submitPost = (e: PostFormData) => {
+    // e.preventDefault();
+    if (!groupId || !userId) {
+      console.error('그룹 ID와 사용자 ID가 필요합니다.');
+      return;
+    }
 
     const postData = {
-      user_id: userId,
-      group_id: groupId,
-      post_desc: data.description,
-      post_date: data.date,
-      post_time: data.time,
-      post_lat: postLat,
-      post_lng: postLng,
-      post_thumbnail_image: coverImage?.post_image_name!,
-      image_array: imageArray,
-      post_address: decodedAddressName!,
+      userId,
+      groupId,
+      postDesc: description,
+      postDate: date,
+      postTime: time,
+      postLat: lat || null,
+      postLng: lng || null,
+      postThumbnailImage: imagesData.find((image) => image.is_cover)?.post_image_name || '',
+      imageArray: imagesData.map((image) => image.post_image_name || ''),
+      postAddress: decodedAddressName!,
     };
 
-    try {
-      const { data: post, error: postError } = await browserClient
-        .from('posts')
-        .insert(postData)
-        .select('post_id')
-        .single();
+    createPostMutation.mutate(postData, {
+      onSuccess: async (res: { data: { post_id: string } }) => {
+        const postId = res.data.post_id;
+        const uploadSessionId = imagesData[0].upload_session_id!;
 
-      if (postError || !post) {
-        console.error('포스트 제출에 실패했습니다:', postError?.message);
-        return;
-      }
+        updateImagesPostIdMutation.mutate({ postId, uploadSessionId });
 
-      console.log('포스트가 성공적으로 제출되었습니다. post_id:', post);
+        const tags = hashtag
+          .split('#')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag);
 
-      const postId = post.post_id;
-      const { error: imageError } = await browserClient
-        .from('images')
-        .update({ post_id: postId })
-        .eq('upload_session_id', imagesData[0].upload_session_id!);
+        tags.forEach((tag) => {
+          saveTagsMutation.mutate({ tag, postId, groupId });
+        });
+        const place = decodedAddressName; // 예시로 주소 이름을 사용
+        const post_id = res.data.post_id; // post_id API 응답
+        console.log('Place:', place); // place 값 확인
+        console.log('post_id:', post_id); // post_id 값 확인
 
-      if (imageError) {
-        console.error('이미지에 post_id 업데이트에 실패했습니다:', imageError.message);
-      }
-
-      const tagData = data.hashtag.map((tag: any) => ({
-        tag_title: tag,
-        post_id: postId,
-        group_id: groupId,
-      }));
-
-      if (tagData.length > 0) {
-        const { error: tagError } = await browserClient.from('tags').insert(tagData);
-        if (tagError) {
-          console.error('태그 저장에 실패했습니다:', tagError.message);
-        }
-      }
-
-      router.push(`/group/${groupId}`);
-    } catch (error) {
-      console.error('포스트 제출 중 오류 발생:', error);
-    }
+        // router.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}/${postId}`);
+        // router.push(`/grouplist`);
+        router.push(`/group/${groupId}/post/${post_id}`);
+        // post?lat=${lat}&lng=${lng}&place=${place}/
+      },
+    });
   };
 
   return (
-    <div className='PostForm'>
+    <div className='PostForm p-4'>
       <form
-        className='w-full border border-black flex flex-col'
-        onSubmit={handleSubmit(onHandlePostSubmit)}
+        className='w-full flex flex-col space-y-2'
+        onSubmit={handleSubmit(submitPost)}
       >
-        <label htmlFor='description'>대표</label>
-        <textarea
-          id='글쓰기'
-          {...register('description')}
-          maxLength={1000}
-          placeholder='여행을 떠나고 싶은 마음으로.'
-          className='description-textarea'
-        />
-        {errors.description && <p className='text-danger text-sm'>{String(errors.description.message)}</p>}
-
+        <div className='relative border rounded-lg border-gray-300 focus:ring-2 focus:border-gray-300 overflow-hidden'>
+          <textarea
+            id='description'
+            {...register('description')}
+            maxLength={1000}
+            placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
+            className='w-full pt-3 pb-12 px-3 h-36 text-base bg-white text-gray-900'
+            onChange={handleChange}
+          />
+          <div className='w-full text-right text-gray-500 text-sm absolute pb-1 pr-1 left-0 right-0 bottom-0 bg-white'>
+            {description.length}/1000
+          </div>
+          {errors.description && <p className='text-danger text-sm'>{errors.description.message}</p>}
+        </div>
         <Input
-          label={'해시태그'}
-          placeholder={'해시태그는 다섯 개까지 작성 가능 합니다.'}
-          errorText={errors.hashtag ? String(errors.hashtag.message) : undefined}
+          type='text'
           {...register('hashtag')}
+          placeholder='# 해시태그를 추가해 보세요'
         />
-        {errors.hashtag && <p className='text-danger text-sm'>{String(errors.hashtag.message)}</p>}
+        {errors.hashtag && <p className='text-danger text-sm'>{errors.hashtag.message}</p>}
 
-        <Input
+        <input
           type='date'
-          label={'날짜'}
-          errorText={errors.date ? String(errors.date.message) : undefined}
+          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
           {...register('date')}
         />
-        {errors.date && <p className='text-danger text-sm'>{String(errors.date.message)}</p>}
+        {errors.date && <p className='text-danger text-sm'>{errors.date.message}</p>}
 
-        <Input
-          type={'time'}
-          label={'시간'}
-          errorText={errors.time ? String(errors.time.message) : undefined}
+        <input
+          type='time'
+          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
           {...register('time')}
         />
-        {errors.time && <p className='text-danger text-sm'>{String(errors.time.message)}</p>}
+        {errors.time && <p className='text-danger text-sm'>{errors.time.message}</p>}
 
-        <Button
-          type='submit'
-          label='제출하기'
-          variant='primary'
-        />
+        <div className='border-t border-gray-300 py-4'>
+          <Button
+            type='submit'
+            label='제출하기'
+            className='w-full'
+          />
+        </div>
       </form>
     </div>
   );
 };
-
 export default PostForm;

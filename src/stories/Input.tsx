@@ -3,7 +3,7 @@ import React, { useState, forwardRef } from 'react';
 
 export interface InputProps {
   type?: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   disabled?: boolean;
   size?: 'medium' | 'large';

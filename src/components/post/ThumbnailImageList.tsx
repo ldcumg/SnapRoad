@@ -12,7 +12,7 @@ const ThumbnailImageList = () => {
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
 
   return (
-    <div className='w-full flex justify-start gap-4 my-12 overflow-x-auto overflow-y-hidden'>
+    <div className='w-full flex justify-start gap-4 pt-4 overflow-x-auto overflow-y-hidden'>
       {images.length < 10 && (
         <form
           onSubmit={(e) => {
@@ -20,7 +20,7 @@ const ThumbnailImageList = () => {
             handleImageUpload(null);
           }}
         >
-          <label className='flex items-center justify-center w-24 h-24 border cursor-pointer'>
+          <label className='flex items-center justify-center w-28 h-28 border bg-gray-50 border-gray-100 cursor-pointer'>
             <input
               type='file'
               accept='image/*'
@@ -38,7 +38,7 @@ const ThumbnailImageList = () => {
           image.id !== undefined && (
             <div
               key={image.id}
-              className='relative w-24 h-24 border overflow-hidden flex-shrink-0'
+              className='relative w-28 h-28 border overflow-hidden flex-shrink-0'
             >
               <img
                 src={imageUrls[index]}
@@ -47,9 +47,9 @@ const ThumbnailImageList = () => {
               />
               <button
                 onClick={() => handleDelete(image.id)}
-                className='absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full'
+                className='absolute top-0 right-0 overflow-hidden rounded-full'
               >
-                ×
+                <img src='/svgs/Close_Circle.svg' />
               </button>
             </div>
           ),

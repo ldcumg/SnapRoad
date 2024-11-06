@@ -7,15 +7,19 @@ import { BottomSheet } from '@/stories/BottomSheet';
 const ImageBottomSheet = () => {
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const { images } = useImageUploadStore();
+  const title = `${images.length} / 10`;
 
   return (
-    <article className='p-4'>
+    <article
+      className={`p-6 flex items-start content-center overflow-x-auto ${images.length > 0 ? 'w-auto' : 'w-full'} `}
+    >
       <BottomSheet
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
-        title='전체 높이 바텀시트'
-        buttonLabel='확인'
-        onButtonClick={() => alert('확인 버튼 클릭됨')}
+        title={title}
+        confirmLabel='확인'
+        onconfirmButtonClick={handleFullClose}
+        singleButton={true}
         height='full'
       >
         <div>
@@ -23,20 +27,14 @@ const ImageBottomSheet = () => {
         </div>
       </BottomSheet>
 
-      <div className='flex item-start content-center gap-4 overflow-x-auto'>
+      <div className='flex items-start content-center'>
+        <DraggableImageList />
         <button
           onClick={handleFullOpen}
-          className='flex items-center flex-shrink-0 justify-center max-w-[200px] min-w-[200px] h-[200px] border cursor-pointer'
+          className={`flex items-center flex-shrink-0 justify-center max-w-[240px] min-w-[240px] h-[240px] border cursor-pointer bg-gray-50 border-gray-100 ${images.length > 0 ? 'ml-4' : ''}`}
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>
-
-        {images.length === 0 && (
-          <div className='w-[200px] h-[200px] flex flex-shrink-0 items-center justify-center border border-gray-300 text-gray-400'>
-            <span>이미지를 추가하세요</span>
-          </div>
-        )}
-        <DraggableImageList />
       </div>
     </article>
   );

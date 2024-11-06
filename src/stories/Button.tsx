@@ -6,7 +6,7 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   size?: 'small' | 'medium' | 'large' | 'full';
   disabled?: boolean;
   loading?: boolean;
-  label: string;
+  label?: string;
   children?: React.ReactNode;
   className?: string;
   type?: 'button' | 'submit' | 'reset';
