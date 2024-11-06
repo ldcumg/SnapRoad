@@ -1,3 +1,4 @@
+import MyPageBack from '@/components/myPage/MyPageBack';
 import { cn } from '@/lib/utils';
 import { ReactNode, HTMLAttributes, useEffect, useState } from 'react';
 
@@ -28,10 +29,15 @@ export const AgreeBottomSheet = ({
   useEffect(() => {
     if (isOpen) {
       setRendered(true);
+      document.body.style.overflow = 'hidden';
     } else {
+      document.body.style.overflow = 'auto';
       const timer = setTimeout(() => setRendered(false), 500);
       return () => clearTimeout(timer);
     }
+    return () => {
+      document.body.style.overflow = 'auto'; // 컴포넌트 언마운트 시에도 외부 스크롤 해제??
+    };
   }, [isOpen]);
 
   const baseStyle =
@@ -59,15 +65,14 @@ export const AgreeBottomSheet = ({
         >
           <div className='w-12 h-1 bg-gray-300 mx-auto my-2'></div>
 
-          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-300'>
+          {/* <div className='flex items-center justify-between px-4 py-2 border-b border-gray-300'>
             {onBack && (
-              <button
-                onClick={onBack}
-                aria-label='Back'
-                className='text-gray-700'
-              >
-                ← 뒤로가기
-              </button>
+              <img
+                src='/svgs/Arrow_Back_LG.svg'
+                alt='뒤로가기'
+                className='absolute left-0 cursor-pointer'
+                onClick={onClose}
+              />
             )}
 
             <h2 className='text-center font-semibold flex-1'>{title}</h2>
@@ -79,9 +84,19 @@ export const AgreeBottomSheet = ({
             >
               × 닫기
             </button>
+          </div> */}
+
+          <div className='flex items-center py-4 relative'>
+            <img
+              src='/svgs/Arrow_Back_LG.svg'
+              alt='뒤로가기'
+              className='absolute left-0 cursor-pointer'
+              onClick={onClose}
+            />
+            <span className='text-gray-900 text-label_md mx-auto'>개인정보 수집·이용 약관 동의</span>
           </div>
 
-          <div className='p-4 text-gray-700'>{children}</div>
+          <div className='p-4 text-gray-700 overflow-y-auto max-h-[calc(100vh-200px)]'>{children}</div>
         </div>
       )}
     </>
