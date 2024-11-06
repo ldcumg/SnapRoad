@@ -41,7 +41,7 @@ export const getPostsCoverImagesPerGroup = async ({
     .is('deleted_at', null);
 
   if (status !== 200 && error) throw new Error(error.message);
-
+  
   return data as PostCoverImage[];
 };
 

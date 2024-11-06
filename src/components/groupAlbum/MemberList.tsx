@@ -34,10 +34,13 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
             return a.is_owner ? -1 : 1;
           })
           .map(({ is_owner, profiles: { user_image_url, user_nickname, user_email } }) => (
-            <li className='flex flex-row items-center gap-2 rounded-full'>
+            <li
+              className='flex flex-row items-center gap-2 rounded-full'
+              key={user_email}
+            >
               <img
                 className='h-10 w-10'
-                src={user_image_url}
+                src={user_image_url ?? '/svgs/Profile.svg'}
                 alt='프로필 이미지'
               />
               <div className='flex gap-2'>
