@@ -138,6 +138,66 @@
 <br/>
 
 ### 이원빈
+#### 문제상황
+- 클러스터 마커는 본래 합쳐진 마커들의 수를 보여주는 기능이지만 합쳐진 마커들 중 하나의 게시물 이미지를 마커로 띄워줘야 하는 상황
+-  카카오맵 api에서 클러스터 마커 스타일을 지원하는 방법
+   1. 클러스터 마커에 적용할 스타일들의 객체로 이루어진 배열을 설정
+   2. 클러스터 시 마커의 사이즈가 10개 이하면 1번에서 설정한 스타일 배열의 0번째 스타일 적용 100개 이하면 1번째 스타일 적용하는 형식
+      ```ts
+      // 마커 스타일 설정 방법
+
+      var styles = [{
+          width : '53px', height : '52px',
+          background: 'url(cluster_small.png) no-repeat',
+          color: '#fff',
+          textAlign: 'center',
+          lineHeight: '54px'
+        }, {
+          width : '73px', height : '72px',
+          background: 'url(cluster_large.png) no-repeat',
+          color: '#fff',
+          textAlign: 'center',
+          lineHeight: '74px'
+      }];
+      ```
+      ```ts
+      // 마커 스타일 지정 방법
+
+      clusterer.setStyles(styles);
+      // 클러스터 크기를 구분하는 값을 배열로 지정한다.
+      // 아래와 같이 구분값을 2개 지정하면 클러스터는 
+      // 50보다 작은경우, 50보다 크거나 같고 100보다 작은경우, 100보다 크거나 같은경우, 이렇게 3개의 크기로 구분된다.
+      clusterer.setCalculator([ 50, 100 ]);
+
+      // 또는
+
+      // 클러스터 크기를 구분하는 값을 반환하는 함수를 지정할 수 있다.
+      // 함수 인자로는 클러스터가 포함하는 마커의 개수가 넘어온다.
+      // 반환값은 클러스터 사이즈 별 스타일 혹은 문구 배열의 인덱스 값이어야 한다.
+      clusterer.setCalculator(function( size ) {
+          var index;
+
+          // 클러스터에 포함된 마커의 개수가 50개 미만이면 리턴할 index값을 0으로 설정한다. 
+          if ( size < 50 ) {
+              index = 0; 
+          } else if ( size < 100 ) {
+              index = 1; 
+          } else {
+              index = 2; 
+          }
+
+          return index;
+      });
+      ```
+      >[카카오맵 api docs](https://apis.map.kakao.com/web/sample/chickenClusterer/)
+#### 문제 분석
+- 클러스터 마커의 스타일을 결정하는 `calculator`가 마커의 사이즈만 매개변수로 받아와서 적정 스타일을 각 클러스터 마커들에게 지정할 수 없는 문제
+#### 해결 방안
+1. 클러스터 마커 스타일 배열을 `state`로 관리하기
+2. 클러스터 마커가 생기는 이벤트 발생 시 클러스터 마커의 중심 좌표와 구성 마커의 이미지를 찾아서 클러스터 마커 스타일 배열에 함께 저장하기
+3. 카카오맵 api에서 제공하는 `getBounds()`로 보여지는 맵의 영역 범위를 구하고 `kakao.maps.LatLngBounds()`의 인자로 넣어 만든 `viewport`를 만들고 이 `viewport`에 클러스터 마커가 들어오면 마커 스타일 배열 `state`에 클러스터 마커의 중심 좌표가 들어오면 그 스타일의 인덱스를 구해서 그 인덱스를 `calculator`에 반환하여 클러스터 마커에 해당 클러스터 마커를 구성 마커의 이미지를 적용
+#### 트러블 슈팅 분석
+- 카카오맵 api에서 지원하지 않는 기능을 다른 api들을 조합하여 구현 완료
 <br/>
 
 ### 전상국
@@ -208,6 +268,45 @@
 <br/>
 
 ### 정민지
+#### 문제상황
+- 소셜 로그인 시 각 기관에서 제공하는 사용자의 이름을 public.profiles 에 저장하기 위해 트리거를 설정해주어야하는데 각 기관마다 사용자 이름을 제공하는 필드명이 달랐다.
+
+#### 문제 분석
+- 각 기관에서 어떤 응답으로 사용자의 정보를 주는지 분석
+- 분석 결과 full_name, user_name 등 다양했음
+
+#### 해결 방안
+```sql
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = ''
+as $$
+begin
+  insert into public.profiles(
+    user_id, 
+    user_email, 
+    user_nickname
+  )values (
+    new.id, 
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'user_name',new.raw_user_meta_data->>'user_nickname')
+
+  );
+
+  return new;
+end;
+$$;
+
+-- trigger the function every time a user is created
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row 
+  execute function public.handle_new_user();
+```
+
+- 트리거 함수 만들 때 수파베이스에서 제공하는 coalesce 를 사용하여 모든 경우에 대비하도록 함
+
 <br/>
 
 ## 개선 목표
@@ -218,9 +317,9 @@
 3. 이미지 올리는데 너무 오래걸리는데 이건 어떻게 처리해야하는지
 
 ### 이원빈
-1. 지도 첫 화면에서 게시물들이 다 보이게 지도 위치 재조정
-2. 지도 마커 prefetch
-3. 그룹 앨범 토글버튼 hover시 prefetch
+1. 지도 첫 화면에서 게시물들이 다 보이게 지도 위치 재조정하기
+2. 지도에 마커로 보여줄 게시물들의 정보를 서버 상태에서 prefetch하기
+3. 그룹 앨범 토글버튼 hover시 prefetch하기
 
 ### 전상국
 1. 이미지 crop(그룹이나 게시글에서 이미지 업로드시 crop 라이브러리 사용하여 이미지 정사각형으로 잘라 업로드하도록 변경)
