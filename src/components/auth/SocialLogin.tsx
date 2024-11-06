@@ -6,33 +6,27 @@ import React from 'react';
 const SocialLogin = () => {
   return (
     <div className='flex justify-center gap-6'>
-      <button
-        type='button'
+      <img
+        src='/svgs/Kakao_login.svg'
+        alt='카카오 로그인'
         onClick={() => signInWithOAuth('kakao')}
-      >
-        <img
-          src='/svgs/Kakao_login.svg'
-          alt='카카오 로그인'
-        />
-      </button>
-      <button
+        width={42}
+        height={42}
+      />
+      <img
+        src='/svgs/Google_login.svg'
+        alt='구글 로그인'
         onClick={() => signInWithOAuth('google')}
-        type='button'
-      >
-        <img
-          src='/svgs/Google_login.svg'
-          alt='구글 로그인'
-        />
-      </button>
-      <button
+        width={42}
+        height={42}
+      />
+      <img
+        src='/svgs/Github_login.svg'
+        alt='깃허브 로그인'
         onClick={() => signInWithOAuth('github')}
-        type='button'
-      >
-        <img
-          src='/svgs/Github_login.svg'
-          alt='깃허브 로그인'
-        />
-      </button>
+        width={42}
+        height={42}
+      />
     </div>
   );
 };
