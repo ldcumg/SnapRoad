@@ -406,18 +406,20 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             </ol>
           ) : (
             // </BottomSheet>
-            <Button
-              type='button'
-              onClick={handleAddPostRoute}
-              variant='primary'
-              size='full'
-              className='fixed bottom-4 z-50 mx-4 h-[56px] px-6 py-4'
-            >
-              <span className='flex gap-2'>
-                <img src='/svgs/Plus_LG.svg' />
-                <p className='text-title_lg'>게시물 추가하기</p>
-              </span>
-            </Button>
+            <div className='fixed bottom-0 z-50 w-full bg-white px-[16px] pt-[12px] pb-[16px]'>
+              <Button
+                type='button'
+                onClick={handleAddPostRoute}
+                variant='primary'
+                size='full'
+                className='bottom-4 z-50 h-[56px] px-6'
+              >
+                <span className='flex gap-2'>
+                  <img src='/svgs/Plus_LG.svg' />
+                  <p className='text-title_lg'>게시물 추가하기</p>
+                </span>
+              </Button>
+            </div>
           )}
         </div>
       </Map>
