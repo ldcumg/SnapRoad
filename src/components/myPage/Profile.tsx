@@ -2,6 +2,7 @@
 
 import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { Button } from '@/stories/Button';
+import Spinner from '@/stories/Spinner';
 import Link from 'next/link';
 import React from 'react';
 
@@ -9,7 +10,12 @@ const Profile = ({ userId }: { userId: string }) => {
   const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfilesQuery(userId);
 
   if (isProfileError) return <>오류...</>;
-  if (isProfileLoading) return <>로딩중...</>;
+  if (isProfileLoading)
+    return (
+      <div className='w-full h-full absolute z-[3000]  flex justify-center items-center'>
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className='flex flex-col items-center mt-12 mb-16'>
