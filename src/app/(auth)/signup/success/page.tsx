@@ -15,21 +15,29 @@ const SignUpSuccessPage = () => {
         <img src='/svgs/Success.svg' />
       </div>
       <p className='text-gray-900 text-head_sm'>회원가입이 완료되었어요!</p>
-      <div className='flex gap-4 p-5'>
-        <Link href={'/'}>
+      <div className='flex gap-4 py-5 w-full'>
+        <Link
+          href={'/'}
+          className='w-full'
+        >
           <Button
             type='button'
             label='홈으로'
             variant='outlineGray'
             size='medium'
+            className='w-full'
           />
         </Link>
-        <Link href={'/login'}>
+        <Link
+          href={'/login'}
+          className='w-full '
+        >
           <Button
             type='button'
             label='로그인'
             variant='primary'
             size='medium'
+            className='w-full'
           />
         </Link>
       </div>
