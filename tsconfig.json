@@ -34,7 +34,8 @@
     "src/hooks/queries/byUse/useImageQuery.bak",
     "src/stories/Input.bak",
     "src/stories/Input.stories.bak",
-    "src/stories/Modal.stories.bak"
+    "src/stories/Modal.stories.bak",
+    "src/components/post/_PostForm copy.baK"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }

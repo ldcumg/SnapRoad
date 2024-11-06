@@ -269,14 +269,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </button>
         </div>
       </form>
-      {searchResult.hasMore && (
+      {/* {searchResult.hasMore && (
         <button
           type='button'
           onClick={searchLocation}
         >
           더보기
         </button>
-      )}
+      )} */}
       <button
         className='fixed right-4 top-[136px] z-50'
         onClick={() => {
@@ -293,16 +293,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[48%] -translate-y-[18%]'
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[48.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
         />
       )}
       <Map
         className='h-screen w-full'
-        center={
-          // postsCoverImages ? { lat: 0, lng: 0 } :
-          { lat: 35.95, lng: 128.25 }
-        }
+        center={{ lat: 35.95, lng: 128.25 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
@@ -378,35 +375,54 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           <img src='/svgs/Geolocation_btn.svg' />
         </button>
         <div>
-          {/* <BottomSheet> */}
           {!!spotInfo && (
-            <>
-              <h5>{spotInfo.placeName || spotInfo.address}</h5>
-              <p>{spotInfo.placeName && spotInfo.address}</p>
-            </>
+            <BottomSheet
+              height='custom'
+              customHeight=''
+              rounded={true}
+              isOpen={true}
+              showHeader={false}
+              hasButton={false}
+              customClassName='pt-9'
+              backdrop={false}
+            >
+              <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
+              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+            </BottomSheet>
           )}
           {!!postsPreView.length ? (
-            <ol className='flex flex-row gap-3'>
-              {postsPreView.map((post) => (
-                <li
-                  className='h-[132px] w-[132px]'
-                  key={post.postId}
-                >
-                  <Link
-                    className='h-full w-full'
-                    href={`/group/${groupId}/post/${post.postId}`}
+            <BottomSheet
+              height='custom'
+              customHeight='40%'
+              rounded={true}
+              isOpen={true}
+              showHeader={false}
+              hasButton={false}
+              backdrop={false}
+            >
+              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+              <ol className='flex flex-row gap-3 overflow-x-auto'>
+                {postsPreView.map((post) => (
+                  <li
+                    className='h-[132px] w-[132px]'
+                    key={post.postId}
                   >
-                    <img
-                      className='mx-auto my-auto h-full w-full rounded-[8px] object-cover'
-                      src={post.postImageUrl}
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ol>
+                    <Link
+                      className='block h-full w-full'
+                      href={`/group/${groupId}/post/${post.postId}`}
+                    >
+                      <img
+                        className='h-full w-full rounded-[8px] object-cover'
+                        src={post.postImageUrl}
+                        alt={`Post ${post.postId}`}
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </BottomSheet>
           ) : (
-            // </BottomSheet>
-            <div className='fixed bottom-0 z-50 w-full bg-white px-[16px] pb-[16px] pt-[12px]'>
+            <div className='shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full bg-white px-[16px] pb-[16px] pt-[12px]'>
               <Button
                 type='button'
                 onClick={handleAddPostRoute}

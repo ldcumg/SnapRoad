@@ -1,3 +1,4 @@
+import queryKeys from '../queryKeys';
 import { updateProfile } from '@/services/server-action/profilesAction';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -10,6 +11,7 @@ export const useUpdateProfile = () => {
       updateProfile(userId, imageName, newNickname),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.userInfo() });
       // alert(data.message);
     },
     onError: (error) => {

@@ -1,4 +1,3 @@
-import Header from '@/components/layout/Header';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
@@ -20,7 +19,6 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          {/* <Header /> */}
           <main className='w-full h-full'>{children}</main>
         </QueryProvider>
       </body>

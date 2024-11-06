@@ -10,7 +10,7 @@ interface BottomSheetProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export const BottomSheet = ({
+export const BottomSheet2 = ({
   isOpen,
   onClose,
   title,
@@ -19,15 +19,18 @@ export const BottomSheet = ({
   children,
   ...props
 }: BottomSheetProps) => {
-  const [isVisible, setIsVisible] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+
     if (isOpen) {
-      setIsVisible(true);
+      timer = setTimeout(() => setIsVisible(true), 100);
     } else {
-      const timer = setTimeout(() => setIsVisible(false), 300); // 닫힐 때 300ms 지연
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => setIsVisible(false), 300);
     }
+
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
   return (
@@ -53,9 +56,9 @@ export const BottomSheet = ({
           style={{ visibility: isOpen ? 'visible' : 'hidden' }}
           {...props}
         >
-          <div className='w-12 h-1 bg-gray-300 mx-auto my-2 rounded'></div>
+          <div className='mx-auto my-2 rounded'></div>
 
-          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-200'>
+          <div className='flex items-center justify-between px-4 py-2'>
             <h2 className='text-lg font-semibold'>{title}</h2>
             <button
               onClick={onClose}
