@@ -7,18 +7,19 @@ type Props = {
   groupInfo: GroupInfo;
 };
 
-const MemberList = ({ groupInfo: { user_group } }: Props) => {
+const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => {
   return (
     <>
       <div className='flex flex-row justify-between p-4'>
         <h1 className='text-title_xl'>그룹 멤버</h1>
         <button
           className='flex items-center gap-2 rounded border border-black px-4 py-2'
-          //TODO - 코드 자동 복사
           onClick={() =>
-            toast.alert('초대 코드를 복사했어요!', {
-              position: 'b-c',
-              autoClose: true,
+            window.navigator.clipboard.writeText(group_invite_code).then(() => {
+              toast.alert('초대 코드를 복사했어요!', {
+                position: 'b-c',
+                autoClose: true,
+              });
             })
           }
         >
