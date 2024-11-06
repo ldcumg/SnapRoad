@@ -32,6 +32,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  //TODO - 스켈레톤 UI
   return (
     <>
       <GroupInfoBox

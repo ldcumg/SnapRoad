@@ -68,7 +68,9 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
   if (status !== 200 && error) throw new Error(error.message);
 
-  return data as GroupInfo;
+  const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, data?.group_image_url as string);
+
+  return { ...data, group_image_url: signedImgUrl } as GroupInfo;
 };
 
 export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId, getGroupInfo };
