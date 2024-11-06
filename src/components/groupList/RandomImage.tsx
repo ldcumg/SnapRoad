@@ -11,11 +11,10 @@ import Link from 'next/link';
 
 const RandomImage = () => {
   const { data: randomData, isLoading } = useGroupRandomImageQuery();
-  console.log('randomData :>> ', randomData);
   if (isLoading) return <RandomImageSkeleton />;
   return (
     <>
-      {randomData?.length ? (
+      {!!randomData?.length ? (
         <Carousel
           className='w-full max-w-sm md:max-w-lg lg:max-w-full'
           plugins={[Autoplay({ delay: 3000 })]}
@@ -47,7 +46,16 @@ const RandomImage = () => {
           </CarouselContent>
         </Carousel>
       ) : (
-        <></>
+        <div className='w-[220px] h-[220px] flex flex-col justify-center items-center pt-12 gap-9'>
+          <img
+            src='/svgs/Empty_Marker.svg'
+            alt=''
+          />
+          <p className='flex flex-col justify-center'>
+            <span className='text-center'>스냅로드로 추억을</span>
+            <span className='text-center'>공유해보세요!</span>
+          </p>
+        </div>
       )}
     </>
   );
