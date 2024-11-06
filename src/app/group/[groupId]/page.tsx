@@ -1,11 +1,11 @@
 'use client';
 
-import GroupAlbum from '@/components/groupDetail/GroupAlbum';
-import GroupMap from '@/components/groupDetail/GroupMap';
-import MemberList from '@/components/groupDetail/MemberList';
+import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
+import MemberList from '@/components/groupAlbum/MemberList';
+import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
-import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
+// import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -16,7 +16,8 @@ const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), {
 type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  //TODO - zustand 관리
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -62,7 +63,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
       case GroupDetailMode.member:
         return (
           <button onClick={() => setMode(GroupDetailMode.album)}>
-            <Close_Member_List />
+            <img src='/svgs/Close_Member_List.svg' />
           </button>
         );
       default:
@@ -71,9 +72,9 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   };
 
   return (
-    <>
+    <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='flex justify-between px-5'>
+      <header className='flex items-center justify-between px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
@@ -81,7 +82,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         {handleChangeMode()}
       </header>
       {groupDetailMode()}
-    </>
+    </div>
   );
 };
 
