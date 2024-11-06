@@ -44,7 +44,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
           <ol className='m-[15px] grid grid-cols-3 justify-items-center gap-1'>
             {postsImages.map((image) => (
               <li
-                className='h-[112px] w-[112px] rounded-[8px] bg-cover'
+                className='h-[112px] w-[112px] rounded-[8px]'
                 key={image.id}
               >
                 <Link

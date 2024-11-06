@@ -11,11 +11,13 @@ const GroupInfoBox = ({ groupInfo: { group_image_url, user_group, group_desc }, 
   return (
     <div className='px-4'>
       <div className='flex flex-row gap-4 border-b py-6'>
-        <img
-          className='h-[132px] w-[132px]'
-          src={group_image_url ?? '/public/images/group_default_thumbnail.png'}
-          alt='그룹 이미지'
-        />
+        <span className='h-[132px] w-[132px]'>
+          <img
+            className='h-full w-full object-cover'
+            src={group_image_url ?? '/public/images/group_default_thumbnail.png'}
+            alt='그룹 이미지'
+          />
+        </span>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row justify-between'>
             <button onClick={() => setMode(GroupDetailMode.member)}>

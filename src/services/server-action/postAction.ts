@@ -14,12 +14,13 @@ export const getPostsImagesPerGroup = async ({
   const supabase = createClient();
 
   const { status, data, error } = await supabase
-    .from('images')
-    .select('id, post_id, post_image_url, post_image_name')
-    .eq('group_id', groupId)
-    .is('deleted_at', null)
-    .range(15 * pageParam, 15 * pageParam + 14);
-
+  .from('images')
+  .select('id, post_id, post_image_url, post_image_name')
+  .eq('group_id', groupId)
+  .is('deleted_at', null)
+  .range(15 * pageParam, 15 * pageParam + 14);
+  console.log("data =>", data);
+  
   if (status !== 200 && error) throw new Error(error.message);
 
   return data as PostImage[];
