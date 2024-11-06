@@ -1,3 +1,4 @@
+import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import { ReactNode, HTMLAttributes, useEffect, useState } from 'react';
 
@@ -34,7 +35,7 @@ export const BottomSheet = ({
     }
   }, [isOpen]);
 
-  const baseStyle = 'fixed bottom-0 left-0 right-0 bg-white transition-all duration-500 ease-in-out';
+  const baseStyle = 'fixed bottom-0 left-0 right-0 bg-white transition-all duration-500 ease-in-out z-50';
   const heightStyle = height === 'full' ? 'h-full' : 'h-1/2';
   const visibilityStyle = isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0';
 
@@ -56,39 +57,47 @@ export const BottomSheet = ({
           className={cn(baseStyle, heightStyle, visibilityStyle, 'pb-16 z-50')}
           {...props}
         >
-          <div className='w-12 h-1 bg-gray-300 mx-auto my-2'></div>
-
-          <div className='flex items-center justify-between px-4 py-2 border-b border-gray-300'>
-            {onBack && (
-              <button
-                onClick={onBack}
-                aria-label='Back'
-                className='text-gray-700'
-              >
-                ← 뒤로가기
-              </button>
-            )}
-
-            <h2 className='text-center font-semibold flex-1'>{title}</h2>
-
+          <div className='flex items-center justify-between p-4 border-b border-gray-300'>
             <button
               onClick={onClose}
               aria-label='Close'
               className='text-gray-700'
             >
-              × 닫기
+              <img
+                src='/svgs/Arrow_Back_LG.svg'
+                alt='뒤로가기'
+                className='mr-2'
+              />
             </button>
+
+            {/* {onBack && (
+              <button
+                onClick={onBack}
+                aria-label='Back'
+                className='text-gray-700'
+              >
+                <img
+                  src='/svgs/Arrow_Back_LG.svg'
+                  alt='뒤로가기'
+                  className='mr-2'
+                />
+              </button>
+            )} */}
+
+            <h2 className='text-center font-semibold -ml-3 flex-1'>{title}</h2>
           </div>
 
           <div className='p-4 text-gray-700'>{children}</div>
 
           <div className='absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-300'>
-            <button
+            <Button
               onClick={onButtonClick}
-              className='w-full bg-gray-200 text-gray-700 py-2 rounded'
+              variant='primary'
+              size='large'
+              className='w-full text-lg font-semibold'
             >
               {buttonLabel}
-            </button>
+            </Button>
           </div>
         </div>
       )}

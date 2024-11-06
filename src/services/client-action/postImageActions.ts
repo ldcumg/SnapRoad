@@ -14,12 +14,12 @@ import browserClient from '@/utils/supabase/client';
 export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
   const { data, error } = await browserClient.storage
     .from(bucketName)
-    .createSignedUrl(`${folderName}/${filename}`, 60 * 60 * 1000);
+    .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60 * 1000);
   if (error) {
     console.error('Signed URL 생성 오류:', error);
     throw new Error('Signed URL 생성 실패');
   }
-  console.log('singindUrl 성공', data.signedUrl);
+  // console.log('singindUrl 성공', data.signedUrl);
   return data.signedUrl;
 };
 

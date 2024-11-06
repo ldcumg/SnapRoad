@@ -4,14 +4,35 @@ import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useSetCoverLogic } from '@/hooks/queries/post/useImageHandlersHooks';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  closestCenter,
+  TouchSensor,
+  MouseSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { useEffect } from 'react';
 
 const DraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages, setSelectedCover, selectedCover } = useImageUploadStore();
   const { handleSetCover } = useSetCoverLogic(userId, uploadSessionId);
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
+  console.log('현재 이미지 배열 상태:', images);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  // 대표 이미지가 없을 경우에만 첫 번째 이미지를 대표 이미지로 설정
+  useEffect(() => {
+    if (images.length > 0 && selectedCover === null) {
+      const firstImageId = images[0].id;
+      setSelectedCover(firstImageId);
+      handleSetCover(firstImageId);
+      console.log('초기 대표 이미지로 설정:', firstImageId);
+    }
+  }, [images, selectedCover]);
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -20,20 +41,31 @@ const DraggableImageList = () => {
       const oldIndex = images.findIndex((img) => img.id === active.id);
       const newIndex = images.findIndex((img) => img.id === over.id);
       const sortedImages = arrayMove(images, oldIndex, newIndex);
-      setImages(sortedImages);
 
-      const firstImageId = sortedImages[0]?.id;
-      if (firstImageId) {
-        await handleSetCover(firstImageId);
-        setSelectedCover(firstImageId);
-        console.log('첫 번째 이미지를 대표 이미지로 설정했습니다:', firstImageId);
+      // 드래그된 이미지를 맨 앞에 위치시키기 위해 배열 재정렬
+      const draggedImage = sortedImages[0];
+      setImages([...sortedImages]); // 배열을 새로운 배열로 업데이트
+
+      // 드래그한 이미지가 대표 이미지가 되도록 설정
+      const newCoverImageId = draggedImage.id;
+      if (newCoverImageId) {
+        setSelectedCover(newCoverImageId); // 상태 업데이트
+        await handleSetCover(newCoverImageId); // 비동기 서버 요청
+        console.log('드래그 후 대표 이미지로 설정:', newCoverImageId);
       }
     }
   };
 
+  // 이미지 배열 상태 변경 확인
+  useEffect(() => {
+    console.log('현재 이미지 배열 상태:', images);
+    console.log(`이미지 ${images} 컴포넌트가 렌더링됨. 현재 selectedCover: ${selectedCover}`);
+  }, [images, selectedCover]);
+
   return (
-    <div className='overflow-x-auto overflow-y-hidden h-52'>
+    <div className={`overflow-x-auto overflow-y-hidden ${images.length > 0 ? 'w-auto' : 'w-full'} `}>
       <DndContext
+        sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
@@ -43,22 +75,23 @@ const DraggableImageList = () => {
         >
           <div className='flex gap-4 '>
             {images.length > 0
-              ? images.map(
-                  (image, index) =>
-                    image.id !== undefined && (
-                      <SortableImage
-                        key={image.id}
-                        image={{
-                          ...image,
-                          blobUrl: imageUrls[index],
-                          post_image_name: image.post_image_name!,
-                        }}
-                        onSetCover={() => {
-                          setSelectedCover(image.id);
-                        }}
-                        selectedCover={selectedCover}
-                      />
-                    ),
+              ? images.map((image, index) =>
+                  image.id !== undefined ? (
+                    <SortableImage
+                      key={image.id}
+                      image={{
+                        ...image,
+                        blobUrl: imageUrls[index],
+                        post_image_name: image.post_image_name!,
+                      }}
+                      onSetCover={() => {
+                        setSelectedCover(image.id);
+                        handleSetCover(image.id);
+                        console.log('대표 이미지로 설정:', image.id);
+                      }}
+                      selectedCover={selectedCover}
+                    />
+                  ) : null,
                 )
               : null}
           </div>

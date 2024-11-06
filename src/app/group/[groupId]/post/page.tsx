@@ -12,7 +12,6 @@ type Props = {
 const writePage = ({ params: { groupId } }: Props) => {
   return (
     <div className='w-full'>
-      {/* <h1>{groupId}</h1> */}
       <PostAddress groupId={groupId} />
       <ImageBottomSheet />
       <PostImage showImages={false} />
