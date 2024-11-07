@@ -296,13 +296,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[48.5%] -translate-y-[68%]'
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
+          alt='맵핀'
         />
       )}
       <Map
         className='h-screen w-full'
-        center={{ lat: 35.95, lng: 128.25 }}
+        center={{ lat: 35.85, lng: 127.65 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
