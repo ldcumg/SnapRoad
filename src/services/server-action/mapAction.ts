@@ -48,13 +48,9 @@ export const getAddress = async ({ lat, lng }: Latlng): Promise<string> => {
   if (!res.ok) throw new Error('주소를 불러오지 못 했습니다.');
 
   const {
-    documents: [
-      {
-        road_address,
-        address: { address_name: address },
-      },
-    ],
+    documents: [document],
   } = await res.json();
+  console.log(document);
 
-  return road_address?.address_name ?? address;
+  return document?.road_address?.address_name ?? document?.address.address_name ?? '주소를 불러올 수 없습니다.';
 };
