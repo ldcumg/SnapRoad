@@ -7,18 +7,19 @@ type Props = {
   groupInfo: GroupInfo;
 };
 
-const MemberList = ({ groupInfo: { user_group } }: Props) => {
+const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => {
   return (
     <>
       <div className='flex flex-row justify-between p-4'>
-        <h1 className='text-title_xl'>그룹 멤버</h1>
+        <h2 className='text-title_xl'>그룹 멤버</h2>
         <button
           className='flex items-center gap-2 rounded border border-black px-4 py-2'
-          //TODO - 코드 자동 복사
           onClick={() =>
-            toast.alert('초대 코드를 복사했어요!', {
-              position: 'b-c',
-              autoClose: true,
+            window.navigator.clipboard.writeText(group_invite_code).then(() => {
+              toast.alert('초대 코드를 복사했어요!', {
+                position: 'b-c',
+                autoClose: true,
+              });
             })
           }
         >
@@ -33,10 +34,13 @@ const MemberList = ({ groupInfo: { user_group } }: Props) => {
             return a.is_owner ? -1 : 1;
           })
           .map(({ is_owner, profiles: { user_image_url, user_nickname, user_email } }) => (
-            <li className='flex flex-row items-center gap-2 rounded-full'>
+            <li
+              className='flex flex-row items-center gap-2 rounded-full'
+              key={user_email}
+            >
               <img
                 className='h-10 w-10'
-                src={user_image_url}
+                src={user_image_url ?? '/svgs/Profile.svg'}
                 alt='프로필 이미지'
               />
               <div className='flex gap-2'>

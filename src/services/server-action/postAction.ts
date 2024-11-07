@@ -1,5 +1,6 @@
 'use server';
 
+import { getSignedImgUrls } from './getSignedImgUrls';
 import type { PostCoverImage, PostImage } from '@/types/postTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -33,7 +34,11 @@ export const getPostsCoverImagesPerGroup = async ({
 }): Promise<PostCoverImage[]> => {
   const supabase = createClient();
 
-  const { status, data, error } = await supabase
+  const {
+    status,
+    data: postsImageData,
+    error,
+  } = await supabase
     .from('images')
     .select('post_id, post_image_name, post_image_url, post_lat, post_lng')
     .eq('group_id', groupId)
@@ -41,8 +46,13 @@ export const getPostsCoverImagesPerGroup = async ({
     .is('deleted_at', null);
 
   if (status !== 200 && error) throw new Error(error.message);
+  // const imageNames = postsImageData?.map((data) => data.post_image_name);
+  // console.log("imageNames =>", imageNames);
 
-  return data as PostCoverImage[];
+  // const signedUrls = await getSignedImgUrls('tour_images', 10 * 60, imageNames as string[]);
+  // console.log("signedUrls =>", signedUrls);
+
+  return postsImageData as PostCoverImage[];
 };
 
 /** 게시글 삭제 */

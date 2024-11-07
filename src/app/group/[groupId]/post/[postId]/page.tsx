@@ -1,12 +1,23 @@
 /** SSR */
 import Comments from '@/components/post/postDetail/Comments';
 import PostDetail from '@/components/post/postDetail/PostDetail';
+import URLS from '@/constants/urls';
 import { fetchPostData } from '@/services/postService';
 import { getSession } from '@/services/server-action/authActions';
 import { getSignedImgUrl } from '@/services/server-action/getSignedImgUrl';
 import { getGroupDetails } from '@/services/server-action/groupServerActions';
 import { getProfile } from '@/services/server-action/profilesAction';
 import { formatDateToPostDetail } from '@/utils/dateUtils';
+import Link from 'next/link';
+
+export async function generateMetadata({ params }: { params: { postId: string } }) {
+  const postData = await fetchPostData(params.postId);
+  const groupDetail = await getGroupDetails(postData.group_id!);
+  return {
+    title: groupDetail?.group_title,
+    description: groupDetail?.group_desc,
+  };
+}
 
 export const revalidate = 0;
 
@@ -67,19 +78,21 @@ const TourDetail = async ({
 
   const signedImageUrls = await getSignedImgUrls('tour_images', 86400, postData.group_id!, imageData); // 게시글 이미지들
 
-  console.log('signedImageUrls :>> ', signedImageUrls);
   const coverImage = postData.images.find((image: { is_cover: boolean }) => image.is_cover);
   const coverImageDate = coverImage ? formatDateToPostDetail(coverImage.created_at) : '날짜 없음';
 
   return (
     <div>
-      <div className='flex items-center py-4 relative mx-4'>
-        <img
-          src='/svgs/Logo.svg'
-          alt='Image'
-          className='absolute left-0'
-        />
-        <span className='text-gray-900 text-label_md mx-auto'>{groupDetail?.group_title}</span>
+      <div className='relative mx-4 flex items-center py-4'>
+        <Link href={URLS.groupList}>
+          <img
+            src='/svgs/Logo.svg'
+            alt='Image'
+            className='absolute left-0'
+          />
+        </Link>
+
+        <span className='mx-auto text-label_md text-gray-900'>{groupDetail?.group_title}</span>
       </div>
       <PostDetail
         postData={postData}
