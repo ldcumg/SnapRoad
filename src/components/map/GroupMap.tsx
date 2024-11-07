@@ -402,7 +402,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           {!!postsPreView.length ? (
             <BottomSheet
               height='custom'
-              customHeight='40%'
+              customHeight='30%'
               rounded={true}
               isOpen={true}
               showHeader={false}

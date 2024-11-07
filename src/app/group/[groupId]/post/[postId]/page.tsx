@@ -84,7 +84,7 @@ const TourDetail = async ({
   return (
     <div>
       <div className='relative mx-4 flex items-center py-4'>
-        <Link href={URLS.groupList}>
+        <Link className='absolute top-0' href={URLS.groupList}>
           <img
             src='/svgs/Logo.svg'
             alt='Image'
