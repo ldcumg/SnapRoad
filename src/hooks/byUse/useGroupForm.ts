@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 const useMakeGroupForm = () => {
   return useForm({
-    mode: 'onSubmit',
+    mode: 'onChange',
     defaultValues: {
       groupTitle: '',
       groupDesc: '',
