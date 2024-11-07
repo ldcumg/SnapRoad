@@ -28,12 +28,15 @@ export const updateSession = async (request: NextRequest) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  console.log('request.nextUrl.pathname :>> ', request.nextUrl.pathname);
+  const privatePathname = ['/grouplist', '/group', '/mypage', '/makegroup'];
+  const isPrivate = privatePathname.includes(request.nextUrl.pathname);
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/signup') &&
-    request.nextUrl.pathname !== '/'
+    isPrivate
+    // !request.nextUrl.pathname.startsWith('/login') &&
+    // !request.nextUrl.pathname.startsWith('/signup') &&
+    // request.nextUrl.pathname !== '/'
   ) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
