@@ -7,6 +7,7 @@ interface PostDetailHeaderProps {
     post_address: string;
     user_id: string | null;
     post_id: string;
+    post_date: string;
   };
   coverImageDate: string;
   userDetail: {
@@ -33,7 +34,7 @@ const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHe
             />
             <span className='text-label_sm text-gray-900'>{postData.post_address}</span>
           </div>
-          <span className='text-caption_light_lg text-gray-500'>{coverImageDate}</span>
+          <span className='text-caption_light_lg text-gray-500'>{postData.post_date}</span>
           {/* <div className='absolute top-0 right-0'>
             <DropdownMenu />
           </div> */}

@@ -21,6 +21,9 @@ interface BottomSheetProps extends HTMLAttributes<HTMLDivElement> {
   showCloseButton?: boolean; // 닫기 버튼 표시 여부
   onconfirmButtonClick?: () => void;
   oncancelButtonClick?: () => void;
+  hasButton?: boolean;
+  customClassName?: string;
+  backdrop?: boolean;
 }
 
 export const BottomSheet = ({
@@ -42,6 +45,9 @@ export const BottomSheet = ({
   showCloseButton = true, // 기본값으로 닫기 버튼 표시
   onconfirmButtonClick,
   oncancelButtonClick,
+  hasButton = true,
+  customClassName,
+  backdrop = true,
   ...props
 }: BottomSheetProps) => {
   const [rendered, setRendered] = useState(isOpen);
@@ -66,7 +72,7 @@ export const BottomSheet = ({
       {rendered && (
         <div
           className={`fixed inset-0 bg-black transition-opacity duration-500 ease-in-out ${
-            isOpen ? 'opacity-50' : 'opacity-0'
+            backdrop && isOpen ? 'opacity-50' : 'opacity-0'
           }`}
           onClick={onClose}
         ></div>
@@ -75,7 +81,7 @@ export const BottomSheet = ({
       {/* 바텀시트 */}
       {rendered && (
         <div
-          className={cn(baseStyle, heightStyle, visibilityStyle, roundedStyle, 'pb-16 z-50')}
+          className={cn(baseStyle, heightStyle, visibilityStyle, roundedStyle, 'z-50 pb-16')}
           style={{ height: height === 'custom' ? customHeight : undefined }}
           {...props}
         >
@@ -95,7 +101,7 @@ export const BottomSheet = ({
                   />
                 </button>
               )}
-              <h2 className='text-center font-semibold -ml-3 flex-1'>{title}</h2>
+              <h2 className='-ml-3 flex-1 text-center font-semibold'>{title}</h2>
               {showCloseButton && (
                 <button
                   onClick={onClose}
@@ -112,39 +118,41 @@ export const BottomSheet = ({
             </div>
           )}
 
-          <div className='p-4 mb-5 text-gray-700'>{children}</div>
+          <div className={`${customClassName} mb-5 p-4 text-gray-700`}>{children}</div>
 
-          <div className='absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-300 flex space-x-4'>
-            {singleButton ? (
-              <Button
-                onClick={onConfirm || onClose}
-                variant='primary'
-                size='large'
-                className='w-full text-lg font-semibold'
-              >
-                {confirmLabel}
-              </Button>
-            ) : (
-              <>
+          {hasButton && (
+            <div className='absolute bottom-0 left-0 right-0 flex space-x-4 border-t border-gray-300 bg-white p-4'>
+              {singleButton ? (
                 <Button
-                  onClick={onClose}
-                  variant='outlineGray'
-                  size='large'
-                  className='w-1/2 text-lg font-semibold'
-                >
-                  {cancelLabel}
-                </Button>
-                <Button
-                  onClick={onConfirm}
+                  onClick={onConfirm || onClose}
                   variant='primary'
                   size='large'
-                  className='w-1/2 text-lg font-semibold'
+                  className='w-full text-lg font-semibold'
                 >
                   {confirmLabel}
                 </Button>
-              </>
-            )}
-          </div>
+              ) : (
+                <>
+                  <Button
+                    onClick={onClose}
+                    variant='outlineGray'
+                    size='large'
+                    className='w-1/2 text-lg font-semibold'
+                  >
+                    {cancelLabel}
+                  </Button>
+                  <Button
+                    onClick={onConfirm}
+                    variant='primary'
+                    size='large'
+                    className='w-1/2 text-lg font-semibold'
+                  >
+                    {confirmLabel}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
     </>

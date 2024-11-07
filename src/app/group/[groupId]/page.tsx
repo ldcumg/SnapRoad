@@ -16,7 +16,7 @@ type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
   //TODO - zustand 관리
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.member);
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -79,11 +79,11 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='flex items-center justify-between px-4 py-2'>
+      <header className='flex h-[56px] items-center justify-between px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
-        <h2>{groupInfo.group_title}</h2>
+        <h1 className='text-label_md'>{groupInfo.group_title}</h1>
         {handleChangeMode()}
       </header>
       {groupDetailMode()}
