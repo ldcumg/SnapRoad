@@ -70,12 +70,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   // }, []);
 
   //QUESTION - 왜 안되지...
-  useEffect(() => {
-    if (!map || !postsCoverImages) return;
-    const bounds = new kakao.maps.LatLngBounds();
-    postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
-    map.panTo(bounds);
-  }, [map, postsCoverImages]);
+  // useEffect(() => {
+  //   if (!map || !postsCoverImages) return;
+  //   const bounds = new kakao.maps.LatLngBounds();
+  //   postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
+  //   map.panTo(bounds);
+  // }, [map, postsCoverImages]);
 
   if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
 
