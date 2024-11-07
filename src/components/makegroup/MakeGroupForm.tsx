@@ -99,7 +99,8 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const groupDescLen = watch('groupDesc').length;
   const groupThumbnail = watch('groupImg') as FileList | null;
 
-  const isValidToSubmit = groupTitleLen > 0 && !formState.errors.groupTitle;
+  const isValidToSubmit =
+    (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
 
   useEffect(() => {
     if (groupThumbnail && groupThumbnail.length) {
