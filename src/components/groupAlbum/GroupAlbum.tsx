@@ -36,6 +36,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
   return (
     <>
       <GroupInfoBox
+        groupId={groupId}
         groupInfo={groupInfo}
         setMode={setMode}
       />
