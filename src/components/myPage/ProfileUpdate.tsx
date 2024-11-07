@@ -76,18 +76,18 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
 
   // TODO 분리
   return (
-    <div className='flex flex-col mt-12'>
+    <div className='mt-12 flex flex-col'>
       <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className='flex flex-col items-center'>
-          <div className='relative w-[184px] h-[184px]'>
-            <div className='w-full h-full overflow-hidden rounded-full '>
+          <div className='relative h-[184px] w-[184px]'>
+            <div className='h-full w-full overflow-hidden rounded-full'>
               <img
                 alt={'프로필 이미지'}
                 src={previewImage || profileData?.profileImageUrl || '/svgs/Profile.svg'}
-                className='object-cover w-full h-full'
+                className='h-full w-full object-cover'
               />
             </div>
-            <div className='flex justify-center items-center w-[48px] h-[48px] bg-white rounded-full shadow-md absolute bottom-0 right-0 '>
+            <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-full bg-white shadow-md'>
               <label
                 htmlFor='file'
                 className='cursor-pointer'
@@ -115,7 +115,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
                   setCount(e.target.value.length);
                 },
               })}
-              className='border-b border-gray-100 w-full text-body_lg text-gray-900'
+              className='w-full border-b border-gray-100 text-body_lg text-gray-900'
               maxLength={10}
             />
             <p className='text-red-500'>{errors.nickname && String(errors.nickname.message)}</p>
@@ -126,12 +126,12 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
               >
                 <img src='/svgs/Close_Circle.svg' />
               </button>
-              <span className='text-gray-900 text-body_sm'>{count}/10</span>
+              <span className='text-body_sm text-gray-900'>{count}/10</span>
             </div>
           </div>
         </div>
 
-        <div className='flex flex-col py-4 mt-60'>
+        <div className='mt-52 flex flex-col py-4'>
           <Button
             type='submit'
             label='수정 완료'

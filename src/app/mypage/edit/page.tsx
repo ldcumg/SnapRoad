@@ -1,4 +1,6 @@
+import MyPageHeader from '@/components/myPage/MyPageHeader';
 import ProfileUpdate from '@/components/myPage/ProfileUpdate';
+import URLS from '@/constants/urls';
 import { getSession } from '@/services/server-action/authActions';
 import { Metadata } from 'next';
 import React from 'react';
@@ -13,13 +15,9 @@ const MyPageEditPage = async () => {
 
   return (
     <div className='px-4'>
-      <div className='flex items-center py-4 relative'>
-        <img
-          src='/svgs/Logo.svg'
-          alt='로고'
-          className='absolute left-0'
-        />
-        <span className='text-gray-900 text-label_md mx-auto'>마이페이지</span>
+      <div className='relative flex items-center py-4'>
+        <MyPageHeader url={URLS.groupList} />
+        <span className='mx-auto text-label_md text-gray-900'>마이페이지</span>
       </div>
       <ProfileUpdate userId={user?.id!} />
     </div>
