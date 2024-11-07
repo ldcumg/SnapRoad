@@ -397,7 +397,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 backdrop={false}
               >
                 <h5 className='text-label_md'>
-                  {(spotInfo.placeName || spotInfo.address) ?? '주소를 불러올 수 없습니다.'}
+                  {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
                 </h5>
                 <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
               </BottomSheet>
@@ -442,7 +442,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 variant='primary'
                 size='full'
                 className='bottom-4 z-50 h-[56px] px-6'
-                disabled={!isPostsView && !spotInfo?.address}
+                disabled={isPostsView || !spotInfo?.address}
               >
                 <span className='flex gap-2'>
                   <img src='/svgs/Plus_LG.svg' />
