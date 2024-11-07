@@ -18,9 +18,24 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*", "./*"]
+    },
+    "types": ["kakao.maps.d.ts"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/group/[groupId]/write/page.bak",
+    "src/app/group/[groupId]/write/page._tsx",
+    "src/app/group/[groupId]/write/ImageUpload.bak",
+    "src/hooks/queries/byUse/useImageMutations.bak",
+    "src/hooks/queries/byUse/useImageQuery.bak",
+    "src/stories/Input.bak",
+    "src/stories/Input.stories.bak",
+    "src/stories/Modal.stories.bak",
+    "src/components/post/_PostForm copy.baK"
+  ],
+  "exclude": ["node_modules", ".next"]
 }

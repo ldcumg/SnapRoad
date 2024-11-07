@@ -1,8 +1,15 @@
+import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
+import ScrollSections from '@/components/landing/ScrollSections';
+import LogoUserHeader from '@/components/layout/LogoUserHeader';
+
 const Page = () => {
   return (
-    <div>
-      <h1 className='text-7xl font-bold'>Page</h1>
-    </div>
+    <>
+      <ScrollReactHeader>
+        <LogoUserHeader />
+      </ScrollReactHeader>
+      <ScrollSections />
+    </>
   );
 };
 

@@ -1,14 +1,10 @@
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  title: 'Snap Road',
+  description: 'Snap-Road: 우리들의 여행기록',
 };
 
 const RootLayout = ({
@@ -21,9 +17,9 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
-      <body className={`${inter.className} antialiased`}>
+      <body className={`font-sans`}>
         <QueryProvider>
-          <main>{children}</main>
+          <main className='w-full h-full'>{children}</main>
         </QueryProvider>
       </body>
     </html>
