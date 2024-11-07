@@ -381,7 +381,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           {!!spotInfo && (
             <div className='relative'>
               <button
-                className='fixed bottom-44 left-4 z-50'
+                className='fixed bottom-48 left-4 z-50'
                 onClick={handleFindUserLocation}
               >
                 <img src='/svgs/Geolocation_btn.svg' />
@@ -404,7 +404,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           {!!postsPreView.length ? (
             <BottomSheet
               height='custom'
-              customHeight='40%'
+              customHeight='250px'
               rounded={true}
               isOpen={true}
               showHeader={false}

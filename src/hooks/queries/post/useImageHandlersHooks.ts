@@ -38,7 +38,7 @@ export const useImageDeleteLogic = (bucketName: string, folderName: string) => {
     deleteBusinessImage.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
-        console.log('이미지가 삭제되었습니다.');
+        // console.log('이미지가 삭제되었습니다.');
       },
     });
   };
@@ -86,7 +86,7 @@ export const useSetCoverLogic = (userId: string, uploadSessionId: string) => {
         }));
 
         setImages([...updatedImages]); // 새로운 배열로 업데이트하여 불변성 유지
-        console.log('대표 이미지가 설정되었습니다.', id);
+        // console.log('대표 이미지가 설정되었습니다.', id);
       },
       onError: (error) => {
         console.error('대표 이미지 설정 오류:', error);
