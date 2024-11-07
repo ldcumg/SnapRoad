@@ -16,7 +16,7 @@ type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
   //TODO - zustand 관리
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
