@@ -74,7 +74,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   useEffect(() => {
     if (map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
-      postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
+      postsCoverImages.forEach(
+        ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
+      );
       map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
