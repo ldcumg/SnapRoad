@@ -3,7 +3,7 @@
 import Comment from './Comment';
 import CommentForm from './CommentForm';
 import { useCommentsQuery } from '@/hooks/queries/byUse/useCommentQueries';
-import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
+import Spinner from '@/stories/Spinner';
 import React, { useState } from 'react';
 
 interface CommentsProps {
@@ -13,10 +13,6 @@ interface CommentsProps {
     profiles: {
       user_id: string;
       user_nickname: string | null;
-      // created_at: string;
-      // deleted_at: string | null;
-      // updated_at: string | null;
-      // user_email: string | null;
       user_image_url: string | null;
     };
   };
@@ -35,7 +31,12 @@ const Comments = ({ postId, userDetail, postAuthorDetail }: CommentsProps) => {
   const { data: comments, isLoading, isError } = useCommentsQuery(postId);
 
   if (isError) return <>임시 오류 ...</>;
-  if (isLoading) return <>임시 로딩중...</>;
+  if (isLoading)
+    return (
+      <div className='w-full h-full absolute z-[3000]  flex justify-center items-center'>
+        <Spinner />
+      </div>
+    );
 
   // TODO 구조 변경하기.. (재귀적으로)
   return (
