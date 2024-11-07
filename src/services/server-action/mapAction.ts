@@ -50,7 +50,6 @@ export const getAddress = async ({ lat, lng }: Latlng): Promise<string> => {
   const {
     documents: [document],
   } = await res.json();
-  console.log(document);
 
-  return document?.road_address?.address_name ?? document?.address.address_name ?? '주소를 불러올 수 없습니다.';
+  return document?.road_address?.address_name ?? document?.address.address_name;
 };
