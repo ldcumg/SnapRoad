@@ -33,7 +33,7 @@ export const fetchSignedUrl = async (bucketName: string, folderName: string, fil
     return '/path/to/default/image.png'; // URL 생성 실패 시 기본 이미지 반환
   }
 
-  console.log('Signed URL 성공:', data.signedUrl);
+  // console.log('Signed URL 성공:', data.signedUrl);
   return data.signedUrl;
 };
 

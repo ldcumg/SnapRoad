@@ -101,7 +101,7 @@ export function useDeleteBusinessImage(bucketName: string, folderName: string) {
       console.error('삭제 실패:', error);
     },
     onSuccess: (deletedId) => {
-      console.log(`이미지 ${deletedId} 삭제 성공`);
+      // console.log(`이미지 ${deletedId} 삭제 성공`);
     },
   });
 }

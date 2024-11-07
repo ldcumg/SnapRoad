@@ -29,7 +29,7 @@ export const updateSession = async (request: NextRequest) => {
     data: { user },
   } = await supabase.auth.getUser();
   console.log('request.nextUrl.pathname :>> ', request.nextUrl.pathname);
-  const privatePathname = ['/grouplist', '/group', '/mypage', '/makegroup'];
+  const privatePathname = ['/grouplist', '/group', '/mypage', '/makegroup','/post'];
   const isPrivate = privatePathname.includes(request.nextUrl.pathname);
   if (
     !user &&

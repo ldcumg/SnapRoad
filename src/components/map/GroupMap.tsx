@@ -74,7 +74,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   useEffect(() => {
     if (map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
-      postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
+      postsCoverImages.forEach(
+        ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
+      );
       map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
@@ -379,7 +381,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           {!!spotInfo && (
             <div className='relative'>
               <button
-                className='fixed bottom-44 left-4 z-50'
+                className='fixed bottom-48 left-4 z-50'
                 onClick={handleFindUserLocation}
               >
                 <img src='/svgs/Geolocation_btn.svg' />
@@ -394,7 +396,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 customClassName='pt-9'
                 backdrop={false}
               >
-                <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
+                <h5 className='text-label_md'>
+                  {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
+                </h5>
                 <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
               </BottomSheet>
             </div>
@@ -402,7 +406,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           {!!postsPreView.length ? (
             <BottomSheet
               height='custom'
-              customHeight='40%'
+              customHeight='250px'
               rounded={true}
               isOpen={true}
               showHeader={false}
@@ -438,6 +442,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 variant='primary'
                 size='full'
                 className='bottom-4 z-50 h-[56px] px-6'
+                disabled={!isPostsView && !spotInfo?.address}
               >
                 <span className='flex gap-2'>
                   <img src='/svgs/Plus_LG.svg' />

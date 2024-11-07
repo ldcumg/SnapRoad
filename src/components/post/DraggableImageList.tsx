@@ -21,7 +21,7 @@ const DraggableImageList = () => {
   const { images, setImages, setSelectedCover, selectedCover } = useImageUploadStore();
   const { handleSetCover } = useSetCoverLogic(userId, uploadSessionId);
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
-  console.log('현재 이미지 배열 상태:', images);
+  // console.log('현재 이미지 배열 상태:', images);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   // 대표 이미지가 없을 경우에만 첫 번째 이미지를 대표 이미지로 설정
@@ -30,7 +30,7 @@ const DraggableImageList = () => {
       const firstImageId = images[0].id;
       setSelectedCover(firstImageId);
       handleSetCover(firstImageId);
-      console.log('초기 대표 이미지로 설정:', firstImageId);
+      // console.log('초기 대표 이미지로 설정:', firstImageId);
     }
   }, [images, selectedCover]);
 
@@ -51,15 +51,15 @@ const DraggableImageList = () => {
       if (newCoverImageId) {
         setSelectedCover(newCoverImageId); // 상태 업데이트
         await handleSetCover(newCoverImageId); // 비동기 서버 요청
-        console.log('드래그 후 대표 이미지로 설정:', newCoverImageId);
+        // console.log('드래그 후 대표 이미지로 설정:', newCoverImageId);
       }
     }
   };
 
   // 이미지 배열 상태 변경 확인
   useEffect(() => {
-    console.log('현재 이미지 배열 상태:', images);
-    console.log(`이미지 ${images} 컴포넌트가 렌더링됨. 현재 selectedCover: ${selectedCover}`);
+    // console.log('현재 이미지 배열 상태:', images);
+    // console.log(`이미지 ${images} 컴포넌트가 렌더링됨. 현재 selectedCover: ${selectedCover}`);
   }, [images, selectedCover]);
 
   return (
@@ -87,7 +87,7 @@ const DraggableImageList = () => {
                       onSetCover={() => {
                         setSelectedCover(image.id);
                         handleSetCover(image.id);
-                        console.log('대표 이미지로 설정:', image.id);
+                        // console.log('대표 이미지로 설정:', image.id);
                       }}
                       selectedCover={selectedCover}
                     />
