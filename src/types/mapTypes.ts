@@ -22,14 +22,7 @@ export type SearchResult = {
 
 export type ClusterStyle = {
   centerLatLng: { lat: number; lng: number };
-  textAlign: string;
-  lineHeight: string;
-  fontSize: string;
-  color: string;
-  width: string;
-  height: string;
   background: string;
-  positon: string;
 };
 
 export interface CustomMarker extends kakao.maps.Marker {

@@ -3,6 +3,8 @@
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import { BottomSheet } from '@/stories/BottomSheet';
+import { Button } from '@/stories/Button';
 import type {
   ClusterStyle,
   CustomCluster,
@@ -37,7 +39,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   //TODO - Set으로 관리
-  let polyline: Latlng[] = [];
+  // let polyline: Latlng[] = [];
 
   const {
     register,
@@ -185,9 +187,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   /** 게시물 추가 라우팅 */
   const handleAddPostRoute = () => {
+    //TODO - 해외 인밸리데이트
     if (isPostsView) {
-      //TODO - 라우트 주소 수정하기
-      route.push(`/group/${groupId}/`);
+      route.push(`/group/${groupId}/post`);
       return;
     }
 
@@ -195,7 +197,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     const { lat, lng, placeName, address } = spotInfo;
     const place = placeName || address;
 
-    //TODO - 라우트 주소 수정하기
     route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
@@ -210,15 +211,17 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           ...prev,
           {
             centerLatLng: { lat: Ma, lng: La },
-            textAlign: 'center',
+            textAlign: 'end',
             lineHeight: '54px',
             fontSize: '20px',
             color: 'black',
-            width: '100px',
-            height: '100px',
+            width: '56px',
+            height: '56px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             positon: 'getCenter',
+            borderRadius: '100%',
+            border: '4px solid #EB84DA',
           },
         ]);
     });
@@ -240,35 +243,46 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(searchLocation)}>
-        <input
-          className='text-black'
-          placeholder='장소를 검색해보세요!'
-          {...register(SEARCH_INPUT)}
-        />
-        {!!getValues(SEARCH_INPUT) && (
+      <form
+        className='fixed left-1/2 top-[72px] z-50 -translate-x-1/2'
+        onSubmit={handleSubmit(searchLocation)}
+      >
+        <div className='relative'>
+          <input
+            className='h-[48px] w-[343px] rounded-3xl px-4 py-3 text-body_md shadow-BG_S placeholder:text-gray-400'
+            placeholder='장소를 검색해보세요!'
+            {...register(SEARCH_INPUT)}
+          />
+          {!!getValues(SEARCH_INPUT) && (
+            <button
+              className='absolute right-12 top-1/2 z-50 -translate-y-1/2'
+              type='button'
+              onClick={() => resetField(SEARCH_INPUT)}
+            >
+              <img src='/svgs/Reset_input.svg' />
+            </button>
+          )}
           <button
-            type='button'
-            onClick={() => resetField(SEARCH_INPUT)}
+            className='absolute right-4 top-1/2 -translate-y-1/2'
+            type='submit'
           >
-            <img src='/svgs/Reset_input.svg' />
+            <img src='/svgs/Map_Search.svg' />
           </button>
-        )}
-        <button type='submit'>
-          <img src='/svgs/Map_Search.svg' />
-        </button>
+        </div>
       </form>
-      {searchResult.hasMore && (
+      {/* {searchResult.hasMore && (
         <button
           type='button'
           onClick={searchLocation}
         >
           더보기
         </button>
-      )}
+      )} */}
       <button
+        className='fixed right-4 top-[136px] z-50'
         onClick={() => {
           setIsPostsView((prev) => !prev);
+          isPostsView && setPostsPreview([]);
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
       >
@@ -278,13 +292,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           <img src='/svgs/Switch_btn_to_image_marker.svg' />
         )}
       </button>
-      {isPostsView || <img src='/svgs/Mappin.svg' />}
+      {isPostsView || (
+        <img
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[48.5%] -translate-y-[68%]'
+          src='/svgs/Mappin.svg'
+        />
+      )}
       <Map
-        className='w-full h-[50vh]'
-        center={
-          // postsCoverImages ? { lat: 0, lng: 0 } :
-          { lat: 35.95, lng: 128.25 }
-        }
+        className='h-screen w-full'
+        center={{ lat: 35.95, lng: 128.25 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
@@ -305,7 +321,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              polyline.push({ lat: post_lat, lng: post_lng });
+              // polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -346,38 +362,92 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        <Polyline
+        {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        />
-      </Map>
-      <button onClick={handleFindUserLocation}>
-        <img src='/svgs/Geolocation_btn.svg' />
-      </button>
-      <div>
-        {!!spotInfo && (
-          <>
-            <h5>{spotInfo.placeName || spotInfo.address}</h5>
-            <p>{spotInfo.placeName && spotInfo.address}</p>
-          </>
-        )}
-        {!!postsPreView.length ? (
-          postsPreView.map((post) => (
-            // TODO 게시물 상세 페이지 라우트 주소 변경
-            <Link
-              href={`/${post.postId}`}
-              key={post.postId}
+        /> */}
+        <button
+          className='fixed bottom-[88px] left-4 z-50'
+          onClick={handleFindUserLocation}
+        >
+          <img src='/svgs/Geolocation_btn.svg' />
+        </button>
+        <div>
+          {!!spotInfo && (
+            <div className='relative'>
+              <button
+                className='fixed bottom-44 left-4 z-50'
+                onClick={handleFindUserLocation}
+              >
+                <img src='/svgs/Geolocation_btn.svg' />
+              </button>
+              <BottomSheet
+                height='custom'
+                customHeight=''
+                rounded={true}
+                isOpen={true}
+                showHeader={false}
+                hasButton={false}
+                customClassName='pt-9'
+                backdrop={false}
+              >
+                <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
+                <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+              </BottomSheet>
+            </div>
+          )}
+          {!!postsPreView.length ? (
+            <BottomSheet
+              height='custom'
+              customHeight='40%'
+              rounded={true}
+              isOpen={true}
+              showHeader={false}
+              hasButton={false}
+              backdrop={false}
             >
-              <img src={post.postImageUrl} />
-            </Link>
-          ))
-        ) : (
-          <button onClick={handleAddPostRoute}>추가하기</button>
-        )}
-      </div>
+              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+              <ol className='flex flex-row gap-3 overflow-x-auto'>
+                {postsPreView.map((post) => (
+                  <li
+                    className='h-[132px] w-[132px]'
+                    key={post.postId}
+                  >
+                    <Link
+                      className='block h-full w-full'
+                      href={`/group/${groupId}/post/${post.postId}`}
+                    >
+                      <img
+                        className='h-full w-full rounded-[8px] object-cover'
+                        src={post.postImageUrl}
+                        alt={`Post ${post.postId}`}
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </BottomSheet>
+          ) : (
+            <div className='shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full bg-white px-[16px] pb-[16px] pt-[12px]'>
+              <Button
+                type='button'
+                onClick={handleAddPostRoute}
+                variant='primary'
+                size='full'
+                className='bottom-4 z-50 h-[56px] px-6'
+              >
+                <span className='flex gap-2'>
+                  <img src='/svgs/Plus_LG.svg' />
+                  <p className='text-title_lg'>게시물 추가하기</p>
+                </span>
+              </Button>
+            </div>
+          )}
+        </div>
+      </Map>
     </>
   );
 };

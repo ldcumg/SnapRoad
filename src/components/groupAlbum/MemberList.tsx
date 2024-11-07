@@ -11,7 +11,7 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
   return (
     <>
       <div className='flex flex-row justify-between p-4'>
-        <h1 className='text-title_xl'>그룹 멤버</h1>
+        <h2 className='text-title_xl'>그룹 멤버</h2>
         <button
           className='flex items-center gap-2 rounded border border-black px-4 py-2'
           onClick={() =>
