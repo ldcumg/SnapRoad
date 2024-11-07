@@ -221,6 +221,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             backgroundSize: 'cover',
             positon: 'getCenter',
             borderRadius: '100%',
+            border: '4px solid #EB84DA',
           },
         ]);
     });
@@ -376,19 +377,27 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         </button>
         <div>
           {!!spotInfo && (
-            <BottomSheet
-              height='custom'
-              customHeight=''
-              rounded={true}
-              isOpen={true}
-              showHeader={false}
-              hasButton={false}
-              customClassName='pt-9'
-              backdrop={false}
-            >
-              <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
-              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
-            </BottomSheet>
+            <div className='relative'>
+              <button
+                className='fixed bottom-44 left-4 z-50'
+                onClick={handleFindUserLocation}
+              >
+                <img src='/svgs/Geolocation_btn.svg' />
+              </button>
+              <BottomSheet
+                height='custom'
+                customHeight=''
+                rounded={true}
+                isOpen={true}
+                showHeader={false}
+                hasButton={false}
+                customClassName='pt-9'
+                backdrop={false}
+              >
+                <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
+                <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+              </BottomSheet>
+            </div>
           )}
           {!!postsPreView.length ? (
             <BottomSheet
