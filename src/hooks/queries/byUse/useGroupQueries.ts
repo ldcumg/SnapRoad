@@ -10,7 +10,7 @@ const useGroupDetailQueryForUpdate = (group_id: string) => {
   return useQuery({
     queryKey: queryKeys.group.groupForUpdate(group_id),
     queryFn: () => getGroupDetails(group_id),
-    enabled: (group_id) => !!group_id,
+    enabled: !!group_id,
   });
 };
 
