@@ -93,14 +93,14 @@ const PostForm = () => {
         .select('post_id')
         .single();
       if (postError || !post) throw new Error(postError?.message || '포스트 저장 오류');
-      console.log('포스트가 성공적으로 제출되었습니다. post_id:', post.post_id);
+      // console.log('포스트가 성공적으로 제출되었습니다. post_id:', post.post_id);
       await updateImagePostId(post.post_id);
       await saveTags(data.hashtag, post.post_id);
 
       const place = decodedAddressName;
       const postId = post.post_id;
-      console.log('Place:', place);
-      console.log('post_id:', postId);
+      // console.log('Place:', place);
+      // console.log('post_id:', postId);
 
       // router.push(`/group/${groupId}`);
       // router.push(`/grouplist`);

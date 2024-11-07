@@ -17,7 +17,7 @@ const PostImage = ({ showImages }: { showImages: boolean }) => {
   useEffect(() => {
     // if (previousGroupId.current !== groupId || previousUserId.current !== userId) {
     //   // 그룹 ID나 사용자 ID가 변경되었을 때만 초기화
-    // resetImages();
+    resetImages();
     //   console.log('그룹이나 사용자 ID가 변경될 때 이미지와 URL이 초기화');
     //   // 현재 그룹 ID와 사용자 ID를 이전 값으로 업데이트
     //   previousGroupId.current = groupId;

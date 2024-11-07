@@ -33,7 +33,7 @@ export function useSetCoverImage(userId: string, uploadSessionId: string) {
       }
     },
     onSuccess: () => {
-      console.log('대표 이미지 설정 성공');
+      // console.log('대표 이미지 설정 성공');
       queryClient.invalidateQueries({ queryKey: ['images', userId] });
     },
   });
