@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 /**
  * 이미지를 업로드하는 훅
  */
+
 export function useUploadBusinessImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
