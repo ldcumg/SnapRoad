@@ -23,7 +23,7 @@ const PostImage = ({ showImages }: { showImages: boolean }) => {
     //   previousGroupId.current = groupId;
     //   previousUserId.current = userId;
     // }
-  }, [groupId]);
+  }, [userId]);
 
   if (isLoading) return '';
 
