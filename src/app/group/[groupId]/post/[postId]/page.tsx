@@ -1,4 +1,5 @@
 /** SSR */
+import MyPageHeader from '@/components/myPage/MyPageHeader';
 import Comments from '@/components/post/postDetail/Comments';
 import PostDetail from '@/components/post/postDetail/PostDetail';
 import URLS from '@/constants/urls';
@@ -84,14 +85,7 @@ const TourDetail = async ({
   return (
     <div>
       <div className='relative mx-4 flex items-center py-4'>
-        <Link className='absolute top-0' href={URLS.groupList}>
-          <img
-            src='/svgs/Logo.svg'
-            alt='Image'
-            className='absolute left-0'
-          />
-        </Link>
-
+        <MyPageHeader url={URLS.groupList} />
         <span className='mx-auto text-label_md text-gray-900'>{groupDetail?.group_title}</span>
       </div>
       <PostDetail
