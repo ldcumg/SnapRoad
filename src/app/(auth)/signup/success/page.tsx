@@ -1,3 +1,4 @@
+import URLS from '@/constants/urls';
 import { Button } from '@/stories/Button';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -10,14 +11,14 @@ export const metadata: Metadata = {
 
 const SignUpSuccessPage = () => {
   return (
-    <div className='flex flex-col justify-center items-center gap-7 px-4 h-screen'>
+    <div className='flex h-screen flex-col items-center justify-center gap-7 px-4'>
       <div>
         <img src='/svgs/Success.svg' />
       </div>
-      <p className='text-gray-900 text-head_sm'>회원가입이 완료되었어요!</p>
-      <div className='flex gap-4 py-5 w-full'>
+      <p className='text-head_sm text-gray-900'>회원가입이 완료되었어요!</p>
+      <div className='flex w-full gap-4 py-5'>
         <Link
-          href={'/'}
+          href={URLS.home}
           className='w-full'
         >
           <Button
@@ -29,8 +30,8 @@ const SignUpSuccessPage = () => {
           />
         </Link>
         <Link
-          href={'/login'}
-          className='w-full '
+          href={URLS.logIn}
+          className='w-full'
         >
           <Button
             type='button'
