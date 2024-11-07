@@ -41,7 +41,7 @@ const RandomImage = () => {
                     style={{ backgroundImage: `url(${data.post_thumbnail_image})` }}
                   >
                     <Link
-                      href={`/post/${data.post_id}`}
+                      href={`/group/${data.group_id}/post/${data.post_id}`}
                       className='absolute inset-0 bg-gradient-to-b from-white to-black opacity-50 rounded-xl'
                     ></Link>
                     <p className='absolute px-4 py-4 bottom-0 w-full text-white flex flex-row justify-between'>

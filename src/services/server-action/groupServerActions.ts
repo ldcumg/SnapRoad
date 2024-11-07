@@ -1,6 +1,7 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import { getSignedImgUrls } from './getSignedImgUrls';
 import type { GroupInfo } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -68,7 +69,19 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
   if (status !== 200 && error) throw new Error(error.message);
 
+  //TODO - promise.all
   const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, data?.group_image_url as string);
+
+  const imageNames = data?.user_group.map((data) => data.profiles?.user_image_url);
+  const signedUrls = await getSignedImgUrls('avatars', 60 * 10, imageNames as string[]);
+
+  // data?.user_group.map((item) => {
+  //   const matchedUrl = signedUrls?.find((url) => url.path === item.profiles?.user_image_url);
+
+  //   item.profiles.user_image_url = matchedUrl ? matchedUrl.signedUrl : null;
+
+  //   return item;
+  // });
 
   return { ...data, group_image_url: signedImgUrl } as GroupInfo;
 };
