@@ -3,8 +3,10 @@
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { Button } from '@/stories/Button';
+import { LinkButton } from '@/stories/LinkButton';
 import { Modal } from '@/stories/Modal';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -12,11 +14,10 @@ type Props = {
 };
 
 type AddButtonsProps = {
-  router: AppRouterInstance;
   handleBottomSheetOpen: () => void;
 };
 
-const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
+const AddButtons = ({ handleBottomSheetOpen }: AddButtonsProps) => {
   return (
     <>
       <Button
@@ -31,9 +32,9 @@ const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
           alt=''
         />
       </Button>
-      <Button
+      <LinkButton
         label='그룹만들기'
-        onClick={() => router.push('/makegroup')}
+        href='/makegroup'
         size='full'
         className='text-tile_lg text-white'
       >
@@ -41,7 +42,7 @@ const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
           src='/svgs/Plus_LG.svg'
           alt=''
         />
-      </Button>
+      </LinkButton>
     </>
   );
 };
@@ -62,10 +63,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
               handleBottomSheetOpen={handleBottomSheetOpen}
             />
           </Modal>
-          <AddButtons
-            router={router}
-            handleBottomSheetOpen={handleBottomSheetOpen}
-          />
+          <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
         </div>
       ) : (
         <div className='my-[186px] flex w-full flex-col justify-center gap-4'>
@@ -80,10 +78,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
           </Modal>
           <p className='w-full text-center text-title_xl text-gray-500'>그룹을 만들어 추억을 남겨보세요!</p>
           <div className='flex flex-col gap-2 px-4 py-5'>
-            <AddButtons
-              router={router}
-              handleBottomSheetOpen={handleBottomSheetOpen}
-            />
+            <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
           </div>
         </div>
       )}
