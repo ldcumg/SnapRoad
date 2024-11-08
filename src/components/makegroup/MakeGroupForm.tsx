@@ -9,6 +9,7 @@ import {
 } from '@/hooks/queries/byUse/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQueries';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
+import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
 import browserClient from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
@@ -97,6 +98,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
   const groupThumbnail = watch('groupImg') as FileList | null;
+
+  const isValidToSubmit =
+    (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
+
   useEffect(() => {
     if (groupThumbnail && groupThumbnail.length) {
       setImgPreview(URL.createObjectURL(groupThumbnail['0']));
@@ -128,12 +133,13 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupDescLen={groupDescLen}
           clearInputValue={clearInputValue}
         />
-        <button
-          className='w-full cursor-pointer rounded-xl bg-primary-400 py-4 text-title_lg text-white'
+        <Button
+          variant='primary'
+          disabled={!isValidToSubmit}
           type='submit'
         >
           {update_for ? '수정 완료' : '그룹 만들기'}
-        </button>
+        </Button>
       </form>
     </>
   );

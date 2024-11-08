@@ -195,6 +195,15 @@ const config: Config = {
         'white-to-transparent-to-white':
           'linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.5) 22.5%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 55%,rgba(255, 255, 255, 0.5) 77.5%, white 90%)',
       },
+      animation: {
+        'color-change': 'colorChange 0.9s linear infinite',
+      },
+      keyframes: {
+        colorChange: {
+          '0%, 80%': { backgroundColor: '#DDDFE3' },
+          '90%, 100%': { backgroundColor: '#009E6C' },
+        },
+      },
     },
   },
   future: {
