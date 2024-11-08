@@ -24,7 +24,7 @@ const FixPostForm = () => {
   };
 
   // 필드 값 감시
-  const text = watch('text');
+  const text = watch('desc');
   const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
@@ -42,7 +42,7 @@ const FixPostForm = () => {
       >
         <TextAreaWithCounter
           id='formValue'
-          {...register('text')}
+          {...register('desc')}
           placeholder='내용 입력항목입니다.'
           maxLength={1000}
           errorText={errors.text && String(errors.text.message)}

@@ -9,7 +9,8 @@ export const useForm = () => {
   return useMutation({
     mutationFn: postForm,
     onSuccess: () => {
-      router.push(URLS.groupList);
+      // router.push(URLS.groupList);
+      console.log(postForm);
     },
     onError: (error) => {
       alert(error.message);
