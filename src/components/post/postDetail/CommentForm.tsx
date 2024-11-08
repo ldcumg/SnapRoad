@@ -37,14 +37,14 @@ const CommentForm = ({ postId, user, parentId, setIsWriteMode, setIsWriteReplyMo
   };
 
   return (
-    <div className='py-4 '>
+    <div className='px-4 py-4'>
       <form
         className='flex flex-col gap-2'
         onSubmit={handleSubmit}
       >
-        <div className='flex flex-col border rounded-[12px] py-2 px-3 gap-1 bg-white'>
-          <span className='text-gray-900 text-label_sm'>{user?.profiles.user_nickname}</span>
-          <input
+        <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
+          <span className='text-label_sm text-gray-900'>{user?.profiles.user_nickname}</span>
+          <textarea
             value={comment}
             onChange={(e) => {
               setComment(e.target.value);
