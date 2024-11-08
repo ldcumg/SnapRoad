@@ -3,8 +3,10 @@
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { Button } from '@/stories/Button';
+import { LinkButton } from '@/stories/LinkButton';
 import { Modal } from '@/stories/Modal';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -31,9 +33,9 @@ const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
           alt=''
         />
       </Button>
-      <Button
+      <LinkButton
         label='그룹만들기'
-        onClick={() => router.push('/makegroup')}
+        href='/makegroup'
         size='full'
         className='text-tile_lg text-white'
       >
@@ -41,7 +43,7 @@ const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
           src='/svgs/Plus_LG.svg'
           alt=''
         />
-      </Button>
+      </LinkButton>
     </>
   );
 };
