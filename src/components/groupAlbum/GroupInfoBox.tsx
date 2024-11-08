@@ -1,13 +1,15 @@
 'use client';
 
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
+import Link from 'next/link';
 
 type Props = {
+  groupId: string;
   groupInfo: GroupInfo;
   setMode: React.Dispatch<React.SetStateAction<GroupDetailMode>>;
 };
 
-const GroupInfoBox = ({ groupInfo: { group_image_url, user_group, group_desc }, setMode }: Props) => {
+const GroupInfoBox = ({ groupId, groupInfo: { group_image_url, user_group, group_desc }, setMode }: Props) => {
   return (
     <div className='px-4'>
       <div className='flex flex-row gap-4 border-b py-6'>
@@ -24,9 +26,9 @@ const GroupInfoBox = ({ groupInfo: { group_image_url, user_group, group_desc }, 
                 <p className='text-label_sm'>{user_group.length}</p>
               </div>
             </button>
-            <button>
+            <Link href={`/makegroup?update_for=${groupId}`}>
               <img src='/svgs/Setting.svg' />
-            </button>
+            </Link>
           </div>
           <p className='word-break: break-all text-caption_light_lg'>{group_desc}</p>
         </div>

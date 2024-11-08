@@ -296,13 +296,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[48.5%] -translate-y-[68%]'
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
+          alt='맵핀'
         />
       )}
       <Map
         className='h-screen w-full'
-        center={{ lat: 35.95, lng: 128.25 }}
+        center={{ lat: 35.85, lng: 127.65 }}
         onCreate={setMap}
         level={13}
         isPanto={true}
@@ -396,7 +397,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 customClassName='pt-9'
                 backdrop={false}
               >
-                <h5 className='text-label_md'>{spotInfo.placeName || spotInfo.address}</h5>
+                <h5 className='text-label_md'>
+                  {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
+                </h5>
                 <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
               </BottomSheet>
             </div>
@@ -440,6 +443,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 variant='primary'
                 size='full'
                 className='bottom-4 z-50 h-[56px] px-6'
+                disabled={!isPostsView && !spotInfo?.address}
               >
                 <span className='flex gap-2'>
                   <img src='/svgs/Plus_LG.svg' />

@@ -3,34 +3,33 @@ import React from 'react';
 export interface SpinnerProps {
   color?: string;
 }
-
 const colorClassMap: { [key: string]: string } = {
-  'primary-50': 'fill-[#DCF4EC]',
-  'primary-200': 'fill-[#97D3C0]',
-  'primary-400': 'fill-[#00A368]',
-  'primary-600': 'fill-[#006B49]',
-  'secondary-50': 'fill-[#F9E5F1]',
-  'secondary-100': 'fill-[#FFCCEB]',
-  'secondary-400': 'fill-[#E673C5]',
-  'secondary-600': 'fill-[#C35594]',
-  'gray-50': 'fill-[#F3F4F6]',
-  'gray-100': 'fill-[#E5E7EB]',
-  'gray-200': 'fill-[#D1D5DB]',
-  'gray-300': 'fill-[#A0AEC0]',
-  'gray-400': 'fill-[#6B7280]',
-  'gray-500': 'fill-[#4B5563]',
-  'gray-600': 'fill-[#374151]',
-  'gray-700': 'fill-[#1F2937]',
-  'gray-800': 'fill-[#111827]',
-  'gray-900': 'fill-[#0F172A]',
+  'primary-50': '[#DCF4EC]',
+  'primary-200': '[#97D3C0]',
+  'primary-400': '[#00A368]',
+  'primary-600': '[#006B49]',
+  'secondary-50': '[#F9E5F1]',
+  'secondary-100': '[#FFCCEB]',
+  'secondary-400': '[#E673C5]',
+  'secondary-600': '[#C35594]',
+  'gray-50': '[#F3F4F6]',
+  'gray-100': '[#E5E7EB]',
+  'gray-200': '[#D1D5DB]',
+  'gray-300': '[#A0AEC0]',
+  'gray-400': '[#6B7280]',
+  'gray-500': '[#4B5563]',
+  'gray-600': '[#374151]',
+  'gray-700': '[#1F2937]',
+  'gray-800': '[#111827]',
+  'gray-900': '[#0F172A]',
 };
 
-const Spinner = ({ color = 'primary-400' }: SpinnerProps) => {
+const Spinner = ({ color = 'primary-200' }: SpinnerProps) => {
   return (
     <div role='status'>
       <svg
         aria-hidden='true'
-        className={`w-8 h-8 text-[#e7e7e7df] animate-spin dark:text-gray-600 ${colorClassMap[color]}`}
+        className={`h-8 w-8 animate-spin fill-${colorClassMap[color]} text-[#b3b3b3df] dark:text-gray-600`}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
