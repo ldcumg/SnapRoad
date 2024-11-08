@@ -39,7 +39,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   //TODO - Set으로 관리
-  // let polyline: Latlng[] = [];
+  let polyline: Latlng[] = [];
 
   const {
     register,
@@ -213,10 +213,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           ...prev,
           {
             centerLatLng: { lat: Ma, lng: La },
-            textAlign: 'end',
-            lineHeight: '54px',
-            fontSize: '20px',
-            color: 'black',
+            // textAlign: 'end',
+            // lineHeight: '54px',
+            fontSize: '0px',
+            // color: 'black',
             width: '56px',
             height: '56px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
@@ -365,13 +365,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        {/* <Polyline
+        <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        /> */}
+        />
         <button
           className='fixed bottom-[88px] left-4 z-50'
           onClick={handleFindUserLocation}
