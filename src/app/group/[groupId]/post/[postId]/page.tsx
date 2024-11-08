@@ -1,4 +1,3 @@
-/** SSR */
 import MyPageHeader from '@/components/myPage/MyPageHeader';
 import Comments from '@/components/post/postDetail/Comments';
 import PostDetail from '@/components/post/postDetail/PostDetail';
@@ -66,9 +65,9 @@ const TourDetail = async ({
   };
 
   const postData = await fetchPostData(params.postId);
-  const groupDetail = await getGroupDetails(postData.group_id!);
-
   const userDetail = await getProfile(user?.id!); // 이 글을 조회하는 사람
+
+  const groupDetail = await getGroupDetails(postData.group_id!);
   const postAuthorDetail = await getProfile(postData?.user_id!); // 이 글을 쓴 사람
 
   // const imageNames = postData.images.map((img: { post_image_name: string }) => img.post_image_name);
