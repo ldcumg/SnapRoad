@@ -24,5 +24,6 @@ export const useUserInfoQuery = () => {
       }
       return userInfo;
     },
+    staleTime: 0,
   });
 };
