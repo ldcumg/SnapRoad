@@ -27,21 +27,21 @@ const PostForm = () => {
 
   // 이미지 URL을 비동기로 가져오기
   useEffect(() => {
-    // const fetchImageUrls = async () => {
-    //   if (!groupId || !userId) return;
-    //   try {
-    //     const urls = await Promise.all(
-    //       imagesData.map(async (image) => {
-    //         const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
-    //         return url;
-    //       }),
-    //     );
-    //     return setImageUrls(urls);
-    //   } catch (error) {
-    //     console.error('이미지 URL 가져오기 오류:', error);
-    //   }
-    // };
-    // fetchImageUrls();
+    //   const fetchImageUrls = async () => {
+    //     if (!groupId || !userId) return;
+    //     try {
+    //       const urls = await Promise.all(
+    //         imagesData.map(async (image) => {
+    //           const url = await fetchSignedUrl('tour_images', groupId, image.post_image_name || '');
+    //           return url;
+    //         }),
+    //       );
+    //       return setImageUrls(urls);
+    //     } catch (error) {
+    //       console.error('이미지 URL 가져오기 오류:', error);
+    //     }
+    //   };
+    //   fetchImageUrls();
 
     const fetchImageUrls = async () => {
       if (!groupId || !userId) return;
@@ -64,9 +64,9 @@ const PostForm = () => {
     fetchImageUrls();
   }, [imagesData, groupId, userId]);
 
-  // if (!groupId || !userId) {
-  //   return <div>로딩 중...</div>;
-  // }
+  if (!groupId || !userId) {
+    return <div>로딩 중...</div>;
+  }
   // 포스트 데이터를 생성하는 함수
   const createPostData = (data: FieldValues) => {
     const coverImage = imagesData.find((image) => image.is_cover);
@@ -83,7 +83,7 @@ const PostForm = () => {
       post_address: decodedAddressName!,
     };
   };
-  // 포스트 제출 함수
+  // // 포스트 제출 함수
   const onHandlePostSubmit = async (data: FieldValues) => {
     const postData = createPostData(data);
     try {
@@ -96,12 +96,10 @@ const PostForm = () => {
       // console.log('포스트가 성공적으로 제출되었습니다. post_id:', post.post_id);
       await updateImagePostId(post.post_id);
       await saveTags(data.hashtag, post.post_id);
-
       const place = decodedAddressName;
       const postId = post.post_id;
       // console.log('Place:', place);
       // console.log('post_id:', postId);
-
       // router.push(`/group/${groupId}`);
       // router.push(`/grouplist`);
       router.push(`/group/${groupId}/post/${postId}`);
@@ -127,59 +125,59 @@ const PostForm = () => {
       throw new Error('groupId가 필요합니다.');
     }
 
-    const tagData = hashtags.map((tag) => ({
-      tag_title: tag,
-      post_id: postId,
-      group_id: groupId,
-    }));
-    if (tagData.length > 0) {
-      const { error } = await browserClient.from('tags').insert(tagData);
-      if (error) {
-        console.error('태그 저장에 실패했습니다:', error.message);
-        throw new Error('태그 저장 오류');
+      const tagData = hashtags.map((tag) => ({
+        tag_title: tag,
+        post_id: postId,
+        group_id: groupId,
+      }));
+      if (tagData.length > 0) {
+        const { error } = await browserClient.from('tags').insert(tagData);
+        if (error) {
+          console.error('태그 저장에 실패했습니다:', error.message);
+          throw new Error('태그 저장 오류');
+        }
       }
-    }
   };
   return (
     <div className='PostForm p-4'>
       <form
-        className='w-full flex flex-col space-y-2'
+        className='flex w-full flex-col space-y-2'
         onSubmit={handleSubmit(onHandlePostSubmit)}
       >
-        <div className='relative border rounded-lg border-gray-300 focus:ring-2 focus:border-gray-300 overflow-hidden'>
+        <div className='relative overflow-hidden rounded-lg border border-gray-300 focus:border-gray-300 focus:ring-2'>
           <textarea
             id='description'
             {...register('description')}
             maxLength={1000}
             placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-            className='w-full pt-3 pb-12 px-3 h-36 text-base bg-white text-gray-900'
+            className='h-36 w-full bg-white px-3 pb-12 pt-3 text-base text-gray-900'
             onChange={handleChange}
           />
-          <div className='w-full text-right text-gray-500 text-sm absolute pb-1 pr-1 left-0 right-0 bottom-0 bg-white'>
+          <div className='absolute bottom-0 left-0 right-0 w-full bg-white pb-1 pr-1 text-right text-sm text-gray-500'>
             {description.length}/1000
           </div>
-          {errors.description?.message && <p className='text-danger text-sm'>{String(errors.description.message)}</p>}
+          {errors.description?.message && <p className='text-sm text-danger'>{String(errors.description.message)}</p>}
         </div>
         <Input
           type='text'
           {...register('hashtag')}
           placeholder='# 해시태그를 추가해 보세요'
         />
-        {errors.hashtag?.message && <p className='text-danger text-sm'>{String(errors.hashtag.message)}</p>}
+        {errors.hashtag?.message && <p className='text-sm text-danger'>{String(errors.hashtag.message)}</p>}
 
         <input
           type='date'
-          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
+          className='w-full px-3 py-3 focus:border-gray-300 focus:outline-none focus:ring-2'
           {...register('date')}
         />
-        {errors.date?.message && <p className='text-danger text-sm'>{String(errors.date.message)}</p>}
+        {errors.date?.message && <p className='text-sm text-danger'>{String(errors.date.message)}</p>}
 
         <input
           type='time'
-          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
+          className='w-full px-3 py-3 focus:border-gray-300 focus:outline-none focus:ring-2'
           {...register('time')}
         />
-        {errors.time?.message && <p className='text-danger text-sm'>{String(errors.time.message)}</p>}
+        {errors.time?.message && <p className='text-sm text-danger'>{String(errors.time.message)}</p>}
         <div className='border-t border-gray-300 py-4'>
           <Button
             type='submit'

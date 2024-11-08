@@ -1,12 +1,14 @@
+'use client';
+
 import { formSchema } from './query/formSchemas';
 import { useForm } from './query/useFormMutations';
 import { usePostForm } from './query/usePostForm';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
+import { useSearchParams } from 'next/navigation';
 import { useMemo, useState, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
-
 
 const FixPostForm = () => {
   const {
@@ -16,15 +18,26 @@ const FixPostForm = () => {
     watch,
   } = usePostForm();
 
-  const { userId, groupId, addressName, lat, lng } = usePostDataStore();
-  const place = addressName ? decodeURIComponent(addressName) : '';
-
   const { mutate: postForm } = useForm();
+  const { userId, groupId, lat, lng, addressName, setUserData, setLocationData /*resetPostData*/ } = usePostDataStore();
+  const searchParams = useSearchParams();
 
-  // useEffect(() => {
-  //   if (!groupId || !userId) return;
-  // }, [groupId, userId]);
-  console.log(`유저:${userId}, 그룹: ${groupId}, 경도: ${lat}, 위도: ${lng}, 주소: ${addressName}`);
+  useEffect(() => {
+    const lat = searchParams.get('lat');
+    const lng = searchParams.get('lng');
+    const place = searchParams.get('place');
+    setUserData(userId, groupId); /*uploadSessionId */
+    console.log('유저 데이터 설정:', userId, groupId);
+    if (lat && lng && place) {
+      setLocationData(parseFloat(lat), parseFloat(lng), decodeURIComponent(place));
+      console.log('위치 데이터 설정:', lat, lng, place);
+    }
+
+    // return () => resetPostData();
+  }, [searchParams, setLocationData, resetPostData, setUserData]);
+
+  const place = addressName ? decodeURIComponent(addressName) : '';
+  console.log(`유저: ${userId}, 그룹: ${groupId}, 경도: ${lat}, 위도: ${lng}, 주소: ${addressName}`);
 
   const [isChecked, setIsChecked] = useState(false);
   const [isCheckedInSheet, setIsCheckedInSheet] = useState(false);
@@ -32,7 +45,7 @@ const FixPostForm = () => {
   const handlePostForm = async (value: FieldValues) => {
     console.log('폼 데이터 제출', value, userId, groupId);
 
-    if (!userId || !groupId || !lat || !lng || !addressName) return;
+    if (!userId || !groupId || !lat || !lng || !place) return;
 
     const parsedFormData = {
       ...formSchema.parse(value), // Zod로 파싱된 기존 데이터
