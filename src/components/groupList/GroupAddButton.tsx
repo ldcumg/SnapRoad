@@ -14,11 +14,10 @@ type Props = {
 };
 
 type AddButtonsProps = {
-  router: AppRouterInstance;
   handleBottomSheetOpen: () => void;
 };
 
-const AddButtons = ({ router, handleBottomSheetOpen }: AddButtonsProps) => {
+const AddButtons = ({ handleBottomSheetOpen }: AddButtonsProps) => {
   return (
     <>
       <Button
@@ -64,10 +63,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
               handleBottomSheetOpen={handleBottomSheetOpen}
             />
           </Modal>
-          <AddButtons
-            router={router}
-            handleBottomSheetOpen={handleBottomSheetOpen}
-          />
+          <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
         </div>
       ) : (
         <div className='my-[186px] flex w-full flex-col justify-center gap-4'>
@@ -82,10 +78,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
           </Modal>
           <p className='w-full text-center text-title_xl text-gray-500'>그룹을 만들어 추억을 남겨보세요!</p>
           <div className='flex flex-col gap-2 px-4 py-5'>
-            <AddButtons
-              router={router}
-              handleBottomSheetOpen={handleBottomSheetOpen}
-            />
+            <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
           </div>
         </div>
       )}
