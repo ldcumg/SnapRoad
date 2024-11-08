@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^2.0.2",
+    "@sentry/cli": "^2.38.2",
     "@storybook/addon-actions": "^8.4.2",
     "@storybook/addon-essentials": "^8.4.1",
     "@storybook/addon-interactions": "^8.4.1",
