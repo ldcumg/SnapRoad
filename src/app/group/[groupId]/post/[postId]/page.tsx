@@ -85,7 +85,7 @@ const TourDetail = async ({
   return (
     <div>
       <div className='relative mx-4 flex items-center py-4'>
-        <MyPageHeader url={URLS.groupList} />
+        <MyPageHeader url={`/group/${postData.group_id}`} />
         <span className='mx-auto text-label_md text-gray-900'>{groupDetail?.group_title}</span>
       </div>
       <PostDetail

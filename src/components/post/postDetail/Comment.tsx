@@ -64,14 +64,14 @@ const Comment = ({
   return (
     <>
       {isEditMode ? (
-        <div className='flex flex-col py-4 gap-3 px-4'>
+        <div className='flex flex-col gap-3 px-4 py-4'>
           <form
             className='flex flex-col gap-2'
             onSubmit={handleUpdateComment}
           >
-            <div className='flex flex-col border rounded-[12px] py-2 px-3 gap-1 bg-white'>
-              <span className='text-gray-900 text-label_sm'>{userDetail?.profiles.user_nickname}</span>
-              <input
+            <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
+              <span className='text-label_sm text-gray-900'>{userDetail?.profiles.user_nickname}</span>
+              <textarea
                 value={newCommentDesc}
                 onChange={(e) => {
                   setNewCommentDesc(e.target.value);
@@ -91,21 +91,21 @@ const Comment = ({
           </form>
         </div>
       ) : (
-        <div className='flex py-4 gap-3 px-4'>
+        <div className='flex gap-3 px-4 py-4'>
           <>
-            <div className='w-[32px] h-[32px] overflow-hidden rounded-full'>
+            <div className='h-[32px] w-[32px] overflow-hidden rounded-full'>
               <img
                 alt='프로필 이미지'
                 src={authorProfileData?.profileImageUrl || '/svgs/Profile.svg'} // 이 글을 쓴 사람
-                className='object-cover w-full h-full'
+                className='h-full w-full object-cover'
               />
             </div>
 
             {/* 댓글 부분 */}
             <div className='w-full pb-1'>
               {/* 닉네임 */}
-              <div className='flex justify-between '>
-                <span className='text-gray-900 text-label_sm'>{commentAuthor?.user_nickname}</span>
+              <div className='flex justify-between'>
+                <span className='text-label_sm text-gray-900'>{commentAuthor?.user_nickname}</span>
                 <CommentOptions
                   commentId={commentId}
                   setIsEditMode={setIsEditMode}
@@ -116,12 +116,12 @@ const Comment = ({
               </div>
               {/* 댓글 내용 */}
               <div className='flex justify-between pb-2'>
-                <p className='text-gray-900 text-body_sm'>{commentDesc}</p>
+                <p className='break-all text-body_sm text-gray-900'>{commentDesc}</p>
               </div>
               <div>
                 {parentId === null ? (
                   <span
-                    className='text-gray-500 text-caption_bold_md '
+                    className='text-caption_bold_md text-gray-500'
                     onClick={() => setIsWriteReplyMode && setIsWriteReplyMode(true)}
                   >
                     답글 쓰기

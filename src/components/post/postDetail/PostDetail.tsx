@@ -58,7 +58,7 @@ const PostDetail = ({ postData, signedImageUrls, coverImageDate, userDetail, pos
           <span className='text-label_md text-gray-900'>{postAuthorDetail.profiles.user_nickname}</span>
         </div>
         <div>
-          <p className='text-body_md text-black'>{postData.post_desc}</p>
+          <p className='break-all text-body_md text-black'>{postData.post_desc}</p>
         </div>
         {/* 태그 영역 */}
         <div className='flex gap-1 px-4'>
