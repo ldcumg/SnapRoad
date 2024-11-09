@@ -244,9 +244,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   };
 
   const reconstitutePolyline = () => {
-    polyline.clear()
-
-  }
+    polyline.clear();
+  };
 
   return (
     <>
@@ -312,8 +311,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         onCreate={setMap}
         level={13}
         isPanto={true}
-        onDragEnd={() => {
-          isPostsView || getSpotInfo();
+        onDragEnd={() => isPostsView || getSpotInfo()}
+        onZoomChanged={(a) => {
+          // console.log(a)
+          console.log(a.sa)
         }}
       >
         {isPostsView && !!postsCoverImages.length ? (
@@ -325,7 +326,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             onClustered={(marker) => onClusteredEvent(marker)}
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
-              console.log("marker =>", marker);
+              console.log('marker =>', marker);
               clusterClickEvent(cluster);
             }}
           >
