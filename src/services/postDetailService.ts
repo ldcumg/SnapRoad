@@ -1,4 +1,5 @@
 import { getSignedImgUrl } from './server-action/getSignedImgUrl';
+import { ImageDetail, PostDetail } from '@/types/postDetailTypes';
 import { createClient } from '@/utils/supabase/server';
 
 export const fetchPostDetail = async (postId: string) => {
@@ -39,8 +40,8 @@ export const fetchPostDetail = async (postId: string) => {
   //     }
   //   }
 
-  // 2. promise.all 로 성능 개선 버전
-  data.images = await Promise.all(
+  // 2. promise.all
+  const updatedImages = await Promise.all(
     // MEMO : data.images가 배열이 아닌 경우 map 호출 X, undefined 반환
     data.images?.map(async (image) => {
       const signedImageUrl = await getSignedImgUrl('tour_images', 86400, `${image.group_id}/${image.post_image_name}`);
@@ -51,6 +52,8 @@ export const fetchPostDetail = async (postId: string) => {
       };
     }) || [],
   );
-
-  return data;
+  return {
+    ...data,
+    images: updatedImages as ImageDetail[],
+  } as PostDetail;
 };

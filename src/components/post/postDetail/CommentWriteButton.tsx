@@ -1,7 +1,11 @@
 import React from 'react';
 
+type CommentWriteButtonProps = {
+  setIsWriteMode: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 /** 댓글 작성 버튼 */
-const CommentWriteButton = ({ setIsWriteMode }) => {
+const CommentWriteButton = ({ setIsWriteMode }: CommentWriteButtonProps) => {
   return (
     <div className='w-full px-4 py-3'>
       <button

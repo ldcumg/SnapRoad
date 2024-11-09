@@ -1,7 +1,12 @@
 import ProfileImage from './ProfileImage';
+import { PostDetail } from '@/types/postDetailTypes';
 import React from 'react';
 
-const PostDetailDesc = ({ postDetail }) => {
+export type ProfileProps = {
+  postDetail: PostDetail;
+};
+
+const PostDetailDesc = ({ postDetail }: ProfileProps) => {
   return (
     <div className='flex flex-col gap-4 p-4'>
       <div className='flex items-center gap-4'>

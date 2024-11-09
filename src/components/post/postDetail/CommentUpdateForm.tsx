@@ -1,13 +1,21 @@
-import { usePostComment, useUpdateComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { useUpdateComment } from '@/hooks/queries/byUse/useCommentMutation';
 import { Button } from '@/stories/Button';
+import { Comment, UserDetail } from '@/types/postDetailTypes';
 import React, { useEffect, useRef, useState } from 'react';
 
-const CommentUpdateFormRefac = ({ comment, userDetail, setIsEditMode }) => {
+type CommentFormProps = {
+  comment: Comment;
+  userDetail: UserDetail;
+  setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+// TODO 등록폼 이랑 합치기
+const CommentUpdateForm = ({ comment, userDetail, setIsEditMode }: CommentFormProps) => {
   const [newCommentDesc, setNewCommentDesc] = useState<string>(comment.comment_desc!);
 
   const { mutate: updateComment } = useUpdateComment();
 
-  const textareaRef = useRef();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -16,7 +24,7 @@ const CommentUpdateFormRefac = ({ comment, userDetail, setIsEditMode }) => {
   const handleUpdateComment = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     updateComment({ commentId: comment.comment_id, newCommentDesc: newCommentDesc });
-    setIsEditMode(false);
+    setIsEditMode(false); // 수정 폼 닫기
   };
 
   return (
@@ -28,6 +36,7 @@ const CommentUpdateFormRefac = ({ comment, userDetail, setIsEditMode }) => {
         <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
           <span className='text-label_sm text-gray-900'>{userDetail?.profiles.user_nickname}</span>
           <textarea
+            ref={textareaRef}
             value={newCommentDesc}
             onChange={(e) => {
               setNewCommentDesc(e.target.value);
@@ -49,4 +58,4 @@ const CommentUpdateFormRefac = ({ comment, userDetail, setIsEditMode }) => {
   );
 };
 
-export default CommentUpdateFormRefac;
+export default CommentUpdateForm;

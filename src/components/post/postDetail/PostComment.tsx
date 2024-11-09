@@ -1,22 +1,24 @@
 'use client';
 
-import CommentNode from '../CommentNode';
-import CommentWriteButton from '../CommentWriteButton';
-import CommentFormRefac from './CommentFormRefac';
-import { useCommentsQueryRefac } from '@/hooks/queries/byUse/useCommentQueries';
+import CommentForm from './CommentForm';
+import CommentNode from './CommentNode';
+import CommentWriteButton from './CommentWriteButton';
+import { useCommentsQuery } from '@/hooks/queries/byUse/useCommentQueries';
 import Spinner from '@/stories/Spinner';
-import { PostAndProfileProps } from '@/types/postDetailTypes';
+import { Comment, CommentMap, CommentTree, PostDetail, UserDetail } from '@/types/postDetailTypes';
 import React, { useState } from 'react';
 
-// TODO 함수 이동
-const buildCommentTree = (comments) => {
-  const commentMap = {}; // 각 댓글을 저장할 맵
+export const buildCommentTree = (comments: Comment[]) => {
+  comments.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+  // 각 댓글을 저장할 맵
+  const commentMap: CommentMap = {};
 
   comments.forEach((comment) => {
     commentMap[comment.comment_id] = { ...comment, children: [] };
   });
 
-  const tree = [];
+  const tree: CommentTree[] = [];
 
   comments.forEach((comment) => {
     // parent_id가 null이면 최상위 댓글(부모)이므로 tree에 추가
@@ -31,12 +33,16 @@ const buildCommentTree = (comments) => {
   return tree;
 };
 
+type PostAndProfileProps = {
+  postDetail: PostDetail;
+  userDetail: UserDetail;
+};
+
 const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
   const [isWriteMode, setIsWriteMode] = useState<boolean>(false);
   //   const [isWriteReplyMode, setIsWriteReplyMode] = useState<boolean>(false);
 
-  const { data: comments, isLoading, isError } = useCommentsQueryRefac(postDetail.post_id);
-  console.log('comments :>> ', comments);
+  const { data: comments, isLoading, isError } = useCommentsQuery(postDetail.post_id);
 
   if (isError) return <>임시 오류 ...</>;
   if (isLoading)
@@ -46,8 +52,7 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
       </div>
     );
 
-  const commentTree = buildCommentTree(comments); // 트리 구조 생성
-  console.log('commentTree :>> ', commentTree);
+  const commentTree = comments ? buildCommentTree(comments) : [];
 
   return (
     <>
@@ -58,15 +63,13 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
             comment={comment}
             userDetail={userDetail}
             postDetail={postDetail}
-            // setIsWriteReplyMode={setIsWriteReplyMode}
           />
         ))}
       </ul>
       {/* 댓글 작성 버튼 */}
       {isWriteMode ? (
         <>
-          <CommentFormRefac
-            setIsWriteMode={setIsWriteMode}
+          <CommentForm
             parentId={null}
             postId={postDetail.post_id}
             userDetail={userDetail}
