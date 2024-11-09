@@ -1,0 +1,52 @@
+import { usePostComment, useUpdateComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { Button } from '@/stories/Button';
+import React, { useEffect, useRef, useState } from 'react';
+
+const CommentUpdateFormRefac = ({ comment, userDetail, setIsEditMode }) => {
+  const [newCommentDesc, setNewCommentDesc] = useState<string>(comment.comment_desc!);
+
+  const { mutate: updateComment } = useUpdateComment();
+
+  const textareaRef = useRef();
+
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
+  const handleUpdateComment = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    updateComment({ commentId: comment.comment_id, newCommentDesc: newCommentDesc });
+    setIsEditMode(false);
+  };
+
+  return (
+    <div className='p-4'>
+      <form
+        className='flex flex-col gap-2'
+        onSubmit={handleUpdateComment}
+      >
+        <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
+          <span className='text-label_sm text-gray-900'>{userDetail?.profiles.user_nickname}</span>
+          <textarea
+            value={newCommentDesc}
+            onChange={(e) => {
+              setNewCommentDesc(e.target.value);
+            }}
+            placeholder='댓글을 입력해주세요.'
+            className='pb-6'
+          />
+        </div>
+        <div className='flex justify-end'>
+          <Button
+            type='submit'
+            variant='primary'
+            label='수정 '
+            size='small'
+          />
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CommentUpdateFormRefac;

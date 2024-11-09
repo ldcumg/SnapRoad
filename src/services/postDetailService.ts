@@ -20,10 +20,10 @@ export const fetchPostDetail = async (postId: string) => {
 
   if (error) {
     console.error('error ... : ', error);
-    throw new Error('post 상세 정보 조회 시 오류가 발생했습니다.');
+    throw new Error('게시글 상세 정보 조회 시 오류가 발생했습니다.');
   }
 
-  // 해당 게스글을 쓴 유저의 signed url
+  // 해당 게시글을 쓴 유저의 signed url
   if (data?.post_author_user?.user_image_url) {
     const signedImageUrl = await getSignedImgUrl('avatars', 86400, data.post_author_user.user_image_url);
     (data.post_author_user as typeof data.post_author_user & { signed_image_url: string | null }).signed_image_url =

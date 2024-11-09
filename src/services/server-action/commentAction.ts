@@ -1,7 +1,9 @@
 'use server';
 
+import { getSignedImgUrl } from './getSignedImgUrl';
 import { createClient } from '@/utils/supabase/server';
 
+// TODO 삭제될 예정
 export const fetchGetComments = async (postId: string) => {
   const supabase = createClient();
 
@@ -14,6 +16,36 @@ export const fetchGetComments = async (postId: string) => {
   if (error) throw new Error(error.message);
 
   return data;
+};
+
+export const fetchComments = async (postId: string) => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('comment')
+    .select('*, comment_author_user:profiles (user_id, user_nickname, user_image_url) ')
+    .eq('post_id', postId)
+    .is('deleted_at', null);
+
+  if (error) {
+    console.error('error ... : ', error);
+    throw new Error('댓글 정보 조회 시 오류가 발생했습니다.');
+  }
+
+  const commentData = await Promise.all(
+    data.map(async (comment) => {
+      const signedImageUrl = await getSignedImgUrl('avatars', 86400, comment.comment_author_user?.user_image_url!);
+      return {
+        ...comment,
+        comment_author_user: {
+          user_nickname: comment.comment_author_user?.user_nickname,
+          signed_image_url: signedImageUrl ?? null,
+        },
+      };
+    }),
+  );
+
+  return commentData;
 };
 
 /** 댓글 등록 */
