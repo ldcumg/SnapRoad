@@ -15,7 +15,7 @@ const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), {
 type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
-  const { mode, toMap, toAlbum, toMember } = useGroupDetailModeStore((state) => state);
+  const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
