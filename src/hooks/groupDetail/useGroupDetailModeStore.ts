@@ -1,5 +1,3 @@
-'use client';
-
 import { GroupDetailModeStoreContext } from '@/components/providers/GroupDetailModeProvider';
 import type { GroupDetailModeStore } from '@/types/groupTypes';
 import { useContext } from 'react';
