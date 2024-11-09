@@ -40,6 +40,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   //TODO - Set으로 관리
   // let polyline: Latlng[] = [];
+  const polyline: Set<Latlng> = new Set([]);
 
   const {
     register,
@@ -208,24 +209,23 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     customMarker._clusters.forEach((cluster) => {
       const customCluster = cluster as CustomCluster;
       const { Ma, La } = cluster.getCenter() as CustomLatLng;
-      clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
-        setClusterStyle((prev) => [
-          ...prev,
-          {
-            centerLatLng: { lat: Ma, lng: La },
-            textAlign: 'end',
-            lineHeight: '54px',
-            fontSize: '20px',
-            color: 'black',
-            width: '56px',
-            height: '56px',
-            background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
-            backgroundSize: 'cover',
-            positon: 'getCenter',
-            borderRadius: '100%',
-            border: '4px solid #EB84DA',
-          },
-        ]);
+      setClusterStyle((prev) => [
+        ...prev,
+        {
+          centerLatLng: { lat: Ma, lng: La },
+          textAlign: 'end',
+          lineHeight: '54px',
+          fontSize: '20px',
+          color: 'black',
+          width: '56px',
+          height: '56px',
+          background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
+          backgroundSize: 'cover',
+          positon: 'getCenter',
+          borderRadius: '100%',
+          border: '4px solid #EB84DA',
+        },
+      ]);
     });
   };
 
@@ -242,6 +242,11 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     }
     return index;
   };
+
+  const reconstitutePolyline = () => {
+    polyline.clear()
+
+  }
 
   return (
     <>
@@ -320,11 +325,12 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             onClustered={(marker) => onClusteredEvent(marker)}
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
+              console.log("marker =>", marker);
               clusterClickEvent(cluster);
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              // polyline.push({ lat: post_lat, lng: post_lng });
+              post_lat && post_lng && polyline.add({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -365,13 +371,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        {/* <Polyline
-          path={[polyline]}
+        <Polyline
+          path={[[...polyline]]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        /> */}
+        />
         <button
           className='fixed bottom-[88px] left-4 z-50'
           onClick={handleFindUserLocation}
