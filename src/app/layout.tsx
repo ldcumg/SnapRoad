@@ -1,7 +1,6 @@
 import { GroupDetailModeProvider } from '@/components/providers/GroupDetailModeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
-import { GroupDetailMode } from '@/types/groupTypes';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
