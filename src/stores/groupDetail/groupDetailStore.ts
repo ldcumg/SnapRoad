@@ -1,11 +1,11 @@
 import { GroupDetailMode, type GroupDetailModeState, type GroupDetailModeStore } from '@/types/groupTypes';
 import { createStore } from 'zustand/vanilla';
 
-export const defaultInitState: GroupDetailModeState = {
+const initState: GroupDetailModeState = {
   mode: GroupDetailMode.map,
 };
 
-export const createGroupDetailModeStore = (initState: GroupDetailModeState = defaultInitState) => {
+export const createGroupDetailModeStore = () => {
   return createStore<GroupDetailModeStore>()((set) => ({
     ...initState,
     toMap: () => set(() => ({ mode: GroupDetailMode.map })),

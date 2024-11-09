@@ -21,7 +21,7 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          <GroupDetailModeProvider mode={GroupDetailMode.map}>
+          <GroupDetailModeProvider>
             <main className='h-full w-full'>{children}</main>
           </GroupDetailModeProvider>
         </QueryProvider>

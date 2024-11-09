@@ -66,5 +66,3 @@ export type GroupDetailModeActions = {
 export type GroupDetailModeStore = GroupDetailModeState & GroupDetailModeActions;
 
 export type GroupDetailModeStoreApi = ReturnType<typeof createGroupDetailModeStore>;
-
-export type GroupDetailModeStoreProviderProps = React.PropsWithChildren<GroupDetailModeState>;
