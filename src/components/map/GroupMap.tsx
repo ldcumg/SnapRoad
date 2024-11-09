@@ -189,7 +189,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   /** 게시물 추가 라우팅 */
   const handleAddPostRoute = () => {
-    //TODO - 해외 인밸리데이트
     if (isPostsView) {
       route.push(`/group/${groupId}/post`);
       return;
@@ -364,23 +363,27 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
         />
-        <button
-          className='fixed bottom-[100px] left-4 z-50'
-          onClick={handleFindUserLocation}
-        >
-          <img src='/svgs/Geolocation_btn.svg' />
-        </button>
-        {!!spotInfo && (
-          <div className='relative'>
+
+        {!!spotInfo ? (
+          <BottomSheet
+            height='custom'
+            customHeight=''
+            rounded={true}
+            isOpen={true}
+            showHeader={false}
+            hasButton={false}
+            className='mb-0 pt-7'
+            backdrop={false}
+          >
             <button
-              className='absolute bottom-48 left-4 z-50'
+              className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
               onClick={handleFindUserLocation}
             >
               <img src='/svgs/Geolocation_btn.svg' />
             </button>
             {searchResult.hasMore && (
               <button
-                className='absolute bottom-48 left-1/2 z-50 flex h-11 -translate-x-1/2 flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+                className='absolute -top-4 left-1/2 z-50 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
                 onClick={searchLocation}
               >
@@ -388,24 +391,20 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                 <img src='/svgs/Reload.svg' />
               </button>
             )}
-            <BottomSheet
-              height='custom'
-              customHeight=''
-              rounded={true}
-              isOpen={true}
-              showHeader={false}
-              hasButton={false}
-              className='mb-0 pt-7'
-              backdrop={false}
-            >
-              <div className='flex flex-col gap-1 pb-2'>
-                <h5 className='text-label_md'>
-                  {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
-                </h5>
-                <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
-              </div>
-            </BottomSheet>
-          </div>
+            <div className='flex flex-col gap-1 pb-2'>
+              <h5 className='text-label_md'>
+                {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
+              </h5>
+              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+            </div>
+          </BottomSheet>
+        ) : (
+          <button
+            className='fixed bottom-[100px] left-4 z-50'
+            onClick={handleFindUserLocation}
+          >
+            <img src='/svgs/Geolocation_btn.svg' />
+          </button>
         )}
         {!!postsPreView.length ? (
           <BottomSheet
