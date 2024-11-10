@@ -7,7 +7,6 @@ import TextAreaWithCounter from '@/stories/TextAreas';
 import { useMemo, useState, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-
 const FixPostForm = () => {
   const {
     register,
@@ -30,9 +29,9 @@ const FixPostForm = () => {
   const [isCheckedInSheet, setIsCheckedInSheet] = useState(false);
 
   const handlePostForm = async (value: FieldValues) => {
-    console.log('폼 데이터 제출', value, userId, groupId);
+    // console.log('폼 데이터 제출', value, userId, groupId);
 
-    if (!userId || !groupId || !lat || !lng || !addressName) return;
+    if (!userId || !groupId) return; //!lat || !lng || !addressName
 
     const parsedFormData = {
       ...formSchema.parse(value), // Zod로 파싱된 기존 데이터
@@ -43,8 +42,13 @@ const FixPostForm = () => {
       place,
     };
 
-    console.log('제출할 폼 데이터:', parsedFormData);
-    postForm(parsedFormData);
+    try {
+      await postForm(parsedFormData);
+      console.log('폼 데이터 제출 성공!');
+    } catch (error) {
+      console.error('폼 제출 에러:', error);
+      alert('폼 제출에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   // 필드 값 감시

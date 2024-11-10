@@ -9,13 +9,13 @@ export const postForm = async (formData: {
   desc: string;
   date: string;
   time: string;
-  lat: number | null;
-  lng: number | null;
-  place: string;
+  lat?: number | null;
+  lng?: number | null;
+  place?: string;
 }) => {
   const supabase = createClient();
 
-  const { error: postFormError } = await supabase
+  const { data, error: postFormError } = await supabase
     .from('posts')
     .insert({
       group_id: formData.groupId,
@@ -29,6 +29,11 @@ export const postForm = async (formData: {
     })
     .select('post_id')
     .single();
+
+  if (postFormError) {
+    console.error('포스트 등록 에러:', postFormError);
+    throw new Error(postFormError.message);
+  }
 };
 
 getSignedImgUrl;
