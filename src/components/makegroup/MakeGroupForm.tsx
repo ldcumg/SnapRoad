@@ -1,7 +1,9 @@
 'use client';
 
+import ImageCropper from '../_common/ImageCropper';
 import InputSection from '@/components/makegroup/InputSection';
 import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
+import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import {
   useInsertGroupMutation,
   useInsertUserGroupMutation,
@@ -11,8 +13,10 @@ import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQuer
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
+import { AreaPixedType, unCroppedImg } from '@/types/CropTypes';
+import getCroppedImg from '@/utils/getCroppedImage';
 import browserClient from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 type Props = {
@@ -83,7 +87,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
-          groupImg: fileList as unknown as null,
+          groupImg: fileList as unknown as File[],
         });
       } else if (groupDetailData) {
         reset({
@@ -97,7 +101,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
 
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
-  const groupThumbnail = watch('groupImg') as FileList | null;
+  const groupThumbnail = watch('groupImg') as File[] | null;
 
   const isValidToSubmit =
     (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
@@ -113,6 +117,35 @@ const MakeGroupForm = ({ update_for }: Props) => {
     clearErrors('groupTitle');
   };
 
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<AreaPixedType>(null);
+  const [unCroppedImage, setUnCroppedImage] = useState<unCroppedImg>(null);
+  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [cropperModal, handleCropperModal] = useIsOpen(false);
+  const handleInputImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    if (e.target.files && e.target.files[0]) {
+      handleCropperModal();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = () => {
+        setUnCroppedImage(reader.result);
+      };
+    }
+  };
+  const handleCropImage = async () => {
+    if (!croppedAreaPixels || !unCroppedImage) return; // 크롭 영역과 이미지가 있어야 함
+    try {
+      const cropped = (await getCroppedImg(unCroppedImage as string, croppedAreaPixels)) as File;
+      console.log('Cropped Image File:', cropped);
+      setValue('groupImg', [cropped]);
+      setImgFile(cropped as File);
+      setImgPreview(URL.createObjectURL(cropped as Blob));
+      handleCropperModal();
+      setUnCroppedImage(null); // 크롭한 이미지 리셋
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
     <>
@@ -121,6 +154,12 @@ const MakeGroupForm = ({ update_for }: Props) => {
           <Spinner color='primary-400' />
         </div>
       )}
+      <ImageCropper
+        unCroppedImage={unCroppedImage}
+        setCroppedAreaPixels={setCroppedAreaPixels}
+        cropperModal={cropperModal}
+        handleCropImage={handleCropImage}
+      />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-col items-center justify-center gap-6 px-4 pt-4'
@@ -132,6 +171,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupTitleLen={groupTitleLen}
           groupDescLen={groupDescLen}
           clearInputValue={clearInputValue}
+          handleInputImageChange={handleInputImageChange}
         />
         <Button
           variant='primary'
