@@ -1,3 +1,5 @@
+'use client';
+
 import DraggableImageList from './DraggableImageList';
 import PostImage from './PostImage';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
@@ -11,7 +13,7 @@ const ImageBottomSheet = () => {
 
   return (
     <article
-      className={`p-6 flex items-start content-center overflow-x-auto ${images.length > 0 ? 'w-auto' : 'w-full'} `}
+      className={`flex content-center items-start overflow-x-auto p-6 ${images.length > 0 ? 'w-auto' : 'w-full'} `}
     >
       <BottomSheet
         isOpen={isFullHeightOpen}
@@ -27,11 +29,11 @@ const ImageBottomSheet = () => {
         </div>
       </BottomSheet>
 
-      <div className='flex items-start content-center'>
+      <div className='flex content-center items-start'>
         <DraggableImageList />
         <button
           onClick={handleFullOpen}
-          className={`flex items-center flex-shrink-0 justify-center max-w-[240px] min-w-[240px] h-[240px] border cursor-pointer bg-gray-50 border-gray-100 ${images.length > 0 ? 'ml-4' : ''}`}
+          className={`flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50 ${images.length > 0 ? 'ml-4' : ''}`}
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>

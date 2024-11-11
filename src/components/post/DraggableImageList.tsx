@@ -1,3 +1,5 @@
+'use client';
+
 import SortableImage from './SortableImage';
 import { BUCKET_NAME } from '@/constants/constants';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
@@ -34,7 +36,7 @@ const DraggableImageList = () => {
     },
   });
 
-  // 대표 이미지가 없을 경우에만 첫 번째 이미지를 대표 이미지로 설정
+  // 대표 이미지가 없을 경우에 첫 번째 이미지를 대표 이미지로 설정
   useEffect(() => {
     if (images.length > 0 && selectedCover === null) {
       const firstImageId = images[0].id;
@@ -42,6 +44,15 @@ const DraggableImageList = () => {
       handleSetCover(firstImageId);
     }
   }, [images, selectedCover]);
+
+  // 이미지 배열의 첫 번째 이미지가 변경될 때 대표 이미지로 설정
+  useEffect(() => {
+    if (images.length > 0 && images[0].id !== selectedCover) {
+      const firstImageId = images[0].id;
+      setSelectedCover(firstImageId);
+      handleSetCover(firstImageId);
+    }
+  }, [images]);
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -51,11 +62,11 @@ const DraggableImageList = () => {
       const newIndex = images.findIndex((img) => img.id === over.id);
       const sortedImages = arrayMove(images, oldIndex, newIndex);
 
-      const draggedImage = sortedImages[0];
       setImages([...sortedImages]);
 
-      const newCoverImageId = draggedImage.id;
-      if (newCoverImageId) {
+      // 드래그된 이미지가 첫 번째 이미지로 올 경우 대표 이미지로 설정
+      if (sortedImages.length > 0 && sortedImages[0].id !== selectedCover) {
+        const newCoverImageId = sortedImages[0].id;
         setSelectedCover(newCoverImageId);
         await handleSetCover(newCoverImageId);
       }

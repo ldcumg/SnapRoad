@@ -1,3 +1,5 @@
+'use client';
+
 import { BUCKET_NAME } from '@/constants/constants';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/post/useImageHandlersHooks';
@@ -12,7 +14,7 @@ const ThumbnailImageList = () => {
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
 
   return (
-    <div className='w-full flex justify-start gap-4 pt-4 overflow-x-auto overflow-y-hidden'>
+    <div className='flex w-full justify-start gap-4 overflow-x-auto overflow-y-hidden pt-4'>
       {images.length < 10 && (
         <form
           onSubmit={(e) => {
@@ -20,7 +22,7 @@ const ThumbnailImageList = () => {
             handleImageUpload(null);
           }}
         >
-          <label className='flex items-center justify-center w-28 h-28 border bg-gray-50 border-gray-100 cursor-pointer'>
+          <label className='flex h-28 w-28 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'>
             <input
               type='file'
               accept='image/*'
@@ -38,16 +40,16 @@ const ThumbnailImageList = () => {
           image.id !== undefined && (
             <div
               key={image.id}
-              className='relative w-28 h-28 border overflow-hidden flex-shrink-0'
+              className='relative h-28 w-28 flex-shrink-0 overflow-hidden border'
             >
               <img
                 src={imageUrls[index]}
                 alt='미리보기 이미지'
-                className='w-full h-full object-cover'
+                className='h-full w-full object-cover'
               />
               <button
                 onClick={() => handleDelete(image.id)}
-                className='absolute top-0 right-0 overflow-hidden rounded-full'
+                className='absolute right-0 top-0 overflow-hidden rounded-full'
               >
                 <img src='/svgs/Close_Circle.svg' />
               </button>

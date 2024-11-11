@@ -13,9 +13,7 @@ import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-/**
- * 이미지를 업로드하는 훅
- */
+/** 이미지를 업로드하는 훅 */
 
 export function useUploadBusinessImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
@@ -83,9 +81,8 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
   });
 }
 
-/**
- * Supabase에서 이미지를 삭제하는 훅
- */
+/** Supabase에서 이미지를 삭제하는 훅 */
+
 export function useDeleteBusinessImage(bucketName: string, folderName: string) {
   return useMutation({
     mutationFn: async (id: number) => {
@@ -101,7 +98,7 @@ export function useDeleteBusinessImage(bucketName: string, folderName: string) {
       console.error('삭제 실패:', error);
     },
     onSuccess: (deletedId) => {
-      // console.log(`이미지 ${deletedId} 삭제 성공`);
+      console.log(`이미지 ${deletedId} 삭제 성공`);
     },
   });
 }
@@ -112,6 +109,7 @@ export function useDeleteBusinessImage(bucketName: string, folderName: string) {
  * @param uploadSessionId 업로드 세션 ID
  * @returns 이미지 대표 설정을 위한 mutation 함수
  */
+
 export function useCoverBusinessImage(userId: string, uploadSessionId: string) {
   const queryClient = useQueryClient();
 
@@ -142,9 +140,7 @@ export function useCoverBusinessImage(userId: string, uploadSessionId: string) {
   });
 }
 
-/**
- * Blob URL을 생성하는 함수
- */
+/** Blob URL을 생성하는 함수 */
 async function getBlobUrl(signedUrl: string): Promise<string> {
   const response = await fetch(signedUrl);
   if (!response.ok) throw new Error('Blob URL 생성 실패');
