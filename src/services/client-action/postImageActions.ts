@@ -73,7 +73,7 @@ export const saveImageMetadata = async (
   groupId: string,
   currentDate: string,
   uploadSessionId: string,
-): Promise<ImagesAllWithoutPostId> => {
+) => {
   const { data, error } = await browserClient
     .from('images')
     .insert({

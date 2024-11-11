@@ -1,28 +1,27 @@
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import React from 'react';
 
-export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+export interface LinkButtonProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'type'> {
   variant?: 'primary' | 'secondary' | 'outlinePink' | 'outlineGray';
   size?: 'small' | 'medium' | 'large' | 'full';
-  disabled?: boolean;
   loading?: boolean;
   label?: string;
   children?: React.ReactNode;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  href: string;
 }
 
-export const Button = ({
-  type = 'button',
+export const LinkButton = ({
   variant = 'primary',
   size = 'medium',
   className,
   onClick,
-  disabled = false,
   loading = false,
   label,
   children,
@@ -30,8 +29,9 @@ export const Button = ({
   onMouseLeave,
   onFocus,
   onBlur,
+  href,
   ...props
-}: ButtonProps) => {
+}: LinkButtonProps) => {
   const baseStyle = 'inline-flex items-center justify-center focus:outline-none';
   const sizeStyle = {
     small: 'px-4 py-2 text-label_sm rounded-[4px]',
@@ -41,28 +41,23 @@ export const Button = ({
   }[size];
 
   let colorStyle;
-  let disabledStyle = 'cursor-not-allowed opacity-50';
   let loadingStyle = 'cursor-not-allowed opacity-50';
 
   switch (variant) {
     case 'primary':
       colorStyle = 'bg-primary-400 text-white hover:bg-primary-600';
-      disabledStyle = 'bg-primary-50 text-white hover:bg-primary-200 cursor-not-allowed';
       loadingStyle = 'bg-primary-200 text-white hover:bg-primary-200 cursor-not-allowed';
       break;
     case 'secondary':
       colorStyle = 'bg-secondary-100 text-black hover:bg-secondary-600';
-      disabledStyle = 'bg-secondary-100 text-gray-500 hover:bg-secondary-100 cursor-not-allowed';
       loadingStyle = 'bg-secondary-100 text-gray-500 hover:bg-secondary-100 cursor-not-allowed';
       break;
     case 'outlinePink':
       colorStyle = 'bg-white text-secondary-400 border border-secondary-400 hover:bg-secondary-50';
-      disabledStyle = 'bg-white text-secondary-50 border border-secondary-50 hover:bg-white cursor-not-allowed';
       loadingStyle = 'bg-white text-secondary-50 border border-secondary-50 hover:bg-white cursor-not-allowed';
       break;
     case 'outlineGray':
       colorStyle = 'bg-white text-gray-700 border border-gray-700 hover:bg-gray-100';
-      disabledStyle = 'bg-white text-gray-100 border border-gray-100 hover:bg-white cursor-not-allowed';
       loadingStyle = 'bg-white text-gray-100 border border-gray-100 hover:bg-white cursor-not-allowed';
       break;
     default:
@@ -70,18 +65,10 @@ export const Button = ({
   }
 
   return (
-    <button
-      type={type}
-      className={cn(
-        baseStyle,
-        sizeStyle,
-        colorStyle,
-        { [disabledStyle]: disabled },
-        { [loadingStyle]: loading },
-        className,
-      )}
+    <Link
+      href={href}
+      className={cn(baseStyle, sizeStyle, colorStyle, { [loadingStyle]: loading }, className)}
       onClick={onClick}
-      disabled={disabled || loading}
       aria-label={props['aria-label']}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -97,6 +84,6 @@ export const Button = ({
           {label}
         </>
       )}
-    </button>
+    </Link>
   );
 };

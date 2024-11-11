@@ -1,5 +1,3 @@
-'use client';
-
 import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
 import FixPostForm from '@/components/post/FixPostForm';
@@ -18,6 +16,7 @@ const writePage = ({ params: { groupId } }: Props) => {
       <ScrollReactHeader>
         <LogoUserHeader />
       </ScrollReactHeader>
+
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
         {/* <ImageBottomSheet />

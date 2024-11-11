@@ -1,3 +1,5 @@
+'use client';
+
 import DraggableImageList from './DraggableImageList';
 import ThumbnailImageList from './ThumbnailImageList';
 import { BUCKET_NAME } from '@/constants/constants';

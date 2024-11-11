@@ -2,11 +2,9 @@
 
 import { useDeletePost } from '@/hooks/queries/byUse/usePostMutation';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-/** 상단 옵션 정보 */
 const OptionsMenu = ({ postId }: { postId: string }) => {
   const [isVisible, setIsVisible] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -17,21 +15,19 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
     setIsVisible((prev) => !prev);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsVisible(false);
-      }
-    };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsVisible(false);
+    }
+  };
 
+  useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  //포스트 경로 잇기
 
   const router = useRouter();
   const { groupId, lat, lng, addressName: place } = usePostDataStore();
@@ -54,11 +50,16 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
         />
 
         {isVisible && (
-          <div className='flex flex-col absolute bg-white z-10 top-5 right-1 rounded-md'>
-            <button className='text-gray-900 text-body_md p-2.5 whitespace-nowrap'             onClick={handlePosts}>게시물 수정</button>
+          <div className='absolute right-1 top-5 z-10 flex flex-col rounded-md bg-white'>
+            <button
+              className='whitespace-nowrap p-2.5 text-body_md text-gray-900'
+              onClick={handlePosts}
+            >
+              게시물 수정
+            </button>
             <button
               onClick={() => deletePost(postId)}
-              className='text-danger text-body_md p-2.5'
+              className='p-2.5 text-body_md text-danger'
             >
               게시물 삭제
             </button>
