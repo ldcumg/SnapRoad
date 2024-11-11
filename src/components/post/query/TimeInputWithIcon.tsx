@@ -1,4 +1,4 @@
-import { IconClock } from '@/lib/icon/Icon_clock';
+import { IconClock } from '@/lib/icon/Icon_Clock';
 import { useState, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
