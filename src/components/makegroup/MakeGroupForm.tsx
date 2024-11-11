@@ -10,12 +10,14 @@ import {
   useUpdateGroupMutation,
 } from '@/hooks/queries/byUse/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQueries';
+import queryKeys from '@/hooks/queries/queryKeys';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
 import { AreaPixedType, unCroppedImg } from '@/types/CropTypes';
 import getCroppedImg from '@/utils/getCroppedImage';
 import browserClient from '@/utils/supabase/client';
+import { useIsFetching } from '@tanstack/react-query';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
@@ -27,6 +29,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
+  const isInvalidating = useIsFetching({ queryKey: queryKeys.group.groupList() }) > 0;
   //NOTE - 업데이트 상태일 시 데이터 가져오기
   const { data: groupDetailData, isPending: isPendingBeforeData } = useGroupDetailQueryForUpdate(update_for as string);
   //NOTE - 그룹 테이블 insert mutation
@@ -89,6 +92,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupDesc: groupDetailData.group_desc ?? '',
           groupImg: fileList as unknown as File[],
         });
+        setImgPreview(groupDetailData.group_image_url);
       } else if (groupDetailData) {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
@@ -101,16 +105,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
 
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
-  const groupThumbnail = watch('groupImg') as File[] | null;
 
   const isValidToSubmit =
     (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
 
-  useEffect(() => {
-    if (groupThumbnail && groupThumbnail.length) {
-      setImgPreview(URL.createObjectURL(groupThumbnail['0']));
-    }
-  }, [groupThumbnail]);
   const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setValue('groupTitle', '');
@@ -119,8 +117,9 @@ const MakeGroupForm = ({ update_for }: Props) => {
 
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<AreaPixedType>(null);
   const [unCroppedImage, setUnCroppedImage] = useState<unCroppedImg>(null);
-  const [imgFile, setImgFile] = useState<File | null>(null);
   const [cropperModal, handleCropperModal] = useIsOpen(false);
+
+  // NOTE - 동일 파일을 다시 자르길 원할 때 다시 업로드하면 변화를 체크하지 못함
   const handleInputImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
     if (e.target.files && e.target.files[0]) {
@@ -131,25 +130,24 @@ const MakeGroupForm = ({ update_for }: Props) => {
       };
     }
   };
+
   const handleCropImage = async () => {
     if (!croppedAreaPixels || !unCroppedImage) return; // 크롭 영역과 이미지가 있어야 함
     try {
       const cropped = (await getCroppedImg(unCroppedImage as string, croppedAreaPixels)) as File;
-      console.log('Cropped Image File:', cropped);
       setValue('groupImg', [cropped]);
-      setImgFile(cropped as File);
       setImgPreview(URL.createObjectURL(cropped as Blob));
       handleCropperModal();
       setUnCroppedImage(null); // 크롭한 이미지 리셋
     } catch (e) {
-      console.error(e);
+      throw new Error('이미지 자르기 실패');
     }
   };
-
+  console.log('isInvalidating :>> ', isInvalidating);
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
     <>
-      {(isFetchingBeforeData || isInserting || isUpdating) && (
+      {(isFetchingBeforeData || isInserting || isUpdating || isInvalidating) && (
         <div className='absolute z-[3000] flex h-full w-full items-center justify-center bg-black bg-opacity-10'>
           <Spinner color='primary-400' />
         </div>
@@ -176,10 +174,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
         <Button
           variant='primary'
           disabled={!isValidToSubmit}
+          size='full'
           type='submit'
-        >
-          {update_for ? '수정 완료' : '그룹 만들기'}
-        </Button>
+          label={update_for ? '수정 완료' : '그룹 만들기'}
+        />
       </form>
     </>
   );
