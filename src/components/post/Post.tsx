@@ -143,43 +143,43 @@ const PostForm = () => {
   return (
     <div className='PostForm p-4'>
       <form
-        className='w-full flex flex-col space-y-2'
+        className='flex w-full flex-col space-y-2'
         onSubmit={handleSubmit(onHandlePostSubmit)}
       >
-        <div className='relative border rounded-lg border-gray-300 focus:ring-2 focus:border-gray-300 overflow-hidden'>
+        <div className='relative'>
           <textarea
             id='description'
             {...register('description')}
             maxLength={1000}
             placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-            className='w-full pt-3 pb-12 px-3 h-36 text-base bg-white text-gray-900'
+            className='h-36 w-full rounded-lg border border-gray-300 bg-white px-3 pb-12 pt-3 text-base text-gray-900 focus:border-gray-300 focus:ring-2'
             onChange={handleChange}
           />
-          <div className='w-full text-right text-gray-500 text-sm absolute pb-1 pr-1 left-0 right-0 bottom-0 bg-white'>
+          <div className='absolute bottom-2 right-2 w-full pb-1 pr-1 text-right text-sm text-gray-500'>
             {description.length}/1000
           </div>
-          {errors.description?.message && <p className='text-danger text-sm'>{String(errors.description.message)}</p>}
+          {errors.description?.message && <p className='text-sm text-danger'>{String(errors.description.message)}</p>}
         </div>
         <Input
           type='text'
           {...register('hashtag')}
           placeholder='# 해시태그를 추가해 보세요'
         />
-        {errors.hashtag?.message && <p className='text-danger text-sm'>{String(errors.hashtag.message)}</p>}
+        {errors.hashtag?.message && <p className='text-sm text-danger'>{String(errors.hashtag.message)}</p>}
 
         <input
           type='date'
-          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
+          className='w-full px-3 py-3 focus:border-gray-300 focus:outline-none focus:ring-2'
           {...register('date')}
         />
-        {errors.date?.message && <p className='text-danger text-sm'>{String(errors.date.message)}</p>}
+        {errors.date?.message && <p className='text-sm text-danger'>{String(errors.date.message)}</p>}
 
         <input
           type='time'
-          className='w-full py-3 px-3 focus:outline-none focus:ring-2 focus:border-gray-300 '
+          className='w-full px-3 py-3 focus:border-gray-300 focus:outline-none focus:ring-2'
           {...register('time')}
         />
-        {errors.time?.message && <p className='text-danger text-sm'>{String(errors.time.message)}</p>}
+        {errors.time?.message && <p className='text-sm text-danger'>{String(errors.time.message)}</p>}
         <div className='border-t border-gray-300 py-4'>
           <Button
             type='submit'

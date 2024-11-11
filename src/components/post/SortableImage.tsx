@@ -26,7 +26,7 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
       style={style}
       {...attributes}
       {...listeners}
-      className='keen-slider__slide relative flex cursor-pointer flex-col items-center'
+      className='keen-slider__slide relative flex !h-[240px] !min-h-[240px] !min-w-[240px] !max-w-[240px] cursor-pointer flex-col items-start'
       onClick={() => image.id && onSetCover(image.id)}
     >
       <div className='absolute bottom-2 right-2 z-10'>
@@ -41,7 +41,8 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
           </span>
         )}
       </div>
-      <div>
+      <div className=''>
+        {/* h-[240px] w-[240px] */}
         <img
           src={image.blobUrl}
           alt='업로드 이미지'

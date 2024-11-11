@@ -31,7 +31,6 @@ const DraggableImageList = () => {
     mode: 'free-snap',
     slides: {
       perView: 3,
-      spacing: 10,
     },
   });
 
