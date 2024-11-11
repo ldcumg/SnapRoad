@@ -1,3 +1,4 @@
+import { GroupDetailModeProvider } from '@/components/providers/GroupDetailModeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
@@ -19,7 +20,9 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          <main className='w-full h-full'>{children}</main>
+          <GroupDetailModeProvider>
+            <main className='h-full w-full'>{children}</main>
+          </GroupDetailModeProvider>
         </QueryProvider>
       </body>
     </html>
