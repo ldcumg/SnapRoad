@@ -15,8 +15,8 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    border: selectedCover === image.id ? '2px solid #4CAF50' : '2px solid transparent', // 대표 이미지에 테두리 색상 적용
-    boxShadow: selectedCover === image.id ? '0 4px 8px rgba(76, 175, 80, 0.6)' : 'none', // 대표 이미지에 그림자 추가
+    // border: selectedCover === image.id ? '2px solid #4CAF50' : '2px solid transparent', // 대표 이미지에 테두리 색상 적용
+    // boxShadow: selectedCover === image.id ? '0 4px 8px rgba(76, 175, 80, 0.6)' : 'none', // 대표 이미지에 그림자 추가
     minWidth: '240px',
     maxWidth: '240px',
     height: '240px',
@@ -43,8 +43,7 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
           </span>
         )}
       </div>
-      <div className=''>
-        {/* h-[240px] w-[240px] */}
+      <div>
         <img
           src={image.blobUrl}
           alt='업로드 이미지'

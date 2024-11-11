@@ -12,9 +12,10 @@ const ImageBottomSheet = () => {
   const title = `${images.length} / 10`;
 
   return (
-    <article
-      className={`flex content-center items-start overflow-x-auto p-6 ${images.length > 0 ? 'w-auto' : 'w-full'} `}
-    >
+    <>
+      {/* <div
+        className={`flex content-center items-start overflow-x-auto p-6 ${images.length > 0 ? 'w-auto' : 'w-full'} `}
+      > */}
       <BottomSheet
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
@@ -28,8 +29,7 @@ const ImageBottomSheet = () => {
           <PostImage showImages={true} />
         </>
       </BottomSheet>
-
-      <div className='flex content-center items-start'>
+      {/* <div className='flex content-center items-start'>
         <DraggableImageList />
         <button
           onClick={handleFullOpen}
@@ -37,8 +37,9 @@ const ImageBottomSheet = () => {
         >
           <span className='text-2xl font-bold text-gray-400'>+</span>
         </button>
-      </div>
-    </article>
+      </div> */}
+      {/* </div> */}
+    </>
   );
 };
 

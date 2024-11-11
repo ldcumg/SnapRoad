@@ -65,8 +65,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       primary: 'bg-white text-gray-900 border-primary-400 rounded-md focus:border-primary-400',
       danger: 'bg-white text-danger border-danger rounded-lg focus:text-danger focus:border-danger',
       outlinePink: 'bg-white text-secondary-400 rounded-lg border border-secondary-400 focus:border-secondary-400',
-      outlineGray: 'bg-white text-gray-900 border rounded-lg border-gray-300 focus:border-gray-300',
-      default: 'bg-white text-gray-900 border rounded-lg border-gray-300 focus:border-gray-300',
+      outlineGray: 'bg-white text-gray-900 border rounded-lg border-gray-100 focus:border-gray-300',
+      default: 'bg-white text-gray-900 border rounded-lg border-gray-100 focus:border-gray-300',
     };
 
     const labelColorStyles = {
@@ -100,7 +100,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       // <fieldset className='mb-4'>
       <fieldset>
-        <label className={cn('block font-bold mb-2', disabledLabelStyle)}>{label}</label>
+        <label className={cn('mb-2 block font-bold', disabledLabelStyle)}>{label}</label>
         <div className='relative'>
           <input
             ref={ref}
@@ -110,7 +110,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             value={inputValue}
             onChange={handleChange}
             className={cn(
-              'border rounded-md w-full pr-10',
+              'w-full rounded-md border pr-10',
               sizeClasses[size],
               activeStyle,
               'focus:outline-none focus:ring-2',
@@ -123,7 +123,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type='button'
               onClick={togglePasswordVisibility}
-              className='absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700'
+              className='absolute right-10 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-gray-700'
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
@@ -211,7 +211,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type='button'
               onClick={handleDeleteClick}
-              className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700'
+              className='absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-gray-700'
               aria-label='Clear input'
             >
               <svg
@@ -233,9 +233,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {inputValue && errorText ? (
-          <p className={cn('text-sm mt-1', helperTextColorStyles['danger'])}>{errorText}</p>
+          <p className={cn('mt-1 text-sm', helperTextColorStyles['danger'])}>{errorText}</p>
         ) : (
-          helperText && <p className={cn('text-sm mt-1', helperTextColorStyles[variant])}>{helperText}</p>
+          helperText && <p className={cn('mt-1 text-sm', helperTextColorStyles[variant])}>{helperText}</p>
         )}
         {/* {helperText && <p className={cn('text-sm mt-1', helperTextColorStyles[variant])}>{helperText}</p>} */}
       </fieldset>

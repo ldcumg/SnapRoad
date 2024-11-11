@@ -7,7 +7,7 @@ type IconProps = {
   className?: string;
 };
 
-export const Icon_Close_Circle = ({ width = 24, height = 24, color = 'currentColor', className }: IconProps) => (
+export const IconCloseCircle = ({ width = 24, height = 24, color = 'currentColor', className }: IconProps) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     width={width}

@@ -1,9 +1,8 @@
 import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
-import FixPostForm from '@/components/post/FixPostForm';
 import ImageBottomSheet from '@/components/post/ImageBottomSheet';
-import PostForm from '@/components/post/Post';
 import PostAddress from '@/components/post/PostAddress';
+import PostForm from '@/components/post/PostForms';
 import PostImage from '@/components/post/PostImage';
 
 type Props = {
@@ -19,11 +18,9 @@ const writePage = ({ params: { groupId } }: Props) => {
 
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
-        {/* <ImageBottomSheet />
-        
+        <ImageBottomSheet />
         <PostImage showImages={false} />
-        <PostForm /> */}
-        <FixPostForm />
+        <PostForm />
       </div>
     </>
   );

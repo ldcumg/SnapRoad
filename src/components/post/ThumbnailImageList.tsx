@@ -3,16 +3,24 @@
 import { BUCKET_NAME } from '@/constants/constants';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/post/useImageHandlersHooks';
-import { Icon_Close_Circle } from '@/lib/icon/Icon_Close_Circle';
+import { IconCloseCircle } from '@/lib/icon/Icon_Close_Circle';
+import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 
 const ThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
-  const { images } = useImageUploadStore();
+  const { images, setImages } = useImageUploadStore();
   const { handleDelete } = useImageDeleteLogic(BUCKET_NAME, groupId);
   const { handleImageUpload } = useImageUploadLogic(BUCKET_NAME, groupId, userId, groupId);
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
+
+  const handleNewImageUpload = (files: FileList | null) => {
+    if (files) {
+      setImages([]);
+      handleImageUpload(files);
+    }
+  };
 
   return (
     <div className='flex w-full justify-start gap-4 overflow-x-auto overflow-y-hidden pt-4'>
@@ -20,7 +28,6 @@ const ThumbnailImageList = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleImageUpload(null);
           }}
         >
           <label className='flex h-28 w-28 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'>
@@ -29,9 +36,11 @@ const ThumbnailImageList = () => {
               accept='image/*'
               multiple
               className='hidden'
-              onChange={(e) => handleImageUpload(e.target.files)}
+              onChange={(e) => handleNewImageUpload(e.target.files)}
             />
-            <span className='text-2xl font-bold text-gray-400'>+</span>
+            <span>
+              <IconPluslg />
+            </span>
           </label>
         </form>
       )}
@@ -52,7 +61,7 @@ const ThumbnailImageList = () => {
                 onClick={() => handleDelete(image.id)}
                 className='absolute right-0 top-0 overflow-hidden rounded-full'
               >
-                <Icon_Close_Circle />
+                <IconCloseCircle />
               </button>
             </div>
           ),

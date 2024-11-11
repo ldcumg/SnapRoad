@@ -10,7 +10,7 @@ export const useImageUploadLogic = (bucketName: string, folderName: string, user
   const { addImages, setImages } = useImageUploadStore();
   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
 
-  const handleImageUpload = (files: FileList | null) => {
+  const handleImageUpload = (files: FileList) => {
     if (!files) return;
     const fileArray = Array.from(files);
     if (fileArray.length > 10) {
