@@ -7,6 +7,7 @@ import image4 from '@/public/images/landing/04_landing.jpg';
 import image5 from '@/public/images/landing/05_landing.jpg';
 import image6 from '@/public/images/landing/06_landing.jpg';
 import { Button } from '@/stories/Button';
+import { LinkButton } from '@/stories/LinkButton';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
@@ -61,9 +62,9 @@ const ScrollSections = () => {
             <span className='text-label_md text-gray-900'>을 남겨보세요!</span>
           </p>
         </div>
-        <Button
+        <LinkButton
           label='로그인하여 시작'
-          onClick={() => router.push('/login')}
+          href='/login'
         />
         <div className='relative w-full max-w-[400px]'>
           <Image
