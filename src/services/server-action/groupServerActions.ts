@@ -46,15 +46,6 @@ const getRandomGroupId = async (userId: string) => {
   return null;
 };
 
-// const getRandomThumbnail = async (groupId: string) => {
-//   const supabase = createClient();
-//   const { data, error } = await supabase.rpc('get_group_thumbnail_by_group_id', {
-//     input_group_id: groupId,
-//   });
-//   if (data) return data as string;
-//   return null;
-// };
-
 const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Promise<GroupInfo> => {
   const supabase = createClient();
 
