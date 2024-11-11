@@ -1,6 +1,13 @@
 'use client';
 
+import image1 from '@/public/images/landing/01_landing.jpg';
+import image2 from '@/public/images/landing/02_landing.jpg';
+import image3 from '@/public/images/landing/03_landing.jpg';
+import image4 from '@/public/images/landing/04_landing.jpg';
+import image5 from '@/public/images/landing/05_landing.jpg';
+import image6 from '@/public/images/landing/06_landing.jpg';
 import { Button } from '@/stories/Button';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
@@ -45,9 +52,9 @@ const ScrollSections = () => {
     <div className='flex flex-col gap-4'>
       <section
         ref={section1Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-5'
+        className='flex h-screen flex-col items-center gap-5 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>스냅로드 지도위에</p>
           <p>
             <span className='text-title_lg text-primary-400'>추억</span>
@@ -57,21 +64,25 @@ const ScrollSections = () => {
         <Button
           label='로그인하여 시작'
           onClick={() => router.push('/login')}
-        ></Button>
+        />
         <div className='relative w-full max-w-[400px]'>
-          <img
-            src='/images/landing/01_landing.jpg'
+          <Image
+            src={image1}
             alt='지도 마커 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
-          <div className='absolute top-0 w-full h-full bg-white-to-transparent-to-white'></div>
+          <div className='absolute top-0 h-full w-full bg-white-to-transparent-to-white'></div>
         </div>
       </section>
       <section
         ref={section2Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-7 px-4'
+        className='flex h-screen flex-col items-center gap-7 px-4 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
             <span className='text-gray-900'>우리들만의 </span>
             <span className='text-primary-400'>프라이빗</span>
@@ -83,57 +94,69 @@ const ScrollSections = () => {
             <span className='text-gray-900'>해요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
-          <img
-            src='/images/landing/02_landing.jpg'
+        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+          <Image
+            src={image2}
             alt='그룹리스트페이지 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
         </div>
       </section>
       <section
         ref={section3Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
+        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
             <span className='text-primary-400'>피드에 업로드한 게시물</span>
             <span className='text-gray-900'>들은</span>
           </p>
           <p className='text-label_md text-gray-900'>시간 순으로 지도위에 연결되어 표시돼요!</p>
         </div>
-        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
-          <img
-            src='/images/landing/03_landing.jpg'
+        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+          <Image
+            src={image3}
             alt='그룹 앨범 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
         </div>
       </section>
       <section
         ref={section4Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
+        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>피드에 업로드한 게시물들은</p>
           <p className='text-label_md'>
             <span className='text-primary-400'>시간순으로 지도위에 연결되어 표시</span>
             <span className='text-gray-900'>돼요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
-          <img
-            src='/images/landing/04_landing.jpg'
+        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+          <Image
+            src={image4}
             alt='그룹 지도 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
         </div>
       </section>
       <section
         ref={section5Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
+        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
             <span className='text-primary-400'>사진을 게시</span>
             <span className='text-gray-900'>하여</span>
@@ -144,30 +167,38 @@ const ScrollSections = () => {
             <span className='text-gray-900'>남겨봐요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
-          <img
-            src='/images/landing/05_landing.jpg'
+        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+          <Image
+            src={image5}
             alt='게시글 상세 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
         </div>
       </section>
       <section
         ref={section6Ref}
-        className='h-screen pt-24 flex flex-col items-center gap-10 px-4'
+        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
       >
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>그룹내 멤버들과</p>
           <p className='text-label_md'>
             <span className='text-primary-400'>댓글을 남기며 추억</span>
             <span className='text-gray-900'>을 나눠봐요!</span>
           </p>
         </div>
-        <div className='w-full max-w-[400px] shadow-BG_Broad rounded-xl'>
-          <img
-            src='/images/landing/06_landing.jpg'
+        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+          <Image
+            src={image6}
             alt='그룹 지도 예시 사진'
-            className='w-full h-auto'
+            sizes='400px'
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
           />
         </div>
       </section>

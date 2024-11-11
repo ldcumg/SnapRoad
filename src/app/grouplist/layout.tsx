@@ -15,9 +15,7 @@ const GroupListLayout = ({ children }: Props) => {
   return (
     <>
       <TopButton />
-      <ScrollReactHeader>
-        <LogoUserHeader />
-      </ScrollReactHeader>
+      <LogoUserHeader />
       {children}
     </>
   );
