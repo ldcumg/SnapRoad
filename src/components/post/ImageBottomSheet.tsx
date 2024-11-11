@@ -24,9 +24,9 @@ const ImageBottomSheet = () => {
         singleButton={true}
         height='full'
       >
-        <div>
+        <>
           <PostImage showImages={true} />
-        </div>
+        </>
       </BottomSheet>
 
       <div className='flex content-center items-start'>

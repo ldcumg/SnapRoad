@@ -3,6 +3,7 @@
 import { BUCKET_NAME } from '@/constants/constants';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/post/useImageHandlersHooks';
+import { Icon_Close_Circle } from '@/lib/icon/Icon_Close_Circle';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 
@@ -51,7 +52,7 @@ const ThumbnailImageList = () => {
                 onClick={() => handleDelete(image.id)}
                 className='absolute right-0 top-0 overflow-hidden rounded-full'
               >
-                <img src='/svgs/Close_Circle.svg' />
+                <Icon_Close_Circle />
               </button>
             </div>
           ),

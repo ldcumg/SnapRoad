@@ -1,7 +1,12 @@
+'use client';
+
 import { formSchema } from './query/formSchemas';
 import { useForm } from './query/useFormMutations';
 import { usePostForm } from './query/usePostForm';
+import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
+import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
+import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { useMemo, useState, useEffect } from 'react';
@@ -16,7 +21,10 @@ const FixPostForm = () => {
   } = usePostForm();
 
   const { userId, groupId, addressName, lat, lng } = usePostDataStore();
+  const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
+  const { images } = useImageUploadStore();
+  const title = `${images.length} / 10`;
 
   const { mutate: postForm } = useForm();
 
@@ -68,6 +76,15 @@ const FixPostForm = () => {
         className='flex flex-col'
         onSubmit={handleSubmit(handlePostForm)}
       >
+        <div className='flex content-center items-start'>
+          <button
+            onClick={handleFullClose}
+            className={`flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50 ${images.length > 0 ? 'ml-4' : ''}`}
+          >
+            <span className='text-2xl font-bold text-gray-400'>+</span>
+          </button>
+        </div>
+
         <TextAreaWithCounter
           id='formValue'
           {...register('desc')}
@@ -108,6 +125,18 @@ const FixPostForm = () => {
           variant='primary'
           // disabled={!isFormValueFilled || Object.keys(errors).length > 0}
         />
+
+        <BottomSheet
+          isOpen={isFullHeightOpen}
+          onClose={handleFullClose}
+          // title={title}
+          confirmLabel='확인'
+          onconfirmButtonClick={handleFullClose}
+          singleButton={true}
+          height='full'
+        >
+          <div></div>
+        </BottomSheet>
       </form>
     </>
   );
