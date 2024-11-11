@@ -13,14 +13,16 @@ import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import TextAreaWithCounter from '@/stories/TextAreas';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useMemo, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-const EditPosts = () => {
+
+const EditForms = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     watch,
   } = usePostForm();
@@ -31,29 +33,44 @@ const EditPosts = () => {
   const { images, setImages } = useImageUploadStore();
   const { mutateAsync: postForm } = useForm();
   const router = useRouter();
+  const { postId } = useParams();
 
   useEffect(() => {
-    if (!isFullHeightOpen) console.log('현재 이미지:', images);
-  }, [isFullHeightOpen, images]);
+    const fetchPostData = async () => {
+      try {
+        // 서버에서 게시물 데이터 가져오기
+        const postData = await fetch(`/api/posts/${postId}`).then((res) => res.json());
+
+        // 가져온 데이터를 폼에 설정
+        setValue('desc', postData.desc);
+        setValue('hashtags', postData.hashtags.join(', '));
+        setValue('date', postData.date);
+        setValue('time', postData.time);
+        setImages(postData.images || []);
+      } catch (error) {
+        console.error('게시물 데이터를 불러오는 중 오류 발생:', error);
+      }
+    };
+
+    if (postId) {
+      fetchPostData();
+    }
+  }, [postId, setValue, setImages]);
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
 
     let hashtags: string[] = [];
 
-    // value.hashtags가 문자열인 경우
     if (typeof value.hashtags === 'string') {
       hashtags = value.hashtags
         .split(',')
         .map((tag) => tag.trim().replace(/^#/, ''))
         .filter((tag) => tag.length > 0);
-    }
-    // value.hashtags가 배열인 경우
-    else if (Array.isArray(value.hashtags)) {
+    } else if (Array.isArray(value.hashtags)) {
       hashtags = value.hashtags.map((tag) => (typeof tag === 'string' ? tag.trim().replace(/^#/, '') : tag.toString()));
     }
 
-    // 문자열과 숫자 모두 허용하기 위해 문자열 변환
     hashtags = hashtags.filter((tag) => tag.length > 0);
 
     const parsedFormData = {
@@ -79,13 +96,11 @@ const EditPosts = () => {
     }
   };
 
-  // 필드 값 감시
   const text = watch('desc');
   const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
 
-  // 필드 빈값 확인
   const isFormValueFilled = useMemo(() => {
     return text && hashtags && date && time;
   }, [text, hashtags, date, time]);
@@ -151,4 +166,4 @@ const EditPosts = () => {
     </>
   );
 };
-export default EditPosts;
+export default EditForms;

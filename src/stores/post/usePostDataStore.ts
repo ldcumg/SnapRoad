@@ -1,3 +1,4 @@
+// 이것도 persist 삭제 요망
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 

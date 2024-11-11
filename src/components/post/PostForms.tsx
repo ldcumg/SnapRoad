@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-const PostForm = () => {
+const PostForms = () => {
   const {
     register,
     handleSubmit,
@@ -28,7 +28,7 @@ const PostForm = () => {
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
-  const { images, setImages } = useImageUploadStore();
+  const { images } = useImageUploadStore();
   const { mutateAsync: postForm } = useForm();
   const router = useRouter();
 
@@ -151,4 +151,4 @@ const PostForm = () => {
     </>
   );
 };
-export default PostForm;
+export default PostForms;
