@@ -1,4 +1,3 @@
-import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
 import ImageBottomSheet from '@/components/post/ImageBottomSheet';
 import PostAddress from '@/components/post/PostAddress';
@@ -12,9 +11,7 @@ type Props = {
 const writePage = ({ params: { groupId } }: Props) => {
   return (
     <>
-      <ScrollReactHeader>
-        <LogoUserHeader />
-      </ScrollReactHeader>
+      <LogoUserHeader />
 
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
