@@ -4,19 +4,20 @@ import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
 import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
+import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
 import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
+import { getGroupPostsImagesPrefetchQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
 type Props = Readonly<{ params: { groupId: string } }>;
 
 const GroupPage = ({ params: { groupId } }: Props) => {
-  //TODO - zustand 관리
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
+  const prefetchGroupPostsImages = getGroupPostsImagesPrefetchQuery(groupId);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -29,13 +30,16 @@ const GroupPage = ({ params: { groupId } }: Props) => {
     switch (mode) {
       case GroupDetailMode.map:
         return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
+          <button
+            onClick={toAlbum}
+            onMouseEnter={prefetchGroupPostsImages}
+          >
             <img src='/svgs/Swap_Btn_To_Album.svg' />
           </button>
         );
       case GroupDetailMode.album:
         return (
-          <button onClick={() => setMode(GroupDetailMode.map)}>
+          <button onClick={toMap}>
             <img src='/svgs/Swap_Btn_To_Map.svg' />
           </button>
         );
@@ -43,7 +47,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
         return (
           <button
             className='h-10 w-10'
-            onClick={() => setMode(GroupDetailMode.album)}
+            onClick={toAlbum}
           >
             <img
               className='mx-auto'
@@ -66,7 +70,6 @@ const GroupPage = ({ params: { groupId } }: Props) => {
           <GroupAlbum
             groupId={groupId}
             groupInfo={groupInfo}
-            setMode={setMode}
           />
         );
       case GroupDetailMode.member:
@@ -79,7 +82,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='flex h-[56px] items-center justify-between px-4 py-2'>
+      <header className='z-50 flex h-[56px] items-center justify-between px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
