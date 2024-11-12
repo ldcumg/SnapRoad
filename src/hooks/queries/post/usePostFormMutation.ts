@@ -1,3 +1,4 @@
+import queryKeys from '../queryKeys';
 import { createPost, updateImagesPostId, saveTags } from '@/services/client-action/postFormAction';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -26,8 +27,8 @@ export function useCreatePostMutation() {
 
   return useMutation({
     mutationFn: (post: PostData) => createPost(post),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.post.posts() });
     },
     onError: (error: any) => {
       console.error(`포스트 생성 오류: ${error.message}`);
@@ -42,8 +43,8 @@ export function useUpdateImagesPostIdMutation() {
   return useMutation({
     mutationFn: ({ postId, uploadSessionId }: { postId: string; uploadSessionId: string }) =>
       updateImagesPostId(postId, uploadSessionId),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['images'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.post.images() });
     },
     onError: (error: any) => {
       console.error(`이미지 업데이트 오류: ${error.message}`);
@@ -57,8 +58,8 @@ export function useSaveTagsMutation() {
 
   return useMutation({
     mutationFn: (tags: TagData) => saveTags(tags),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.post.tags() });
     },
     onError: (error: any) => {
       console.error(`태그 저장 오류: ${error.message}`);

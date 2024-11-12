@@ -132,7 +132,7 @@ async function resetCoverImages(userId: string, uploadSessionId: string) {
     console.error('대표 이미지 초기화 실패:', error.message);
     throw new Error('대표 이미지 초기화 실패');
   } else {
-    console.log('모든 대표 이미지 초기화 성공');
+    // console.log('모든 대표 이미지 초기화 성공');
   }
 }
 
@@ -143,7 +143,7 @@ async function setCoverImage(imageId: number) {
     console.error('대표 이미지 설정 실패:', error.message);
     throw new Error('대표 이미지 설정 실패');
   } else {
-    console.log('대표 이미지 설정 성공:', imageId);
+    // console.log('대표 이미지 설정 성공:', imageId);
   }
 }
 
@@ -151,7 +151,7 @@ export async function updateCoverImage(imageId: number, userId: string, uploadSe
   console.log('대표 이미지 업데이트 중:', { userId, imageId, uploadSessionId });
   await resetCoverImages(userId, uploadSessionId); // 모든 이미지를 초기화
   await setCoverImage(imageId); // 특정 이미지에 대해서만 is_cover: true 설정
-  console.log('대표 이미지가 설정되었습니다.');
+  // console.log('대표 이미지가 설정되었습니다.');
 }
 
 /**
