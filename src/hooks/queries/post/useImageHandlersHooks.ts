@@ -14,7 +14,7 @@ export const useImageUploadLogic = (bucketName: string, folderName: string, user
     if (!files) return;
     const fileArray = Array.from(files);
     if (fileArray.length > 10) {
-      console.log('최대 10장의 이미지만 업로드할 수 있습니다.');
+      alert('최대 10장의 이미지만 업로드할 수 있습니다.');
       return;
     }
 
@@ -37,7 +37,7 @@ export const useImageDeleteLogic = (bucketName: string, folderName: string) => {
     deleteBusinessImage.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
-        console.log('이미지가 삭제되었습니다.');
+        // console.log('이미지가 삭제되었습니다.');
       },
     });
   };
@@ -59,7 +59,7 @@ export const useSetCoverLogic = (userId: string, uploadSessionId: string) => {
         }));
 
         setImages([...updatedImages]);
-        console.log('대표 이미지가 설정되었습니다.', id);
+        // console.log('대표 이미지가 설정되었습니다.', id);
       },
       onError: (error) => {
         console.error('대표 이미지 설정 오류:', error);
@@ -69,28 +69,3 @@ export const useSetCoverLogic = (userId: string, uploadSessionId: string) => {
 
   return { handleSetCover };
 };
-
-// // 커버 이미지 설정 처리
-// export const useSetCoverLogic = (userId: string, uploadSessionId: string) => {
-//   const { setImages, images } = useImageUploadStore();
-//   const coverBusinessImage = useCoverBusinessImage(userId, uploadSessionId);
-
-//   const handleSetCover = (id: number) => {
-//     coverBusinessImage.mutate(id, {
-//       onSuccess: () => {
-//         const updatedImages = images.map((image) => ({
-//           ...image,
-//           is_cover: image.id === id,
-//         }));
-
-//         setImages(updatedImages);
-//         console.log('대표 이미지가 설정되었습니다.');
-//       },
-//       onError: (error) => {
-//         console.error('대표 이미지 설정 오류:', error);
-//       },
-//     });
-//   };
-
-//   return { handleSetCover };
-// };

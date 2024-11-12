@@ -1,11 +1,11 @@
 'use client';
 
-import DateInputWithIcon from './query/DateInputWithIcon';
-import TimeInputWithIcon from './query/TimeInputWithIcon';
-import { saveTags, updateImagePostId } from './query/formActions';
-import { formSchema } from './query/formSchemas';
-import { useForm } from './query/useFormMutations';
-import { usePostForm } from './query/usePostForm';
+import { usePostForm } from '@/hooks/byUse/usePostForm';
+import { useForm } from '@/hooks/queries/post/useFormMutations';
+import { formSchema } from '@/schemas/formSchemas';
+import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
+import DateInputWithIcon from '../ui/DateInputWithIcon';
+import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
@@ -16,7 +16,6 @@ import TextAreaWithCounter from '@/stories/TextAreas';
 import { useRouter, useParams } from 'next/navigation';
 import { useMemo, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
-
 
 const EditForms = () => {
   const {

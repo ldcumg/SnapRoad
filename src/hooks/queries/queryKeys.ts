@@ -11,6 +11,15 @@ const queryKeys = {
   user: {
     userInfo: () => ['userInfo'],
   },
+  image: {
+    image: (userId: string) => [userId, 'images'],
+    imageUrl: (uploadSessionId: string) => [uploadSessionId, 'imageUrls'],
+  },
+  post: {
+    posts: () => ['posts'],
+    images: () => ['images'],
+    tags: () => ['tags'],
+  },
 };
 
 export default queryKeys;
