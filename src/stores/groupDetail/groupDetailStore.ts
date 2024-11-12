@@ -2,7 +2,7 @@ import { GroupDetailMode, type GroupDetailModeState, type GroupDetailModeStore }
 import { createStore } from 'zustand/vanilla';
 
 const initState: GroupDetailModeState = {
-  mode: GroupDetailMode.member,
+  mode: GroupDetailMode.map,
 };
 
 export const createGroupDetailModeStore = () => {

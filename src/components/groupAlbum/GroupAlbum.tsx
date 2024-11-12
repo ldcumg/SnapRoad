@@ -3,7 +3,7 @@
 import GroupInfoBox from './GroupInfoBox';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import { GroupDetailModeState, type GroupInfo } from '@/types/groupTypes';
+import { type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
 type Props = {

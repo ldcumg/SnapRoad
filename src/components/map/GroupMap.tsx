@@ -31,6 +31,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
+  console.log("postsPreView =>", postsPreView);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],
     hasMore: false,
