@@ -1,6 +1,6 @@
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
-import ImageBottomSheet from '@/components/post/ImageBottomSheet';
 import PostAddress from '@/components/post/PostAddress';
+import PostImageBottomSheet from '@/components/post/PostBottomSheet';
 import PostForms from '@/components/post/PostForms';
 import PostImage from '@/components/post/PostImage';
 import type { Metadata } from 'next';
@@ -23,7 +23,7 @@ const PostPage = ({ params: { groupId } }: Props) => {
 
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
-        <ImageBottomSheet />
+        <PostImageBottomSheet />
         <PostImage showImages={false} />
         <PostForms />
       </div>

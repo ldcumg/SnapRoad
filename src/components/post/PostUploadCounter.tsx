@@ -5,7 +5,7 @@ interface ImageUploadStatusProps {
   maxImages?: number;
 }
 
-const ImageUploadCounter = ({ imageCount, maxImages = 10 }: ImageUploadStatusProps) => (
+const PostImageUploadCounter = ({ imageCount, maxImages = 10 }: ImageUploadStatusProps) => (
   <div className='mb-2 text-center text-gray-600'>
     <span className='text-sm'>
       이미지 업로드: {imageCount} / {maxImages}
@@ -13,4 +13,4 @@ const ImageUploadCounter = ({ imageCount, maxImages = 10 }: ImageUploadStatusPro
   </div>
 );
 
-export default ImageUploadCounter;
+export default PostImageUploadCounter;

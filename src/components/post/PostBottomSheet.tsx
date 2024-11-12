@@ -5,7 +5,7 @@ import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 
-const ImageBottomSheet = () => {
+const PostImageBottomSheet = () => {
   const { isFullHeightOpen, handleFullClose } = useBottomSheetStore();
   const { images } = useImageUploadStore();
   const title = `${images.length} / 10`;
@@ -27,4 +27,4 @@ const ImageBottomSheet = () => {
   );
 };
 
-export default ImageBottomSheet;
+export default PostImageBottomSheet;

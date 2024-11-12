@@ -10,7 +10,7 @@ interface SortableImageProps {
   selectedCover: number | null;
 }
 
-const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps) => {
+const PostSortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: image.id! });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -54,4 +54,4 @@ const SortableImage = ({ image, onSetCover, selectedCover }: SortableImageProps)
   );
 };
 
-export default SortableImage;
+export default PostSortableImage;

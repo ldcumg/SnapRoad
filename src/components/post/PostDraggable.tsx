@@ -9,7 +9,7 @@ import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/react';
 import { useEffect } from 'react';
 
-const DraggableImageList = () => {
+const PostDraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setSelectedCover, selectedCover } = useImageUploadStore();
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
@@ -44,7 +44,7 @@ const DraggableImageList = () => {
               if (image.id === undefined || !imageUrls[index]) return null;
 
               return (
-                <SortableImage
+                <PostSortableImage
                   key={image.id}
                   image={image}
                   imageUrl={imageUrls[index]}
@@ -67,7 +67,7 @@ interface SortableImageProps {
   selectedCover: number | null;
 }
 
-const SortableImage = ({ image, imageUrl, selectedCover }: SortableImageProps) => {
+const PostSortableImage = ({ image, imageUrl, selectedCover }: SortableImageProps) => {
   return (
     <div className='keen-slider__slide !h-[240px] !min-h-[240px] !min-w-[240px] !max-w-[240px] flex-1'>
       <div className='absolute bottom-2 right-2 z-10'>
@@ -91,4 +91,4 @@ const SortableImage = ({ image, imageUrl, selectedCover }: SortableImageProps) =
   );
 };
 
-export default DraggableImageList;
+export default PostDraggableImageList;

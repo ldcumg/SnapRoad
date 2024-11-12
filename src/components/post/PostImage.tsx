@@ -1,7 +1,7 @@
 'use client';
 
-import DraggableImageList from './DraggableImage';
-import ThumbnailImageList from './ThumbnailImageList';
+import PostDraggableImageList from './PostDraggable';
+import PostThumbnailImageList from './PostThumbnail';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { useEffect } from 'react';
@@ -18,8 +18,8 @@ const PostImage = ({ showImages }: { showImages: boolean }) => {
     <article className='flex flex-col items-start pb-7'>
       {showImages && (
         <>
-          <DraggableImageList />
-          <ThumbnailImageList />
+          <PostDraggableImageList />
+          <PostThumbnailImageList />
         </>
       )}
     </article>

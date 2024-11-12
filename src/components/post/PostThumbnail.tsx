@@ -8,7 +8,7 @@ import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 
-const ThumbnailImageList = () => {
+const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages } = useImageUploadStore();
   const { handleDelete } = useImageDeleteLogic(BUCKET_NAME, groupId);
@@ -70,4 +70,4 @@ const ThumbnailImageList = () => {
   );
 };
 
-export default ThumbnailImageList;
+export default PostThumbnailImageList;
