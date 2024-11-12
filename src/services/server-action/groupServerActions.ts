@@ -1,9 +1,9 @@
 'use server';
 
-import buckets from '@/constants/buckets';
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
-import { TEN_MINUTES_OF_SECONDS } from '@/constants/time';
+import buckets from '@/constants/buckets';
+import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import type { GroupInfo } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -62,10 +62,14 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
   if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage(), TEN_MINUTES_OF_SECONDS, data.group_image_url ?? '');
+  const groupImageSignedUrl = getSignedImgUrl(
+    buckets.groupImage(),
+    TEN_MINUTES_FOR_SUPABASE,
+    data.group_image_url ?? '',
+  );
 
   const profileImages = data.user_group.map((user) => user.profiles?.user_image_url ?? '');
-  const profileImagesUrls = getSignedImgUrls(buckets.avatars(), TEN_MINUTES_OF_SECONDS, profileImages);
+  const profileImagesUrls = getSignedImgUrls(buckets.avatars(), TEN_MINUTES_FOR_SUPABASE, profileImages);
 
   const signedUrls = await Promise.all([groupImageSignedUrl, profileImagesUrls]);
 
