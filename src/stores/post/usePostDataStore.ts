@@ -1,13 +1,14 @@
+// 이것도 persist 삭제 요망
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 type PostDataStore = {
   userId?: string;
   groupId?: string;
-  uploadSessionId?: string;
   lat?: number;
   lng?: number;
   addressName?: string;
+  uploadSessionId?: string;
   place?: string;
   setUserData: (userId: string, groupId: string, uploadSessionId: string) => void;
   setLocationData: (lat: number, lng: number, addressName: string) => void;

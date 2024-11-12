@@ -1,6 +1,7 @@
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+
+// import { persist, createJSONStorage } from 'zustand/middleware';
 
 /**
  * @description 이미지 업로드 상태를 관리
@@ -25,39 +26,28 @@ interface ImageUploadStore {
   setSelectedCover: (id: number | null) => void;
 }
 
-export const useImageUploadStore = create<ImageUploadStore>()(
-  persist(
-    (set) => ({
-      images: [],
-      selectedCover: null,
-      addImages: (newImages) =>
-        set((state) => {
-          const uniqueImages = newImages.filter((newImage) => !state.images.some((image) => image.id === newImage.id));
-          return { images: [...state.images, ...uniqueImages] };
-        }),
-      updateImage: (id, updates) =>
-        set((state) => {
-          const updatedImages = state.images.map((image) => (image.id === id ? { ...image, ...updates } : image));
-          return { images: updatedImages };
-        }),
-      deleteImage: (id) =>
-        set((state) => ({
-          images: state.images.filter((image) => image.id !== id),
-        })),
-      resetImages: () => set({ images: [], selectedCover: null }),
-      setImages: (newImages) => {
-        const updatedImages = newImages.map((image, index) => ({
-          ...image,
-          is_cover: index === 0,
-        }));
-
-        set({ images: updatedImages });
-      },
-      setSelectedCover: (id) => set({ selectedCover: id }),
+export const useImageUploadStore = create<ImageUploadStore>()((set) => ({
+  images: [],
+  selectedCover: null,
+  addImages: (newImages) =>
+    set((state) => {
+      const uniqueImages = newImages.filter((newImage) => !state.images.some((image) => image.id === newImage.id));
+      return { images: [...state.images, ...uniqueImages] };
     }),
-    {
-      name: 'image-upload-storage',
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
-);
+  updateImage: (id, updates) =>
+    set((state) => {
+      const updatedImages = state.images.map((image) => (image.id === id ? { ...image, ...updates } : image));
+      return { images: updatedImages };
+    }),
+  deleteImage: (id) =>
+    set((state) => ({
+      images: state.images.filter((image) => image.id !== id),
+    })),
+  resetImages: () => set({ images: [], selectedCover: null }),
+  setImages: (newImages) => {
+    set({ images: newImages });
+  },
+  setSelectedCover: (id) => {
+    set({ selectedCover: id });
+  },
+}));

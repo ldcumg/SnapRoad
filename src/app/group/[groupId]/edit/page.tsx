@@ -1,12 +1,12 @@
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
+import EditForms from '@/components/post/EditForms';
 import PostAddress from '@/components/post/PostAddress';
-import PostImageBottomSheet from '@/components/post/PostBottomSheet';
-import PostForms from '@/components/post/PostForms';
+import ImageBottomSheet from '@/components/post/PostBottomSheet';
 import PostImage from '@/components/post/PostImage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '글쓰기',
+  title: '수정하기',
   description: 'A Next.js project with TypeScript and TailwindCSS.',
   keywords: 'Next.js, Typescript, TailwindCSS',
 };
@@ -16,19 +16,19 @@ type Props = {
   children: React.ReactNode;
 };
 
-const PostPage = ({ params: { groupId } }: Props) => {
+const EditPage = ({ params: { groupId } }: Props) => {
   return (
     <>
       <LogoUserHeader />
 
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
-        <PostImageBottomSheet />
+        <ImageBottomSheet />
         <PostImage showImages={false} />
-        <PostForms />
+        <EditForms />
       </div>
     </>
   );
 };
 
-export default PostPage;
+export default EditPage;

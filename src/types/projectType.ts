@@ -67,6 +67,7 @@ export interface ImagesWithAll extends Images {
 }
 
 export interface ImagesAllWithoutPostId extends Omit<Images, 'post_id'> {
+  uploadSessionId: string;
   blobUrl: string;
   id: number;
   post_image_name: string;
