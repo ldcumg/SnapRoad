@@ -1,7 +1,8 @@
 'use client';
 
+import PlaceSearchForm from './PlaceSearchForm';
+import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
@@ -16,15 +17,12 @@ import type {
   Location,
   LocationInfo,
 } from '@/types/mapTypes';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { useForm, type FieldValues } from 'react-hook-form';
+import { type FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
-
-const SEARCH_INPUT = 'searchInput';
 
 const GroupMap = ({ groupId }: { groupId: string }) => {
   const route = useRouter();
@@ -41,20 +39,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    getValues,
-    resetField,
-    formState: {
-      errors: { searchTerm: searchTermInvalidate },
-    },
-  } = useForm({
-    mode: 'onSubmit',
-    resolver: zodResolver(searchPlaceSchema),
-  });
-
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
   const [mapLoading, mapError] = useKakaoLoader({
@@ -66,11 +50,6 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     if (mapLoading) return;
   }, [mapLoading]);
 
-  // useEffect(() => {
-  //   //TODO - 데스크탑에서만 동작하게
-  //   setFocus(SEARCH_INPUT);
-  // }, []);
-
   useEffect(() => {
     if (map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
@@ -81,13 +60,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     }
   }, [map, postsCoverImages]);
 
-  if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
-
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
-  //FIXME - 엔터 여러번 눌렀을 때 지도 이동 막기
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput }: FieldValues) => {
     if (!map) {
@@ -244,33 +220,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   return (
     <>
-      <form
-        className='fixed left-1/2 top-[72px] z-50 w-full -translate-x-1/2 px-4'
-        onSubmit={handleSubmit(searchLocation)}
-      >
-        <div className='relative w-full'>
-          <input
-            className='h-[48px] w-full rounded-3xl px-4 py-3 text-body_md shadow-BG_S placeholder:text-gray-400'
-            placeholder='장소를 검색해보세요!'
-            {...register(SEARCH_INPUT)}
-          />
-          {!!getValues(SEARCH_INPUT) && (
-            <button
-              className='absolute right-12 top-1/2 z-50 -translate-y-1/2'
-              type='button'
-              onClick={() => resetField(SEARCH_INPUT)}
-            >
-              <img src='/svgs/Reset_input.svg' />
-            </button>
-          )}
-          <button
-            className='absolute right-4 top-1/2 -translate-y-1/2'
-            type='submit'
-          >
-            <img src='/svgs/Map_Search.svg' />
-          </button>
-        </div>
-      </form>
+      <PlaceSearchForm searchLocation={searchLocation} />
       <button
         className='fixed right-4 top-[136px] z-50'
         onClick={() => {
@@ -363,100 +313,100 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
         />
+      </Map>
 
-        {!!spotInfo ? (
-          <BottomSheet
-            height='custom'
-            customHeight=''
-            rounded={true}
-            isOpen={true}
-            showHeader={false}
-            hasButton={false}
-            className='mb-0 pt-7'
-            backdrop={false}
-          >
-            <button
-              className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
-              onClick={handleFindUserLocation}
-            >
-              <img src='/svgs/Geolocation_btn.svg' />
-            </button>
-            {searchResult.hasMore && (
-              <button
-                className='absolute -top-4 left-1/2 z-50 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
-                type='button'
-                onClick={searchLocation}
-              >
-                <p className='text-body_md'>검색결과 더보기</p>
-                <img src='/svgs/Reload.svg' />
-              </button>
-            )}
-            <div className='flex flex-col gap-1 pb-2'>
-              <h5 className='text-label_md'>
-                {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
-              </h5>
-              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
-            </div>
-          </BottomSheet>
-        ) : (
+      {!!spotInfo ? (
+        <BottomSheet
+          height='custom'
+          customHeight=''
+          rounded={true}
+          isOpen={true}
+          showHeader={false}
+          hasButton={false}
+          className='mb-0 pt-7'
+          backdrop={false}
+        >
           <button
-            className='fixed bottom-[100px] left-4 z-50'
+            className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
           </button>
-        )}
-        {!!postsPreView.length ? (
-          <BottomSheet
-            height='custom'
-            customHeight='250px'
-            rounded={true}
-            isOpen={true}
-            showHeader={false}
-            hasButton={false}
-            backdrop={false}
-          >
-            <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
-            <ol className='flex flex-row gap-3 overflow-x-auto'>
-              {postsPreView.map((post) => (
-                <li
-                  className='h-[132px] w-[132px]'
-                  key={post.postId}
-                >
-                  <Link
-                    className='block h-full w-full'
-                    href={`/group/${groupId}/post/${post.postId}`}
-                  >
-                    <img
-                      className='h-full w-full rounded-[8px] object-cover'
-                      src={post.postImageUrl}
-                      alt={`Post ${post.postId}`}
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </BottomSheet>
-        ) : (
-          <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
-          >
-            <Button
+          {searchResult.hasMore && (
+            <button
+              className='absolute -top-4 left-1/2 z-50 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
               type='button'
-              onClick={handleAddPostRoute}
-              variant='primary'
-              size='full'
-              className='bottom-4 z-50 h-[56px] px-6'
-              disabled={!isPostsView && !spotInfo?.address}
+              onClick={searchLocation}
             >
-              <span className='flex gap-2'>
-                <img src='/svgs/Plus_LG.svg' />
-                <p className='text-title_lg'>게시물 추가하기</p>
-              </span>
-            </Button>
+              <p className='text-body_md'>검색결과 더보기</p>
+              <img src='/svgs/Reload.svg' />
+            </button>
+          )}
+          <div className='flex flex-col gap-1 pb-2'>
+            <h5 className='text-label_md'>
+              {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
+            </h5>
+            <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
           </div>
-        )}
-      </Map>
+        </BottomSheet>
+      ) : (
+        <button
+          className='fixed bottom-[100px] left-4 z-50'
+          onClick={handleFindUserLocation}
+        >
+          <img src='/svgs/Geolocation_btn.svg' />
+        </button>
+      )}
+      {!!postsPreView.length ? (
+        <BottomSheet
+          height='custom'
+          customHeight='250px'
+          rounded={true}
+          isOpen={true}
+          showHeader={false}
+          hasButton={false}
+          backdrop={false}
+        >
+          <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+          <ol className='flex flex-row gap-3 overflow-x-auto'>
+            {postsPreView.map((post) => (
+              <li
+                className='h-[132px] w-[132px]'
+                key={post.postId}
+              >
+                <Link
+                  className='block h-full w-full'
+                  href={`/group/${groupId}/post/${post.postId}`}
+                >
+                  <img
+                    className='h-full w-full rounded-[8px] object-cover'
+                    src={post.postImageUrl}
+                    alt={`Post ${post.postId}`}
+                  />
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </BottomSheet>
+      ) : (
+        <div
+          className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+        >
+          <Button
+            type='button'
+            onClick={handleAddPostRoute}
+            variant='primary'
+            size='full'
+            className='bottom-4 z-50 h-[56px] px-6'
+            disabled={!isPostsView && !spotInfo?.address}
+          >
+            <span className='flex gap-2'>
+              <img src='/svgs/Plus_LG.svg' />
+              <p className='text-title_lg'>게시물 추가하기</p>
+            </span>
+          </Button>
+        </div>
+      )}
     </>
   );
 };

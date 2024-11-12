@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from '@/app/loading';
 import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
 import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
@@ -21,7 +22,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
