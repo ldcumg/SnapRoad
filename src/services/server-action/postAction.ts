@@ -18,14 +18,28 @@ export const getPostsImagesPerGroup = async ({
 
   const { status, data, error } = await supabase
     .from('images')
-    .select('id, post_id, post_image_url, post_image_name')
+    .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .is('deleted_at', null)
     .range(15 * pageParam, 15 * pageParam + 14);
 
-  if (status !== 200 && error) throw new Error(error.message);
+  if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  return data as PostImage[];
+  //TODO - util 함수로 만들기
+  const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
+  const postImagesUrls = await getSignedImgUrls(buckets.tourImages(), TEN_MINUTES_OF_SECONDS, postImages);
+
+  const dataWithSignedUrl = data.map((post) => {
+    if (!postImagesUrls) return;
+    const matchedUrl = postImagesUrls.find((url) => url.path === `${groupId}/${post.post_image_name}`);
+
+    return {
+      ...post,
+      post_image_url: matchedUrl ? matchedUrl.signedUrl : '',
+    };
+  });
+
+  return dataWithSignedUrl as PostImage[];
 };
 
 /** 그룹 게시물 중 대표 이미지만 요청 */

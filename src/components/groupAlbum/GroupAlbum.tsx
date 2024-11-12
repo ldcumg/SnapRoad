@@ -14,6 +14,7 @@ type Props = {
 const GroupAlbum = ({ groupId, groupInfo }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
+  
   const observerRef = useIntersect(async (entry, observer) => {
     observer.unobserve(entry.target);
     if (hasNextPage && !isFetchingNextPage && !isFetching) {
