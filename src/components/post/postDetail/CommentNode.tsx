@@ -34,8 +34,7 @@ const CommentNode = ({
         <div className='flex w-full gap-3 p-4'>
           <ProfileImage
             profileImageUrl={comment.comment_author_user.signed_image_url}
-            width={'32px'}
-            height={'32px'}
+            size='small'
           />
 
           <div className='w-full'>

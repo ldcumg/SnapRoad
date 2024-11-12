@@ -12,8 +12,7 @@ const PostDetailDesc = ({ postDetail }: ProfileProps) => {
       <div className='flex items-center gap-4'>
         <ProfileImage
           profileImageUrl={postDetail.post_author_user.signed_image_url}
-          width={'40px'}
-          height={'40px'}
+          size='medium'
         />
         <span className='text-label_md text-gray-900'>{postDetail.post_author_user.user_nickname}</span>
       </div>
@@ -24,7 +23,7 @@ const PostDetailDesc = ({ postDetail }: ProfileProps) => {
         {postDetail.tags.map((tag, id) => {
           return (
             <span
-              className='rounded-lg bg-gray-50 p-2'
+              className='break-all rounded-lg bg-gray-50 p-2'
               key={id}
             >
               #{tag.tag_title}

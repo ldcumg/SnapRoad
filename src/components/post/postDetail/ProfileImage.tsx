@@ -2,13 +2,20 @@ import React from 'react';
 
 interface ProfileImageProps {
   profileImageUrl: string | null;
-  width: string;
-  height: string;
+  size: 'small' | 'medium';
 }
 
-const ProfileImage = ({ profileImageUrl, width, height }: ProfileImageProps) => {
+// 게시글 이미지 40px
+// 댓글 이미지 32px
+const ProfileImage = ({ profileImageUrl, size }: ProfileImageProps) => {
+  const imageSize = {
+    small: 'w-8 h-8', // 32px
+    medium: 'w-10 h-10', // 40px
+    // large: 'w-16 h-16',
+  };
+
   return (
-    <div className={`h-[${height}] w-[${width}] overflow-hidden rounded-full`}>
+    <div className={`${imageSize[size]} overflow-hidden rounded-full`}>
       <img
         alt='프로필 이미지'
         src={profileImageUrl || '/svgs/Profile.svg'} // 이 글을 쓴 사람

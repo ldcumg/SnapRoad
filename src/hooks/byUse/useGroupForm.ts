@@ -8,7 +8,7 @@ const useMakeGroupForm = () => {
     defaultValues: {
       groupTitle: '',
       groupDesc: '',
-      groupImg: null,
+      groupImg: [] as File[],
     },
     resolver: zodResolver(groupSchema),
   });
