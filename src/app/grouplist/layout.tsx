@@ -1,12 +1,10 @@
-import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import TopButton from '@/components/_common/TopButton';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  title: '내 그룹 리스트',
+  description: '내 그룹 목록을 확인하고, 그룹에서 작성된 랜덤 게시물을 확인해봐요',
 };
 
 type Props = Readonly<{ children: React.ReactNode }>;
