@@ -83,7 +83,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='z-50 flex h-[56px] items-center justify-between px-4 py-2'>
+      <header className='z-50 flex h-[56px] items-center justify-between bg-white px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>

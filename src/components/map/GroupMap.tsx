@@ -36,6 +36,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
+  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
+
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
 
@@ -70,6 +72,9 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
+
+    if (searchInput === searchKeyword.current.keyword) return;
+
     isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
@@ -77,6 +82,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     setSearchResult(({ markers, hasMore }) =>
       searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
     );
+
     searchInput && moveToMarker(results[0]);
 
     if (is_end) {
@@ -220,9 +226,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   return (
     <>
-      <PlaceSearchForm searchLocation={searchLocation} />
+      {isInputFocus && <div className='fixed inset-0 z-40 bg-black bg-opacity-50'></div>}
+      <PlaceSearchForm
+        searchLocation={searchLocation}
+        setSearchResult={setSearchResult}
+        setIsInputFocus={setIsInputFocus}
+        hasSearchResult={!!searchResult.markers[0]}
+      />
       <button
-        className='fixed right-4 top-[136px] z-50'
+        className='fixed right-4 top-[136px] z-30'
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
@@ -237,7 +249,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-30 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
           alt='맵핀'
         />
@@ -327,14 +339,14 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           backdrop={false}
         >
           <button
-            className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
+            className='absolute -top-4 left-4 -translate-y-[90%]'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
           </button>
           {searchResult.hasMore && (
             <button
-              className='absolute -top-4 left-1/2 z-50 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+              className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
               type='button'
               onClick={searchLocation}
             >
@@ -351,7 +363,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         </BottomSheet>
       ) : (
         <button
-          className='fixed bottom-[100px] left-4 z-50'
+          className='fixed bottom-[100px] left-4 z-30'
           onClick={handleFindUserLocation}
         >
           <img src='/svgs/Geolocation_btn.svg' />
