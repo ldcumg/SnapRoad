@@ -1,6 +1,7 @@
 import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { useQuery } from '@tanstack/react-query';
+import queryKeys from '../queryKeys';
 
 export function useFetchImageUrls(
   uploadSessionId: string,
@@ -9,7 +10,7 @@ export function useFetchImageUrls(
   folderName: string,
 ) {
   return useQuery({
-    queryKey: ['imageUrls', uploadSessionId],
+    queryKey: queryKeys.image.imageUrl(uploadSessionId),
     queryFn: () => fetchImageUrls(images, bucketName, folderName),
     enabled: images.length > 0,
   });

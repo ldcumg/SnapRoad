@@ -1,4 +1,4 @@
-import { postForm } from './formActions';
+import { postForm } from '../../../services/server-action/formActions';
 import URLS from '@/constants/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
