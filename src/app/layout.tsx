@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Snap-Road: 우리들의 여행기록',
     images: [
       {
-        url: 'https://snaproad.co.kr/images/og-image.jpg',
+        url: 'https://www.snaproad.co.kr/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Snap Road',
