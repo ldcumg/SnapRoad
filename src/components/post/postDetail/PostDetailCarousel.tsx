@@ -4,13 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { ImageDetail } from '@/types/postDetailTypes';
 import 'keen-slider/keen-slider.min.css';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
-
-  const sortedImages = useMemo(() => images.sort((a, b) => (b.is_cover ? 1 : 0) - (a.is_cover ? 1 : 0)), [images]);
 
   useEffect(() => {
     if (!api) {
@@ -32,19 +30,21 @@ const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
         setApi={setApi}
       >
         <CarouselContent>
-          {sortedImages.map((image, index) => (
-            <CarouselItem key={index}>
-              <Card className='border-none'>
-                <CardContent className='flex h-[375px] w-full items-center justify-center p-0'>
-                  <img
-                    src={image.signed_image_url!}
-                    alt={'게시글 상세 이미지'}
-                    className='h-full w-full object-cover'
-                  />
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
+          {images
+            .sort((a, b) => (b.is_cover ? 1 : 0) - (a.is_cover ? 1 : 0))
+            .map((image, index) => (
+              <CarouselItem key={index}>
+                <Card className='border-none'>
+                  <CardContent className='flex h-[375px] w-full items-center justify-center p-0'>
+                    <img
+                      src={image.signed_image_url!}
+                      alt={'게시글 상세 이미지'}
+                      className='h-full w-full object-cover'
+                    />
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
         </CarouselContent>
       </Carousel>
       {images.length > 1 && (
