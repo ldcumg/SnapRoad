@@ -2,6 +2,7 @@
 
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
+import { TEN_MINUTES_OF_SECONDS } from '@/constants/time';
 import type { GroupInfo } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -58,23 +59,25 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
     .is('deleted_at', null)
     .single();
 
-  if (status !== 200 && error) throw new Error(error.message);
+  if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  //TODO - promise.all
-  const signedImgUrl = await getSignedImgUrl('group_image', 60 * 10, data?.group_image_url as string);
+  const groupImageSignedUrl = getSignedImgUrl('group_image', TEN_MINUTES_OF_SECONDS, data.group_image_url ?? '');
 
-  const imageNames = data?.user_group.map((data) => data.profiles?.user_image_url);
-  const signedUrls = await getSignedImgUrls('avatars', 60 * 10, imageNames as string[]);
+  const profileImages = data.user_group.map((user) => user.profiles?.user_image_url ?? '');
+  const profileImagesUrls = getSignedImgUrls('avatars', TEN_MINUTES_OF_SECONDS, profileImages);
 
-  // data?.user_group.map((item) => {
-  //   const matchedUrl = signedUrls?.find((url) => url.path === item.profiles?.user_image_url);
+  const signedUrls = await Promise.all([groupImageSignedUrl, profileImagesUrls]);
 
-  //   item.profiles.user_image_url = matchedUrl ? matchedUrl.signedUrl : null;
+  data.user_group.map((user) => {
+    if (!profileImagesUrls || !user.profiles || !signedUrls[1]) return;
+    const matchedUrl = signedUrls[1].find((url) => url.path === user.profiles?.user_image_url);
 
-  //   return item;
-  // });
+    user.profiles.user_image_url = matchedUrl ? matchedUrl.signedUrl : null;
 
-  return { ...data, group_image_url: signedImgUrl } as GroupInfo;
+    return user;
+  });
+
+  return { ...data, group_image_url: signedUrls[0] } as GroupInfo;
 };
 
 export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId, getGroupInfo };
