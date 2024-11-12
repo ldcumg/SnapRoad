@@ -1,9 +1,10 @@
 'use client';
 
 import GroupInfoBox from './GroupInfoBox';
+import Loading from '@/app/loading';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import { GroupDetailModeState, type GroupInfo } from '@/types/groupTypes';
+import { type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
 const GroupAlbum = ({ groupId, groupInfo }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
+
+  //NOTE - 고장
   const observerRef = useIntersect(async (entry, observer) => {
     observer.unobserve(entry.target);
     if (hasNextPage && !isFetchingNextPage && !isFetching) {
@@ -21,7 +24,7 @@ const GroupAlbum = ({ groupId, groupInfo }: Props) => {
     }
   });
 
-  if (isPending) return;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
