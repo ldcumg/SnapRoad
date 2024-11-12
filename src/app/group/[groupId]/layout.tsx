@@ -1,6 +1,6 @@
 import queryKeys from '@/hooks/queries/queryKeys';
 import { getGroupInfo } from '@/services/server-action/groupServerActions';
-import { getPostsCoverImagesPerGroup } from '@/services/server-action/postAction';
+import { getPostsCoverImagesPerGroup, getPostsImagesPerGroup } from '@/services/server-action/postAction';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import type { Metadata } from 'next';
 
@@ -28,6 +28,12 @@ const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailL
   await queryClient.prefetchQuery({
     queryKey: queryKeys.group.posts(groupId),
     queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
+  });
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: queryKeys.group.postsImages(groupId),
+    queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
+    initialPageParam: 0,
   });
 
   return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;

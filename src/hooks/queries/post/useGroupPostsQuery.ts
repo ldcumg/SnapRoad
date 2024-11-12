@@ -14,18 +14,14 @@ export const getGroupPostsImagesQuery = (groupId: string) => {
 };
 
 /** 게시물 이미지 요청 prefetch */
-export const getGroupPostsImagesPrefetchQuery = (groupId: string) => {
+export const getGroupPostsImagesPrefetchQuery = async (groupId: string) => {
   const queryClient = useQueryClient();
 
-  const prefetchPostsImages = async () => {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: queryKeys.group.postsImages(groupId),
-      queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
-      initialPageParam: 0,
-    });
-  };
-
-  return prefetchPostsImages;
+  return await queryClient.prefetchInfiniteQuery({
+    queryKey: queryKeys.group.postsImages(groupId),
+    queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
+    initialPageParam: 0,
+  });
 };
 
 /** 그룹 게시물들의 대표 이미지들 요청 쿼리 */
