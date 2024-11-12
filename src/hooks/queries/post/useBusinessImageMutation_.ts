@@ -11,10 +11,10 @@ import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import imageCompression from 'browser-image-compression';
 import { v4 as uuidv4 } from 'uuid';
 
 /** 이미지를 업로드하는 훅 */
+
 export function useUploadBusinessImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
@@ -23,42 +23,22 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
 
   return useMutation({
     mutationFn: async (files: File[]): Promise<ImagesAllWithoutPostId[]> => {
-      console.time('전체 업로드 시간');
-
-      // Step 1: EXIF 데이터 추출
       const formData = new FormData();
       files.forEach((file) => formData.append('photos', file));
 
       const exifResponse = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!exifResponse.ok) throw new Error('서버로 전송하는 중 오류 발생');
-      const serverExifDataArray = await exifResponse.json();
+      if (!exifResponse.ok) throw new Error('EXIF 데이터를 가져오는 데 실패했습니다.');
+      const exifDataArray = await exifResponse.json();
 
-      // Step 2: 파일 압축
-      const compressedFiles = await Promise.all(
-        files.map(async (file, index) => {
-          console.log(`파일 ${index + 1} 압축 시작`);
-          console.log(`압축 전 파일 크기: ${file.size / 1024} KB`);
-          const compressedFile = await imageCompression(file, {
-            maxSizeMB: 1, // 1MB 이하로 압축
-            maxWidthOrHeight: 1024, // 최대 해상도 제한
-            useWebWorker: true,
-          });
-          console.log(`압축 후 파일 크기: ${compressedFile.size / 1024} KB`);
-          return compressedFile;
-        }),
-      );
-
-      // Step 3: 메타데이터 저장
       const uploadedImages = await Promise.all(
-        compressedFiles.map(async (file, index) => {
+        files.map(async (file, index) => {
           try {
             const uniqueFileName = await generateUniqueFileName(file.name, folderName, bucketName);
             await uploadFileToStorage(bucketName, folderName, uniqueFileName, file);
+
             const signedUrl = await fetchSignedUrl(bucketName, folderName, uniqueFileName);
             const blobUrl = await getBlobUrl(signedUrl);
-
-            // 서버에서 추출한 EXIF 데이터 사용
-            const exifData = serverExifDataArray[index];
+            const exifData = exifDataArray[index];
 
             const savedData = await saveImageMetadata(
               uniqueFileName,
@@ -80,10 +60,10 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
               created_at: currentDate,
               deleted_at: null,
               updated_at: currentDate,
-              origin_created_at: exifData?.dateTaken,
+              origin_created_at: exifData.dateTaken,
               post_image_url: signedUrl,
-              post_lat: exifData?.latitude,
-              post_lng: exifData?.longitude,
+              post_lat: exifData.latitude,
+              post_lng: exifData.longitude,
               upload_session_id: uploadSessionId,
               group_id: groupId,
             } as ImagesAllWithoutPostId;
@@ -95,7 +75,6 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
       );
 
       setImages(uploadedImages);
-      console.timeEnd('전체 업로드 시간');
       return uploadedImages;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['images', userId] }),

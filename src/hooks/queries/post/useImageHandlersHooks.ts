@@ -7,7 +7,7 @@ import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 
 // 이미지 업로드 처리
 export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {
-  const { addImages, setImages } = useImageUploadStore();
+  const { addImages } = useImageUploadStore();
   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
 
   const handleImageUpload = (files: FileList) => {
