@@ -12,9 +12,12 @@ import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
-type Props = Readonly<{ params: { groupId: string } }>;
+type Props = Readonly<{
+  params: { groupId: string };
+  searchParams: { lat: string; lng: string };
+}>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
+const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
   //TODO - zustand 관리
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
@@ -60,7 +63,12 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const groupDetailMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
-        return <GroupMap groupId={groupId} />;
+        return (
+          <GroupMap
+            groupId={groupId}
+            point={{ lat: Number(lat), lng: Number(lng) }}
+          />
+        );
       case GroupDetailMode.album:
         return (
           <GroupAlbum
