@@ -3,8 +3,10 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import CloseLg from '@/lib/icon/Close_Lg';
 import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import type {
@@ -32,6 +34,7 @@ type Props = {
 
 const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
+  const { isCustomHeightOpen, handleCustomOpen, handleCustomClose } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
@@ -298,6 +301,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                   onClick={() => {
                     moveToMarker({ lat: post_lat, lng: post_lng });
                     setPostsPreview([{ postId: post_id, postImageUrl: post_image_url }]);
+                    handleCustomOpen();
                   }}
                   image={{
                     // 기본 마커 이미지
@@ -359,7 +363,8 @@ const GroupMap = ({ groupId, point }: Props) => {
                 src='/svgs/Geolocation_btn.svg'
               />
             </button>
-            {searchResult.hasMore && (
+            {
+              // searchResult.hasMore &&
               <button
                 className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
@@ -368,7 +373,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                 <p className='text-body_md'>검색결과 더보기</p>
                 <img src='/svgs/Reload.svg' />
               </button>
-            )}
+            }
             <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
               <h5 className='text-label_md'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
@@ -393,12 +398,20 @@ const GroupMap = ({ groupId, point }: Props) => {
             height='custom'
             customHeight='250px'
             rounded={true}
-            isOpen={true}
+            isOpen={isCustomHeightOpen}
             showHeader={false}
             hasButton={false}
             backdrop={false}
           >
-            <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+            <div className='flex flex-row justify-between'>
+              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+              <button
+                className='mb-auto mt-[14px]'
+                onClick={handleCustomClose}
+              >
+                <CloseLg />
+              </button>
+            </div>
             <ol className='flex flex-row gap-3 overflow-x-auto'>
               {postsPreView.map((post) => (
                 <li
