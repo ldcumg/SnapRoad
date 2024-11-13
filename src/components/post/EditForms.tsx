@@ -1,27 +1,27 @@
 'use client';
 
+import DateInputWithIcon from '../ui/DateInputWithIcon';
+import HashtagInput from '../ui/HashtagInput';
+import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { usePostForm } from '@/hooks/byUse/usePostForm';
-import { useForm } from '@/hooks/queries/post/useFormMutations';
+import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
+import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
-import DateInputWithIcon from '../ui/DateInputWithIcon';
-import TimeInputWithIcon from '../ui/TimeInputWithIcon';
-import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import { Input } from '@/stories/Input';
 import TextAreaWithCounter from '@/stories/TextAreas';
-import { useRouter, useParams } from 'next/navigation';
-import { useMemo, useEffect } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useMemo, useEffect, useState } from 'react';
+import { FieldValues, Controller } from 'react-hook-form';
 
 const EditForms = () => {
   const {
     register,
     handleSubmit,
-    setValue,
+    control,
     formState: { errors },
     watch,
   } = usePostForm();
@@ -29,48 +29,17 @@ const EditForms = () => {
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
-  const { images, setImages } = useImageUploadStore();
-  const { mutateAsync: postForm } = useForm();
+  const { images } = useImageUploadStore();
+  const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
-  const { postId } = useParams();
 
   useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        // 서버에서 게시물 데이터 가져오기
-        const postData = await fetch(`/api/posts/${postId}`).then((res) => res.json());
-
-        // 가져온 데이터를 폼에 설정
-        setValue('desc', postData.desc);
-        setValue('hashtags', postData.hashtags.join(', '));
-        setValue('date', postData.date);
-        setValue('time', postData.time);
-        setImages(postData.images || []);
-      } catch (error) {
-        console.error('게시물 데이터를 불러오는 중 오류 발생:', error);
-      }
-    };
-
-    if (postId) {
-      fetchPostData();
-    }
-  }, [postId, setValue, setImages]);
+    if (!isFullHeightOpen) console.log('현재 이미지:', images);
+  }, [isFullHeightOpen, images]);
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
-
-    let hashtags: string[] = [];
-
-    if (typeof value.hashtags === 'string') {
-      hashtags = value.hashtags
-        .split(',')
-        .map((tag) => tag.trim().replace(/^#/, ''))
-        .filter((tag) => tag.length > 0);
-    } else if (Array.isArray(value.hashtags)) {
-      hashtags = value.hashtags.map((tag) => (typeof tag === 'string' ? tag.trim().replace(/^#/, '') : tag.toString()));
-    }
-
-    hashtags = hashtags.filter((tag) => tag.length > 0);
+    const hashtags: string[] = value.hashtags || [];
 
     const parsedFormData = {
       ...formSchema.parse(value),
@@ -84,10 +53,12 @@ const EditForms = () => {
     };
 
     try {
-      const res = await postForm(parsedFormData);
+      const res = await submitForm(parsedFormData);
       const uploadSessionId = images[0]?.upload_session_id;
       await updateImagePostId(res.postId, uploadSessionId);
-      await saveTags(hashtags, res.postId, groupId);
+      if (hashtags.length > 0) {
+        await saveTags(hashtags, res.postId, groupId);
+      }
       router.push(`/group/${groupId}/post/${res.postId}`);
     } catch (error) {
       console.error('폼 제출 에러:', error);
@@ -95,14 +66,16 @@ const EditForms = () => {
     }
   };
 
+  // 필드 값 감시
   const text = watch('desc');
-  const hashtags = watch('hashtags');
+  // const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
 
+  // 필드 빈값 확인
   const isFormValueFilled = useMemo(() => {
-    return text && hashtags && date && time;
-  }, [text, hashtags, date, time]);
+    return text && date && time;
+  }, [text, date, time]);
 
   return (
     <>
@@ -146,12 +119,21 @@ const EditForms = () => {
           {...register('desc')}
         />
 
-        <Input
-          type={'text'}
-          placeholder='# 해시태그를 추가해 보세요'
-          errorText={errors.hashtags && String(errors.hashtags.message)}
-          {...register('hashtags')}
+        <Controller
+          name='hashtags'
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <div>
+              <HashtagInput
+                hashtags={field.value || []}
+                setHashtags={field.onChange}
+              />
+              {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
+            </div>
+          )}
         />
+
         <DateInputWithIcon {...register('date')} />
         <TimeInputWithIcon {...register('time')} />
 
