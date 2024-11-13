@@ -226,7 +226,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   return (
     <>
-      {isInputFocus && <div className='fixed inset-0 z-40 bg-black bg-opacity-50'></div>}
+      {isInputFocus && <div className='fixed inset-0 z-40 bg-black bg-opacity-40'></div>}
       <PlaceSearchForm
         searchLocation={searchLocation}
         setSearchResult={setSearchResult}
