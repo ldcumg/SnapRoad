@@ -3,8 +3,10 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import CloseLg from '@/lib/icon/Close_Lg';
 import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import type {
@@ -32,6 +34,7 @@ type Props = {
 
 const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
+  const { isCustomHeightOpen, handleCustomClose } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
@@ -344,7 +347,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             height='custom'
             customHeight=''
             rounded={true}
-            isOpen={true}
+            isOpen={isCustomHeightOpen}
             showHeader={false}
             hasButton={false}
             className='mb-0 pb-2 pt-7'
@@ -398,7 +401,15 @@ const GroupMap = ({ groupId, point }: Props) => {
             hasButton={false}
             backdrop={false}
           >
-            <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+            <div className='flex flex-row justify-between'>
+              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+              <button
+                className='mb-auto mt-[14px]'
+                onClick={handleCustomClose}
+              >
+                <CloseLg />
+              </button>
+            </div>
             <ol className='flex flex-row gap-3 overflow-x-auto'>
               {postsPreView.map((post) => (
                 <li
