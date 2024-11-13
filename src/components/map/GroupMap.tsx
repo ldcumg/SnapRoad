@@ -344,7 +344,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             isOpen={true}
             showHeader={false}
             hasButton={false}
-            className='mb-0 pt-7'
+            className='mb-0 pb-2 pt-7'
             backdrop={false}
           >
             <button
@@ -363,11 +363,11 @@ const GroupMap = ({ groupId, point }: Props) => {
                 <img src='/svgs/Reload.svg' />
               </button>
             )}
-            <div className='flex flex-col gap-1 pb-2'>
+            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
               <h5 className='text-label_md'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
               </h5>
-              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+              {!!spotInfo.placeName && <p className='text-body_md'>{spotInfo.address}</p>}
             </div>
           </BottomSheet>
         ) : (
