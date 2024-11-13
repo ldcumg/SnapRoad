@@ -91,7 +91,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
           <img src='/svgs/Logo.svg' />
         </Link>
         <h1 className='text-label_md'>{groupInfo.group_title}</h1>
-        {handleChangeMode()}
+        <div className='w-[63px] flex justify-end'>{handleChangeMode()}</div>
       </header>
       {groupDetailMode()}
     </div>

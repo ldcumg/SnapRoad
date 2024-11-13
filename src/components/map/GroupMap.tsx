@@ -411,24 +411,25 @@ const GroupMap = ({ groupId, point }: Props) => {
             </ol>
           </BottomSheet>
         ) : (
-          <></>
-          // <div
-          //   className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
-          // >
-          //   <Button
-          //     type='button'
-          //     onClick={handleAddPostRoute}
-          //     variant='primary'
-          //     size='full'
-          //     className='bottom-4 z-50 h-[56px] px-6'
-          //     disabled={!isPostsView && !spotInfo?.address}
-          //   >
-          //     <span className='flex gap-2'>
-          //       <img src='/svgs/Plus_LG.svg' />
-          //       <p className='text-title_lg'>게시물 추가하기</p>
-          //     </span>
-          //   </Button>
-          // </div>
+          !isPostsView && (
+            <div
+              className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+            >
+              <Button
+                type='button'
+                onClick={handleAddPostRoute}
+                variant='primary'
+                size='full'
+                className='bottom-4 z-50 h-[56px] px-6'
+                disabled={!isPostsView && !spotInfo?.address}
+              >
+                <span className='flex gap-2'>
+                  <img src='/svgs/Plus_LG.svg' />
+                  <p className='text-title_lg'>게시물 추가하기</p>
+                </span>
+              </Button>
+            </div>
+          )
         )}
       </Map>
     </>
