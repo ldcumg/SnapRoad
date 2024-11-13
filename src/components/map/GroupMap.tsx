@@ -301,7 +301,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={5} // 클러스터 할 최소 지도 레벨
+            minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
@@ -311,7 +311,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              // post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -352,13 +352,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        <Polyline
+        {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        />
+        /> */}
 
         {!!spotInfo ? (
           <BottomSheet
@@ -396,7 +396,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </BottomSheet>
         ) : (
           <button
-            className='fixed bottom-[100px] left-4 z-50'
+            // className='fixed bottom-[100px] left-4 z-50'
+            className='fixed bottom-[16px] left-4 z-50'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
@@ -434,23 +435,24 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             </ol>
           </BottomSheet>
         ) : (
-          <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
-          >
-            <Button
-              type='button'
-              onClick={handleAddPostRoute}
-              variant='primary'
-              size='full'
-              className='bottom-4 z-50 h-[56px] px-6'
-              disabled={!isPostsView && !spotInfo?.address}
-            >
-              <span className='flex gap-2'>
-                <img src='/svgs/Plus_LG.svg' />
-                <p className='text-title_lg'>게시물 추가하기</p>
-              </span>
-            </Button>
-          </div>
+            <></>
+          // <div
+          //   className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+          // >
+          //   <Button
+          //     type='button'
+          //     onClick={handleAddPostRoute}
+          //     variant='primary'
+          //     size='full'
+          //     className='bottom-4 z-50 h-[56px] px-6'
+          //     disabled={!isPostsView && !spotInfo?.address}
+          //   >
+          //     <span className='flex gap-2'>
+          //       <img src='/svgs/Plus_LG.svg' />
+          //       <p className='text-title_lg'>게시물 추가하기</p>
+          //     </span>
+          //   </Button>
+          // </div>
         )}
       </Map>
     </>
