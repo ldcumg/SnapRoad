@@ -18,6 +18,7 @@ type Props = Readonly<{
 }>;
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
+  console.log('{ lat, lng } =>', { lat, lng });
   //TODO - zustand 관리
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
@@ -66,7 +67,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
         return (
           <GroupMap
             groupId={groupId}
-            point={{ lat: Number(lat), lng: Number(lng) }}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : null}
           />
         );
       case GroupDetailMode.album:

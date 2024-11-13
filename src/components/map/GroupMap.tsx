@@ -26,8 +26,8 @@ import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react
 
 const SEARCH_INPUT = 'searchInput';
 
-const GroupMap = ({ groupId, point }: { groupId: string; point: { lat: number; lng: number } }) => {
-  console.log('spot =>', point);
+const GroupMap = ({ groupId, point }: { groupId: string; point: { lat: number; lng: number } | null }) => {
+  console.log('point =>', point);
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
@@ -73,7 +73,7 @@ const GroupMap = ({ groupId, point }: { groupId: string; point: { lat: number; l
   // }, []);
 
   useEffect(() => {
-    if (map && postsCoverImages?.length) {
+    if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
@@ -81,6 +81,13 @@ const GroupMap = ({ groupId, point }: { groupId: string; point: { lat: number; l
       map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
+
+  useEffect(() => {
+    if (!!point && map) {
+      moveToMarker(point);
+      map.setLevel(4, { animate: true });
+    }
+  }, [map]);
 
   if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
 
