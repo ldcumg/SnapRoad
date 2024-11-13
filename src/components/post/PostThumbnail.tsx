@@ -1,6 +1,6 @@
 'use client';
 
-import { BUCKET_NAME } from '@/constants/constants';
+import buckets from '@/constants/buckets';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/post/useImageHandlersHooks';
 import { IconCloseCircle } from '@/lib/icon/Icon_Close_Circle';
@@ -11,9 +11,9 @@ import { usePostDataStore } from '@/stores/post/usePostDataStore';
 const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages } = useImageUploadStore();
-  const { handleDelete } = useImageDeleteLogic(BUCKET_NAME, groupId);
-  const { handleImageUpload } = useImageUploadLogic(BUCKET_NAME, groupId, userId, groupId);
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKET_NAME, groupId);
+  const { handleDelete } = useImageDeleteLogic(buckets.tourImages(), groupId);
+  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages(), groupId, userId, groupId);
+  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages(), groupId);
 
   const handleNewImageUpload = (files: FileList | null) => {
     if (files) {

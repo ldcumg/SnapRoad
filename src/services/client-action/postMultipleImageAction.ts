@@ -1,7 +1,6 @@
-import { BUCKET_NAME } from '@/constants/constants';
+import buckets from '@/constants/buckets';
 import { generateUniqueFileName } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
-
 
 /**
  * 다중 파일 업로드
@@ -16,12 +15,14 @@ export const uploadImage = async (files: File[], folderName: string): Promise<{ 
   const uploadedFiles: { url: string; filename: string }[] = [];
 
   for (const file of files) {
-    const uniqueFileName = await generateUniqueFileName(file.name, folderName, BUCKET_NAME);
-    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(`${folderName}/${uniqueFileName}`, file);
+    const uniqueFileName = await generateUniqueFileName(file.name, folderName, buckets.tourImages());
+    const { data, error } = await supabase.storage
+      .from(buckets.tourImages())
+      .upload(`${folderName}/${uniqueFileName}`, file);
 
     if (error) throw error;
     const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-      .from(BUCKET_NAME)
+      .from(buckets.tourImages())
       .createSignedUrl(`${folderName}/${uniqueFileName}`, 24 * 60 * 60 * 1000);
 
     if (signedUrlError || !signedUrlData) throw new Error('Signed URL을 가져오는 데 실패했습니다.');
