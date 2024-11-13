@@ -30,7 +30,7 @@ export const updateSession = async (request: NextRequest) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const isPrivate = PRIVATEURLS.includes(requestPathname);
+  const isPrivate = PRIVATEURLS.includes(requestPathname as URLS);
   if (!user && isPrivate) {
     const url = request.nextUrl.clone();
     url.pathname = URLS.logIn;
