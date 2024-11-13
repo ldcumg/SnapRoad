@@ -33,7 +33,7 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
       const serverExifDataArray = await exifResponse.json();
 
       // Step 2: 병렬 제한 및 조건부 압축
-      const limit = 3; // 동시에 처리할 파일 개수 제한
+      const limit = 3;
       const compressedFiles = [];
 
       for (let i = 0; i < files.length; i += limit) {
@@ -41,19 +41,14 @@ export function useUploadBusinessImage(bucketName: string, folderName: string, u
 
         const chunkCompressedFiles = await Promise.all(
           chunk.map(async (file, index) => {
-            // console.log(`파일 ${i + index + 1} 처리 시작`);
-
             if (file.size / 1024 / 1024 <= 1) {
-              // console.log(`압축 생략 - 파일 크기: ${file.size / 1024} KB`);
               return file; // 1MB 이하 파일은 압축하지 않음
             } else {
-              // console.log(`압축 전 파일 크기: ${file.size / 1024} KB`);
               const compressedFile = await imageCompression(file, {
                 maxSizeMB: 1, // 1MB 이하로 압축
                 maxWidthOrHeight: 1024, // 최대 해상도 제한
                 useWebWorker: true,
               });
-              // console.log(`압축 후 파일 크기: ${compressedFile.size / 1024} KB`);
               return compressedFile;
             }
           }),

@@ -1,6 +1,7 @@
 'use client';
 
 import DateInputWithIcon from '../ui/DateInputWithIcon';
+import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { usePostForm } from '@/hooks/byUse/usePostForm';
 import { useForm } from '@/hooks/queries/post/useFormMutations';
@@ -14,7 +15,7 @@ import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { useRouter } from 'next/navigation';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 const PostForms = () => {
@@ -29,7 +30,8 @@ const PostForms = () => {
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
   const { images } = useImageUploadStore();
-  const { mutateAsync: postForm } = useForm();
+  const { mutateAsync: postForm } = useForm(groupId);
+  const [hashtags, setHashtags] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,6 +40,8 @@ const PostForms = () => {
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
+
+    // const hashtags = Array.isArray(value.hashtag) ? value.hashtag : [];
 
     let hashtags: string[] = [];
 
@@ -56,6 +60,7 @@ const PostForms = () => {
     // 문자열과 숫자 모두 허용하기 위해 문자열 변환
     hashtags = hashtags.filter((tag) => tag.length > 0);
 
+    console.log(hashtags);
     const parsedFormData = {
       ...formSchema.parse(value),
       userId,
@@ -81,14 +86,14 @@ const PostForms = () => {
 
   // 필드 값 감시
   const text = watch('desc');
-  const hashtags = watch('hashtags');
+  // const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
 
   // 필드 빈값 확인
   const isFormValueFilled = useMemo(() => {
-    return text && hashtags && date && time;
-  }, [text, hashtags, date, time]);
+    return text && date && time;
+  }, [text, date, time]);
 
   return (
     <>
@@ -138,6 +143,20 @@ const PostForms = () => {
           errorText={errors.hashtags && String(errors.hashtags.message)}
           {...register('hashtags')}
         />
+
+        {/* <HashtagInput
+          hashtags={hashtags}
+          setHashtags={setHashtags}
+        /> */}
+
+        {/* <HashtagInput
+          control={control}
+          // name='hashtags'
+          placeholder='# 해시태그를 추가해 보세요'
+          {...register('hashtags')}
+          errorText={errors.hashtags && String(errors.hashtags.message)}
+        /> */}
+
         <DateInputWithIcon {...register('date')} />
         <TimeInputWithIcon {...register('time')} />
 
