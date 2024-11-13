@@ -311,7 +311,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              // post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -352,13 +352,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        <Polyline
+        {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        />
+        /> */}
 
         {!!spotInfo ? (
           <BottomSheet
