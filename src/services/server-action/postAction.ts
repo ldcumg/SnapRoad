@@ -22,6 +22,7 @@ export const getPostsImagesPerGroup = async ({
     .from('images')
     .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
+    .not('post_id', 'is', null)
     .is('deleted_at', null)
     .range(PAGE_PER * pageParam, PAGE_PER * pageParam + PAGE_PER - 1);
 
@@ -57,6 +58,7 @@ export const getPostsCoverImagesPerGroup = async ({
     .select('post_id, post_image_name, post_lat, post_lng')
     .eq('group_id', groupId)
     .eq('is_cover', true)
+    .not('post_id', 'is', null)
     .is('deleted_at', null);
 
   if ((status !== 200 && error) || !data) throw new Error(error.message);
