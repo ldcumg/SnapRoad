@@ -8,20 +8,22 @@ type Props = {
 };
 
 const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => {
+  const copyInvitationCode = () => {
+    window.navigator.clipboard.writeText(group_invite_code).then(() => {
+      toast.alert('초대 코드를 복사했어요!', {
+        position: 'b-c',
+        autoClose: true,
+      });
+    });
+  };
+
   return (
     <>
       <div className='flex flex-row justify-between p-4'>
         <h2 className='text-title_xl'>그룹 멤버</h2>
         <button
           className='flex items-center gap-2 rounded border border-black px-4 py-2'
-          onClick={() =>
-            window.navigator.clipboard.writeText(group_invite_code).then(() => {
-              toast.alert('초대 코드를 복사했어요!', {
-                position: 'b-c',
-                autoClose: true,
-              });
-            })
-          }
+          onClick={copyInvitationCode}
         >
           <img src='/svgs/User_Plus.svg' />
           <p className='text-label_sm text-gray-700'>초대코드 복사</p>
@@ -39,7 +41,7 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
               key={user_email}
             >
               <img
-                className='h-10 w-10'
+                className='h-10 w-10 rounded-full'
                 src={user_image_url ?? '/svgs/Profile.svg'}
                 alt='프로필 이미지'
               />
