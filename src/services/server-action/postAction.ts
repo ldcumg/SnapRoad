@@ -16,12 +16,14 @@ export const getPostsImagesPerGroup = async ({
 }): Promise<PostImage[]> => {
   const supabase = createClient();
 
+  const PAGE_PER = 21;
+
   const { status, data, error } = await supabase
     .from('images')
     .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .is('deleted_at', null)
-    .range(15 * pageParam, 15 * pageParam + 14);
+    .range(PAGE_PER * pageParam, PAGE_PER * pageParam + PAGE_PER - 1);
 
   if ((status !== 200 && error) || !data) throw new Error(error.message);
 
