@@ -363,8 +363,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                 src='/svgs/Geolocation_btn.svg'
               />
             </button>
-            {
-              // searchResult.hasMore &&
+            {searchResult.hasMore && (
               <button
                 className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
@@ -373,7 +372,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                 <p className='text-body_md'>검색결과 더보기</p>
                 <img src='/svgs/Reload.svg' />
               </button>
-            }
+            )}
             <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
               <h5 className='text-label_md'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
