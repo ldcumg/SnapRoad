@@ -12,16 +12,16 @@ import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import { Input } from '@/stories/Input';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { useRouter } from 'next/navigation';
 import { useMemo, useEffect, useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, Controller } from 'react-hook-form';
 
 const PostForms = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     watch,
   } = usePostForm();
@@ -39,27 +39,8 @@ const PostForms = () => {
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
+    const hashtags: string[] = value.hashtags || [];
 
-    // const hashtags = Array.isArray(value.hashtag) ? value.hashtag : [];
-
-    let hashtags: string[] = [];
-
-    // value.hashtags가 문자열인 경우
-    if (typeof value.hashtags === 'string') {
-      hashtags = value.hashtags
-        .split(',')
-        .map((tag) => tag.trim().replace(/^#/, ''))
-        .filter((tag) => tag.length > 0);
-    }
-    // value.hashtags가 배열인 경우
-    else if (Array.isArray(value.hashtags)) {
-      hashtags = value.hashtags.map((tag) => (typeof tag === 'string' ? tag.trim().replace(/^#/, '') : tag.toString()));
-    }
-
-    // 문자열과 숫자 모두 허용하기 위해 문자열 변환
-    hashtags = hashtags.filter((tag) => tag.length > 0);
-
-    console.log(hashtags);
     const parsedFormData = {
       ...formSchema.parse(value),
       userId,
@@ -75,7 +56,9 @@ const PostForms = () => {
       const res = await submitForm(parsedFormData);
       const uploadSessionId = images[0]?.upload_session_id;
       await updateImagePostId(res.postId, uploadSessionId);
-      await saveTags(hashtags, res.postId, groupId);
+      if (hashtags.length > 0) {
+        await saveTags(hashtags, res.postId, groupId);
+      }
       router.push(`/group/${groupId}/post/${res.postId}`);
     } catch (error) {
       console.error('폼 제출 에러:', error);
@@ -136,25 +119,20 @@ const PostForms = () => {
           {...register('desc')}
         />
 
-        <Input
-          type={'text'}
-          placeholder='# 해시태그를 추가해 보세요'
-          errorText={errors.hashtags && String(errors.hashtags.message)}
-          {...register('hashtags')}
-        />
-
-        {/* <HashtagInput
-          hashtags={hashtags}
-          setHashtags={setHashtags}
-        /> */}
-
-        {/* <HashtagInput
+        <Controller
+          name='hashtags'
           control={control}
-          // name='hashtags'
-          placeholder='# 해시태그를 추가해 보세요'
-          {...register('hashtags')}
-          errorText={errors.hashtags && String(errors.hashtags.message)}
-        /> */}
+          defaultValue={[]}
+          render={({ field }) => (
+            <div>
+              <HashtagInput
+                hashtags={field.value || []}
+                setHashtags={field.onChange}
+              />
+              {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
+            </div>
+          )}
+        />
 
         <DateInputWithIcon {...register('date')} />
         <TimeInputWithIcon {...register('time')} />

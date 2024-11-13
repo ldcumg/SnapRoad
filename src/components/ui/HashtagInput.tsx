@@ -1,23 +1,23 @@
 import { useState } from 'react';
 
 interface HashtagInputProps {
-  value: string[];
-  onChange: (tags: string[]) => void;
+  hashtags: string[];
+  setHashtags: (tags: string[]) => void;
 }
 
-const HashtagInput = ({ value: hashtags, onChange }: HashtagInputProps) => {
+const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   const [inputValue, setInputValue] = useState('');
 
   const addHashtag = () => {
     const trimmedTag = inputValue.trim().replace(/^#/, '');
     if (trimmedTag && !hashtags.includes(trimmedTag)) {
-      onChange([...hashtags, trimmedTag]);
+      setHashtags([...hashtags, trimmedTag]);
       setInputValue('');
     }
   };
 
   const removeHashtag = (tagToRemove: string) => {
-    onChange(hashtags.filter((tag) => tag !== tagToRemove));
+    setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
