@@ -265,7 +265,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={5} // 클러스터 할 최소 지도 레벨
+            minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
@@ -275,7 +275,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              // post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -316,107 +316,109 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        <Polyline
+        {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        />
-      </Map>
+        /> */}
 
-      {!!spotInfo ? (
-        <BottomSheet
-          height='custom'
-          customHeight=''
-          rounded={true}
-          isOpen={true}
-          showHeader={false}
-          hasButton={false}
-          className='mb-0 pt-7'
-          backdrop={false}
-        >
+        {!!spotInfo ? (
+          <BottomSheet
+            height='custom'
+            customHeight=''
+            rounded={true}
+            isOpen={true}
+            showHeader={false}
+            hasButton={false}
+            className='mb-0 pt-7'
+            backdrop={false}
+          >
+            <button
+              className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
+              onClick={handleFindUserLocation}
+            >
+              <img src='/svgs/Geolocation_btn.svg' />
+            </button>
+            {searchResult.hasMore && (
+              <button
+                className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+                type='button'
+                onClick={searchLocation}
+              >
+                <p className='text-body_md'>검색결과 더보기</p>
+                <img src='/svgs/Reload.svg' />
+              </button>
+            )}
+            <div className='flex flex-col gap-1 pb-2'>
+              <h5 className='text-label_md'>
+                {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
+              </h5>
+              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+            </div>
+          </BottomSheet>
+        ) : (
           <button
-            className='absolute -top-4 left-4 -translate-y-[90%]'
+            // className='fixed bottom-[100px] left-4 z-30'
+            className='fixed bottom-[16px] left-4 z-30'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
           </button>
-          {searchResult.hasMore && (
-            <button
-              className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
-              type='button'
-              onClick={searchLocation}
-            >
-              <p className='text-body_md'>검색결과 더보기</p>
-              <img src='/svgs/Reload.svg' />
-            </button>
-          )}
-          <div className='flex flex-col gap-1 pb-2'>
-            <h5 className='text-label_md'>
-              {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
-            </h5>
-            <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
-          </div>
-        </BottomSheet>
-      ) : (
-        <button
-          className='fixed bottom-[100px] left-4 z-30'
-          onClick={handleFindUserLocation}
-        >
-          <img src='/svgs/Geolocation_btn.svg' />
-        </button>
-      )}
-      {!!postsPreView.length ? (
-        <BottomSheet
-          height='custom'
-          customHeight='250px'
-          rounded={true}
-          isOpen={true}
-          showHeader={false}
-          hasButton={false}
-          backdrop={false}
-        >
-          <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
-          <ol className='flex flex-row gap-3 overflow-x-auto'>
-            {postsPreView.map((post) => (
-              <li
-                className='h-[132px] w-[132px]'
-                key={post.postId}
-              >
-                <Link
-                  className='block h-full w-full'
-                  href={`/group/${groupId}/post/${post.postId}`}
-                >
-                  <img
-                    className='h-full w-full rounded-[8px] object-cover'
-                    src={post.postImageUrl}
-                    alt={`Post ${post.postId}`}
-                  />
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </BottomSheet>
-      ) : (
-        <div
-          className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
-        >
-          <Button
-            type='button'
-            onClick={handleAddPostRoute}
-            variant='primary'
-            size='full'
-            className='bottom-4 z-50 h-[56px] px-6'
-            disabled={!isPostsView && !spotInfo?.address}
+        )}
+        {!!postsPreView.length ? (
+          <BottomSheet
+            height='custom'
+            customHeight='250px'
+            rounded={true}
+            isOpen={true}
+            showHeader={false}
+            hasButton={false}
+            backdrop={false}
           >
-            <span className='flex gap-2'>
-              <img src='/svgs/Plus_LG.svg' />
-              <p className='text-title_lg'>게시물 추가하기</p>
-            </span>
-          </Button>
-        </div>
-      )}
+            <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
+            <ol className='flex flex-row gap-3 overflow-x-auto'>
+              {postsPreView.map((post) => (
+                <li
+                  className='h-[132px] w-[132px]'
+                  key={post.postId}
+                >
+                  <Link
+                    className='block h-full w-full'
+                    href={`/group/${groupId}/post/${post.postId}`}
+                  >
+                    <img
+                      className='h-full w-full rounded-[8px] object-cover'
+                      src={post.postImageUrl}
+                      alt={`Post ${post.postId}`}
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </BottomSheet>
+        ) : (
+          <></>
+          // <div
+          //   className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+          // >
+          //   <Button
+          //     type='button'
+          //     onClick={handleAddPostRoute}
+          //     variant='primary'
+          //     size='full'
+          //     className='bottom-4 z-50 h-[56px] px-6'
+          //     disabled={!isPostsView && !spotInfo?.address}
+          //   >
+          //     <span className='flex gap-2'>
+          //       <img src='/svgs/Plus_LG.svg' />
+          //       <p className='text-title_lg'>게시물 추가하기</p>
+          //     </span>
+          //   </Button>
+          // </div>
+        )}
+      </Map>
     </>
   );
 };
