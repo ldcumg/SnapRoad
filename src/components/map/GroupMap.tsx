@@ -194,17 +194,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           ...prev,
           {
             centerLatLng: { lat: Ma, lng: La },
-            // textAlign: 'end',
-            // lineHeight: '54px',
             fontSize: '0px',
-            // color: 'black',
             width: '56px',
             height: '56px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
             backgroundSize: 'cover',
-            positon: 'getCenter',
             borderRadius: '100%',
-            border: '4px solid #EB84DA',
+            border: 'solid 4px #EB84DA',
           },
         ]);
     });
@@ -290,8 +286,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
                     // 기본 마커 이미지
                     src: post_image_url,
                     size: {
-                      width: 50,
-                      height: 50,
+                      width: 60,
+                      height: 60,
                     }, // 마커이미지의 크기
                     options: { shape: 'circle', offset: { x: 30, y: 30 }, alt: post_id },
                   }}
@@ -322,7 +318,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
-          strokeOpacity={0.7} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
+          strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
         />
       </Map>

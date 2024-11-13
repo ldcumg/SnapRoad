@@ -6,7 +6,7 @@ import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
-import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
+import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { getGroupPostsImagesPrefetchQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';

@@ -3,7 +3,7 @@
 import { Card, CardContent } from '../ui/card';
 import RandomImageSkeleton from './RandomImageSkeleton';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { useGroupRandomImageQuery } from '@/hooks/queries/byUse/useGroupQueries';
+import { useGroupRandomImageQuery } from '@/hooks/queries/group/useGroupQueries';
 import { formatDateToYY_MM_DD } from '@/utils/dateUtils';
 import { getSlicedAddress } from '@/utils/getSlicedAddress';
 import Autoplay from 'embla-carousel-autoplay';

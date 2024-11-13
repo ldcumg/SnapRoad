@@ -1,4 +1,5 @@
 import queryKeys from '../queryKeys';
+import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
 import { getGroupSignedImageUrls } from '@/services/groupServices';
 import { getSignedImgUrls } from '@/services/server-action/getSignedImgUrls';
 import { getGroupDetails, getGroupInfo } from '@/services/server-action/groupServerActions';
@@ -95,12 +96,12 @@ const useGroupRandomImageQuery = () => {
   });
 };
 
-const useGroupInfoQuery = (groupId: string) => {
-  return useQuery({
+const useGroupInfoQuery = (groupId: string) =>
+  useQuery({
     queryKey: queryKeys.group.info(groupId),
     queryFn: ({ queryKey }) => getGroupInfo({ queryKey }),
+    gcTime: TEN_MINUTES_FOR_TANSTACK,
   });
-};
 
 export {
   useGroupDetailQueryForUpdate,
