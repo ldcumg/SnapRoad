@@ -1,10 +1,12 @@
 'use server';
 
 import { getSignedImgUrls } from './getSignedImgUrls';
+import buckets from '@/constants/buckets';
+import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import type { PostCoverImage, PostImage } from '@/types/postTypes';
 import { createClient } from '@/utils/supabase/server';
 
-/** 그룹 게시물들에 해당하는 이미지 요청 */
+/** 그룹 게시물들 이미지 요청 */
 export const getPostsImagesPerGroup = async ({
   queryKey: [groupId],
   pageParam,
@@ -14,16 +16,32 @@ export const getPostsImagesPerGroup = async ({
 }): Promise<PostImage[]> => {
   const supabase = createClient();
 
+  const PAGE_PER = 21;
+
   const { status, data, error } = await supabase
     .from('images')
-    .select('id, post_id, post_image_url, post_image_name')
+    .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .is('deleted_at', null)
-    .range(15 * pageParam, 15 * pageParam + 14);
+    .range(PAGE_PER * pageParam, PAGE_PER * pageParam + PAGE_PER - 1);
 
-  if (status !== 200 && error) throw new Error(error.message);
+  if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  return data as PostImage[];
+  //TODO - util 함수로 만들기
+  const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
+  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, postImages);
+
+  const dataWithSignedUrl = data.map((post) => {
+    if (!postImagesUrls) return;
+    const matchedUrl = postImagesUrls.find((url) => url.path === `${groupId}/${post.post_image_name}`);
+
+    return {
+      ...post,
+      post_image_url: matchedUrl ? matchedUrl.signedUrl : '',
+    };
+  });
+
+  return dataWithSignedUrl as PostImage[];
 };
 
 /** 그룹 게시물 중 대표 이미지만 요청 */
@@ -34,25 +52,29 @@ export const getPostsCoverImagesPerGroup = async ({
 }): Promise<PostCoverImage[]> => {
   const supabase = createClient();
 
-  const {
-    status,
-    data: postsImageData,
-    error,
-  } = await supabase
+  const { status, data, error } = await supabase
     .from('images')
-    .select('post_id, post_image_name, post_image_url, post_lat, post_lng')
+    .select('post_id, post_image_name, post_lat, post_lng')
     .eq('group_id', groupId)
     .eq('is_cover', true)
     .is('deleted_at', null);
 
-  if (status !== 200 && error) throw new Error(error.message);
-  // const imageNames = postsImageData?.map((data) => data.post_image_name);
-  // console.log("imageNames =>", imageNames);
+  if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  // const signedUrls = await getSignedImgUrls('tour_images', 10 * 60, imageNames as string[]);
-  // console.log("signedUrls =>", signedUrls);
+  const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
+  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, postImages);
 
-  return postsImageData as PostCoverImage[];
+  const dataWithSignedUrl = data.map((post) => {
+    if (!postImagesUrls) return;
+    const matchedUrl = postImagesUrls.find((url) => url.path === `${groupId}/${post.post_image_name}`);
+
+    return {
+      ...post,
+      post_image_url: matchedUrl ? matchedUrl.signedUrl : '',
+    };
+  });
+
+  return dataWithSignedUrl as PostCoverImage[];
 };
 
 /** 게시글 삭제 */

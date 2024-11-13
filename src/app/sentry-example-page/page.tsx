@@ -58,7 +58,7 @@ export default function Page() {
                 op: 'test',
               },
               async () => {
-                const res = await fetch('/api/sentry');
+                const res = await fetch('/api/sentry-example-api');
                 if (!res.ok) {
                   throw new Error('Sentry Example Frontend Error');
                 }
@@ -71,7 +71,7 @@ export default function Page() {
 
         <p>
           Next, look for the error on the{' '}
-          <a href='https://ldcumg.sentry.io/issues/?project=4508158229544960'>Issues Page</a>.
+          <a href='https://yuna-ii.sentry.io/issues/?project=4508260116529152'>Issues Page</a>.
         </p>
         <p style={{ marginTop: '24px' }}>
           For more information, see{' '}

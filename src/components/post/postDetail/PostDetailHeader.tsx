@@ -1,47 +1,30 @@
 import OptionsMenu from './OptionsMenu';
-// import DropdownMenu from '@/components/ui/dropdownMenu';
+import { PostDetail, UserDetail } from '@/types/postDetailTypes';
+import Link from 'next/link';
 import React from 'react';
 
-interface PostDetailHeaderProps {
-  postData: {
-    post_address: string;
-    user_id: string | null;
-    post_id: string;
-    post_date: string;
-  };
-  coverImageDate: string;
-  userDetail: {
-    profiles: {
-      user_id: string;
-    };
-  };
-}
+export type PostAndProfileProps = {
+  postDetail: PostDetail;
+  userDetail: UserDetail;
+};
 
-const PostDetailHeader = ({ postData, coverImageDate, userDetail }: PostDetailHeaderProps) => {
+const PostDetailHeader = ({ userDetail, postDetail }: PostAndProfileProps) => {
   return (
-    <>
-      {/* 옵션 메뉴를 포함한 상단 */}
-      <div className='flex w-full justify-between px-4 py-4'>
-        {/* 싱단 정보 */}
-        <div className='relative flex w-full items-center gap-2'>
-          {/* 마커 아이콘과 위치명 */}
-          <div className='flex items-center gap-2'>
-            <img
-              src={'/svgs/Map_Pin.svg'}
-              alt='지도 마커'
-              width={24}
-              height={24}
-            />
-            <span className='text-label_sm text-gray-900'>{postData.post_address}</span>
-          </div>
-          <span className='text-caption_light_lg text-gray-500'>{postData.post_date}</span>
-          {/* <div className='absolute top-0 right-0'>
-            <DropdownMenu />
-          </div> */}
-        </div>
-        {userDetail.profiles.user_id === postData.user_id ? <OptionsMenu postId={postData.post_id} /> : null}
+    <div className='flex justify-between p-4'>
+      <div className='flex items-center gap-2'>
+        <Link href={`/group/${postDetail.group_id}?lat=${postDetail.post_lat}&lng=${postDetail.post_lng}`}>
+          <img
+            src={'/svgs/Map_Pin.svg'}
+            alt='지도 마커'
+            width={24}
+            height={24}
+          />
+        </Link>
+        <p className='text-label_sm text-gray-900'>{postDetail.post_address}</p>
+        <p className='text-caption_light_lg text-gray-500'>{postDetail.post_date}</p>
       </div>
-    </>
+      {/* {userDetail.profiles.user_id === postDetail.user_id ? <OptionsMenu postId={postDetail.post_id} /> : null} */}
+    </div>
   );
 };
 

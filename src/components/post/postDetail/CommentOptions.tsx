@@ -1,15 +1,15 @@
 import { useDeleteComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { Comment } from '@/types/postDetailTypes';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 interface CommentOptionsProps {
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
-  commentId: string;
+  comment: Comment;
   postAuthorId: string;
   userId: string;
-  commentAuthorId: string;
 }
 
-const CommentOptions = ({ setIsEditMode, commentId, postAuthorId, userId, commentAuthorId }: CommentOptionsProps) => {
+const CommentOptions = ({ setIsEditMode, comment, postAuthorId, userId }: CommentOptionsProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const { mutate: deleteComment } = useDeleteComment();
@@ -36,8 +36,8 @@ const CommentOptions = ({ setIsEditMode, commentId, postAuthorId, userId, commen
 
   // 버튼 표시 여부를 useMemo로 계산
   const { showEditButton, showDeleteButton, showMenuButton } = useMemo(() => {
-    const canEdit = userId === commentAuthorId;
-    const canDelete = userId === commentAuthorId || userId === postAuthorId;
+    const canEdit = userId === comment.user_id;
+    const canDelete = userId === comment.user_id || userId === postAuthorId;
     const canShowMenu = canEdit || canDelete;
 
     return {
@@ -45,7 +45,7 @@ const CommentOptions = ({ setIsEditMode, commentId, postAuthorId, userId, commen
       showDeleteButton: canDelete,
       showMenuButton: canShowMenu,
     };
-  }, [userId, commentAuthorId, postAuthorId]);
+  }, [userId, comment.user_id, postAuthorId]);
 
   return (
     <div
@@ -65,14 +65,14 @@ const CommentOptions = ({ setIsEditMode, commentId, postAuthorId, userId, commen
       )}
 
       {isVisible && (
-        <div className='flex flex-col absolute bg-white z-10 top-5 right-1 rounded-md'>
+        <div className='absolute right-1 top-5 z-10 flex flex-col rounded-md bg-white'>
           {showEditButton && (
             <button
               onClick={() => {
                 setIsEditMode(true);
                 setIsVisible(false);
               }}
-              className='text-gray-900 text-body_md p-2.5 whitespace-nowrap'
+              className='whitespace-nowrap p-2.5 text-body_md text-gray-900'
             >
               댓글 수정
             </button>
@@ -83,13 +83,13 @@ const CommentOptions = ({ setIsEditMode, commentId, postAuthorId, userId, commen
             <button
               onClick={() => {
                 // 삭제 확인 alert
-                const isConfirmed = confirm('정말로 댓글을 삭제하시겠습니까?');
+                const isConfirmed = confirm('댓글을 삭제하시겠습니까?');
 
                 if (isConfirmed) {
-                  deleteComment(commentId);
+                  deleteComment(comment.comment_id);
                 }
               }}
-              className='text-danger text-body_md p-2.5 whitespace-nowrap'
+              className='whitespace-nowrap p-2.5 text-body_md text-danger'
             >
               댓글 삭제
             </button>

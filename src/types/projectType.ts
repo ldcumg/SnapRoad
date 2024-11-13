@@ -67,12 +67,13 @@ export interface ImagesWithAll extends Images {
 }
 
 export interface ImagesAllWithoutPostId extends Omit<Images, 'post_id'> {
+  uploadSessionId: string;
   blobUrl: string;
   id: number;
   post_image_name: string;
   is_cover: boolean;
   isUploaded: boolean;
-  // post_id?: string;
+  post_id?: string;
 }
 
 export interface ImagesWithoutPostId extends Omit<Comment, 'post_id'> {
