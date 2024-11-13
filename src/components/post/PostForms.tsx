@@ -4,7 +4,7 @@ import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { usePostForm } from '@/hooks/byUse/usePostForm';
-import { useForm } from '@/hooks/queries/post/useFormMutations';
+import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
@@ -30,8 +30,7 @@ const PostForms = () => {
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
   const { images } = useImageUploadStore();
-  const { mutateAsync: postForm } = useForm(groupId);
-  const [hashtags, setHashtags] = useState<string[]>([]);
+  const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const PostForms = () => {
     };
 
     try {
-      const res = await postForm(parsedFormData);
+      const res = await submitForm(parsedFormData);
       const uploadSessionId = images[0]?.upload_session_id;
       await updateImagePostId(res.postId, uploadSessionId);
       await saveTags(hashtags, res.postId, groupId);
