@@ -63,7 +63,7 @@ const GroupMap = ({ groupId, point }: Props) => {
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
       );
-      map.panTo(bounds);
+      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
 
