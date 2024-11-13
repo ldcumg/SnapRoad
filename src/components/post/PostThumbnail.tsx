@@ -8,7 +8,7 @@ import { IconCloseCircle } from '@/lib/icon/Icon_Close_Circle';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
@@ -16,28 +16,15 @@ const PostThumbnailImageList = () => {
   const { handleDelete } = useImageDeleteLogic(buckets.tourImages, groupId);
   const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId);
   const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
-
   const [isUploading, setIsUploading] = useState(false);
-
-  // 상태 변경 추적
-  useEffect(() => {
-    if (isUploading) {
-      console.log('업로드 시작: 로딩 상태 설정 중...');
-    } else {
-      console.log('업로드 완료: 로딩 상태 해제');
-    }
-  }, [isUploading]);
 
   const handleNewImageUpload = async (files: FileList | null) => {
     if (files) {
       setIsUploading(true);
-      console.log('🔥 업로드 시작 시 로딩 상태 설정');
       setImages([]);
       try {
         await handleImageUpload(files);
-        console.log('🔥 업로드 완료 후 로딩 상태 해제');
       } catch (error) {
-        console.error('업로드 실패', error);
       } finally {
         setIsUploading(false);
       }
