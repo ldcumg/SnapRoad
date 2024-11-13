@@ -3,7 +3,9 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import type {
@@ -31,6 +33,7 @@ type Props = {
 
 const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
+  const { isCustomHeightOpen, handleCustomOpen, handleCustomClose } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
@@ -63,7 +66,7 @@ const GroupMap = ({ groupId, point }: Props) => {
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
       );
-      map.panTo(bounds);
+      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
 
@@ -209,8 +212,8 @@ const GroupMap = ({ groupId, point }: Props) => {
           {
             centerLatLng: { lat: Ma, lng: La },
             fontSize: '0px',
-            width: '56px',
-            height: '56px',
+            width: '60px',
+            height: '60px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
             backgroundSize: 'cover',
             borderRadius: '100%',
@@ -264,11 +267,7 @@ const GroupMap = ({ groupId, point }: Props) => {
         )}
       </button>
       {isPostsView || (
-        <img
-          className='fixed left-1/2 top-1/2 z-30 h-auto max-w-full -translate-x-[46.5%] -translate-y-[68%]'
-          src='/svgs/Mappin.svg'
-          alt='맵핀'
-        />
+        <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-[46%] -translate-y-[66%]' />
       )}
       <Map
         className='h-screen w-full'
@@ -290,6 +289,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
+              handleCustomOpen();
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
@@ -301,6 +301,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                   onClick={() => {
                     moveToMarker({ lat: post_lat, lng: post_lng });
                     setPostsPreview([{ postId: post_id, postImageUrl: post_image_url }]);
+                    handleCustomOpen();
                   }}
                   image={{
                     // 기본 마커 이미지
@@ -396,12 +397,16 @@ const GroupMap = ({ groupId, point }: Props) => {
             height='custom'
             customHeight='250px'
             rounded={true}
-            isOpen={true}
-            showHeader={false}
+            isOpen={isCustomHeightOpen}
+            showHeader={true}
+            showBackButton={false}
             hasButton={false}
             backdrop={false}
+            title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
+            titleClassName='text-title_lg'
+            onClose={handleCustomClose}
+            headerClassName='pt-[40px] pb-[12px]'
           >
-            <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
             <ol className='flex flex-row gap-3 overflow-x-auto'>
               {postsPreView.map((post) => (
                 <li
@@ -413,7 +418,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                     href={`/group/${groupId}/post/${post.postId}`}
                   >
                     <img
-                      className='h-full w-full rounded-[8px] object-cover'
+                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover'
                       src={post.postImageUrl}
                       alt={`Post ${post.postId}`}
                     />

@@ -26,6 +26,8 @@ interface BottomSheetProps extends HTMLAttributes<HTMLDivElement> {
   hasButton?: boolean;
   className?: string;
   backdrop?: boolean;
+  titleClassName?: string;
+  headerClassName?: string;
 }
 
 export const BottomSheet = ({
@@ -50,6 +52,8 @@ export const BottomSheet = ({
   hasButton = true,
   className,
   backdrop = true,
+  titleClassName,
+  headerClassName,
   ...props
 }: BottomSheetProps) => {
   const [rendered, setRendered] = useState(isOpen);
@@ -89,7 +93,7 @@ export const BottomSheet = ({
         >
           {/* 타이틀 및 취소/닫기 버튼 - showHeader가 true일 때만 렌더링 */}
           {showHeader && !hideTitle && (
-            <div className='flex items-center justify-between p-4'>
+            <div className={`${headerClassName} flex items-center justify-between p-4`}>
               {showBackButton && (
                 <button
                   onClick={onClose}
@@ -99,7 +103,7 @@ export const BottomSheet = ({
                   <IconArrowBackLG />
                 </button>
               )}
-              <h2 className='-ml-3 flex-1 text-center font-semibold'>{title}</h2>
+              <h2 className={titleClassName ?? '-ml-3 flex-1 text-center font-semibold'}>{title}</h2>
               {showCloseButton && (
                 <button
                   onClick={onClose}
