@@ -29,7 +29,7 @@ const SearchResultMarker = ({ className }: { className?: string }) => (
         width='24'
         height='24'
         filterUnits='userSpaceOnUse'
-        color-interpolation-filters='sRGB'
+        colorInterpolationFilters='sRGB'
       >
         <feFlood
           flood-opacity='0'

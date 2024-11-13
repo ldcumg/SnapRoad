@@ -57,7 +57,7 @@ const MapPin = ({ className }: { className?: string }) => (
         width='38'
         height='58'
         filterUnits='userSpaceOnUse'
-        color-interpolation-filters='sRGB'
+        colorInterpolationFilters='sRGB'
       >
         <feFlood
           flood-opacity='0'
