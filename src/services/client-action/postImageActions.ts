@@ -74,6 +74,15 @@ export const saveImageMetadata = async (
   currentDate: string,
   uploadSessionId: string,
 ) => {
+  // URL에서 기본 위도와 경도 값 추출
+  const url = new URL(window.location.href);
+  const defaultLat = url.searchParams.get('lat');
+  const defaultLng = url.searchParams.get('lng');
+
+  // EXIF 데이터가 없는 경우 URL에서 가져온 기본 값을 사용
+  const latitude = exifData?.latitude || defaultLat;
+  const longitude = exifData?.longitude || defaultLng;
+
   const { data, error } = await browserClient
     .from('images')
     .insert({
@@ -81,8 +90,10 @@ export const saveImageMetadata = async (
       post_image_url: signedUrl,
       created_at: currentDate,
       is_cover: false,
-      post_lat: exifData.latitude,
-      post_lng: exifData.longitude,
+      // post_lat: exifData.latitude,
+      // post_lng: exifData.longitude,
+      post_lat: latitude,
+      post_lng: longitude,
       origin_created_at: formatDateToNumber(exifData.dateTaken),
       user_id: userId,
       group_id: groupId,
