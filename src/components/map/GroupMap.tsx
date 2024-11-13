@@ -212,8 +212,8 @@ const GroupMap = ({ groupId, point }: Props) => {
           {
             centerLatLng: { lat: Ma, lng: La },
             fontSize: '0px',
-            width: '56px',
-            height: '56px',
+            width: '60px',
+            height: '60px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
             backgroundSize: 'cover',
             borderRadius: '100%',
