@@ -1,27 +1,29 @@
 'use client';
 
+import Loading from '@/app/loading';
 import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
 import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
 import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
-import { getGroupPostsImagesPrefetchQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
-type Props = Readonly<{ params: { groupId: string } }>;
+type Props = Readonly<{
+  params: { groupId: string };
+  searchParams: { lat: string; lng: string };
+}>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
+const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
   const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
-  const prefetchGroupPostsImages = getGroupPostsImagesPrefetchQuery(groupId);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
@@ -30,10 +32,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
     switch (mode) {
       case GroupDetailMode.map:
         return (
-          <button
-            onClick={toAlbum}
-            onMouseEnter={prefetchGroupPostsImages}
-          >
+          <button onClick={toAlbum}>
             <img src='/svgs/Swap_Btn_To_Album.svg' />
           </button>
         );
@@ -64,7 +63,12 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const groupDetailMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
-        return <GroupMap groupId={groupId} />;
+        return (
+          <GroupMap
+            groupId={groupId}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : null}
+          />
+        );
       case GroupDetailMode.album:
         return (
           <GroupAlbum
@@ -82,7 +86,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='z-50 flex h-[56px] items-center justify-between px-4 py-2'>
+      <header className='z-50 flex h-[56px] items-center justify-between bg-white px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>

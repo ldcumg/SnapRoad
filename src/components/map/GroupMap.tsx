@@ -1,7 +1,8 @@
 'use client';
 
+import PlaceSearchForm from './PlaceSearchForm';
+import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
@@ -16,17 +17,19 @@ import type {
   Location,
   LocationInfo,
 } from '@/types/mapTypes';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { useForm, type FieldValues } from 'react-hook-form';
+import { type FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
 
-const SEARCH_INPUT = 'searchInput';
+type Props = {
+  groupId: string;
+  point: { lat: number; lng: number } | null;
+};
 
-const GroupMap = ({ groupId }: { groupId: string }) => {
+const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
@@ -38,22 +41,10 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
+  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
+
   //TODO - Set으로 관리
   let polyline: Latlng[] = [];
-
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    getValues,
-    resetField,
-    formState: {
-      errors: { searchTerm: searchTermInvalidate },
-    },
-  } = useForm({
-    mode: 'onSubmit',
-    resolver: zodResolver(searchPlaceSchema),
-  });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
@@ -66,13 +57,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     if (mapLoading) return;
   }, [mapLoading]);
 
-  // useEffect(() => {
-  //   //TODO - 데스크탑에서만 동작하게
-  //   setFocus(SEARCH_INPUT);
-  // }, []);
-
   useEffect(() => {
-    if (map && postsCoverImages?.length) {
+    if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
@@ -81,19 +67,26 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     }
   }, [map, postsCoverImages]);
 
-  if (searchTermInvalidate) toast.error(searchTermInvalidate.message as string);
+  useEffect(() => {
+    if (!!point && map) {
+      moveToMarker(point);
+      map.setLevel(4, { animate: true });
+    }
+  }, [map]);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
-  //FIXME - 엔터 여러번 눌렀을 때 지도 이동 막기
   /** 키워드 검색 */
   const searchLocation = async ({ searchInput }: FieldValues) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
     }
+
+    if (searchInput === searchKeyword.current.keyword) return;
+
     isPostsView && setIsPostsView(false);
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
@@ -101,6 +94,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     setSearchResult(({ markers, hasMore }) =>
       searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
     );
+
     searchInput && moveToMarker(results[0]);
 
     if (is_end) {
@@ -118,6 +112,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     searchInput
       ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
       : (searchKeyword.current.page = searchKeyword.current.page += 1);
+
+    isInputFocus && setIsInputFocus(false);
   };
 
   /** 사용자의 위치 찾기 */
@@ -240,35 +236,15 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
 
   return (
     <>
-      <form
-        className='fixed left-1/2 top-[72px] z-50 w-full -translate-x-1/2 px-4'
-        onSubmit={handleSubmit(searchLocation)}
-      >
-        <div className='relative w-full'>
-          <input
-            className='h-[48px] w-full rounded-3xl px-4 py-3 text-body_md shadow-BG_S placeholder:text-gray-400'
-            placeholder='장소를 검색해보세요!'
-            {...register(SEARCH_INPUT)}
-          />
-          {!!getValues(SEARCH_INPUT) && (
-            <button
-              className='absolute right-12 top-1/2 z-50 -translate-y-1/2'
-              type='button'
-              onClick={() => resetField(SEARCH_INPUT)}
-            >
-              <img src='/svgs/Reset_input.svg' />
-            </button>
-          )}
-          <button
-            className='absolute right-4 top-1/2 -translate-y-1/2'
-            type='submit'
-          >
-            <img src='/svgs/Map_Search.svg' />
-          </button>
-        </div>
-      </form>
+      {isInputFocus && <div className='fixed inset-0 z-40 bg-black bg-opacity-40'></div>}
+      <PlaceSearchForm
+        searchLocation={searchLocation}
+        setSearchResult={setSearchResult}
+        setIsInputFocus={setIsInputFocus}
+        hasSearchResult={!!searchResult.markers[0]}
+      />
       <button
-        className='fixed right-4 top-[136px] z-50'
+        className='fixed right-4 top-[136px] z-30'
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
@@ -283,7 +259,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-50 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
+          className='w-[28px]transform fixed left-1/2 top-1/2 z-30 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
           alt='맵핀'
         />
@@ -301,7 +277,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={5} // 클러스터 할 최소 지도 레벨
+            minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
@@ -311,7 +287,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              // post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -352,13 +328,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             ))}
           </>
         )}
-        <Polyline
+        {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        />
+        /> */}
 
         {!!spotInfo ? (
           <BottomSheet
@@ -379,7 +355,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             </button>
             {searchResult.hasMore && (
               <button
-                className='absolute -top-4 left-1/2 z-50 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+                className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
                 onClick={searchLocation}
               >
@@ -396,7 +372,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </BottomSheet>
         ) : (
           <button
-            className='fixed bottom-[100px] left-4 z-50'
+            // className='fixed bottom-[100px] left-4 z-30'
+            className='fixed bottom-[16px] left-4 z-30'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
@@ -434,23 +411,24 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
             </ol>
           </BottomSheet>
         ) : (
-          <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
-          >
-            <Button
-              type='button'
-              onClick={handleAddPostRoute}
-              variant='primary'
-              size='full'
-              className='bottom-4 z-50 h-[56px] px-6'
-              disabled={!isPostsView && !spotInfo?.address}
-            >
-              <span className='flex gap-2'>
-                <img src='/svgs/Plus_LG.svg' />
-                <p className='text-title_lg'>게시물 추가하기</p>
-              </span>
-            </Button>
-          </div>
+          <></>
+          // <div
+          //   className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+          // >
+          //   <Button
+          //     type='button'
+          //     onClick={handleAddPostRoute}
+          //     variant='primary'
+          //     size='full'
+          //     className='bottom-4 z-50 h-[56px] px-6'
+          //     disabled={!isPostsView && !spotInfo?.address}
+          //   >
+          //     <span className='flex gap-2'>
+          //       <img src='/svgs/Plus_LG.svg' />
+          //       <p className='text-title_lg'>게시물 추가하기</p>
+          //     </span>
+          //   </Button>
+          // </div>
         )}
       </Map>
     </>

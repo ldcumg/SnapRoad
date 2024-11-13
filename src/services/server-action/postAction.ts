@@ -16,18 +16,20 @@ export const getPostsImagesPerGroup = async ({
 }): Promise<PostImage[]> => {
   const supabase = createClient();
 
+  const PAGE_PER = 21;
+
   const { status, data, error } = await supabase
     .from('images')
     .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .is('deleted_at', null)
-    .range(15 * pageParam, 15 * pageParam + 14);
+    .range(PAGE_PER * pageParam, PAGE_PER * pageParam + PAGE_PER - 1);
 
   if ((status !== 200 && error) || !data) throw new Error(error.message);
 
   //TODO - util 함수로 만들기
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
-  const postImagesUrls = await getSignedImgUrls(buckets.tourImages(), TEN_MINUTES_FOR_SUPABASE, postImages);
+  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, postImages);
 
   const dataWithSignedUrl = data.map((post) => {
     if (!postImagesUrls) return;
@@ -60,7 +62,7 @@ export const getPostsCoverImagesPerGroup = async ({
   if ((status !== 200 && error) || !data) throw new Error(error.message);
 
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
-  const postImagesUrls = await getSignedImgUrls(buckets.tourImages(), TEN_MINUTES_FOR_SUPABASE, postImages);
+  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, postImages);
 
   const dataWithSignedUrl = data.map((post) => {
     if (!postImagesUrls) return;
