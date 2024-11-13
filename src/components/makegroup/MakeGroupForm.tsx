@@ -9,7 +9,7 @@ import {
   useInsertUserGroupMutation,
   useUpdateGroupMutation,
 } from '@/hooks/queries/byUse/useGroupMutations';
-import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQueries';
+import { useGroupDetailQueryForUpdate } from '@/hooks/queries/group/useGroupQueries';
 import queryKeys from '@/hooks/queries/queryKeys';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
