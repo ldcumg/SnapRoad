@@ -24,7 +24,12 @@ import { useEffect, useRef, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
 
-const GroupMap = ({ groupId }: { groupId: string }) => {
+type Props = {
+  groupId: string;
+  point: { lat: number; lng: number } | null;
+};
+
+const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
@@ -53,7 +58,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
   }, [mapLoading]);
 
   useEffect(() => {
-    if (map && postsCoverImages?.length) {
+    if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
@@ -61,6 +66,13 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
       map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
+
+  useEffect(() => {
+    if (!!point && map) {
+      moveToMarker(point);
+      map.setLevel(4, { animate: true });
+    }
+  }, [map]);
 
   if (isPending) return <Loading />;
 

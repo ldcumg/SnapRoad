@@ -13,9 +13,12 @@ import Link from 'next/link';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
-type Props = Readonly<{ params: { groupId: string } }>;
+type Props = Readonly<{
+  params: { groupId: string };
+  searchParams: { lat: string; lng: string };
+}>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
+const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
   const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
@@ -60,7 +63,12 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const groupDetailMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
-        return <GroupMap groupId={groupId} />;
+        return (
+          <GroupMap
+            groupId={groupId}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : null}
+          />
+        );
       case GroupDetailMode.album:
         return (
           <GroupAlbum
