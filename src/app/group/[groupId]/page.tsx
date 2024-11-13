@@ -18,7 +18,7 @@ type Props = Readonly<{
   searchParams: { lat: string; lng: string };
 }>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
+const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
   const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
