@@ -100,6 +100,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
     searchInput
       ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
       : (searchKeyword.current.page = searchKeyword.current.page += 1);
+
+    isInputFocus && setIsInputFocus(false);
   };
 
   /** 사용자의 위치 찾기 */
