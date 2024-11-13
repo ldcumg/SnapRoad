@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 type IconProps = {
   width?: number;
   height?: number;
@@ -29,8 +28,8 @@ export const IconSuccess = ({ width = 65, height = 64, color = 'currentColor', c
         id='Vector 240'
         d='M13.5 32.4558L26.2279 45.1838L51.6837 19.7279'
         stroke='#009E6C'
-        stroke-width='4'
-        stroke-linecap='round'
+        strokeWidth='4'
+        strokeLinecap='round'
       />
     </g>
   </svg>

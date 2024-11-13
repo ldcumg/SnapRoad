@@ -60,7 +60,7 @@ const MapPin = ({ className }: { className?: string }) => (
         colorInterpolationFilters='sRGB'
       >
         <feFlood
-          flood-opacity='0'
+          floodOpacity='0'
           result='BackgroundImageFix'
         />
         <feColorMatrix
