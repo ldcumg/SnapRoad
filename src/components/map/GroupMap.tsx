@@ -330,22 +330,6 @@ const GroupMap = ({ groupId, point }: Props) => {
             ))}
           </>
         )}
-        {/* {searchResult.markers.map((marker) => (
-              <MapMarker
-                key={marker.id}
-                position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => moveToMarker(marker)}
-                image={{
-                  src: '/svgs/Search_Result_Marker.svg',
-                  size: {
-                    width: 24,
-                    height: 35,
-                  },
-                }}
-              />
-            ))}
-          </>
-        )} */}
         {/* <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께

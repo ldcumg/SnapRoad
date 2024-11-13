@@ -10,6 +10,7 @@ import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -19,9 +20,15 @@ type Props = Readonly<{
 }>;
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
+  //QUESTION - 다시 state로?
+  // const [mode,setMode]=useState<GroupDetailMode>(GroupDetailMode.map)
   const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
+
+  useEffect(() => {
+    toMap();
+  }, []);
 
   if (isPending) return <Loading />;
 
@@ -91,7 +98,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
           <img src='/svgs/Logo.svg' />
         </Link>
         <h1 className='text-label_md'>{groupInfo.group_title}</h1>
-        <div className='w-[63px] flex justify-end'>{handleChangeMode()}</div>
+        <div className='flex w-[63px] justify-end'>{handleChangeMode()}</div>
       </header>
       {groupDetailMode()}
     </div>
