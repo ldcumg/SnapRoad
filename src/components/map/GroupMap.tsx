@@ -418,7 +418,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                     href={`/group/${groupId}/post/${post.postId}`}
                   >
                     <img
-                      className='h-full w-full rounded-[8px] object-cover'
+                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover'
                       src={post.postImageUrl}
                       alt={`Post ${post.postId}`}
                     />
