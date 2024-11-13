@@ -3,7 +3,6 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import CloseLg from '@/lib/icon/Close_Lg';
 import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
@@ -213,8 +212,8 @@ const GroupMap = ({ groupId, point }: Props) => {
           {
             centerLatLng: { lat: Ma, lng: La },
             fontSize: '0px',
-            width: '56px',
-            height: '56px',
+            width: '60px',
+            height: '60px',
             background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
             backgroundSize: 'cover',
             borderRadius: '100%',
@@ -290,6 +289,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
+              handleCustomOpen();
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
@@ -363,8 +363,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                 src='/svgs/Geolocation_btn.svg'
               />
             </button>
-            {
-              // searchResult.hasMore &&
+            {searchResult.hasMore && (
               <button
                 className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
@@ -373,7 +372,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                 <p className='text-body_md'>검색결과 더보기</p>
                 <img src='/svgs/Reload.svg' />
               </button>
-            }
+            )}
             <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
               <h5 className='text-label_md'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
@@ -399,19 +398,15 @@ const GroupMap = ({ groupId, point }: Props) => {
             customHeight='250px'
             rounded={true}
             isOpen={isCustomHeightOpen}
-            showHeader={false}
+            showHeader={true}
+            showBackButton={false}
             hasButton={false}
             backdrop={false}
+            title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
+            titleClassName='text-title_lg'
+            onClose={handleCustomClose}
+            headerClassName='pt-[40px] pb-[12px]'
           >
-            <div className='flex flex-row justify-between'>
-              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
-              <button
-                className='mb-auto mt-[14px]'
-                onClick={handleCustomClose}
-              >
-                <CloseLg />
-              </button>
-            </div>
             <ol className='flex flex-row gap-3 overflow-x-auto'>
               {postsPreView.map((post) => (
                 <li
@@ -423,7 +418,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                     href={`/group/${groupId}/post/${post.postId}`}
                   >
                     <img
-                      className='h-full w-full rounded-[8px] object-cover'
+                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover'
                       src={post.postImageUrl}
                       alt={`Post ${post.postId}`}
                     />
