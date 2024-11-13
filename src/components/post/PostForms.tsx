@@ -1,9 +1,10 @@
 'use client';
 
 import DateInputWithIcon from '../ui/DateInputWithIcon';
+import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { usePostForm } from '@/hooks/byUse/usePostForm';
-import { useForm } from '@/hooks/queries/post/useFormMutations';
+import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
@@ -11,16 +12,16 @@ import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import { Input } from '@/stories/Input';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { useRouter } from 'next/navigation';
-import { useMemo, useEffect } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { useMemo, useEffect, useState } from 'react';
+import { FieldValues, Controller } from 'react-hook-form';
 
 const PostForms = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     watch,
   } = usePostForm();
@@ -29,7 +30,7 @@ const PostForms = () => {
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
   const { images } = useImageUploadStore();
-  const { mutateAsync: postForm } = useForm();
+  const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,23 +39,7 @@ const PostForms = () => {
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
-
-    let hashtags: string[] = [];
-
-    // value.hashtags가 문자열인 경우
-    if (typeof value.hashtags === 'string') {
-      hashtags = value.hashtags
-        .split(',')
-        .map((tag) => tag.trim().replace(/^#/, ''))
-        .filter((tag) => tag.length > 0);
-    }
-    // value.hashtags가 배열인 경우
-    else if (Array.isArray(value.hashtags)) {
-      hashtags = value.hashtags.map((tag) => (typeof tag === 'string' ? tag.trim().replace(/^#/, '') : tag.toString()));
-    }
-
-    // 문자열과 숫자 모두 허용하기 위해 문자열 변환
-    hashtags = hashtags.filter((tag) => tag.length > 0);
+    const hashtags: string[] = value.hashtags || [];
 
     const parsedFormData = {
       ...formSchema.parse(value),
@@ -68,10 +53,12 @@ const PostForms = () => {
     };
 
     try {
-      const res = await postForm(parsedFormData);
+      const res = await submitForm(parsedFormData);
       const uploadSessionId = images[0]?.upload_session_id;
       await updateImagePostId(res.postId, uploadSessionId);
-      await saveTags(hashtags, res.postId, groupId);
+      if (hashtags.length > 0) {
+        await saveTags(hashtags, res.postId, groupId);
+      }
       router.push(`/group/${groupId}/post/${res.postId}`);
     } catch (error) {
       console.error('폼 제출 에러:', error);
@@ -81,14 +68,14 @@ const PostForms = () => {
 
   // 필드 값 감시
   const text = watch('desc');
-  const hashtags = watch('hashtags');
+  // const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
 
   // 필드 빈값 확인
   const isFormValueFilled = useMemo(() => {
-    return text && hashtags && date && time;
-  }, [text, hashtags, date, time]);
+    return text && date && time;
+  }, [text, date, time]);
 
   return (
     <>
@@ -132,12 +119,21 @@ const PostForms = () => {
           {...register('desc')}
         />
 
-        <Input
-          type={'text'}
-          placeholder='# 해시태그를 추가해 보세요'
-          errorText={errors.hashtags && String(errors.hashtags.message)}
-          {...register('hashtags')}
+        <Controller
+          name='hashtags'
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <div>
+              <HashtagInput
+                hashtags={field.value || []}
+                setHashtags={field.onChange}
+              />
+              {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
+            </div>
+          )}
         />
+
         <DateInputWithIcon {...register('date')} />
         <TimeInputWithIcon {...register('time')} />
 

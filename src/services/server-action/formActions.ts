@@ -73,6 +73,8 @@ export const saveTags = async (hashtags: string[], postId: string, groupId: stri
     if (error) {
       console.error('태그 저장에 실패했습니다:', error.message);
       throw new Error('태그 저장 오류');
+    } else {
+      console.log('태그 저장 성공:', hashtagData);
     }
   }
 };
