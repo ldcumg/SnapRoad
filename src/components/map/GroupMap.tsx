@@ -63,7 +63,7 @@ const GroupMap = ({ groupId, point }: Props) => {
       postsCoverImages.forEach(
         ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
       );
-      map.panTo(bounds);
+      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
 
@@ -264,11 +264,13 @@ const GroupMap = ({ groupId, point }: Props) => {
         )}
       </button>
       {isPostsView || (
-        <img
-          className='fixed left-1/2 top-1/2 z-30 h-auto max-w-full -translate-x-[46.5%] -translate-y-[68%]'
-          src='/svgs/Mappin.svg'
-          alt='맵핀'
-        />
+        <span className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-[46%] -translate-y-[66%]'>
+          <img
+            className='h-full w-full'
+            src='/svgs/Mappin.svg'
+            alt='맵핀'
+          />
+        </span>
       )}
       <Map
         className='h-screen w-full'
