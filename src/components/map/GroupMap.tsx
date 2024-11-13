@@ -244,7 +244,7 @@ const GroupMap = ({ groupId, point }: Props) => {
         hasSearchResult={!!searchResult.markers[0]}
       />
       <button
-        className='fixed right-4 top-[136px] z-30'
+        className='fixed right-4 top-[136px] z-30 h-[44px] w-[44px] rounded-full bg-white'
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
@@ -252,14 +252,20 @@ const GroupMap = ({ groupId, point }: Props) => {
         }}
       >
         {isPostsView ? (
-          <img src='/svgs/Switch_btn_to_mappin_marker.svg' />
+          <img
+            className='mx-auto my-auto'
+            src='/svgs/Switch_btn_to_mappin_marker.svg'
+          />
         ) : (
-          <img src='/svgs/Switch_btn_to_image_marker.svg' />
+          <img
+            className='mx-auto my-auto'
+            src='/svgs/Switch_btn_to_image_marker.svg'
+          />
         )}
       </button>
       {isPostsView || (
         <img
-          className='w-[28px]transform fixed left-1/2 top-1/2 z-30 h-[48px] -translate-x-[46.5%] -translate-y-[68%]'
+          className='fixed left-1/2 top-1/2 z-30 h-auto max-w-full -translate-x-[46.5%] -translate-y-[68%]'
           src='/svgs/Mappin.svg'
           alt='맵핀'
         />
@@ -344,14 +350,17 @@ const GroupMap = ({ groupId, point }: Props) => {
             isOpen={true}
             showHeader={false}
             hasButton={false}
-            className='mb-0 pt-7'
+            className='mb-0 pb-2 pt-7'
             backdrop={false}
           >
             <button
-              className='absolute -top-4 left-4 z-50 -translate-y-[90%]'
+              className='absolute -top-4 left-4 z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white'
               onClick={handleFindUserLocation}
             >
-              <img src='/svgs/Geolocation_btn.svg' />
+              <img
+                className='mx-auto my-auto'
+                src='/svgs/Geolocation_btn.svg'
+              />
             </button>
             {searchResult.hasMore && (
               <button
@@ -363,20 +372,23 @@ const GroupMap = ({ groupId, point }: Props) => {
                 <img src='/svgs/Reload.svg' />
               </button>
             )}
-            <div className='flex flex-col gap-1 pb-2'>
+            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
               <h5 className='text-label_md'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
               </h5>
-              <p className='text-body_md'>{spotInfo.placeName && spotInfo.address}</p>
+              {!!spotInfo.placeName && <p className='text-body_md'>{spotInfo.address}</p>}
             </div>
           </BottomSheet>
         ) : (
           <button
             // className='fixed bottom-[100px] left-4 z-30'
-            className='fixed bottom-[16px] left-4 z-30'
+            className='fixed bottom-[16px] left-4 z-30 h-[44px] w-[44px] rounded-full bg-white'
             onClick={handleFindUserLocation}
           >
-            <img src='/svgs/Geolocation_btn.svg' />
+            <img
+              className='mx-auto my-auto'
+              src='/svgs/Geolocation_btn.svg'
+            />
           </button>
         )}
         {!!postsPreView.length ? (
