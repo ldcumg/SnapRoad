@@ -1,5 +1,6 @@
 import { GroupWithCounts } from '@/types/groupTypes';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   const router = useRouter();
@@ -36,4 +37,4 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   );
 };
 
-export default GroupItem;
+export default React.memo(GroupItem);
