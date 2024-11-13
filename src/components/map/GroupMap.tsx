@@ -3,7 +3,6 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import CloseLg from '@/lib/icon/Close_Lg';
 import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
