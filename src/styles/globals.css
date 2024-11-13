@@ -158,15 +158,23 @@
 
 /* 유틸리티 클래스 */
 @layer utilities {
-  #__react-kakao-maps-sdk___Map > div > div > div > div > img {
-    @apply rounded-full;
+  #__react-kakao-maps-sdk___Map>div>div>div>div>img {
+    @apply rounded-full !border-4 !border-secondary-400 !border-solid;
   }
 
-  /* .input-no-calendar {
-    @apply appearance-none;
+  /* 기본 날짜 아이콘 숨기기 */
+  .input-no-calendar input[type='date'] {
+    -webkit-appearance: none; /* Safari 및 Chrome */
+    -moz-appearance: textfield; /* Firefox */
+    appearance: none;
   }
+
+  .input-no-calendar input[type='date']::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+
   input[type='date']::-webkit-calendar-picker-indicator,
   input[type='time']::-webkit-calendar-picker-indicator {
     display: none;
-  } */
+  }
 }

@@ -1,17 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import React from 'react';
 
 const MyPageHeader = ({ url }: { url: string }) => {
-  const router = useRouter();
   return (
-    <img
-      src='/svgs/Logo.svg'
-      alt='Image'
+    <Link
+      href={url}
       className='absolute left-0'
-      onClick={() => router.push(url)}
-    />
+    >
+      <img
+        src='/svgs/Logo.svg'
+        alt='Image'
+      />
+    </Link>
   );
 };
 

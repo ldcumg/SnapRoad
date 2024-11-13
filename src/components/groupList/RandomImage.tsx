@@ -3,7 +3,7 @@
 import { Card, CardContent } from '../ui/card';
 import RandomImageSkeleton from './RandomImageSkeleton';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { useGroupRandomImageQuery } from '@/hooks/queries/byUse/useGroupQueries';
+import { useGroupRandomImageQuery } from '@/hooks/queries/group/useGroupQueries';
 import { formatDateToYY_MM_DD } from '@/utils/dateUtils';
 import { getSlicedAddress } from '@/utils/getSlicedAddress';
 import Autoplay from 'embla-carousel-autoplay';
@@ -23,7 +23,7 @@ const RandomImage = () => {
 
   return (
     <>
-      {!!items.length ? (
+      {items.length > 0 ? (
         <Carousel
           className='w-full max-w-sm md:max-w-lg lg:max-w-full'
           plugins={carouselOptions.plugins}
@@ -37,14 +37,14 @@ const RandomImage = () => {
               >
                 <Card className='border-none'>
                   <CardContent
-                    className='relative flex aspect-square items-center justify-center p-0 bg-contain bg-no-repeat bg-center md:bg-cover lg:bg-cover'
+                    className='relative flex aspect-square items-center justify-center bg-contain bg-center bg-no-repeat p-0 md:bg-cover lg:bg-cover'
                     style={{ backgroundImage: `url(${data.post_thumbnail_image})` }}
                   >
                     <Link
                       href={`/group/${data.group_id}/post/${data.post_id}`}
-                      className='absolute inset-0 bg-gradient-to-b from-white to-black opacity-50 rounded-xl'
+                      className='absolute inset-0 rounded-xl bg-gradient-to-b from-white to-black opacity-50'
                     ></Link>
-                    <p className='absolute px-4 py-4 bottom-0 w-full text-white flex flex-row justify-between'>
+                    <p className='absolute bottom-0 flex w-full flex-row justify-between px-4 py-4 text-white'>
                       <span className='text-title_lg'>{getSlicedAddress(data.post_address)}</span>
                       <span className='text-body_sm'>{formatDateToYY_MM_DD(data.created_at)}</span>
                     </p>
@@ -55,7 +55,7 @@ const RandomImage = () => {
           </CarouselContent>
         </Carousel>
       ) : (
-        <div className='w-[220px] h-[220px] flex flex-col justify-center items-center pt-12 gap-9'>
+        <div className='flex h-[220px] w-[220px] flex-col items-center justify-center gap-9 pt-12'>
           <img
             src='/svgs/Empty_Marker.svg'
             alt=''

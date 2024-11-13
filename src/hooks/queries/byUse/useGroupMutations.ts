@@ -28,8 +28,8 @@ const useUpdateGroupMutation = (group_id?: string) => {
   return useMutation({
     mutationFn: async ({ groupObj, groupImg }: updateGroupType) => await updateGroupData(groupObj, groupImg),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       router.push(`/group/${group_id}`);
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       // console.log('data :>> ', data);
     },
     onError: (error) => console.log('error :>> ', error),

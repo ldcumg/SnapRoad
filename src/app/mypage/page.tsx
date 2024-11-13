@@ -4,7 +4,6 @@ import Profile from '@/components/myPage/Profile';
 import URLS from '@/constants/urls';
 import { getSession } from '@/services/server-action/authActions';
 import { Metadata } from 'next';
-import Link from 'next/link';
 import React from 'react';
 
 export const metadata: Metadata = {

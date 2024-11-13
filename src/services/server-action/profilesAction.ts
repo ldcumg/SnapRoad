@@ -13,7 +13,7 @@ export const getProfile = async (userId: string) => {
   const userProfile = profiles;
   const signedImgUrl = await getSignedImgUrl('avatars', 86400, userProfile.user_image_url as string);
 
-  return { profiles: profiles, profileImageUrl: signedImgUrl };
+  return { profiles: profiles, profileImageUrl: signedImgUrl ?? null };
 };
 
 export const updateProfile = async (userId: string, imageName: string, newNickname: string) => {

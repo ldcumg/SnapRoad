@@ -1,31 +1,34 @@
-'use client';
-
-import ScrollReactHeader from '@/components/_common/ScrollReactHeader';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
-import ImageBottomSheet from '@/components/post/ImageBottomSheet';
-import PostForm from '@/components/post/Post';
 import PostAddress from '@/components/post/PostAddress';
-//Form
+import PostImageBottomSheet from '@/components/post/PostBottomSheet';
+import PostForms from '@/components/post/PostForms';
 import PostImage from '@/components/post/PostImage';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '글쓰기',
+  description: 'A Next.js project with TypeScript and TailwindCSS.',
+  keywords: 'Next.js, Typescript, TailwindCSS',
+};
 
 type Props = {
   params: { groupId: string };
+  children: React.ReactNode;
 };
 
-const writePage = ({ params: { groupId } }: Props) => {
+const PostPage = ({ params: { groupId } }: Props) => {
   return (
     <>
-      <ScrollReactHeader>
-        <LogoUserHeader />
-      </ScrollReactHeader>
+      <LogoUserHeader />
+
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
-        <ImageBottomSheet />
+        <PostImageBottomSheet />
         <PostImage showImages={false} />
-        <PostForm />
+        <PostForms />
       </div>
     </>
   );
 };
 
-export default writePage;
+export default PostPage;
