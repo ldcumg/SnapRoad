@@ -46,6 +46,7 @@ const InputSection = ({
         <LengthInput
           register={register}
           name='groupTitle'
+          placeholder='그룹 이름을 입력해주세요.'
           clearInputValue={clearInputValue}
           curLength={groupTitleLen}
           maxLength={8}
@@ -58,7 +59,7 @@ const InputSection = ({
             id='group_desc'
             className='text-body-md h-[140px] w-full resize-none rounded-xl border border-solid border-gray-100 bg-white p-3 text-gray-900 outline-none placeholder:text-gray-400'
             {...register('groupDesc')}
-            placeholder='이 그룹에 대해서 설명해주세요.'
+            placeholder='그룹에 대해서 설명해주세요.'
             maxLength={40}
           />
           <p className='absolute bottom-3 right-3 text-gray-300'>{groupDescLen}/40</p>
