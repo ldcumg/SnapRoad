@@ -301,7 +301,7 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
             averageCenter={true}
-            minLevel={5} // 클러스터 할 최소 지도 레벨
+            minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent(marker)}
@@ -396,7 +396,8 @@ const GroupMap = ({ groupId }: { groupId: string }) => {
           </BottomSheet>
         ) : (
           <button
-            className='fixed bottom-[100px] left-4 z-50'
+            // className='fixed bottom-[100px] left-4 z-50'
+            className='fixed bottom-[16px] left-4 z-50'
             onClick={handleFindUserLocation}
           >
             <img src='/svgs/Geolocation_btn.svg' />
