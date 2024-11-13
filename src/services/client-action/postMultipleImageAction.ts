@@ -9,20 +9,23 @@ import browserClient from '@/utils/supabase/client';
  * @param folderName 업로드할 폴더명
  * @returns 업로드된 파일의 URL과 파일명을 포함한 배열
  */
+const ONE_MINIT = 60 * 1000;
+const ONE_HOUR = 60 * ONE_MINIT;
+const ONE_DAY = 24 * ONE_HOUR;
 
 export const uploadImage = async (files: File[], folderName: string): Promise<{ url: string; filename: string }[]> => {
   const supabase = browserClient;
   const uploadedFiles: { url: string; filename: string }[] = [];
 
   for (const file of files) {
-    const uniqueFileName = await generateUniqueFileName(file.name, folderName, buckets.tourImages());
+    const uniqueFileName = await generateUniqueFileName(file.name, folderName, buckets.tourImages);
     const { data, error } = await supabase.storage
-      .from(buckets.tourImages())
+      .from(buckets.tourImages)
       .upload(`${folderName}/${uniqueFileName}`, file);
 
     if (error) throw error;
     const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-      .from(buckets.tourImages())
+      .from(buckets.tourImages)
       .createSignedUrl(`${folderName}/${uniqueFileName}`, 24 * 60 * 60 * 1000);
 
     if (signedUrlError || !signedUrlData) throw new Error('Signed URL을 가져오는 데 실패했습니다.');

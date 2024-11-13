@@ -3,12 +3,13 @@ import PostAddress from '@/components/post/PostAddress';
 import PostImageBottomSheet from '@/components/post/PostBottomSheet';
 import PostForms from '@/components/post/PostForms';
 import PostImage from '@/components/post/PostImage';
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+
 
 export const metadata: Metadata = {
   title: '글쓰기',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  description: '여행지에 대한 새로운 글을 작성하세요.',
+  keywords: '여행지에 대한 새로운 글을 작성하세요.',
 };
 
 type Props = {

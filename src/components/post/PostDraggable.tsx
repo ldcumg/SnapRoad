@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 const PostDraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setSelectedCover, selectedCover } = useImageUploadStore();
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages(), groupId);
+  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
   const { handleSetCover } = useSetCoverLogic(userId, uploadSessionId);
 
   const [sliderRef] = useKeenSlider({
