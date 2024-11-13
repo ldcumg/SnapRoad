@@ -3,6 +3,7 @@
 import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import MapPin from '@/lib/icon/Map_Pin';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
@@ -264,13 +265,7 @@ const GroupMap = ({ groupId, point }: Props) => {
         )}
       </button>
       {isPostsView || (
-        <span className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-[46%] -translate-y-[66%]'>
-          <img
-            className='h-full w-full'
-            src='/svgs/Mappin.svg'
-            alt='맵핀'
-          />
-        </span>
+        <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-[46%] -translate-y-[66%]' />
       )}
       <Map
         className='h-screen w-full'
