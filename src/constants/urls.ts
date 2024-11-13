@@ -10,6 +10,6 @@ enum URLS {
   signupSuccess = '/signup/success',
 }
 
-export const PRIVATEURLS = ['/group', '/grouplist', '/makegroup', '/mypage'];
+export const PRIVATEURLS = [URLS.groupDetail, URLS.groupList, URLS.makeGroup, URLS.myPage];
 
 export default URLS;
