@@ -197,11 +197,16 @@ const config: Config = {
       },
       animation: {
         'color-change': 'colorChange 0.9s linear infinite',
+        'color-change-pink': 'colorChangePink 0.9s linear infinite',
       },
       keyframes: {
         colorChange: {
           '0%, 80%': { backgroundColor: '#DDDFE3' },
           '90%, 100%': { backgroundColor: '#009E6C' },
+        },
+        colorChangePink: {
+          '0%, 80%': { backgroundColor: '#DDDFE3' },
+          '90%, 100%': { backgroundColor: '#EB8ADA' },
         },
       },
     },
