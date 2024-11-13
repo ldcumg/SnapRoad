@@ -18,7 +18,6 @@ type Props = Readonly<{
 }>;
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
-  console.log('{ lat, lng } =>', { lat, lng });
   //TODO - zustand 관리
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 

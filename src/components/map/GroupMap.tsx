@@ -26,8 +26,12 @@ import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react
 
 const SEARCH_INPUT = 'searchInput';
 
-const GroupMap = ({ groupId, point }: { groupId: string; point: { lat: number; lng: number } | null }) => {
-  console.log('point =>', point);
+type Props = {
+  groupId: string;
+  point: { lat: number; lng: number } | null;
+};
+
+const GroupMap = ({ groupId, point }: Props) => {
   const route = useRouter();
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
