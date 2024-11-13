@@ -290,6 +290,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent(cluster);
+              handleCustomOpen();
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
@@ -399,19 +400,15 @@ const GroupMap = ({ groupId, point }: Props) => {
             customHeight='250px'
             rounded={true}
             isOpen={isCustomHeightOpen}
-            showHeader={false}
+            showHeader={true}
+            showBackButton={false}
             hasButton={false}
             backdrop={false}
+            title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
+            titleClassName='text-title_lg'
+            onClose={handleCustomClose}
+            headerClassName='pt-[40px] pb-[12px]'
           >
-            <div className='flex flex-row justify-between'>
-              <p className='mb-7 mt-[14px] text-title_lg'>총 {postsPreView.length}개의 게시물이 있어요!</p>
-              <button
-                className='mb-auto mt-[14px]'
-                onClick={handleCustomClose}
-              >
-                <CloseLg />
-              </button>
-            </div>
             <ol className='flex flex-row gap-3 overflow-x-auto'>
               {postsPreView.map((post) => (
                 <li
