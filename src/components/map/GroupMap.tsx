@@ -74,7 +74,7 @@ const GroupMap = ({ groupId, point }: Props) => {
     }
   }, [map]);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
