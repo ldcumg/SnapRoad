@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from '@/app/loading';
 import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
 import MemberList from '@/components/groupAlbum/MemberList';
 import GroupMap from '@/components/map/GroupMap';
@@ -19,7 +20,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
@@ -77,7 +78,7 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='z-50 flex h-[56px] items-center justify-between px-4 py-2'>
+      <header className='z-50 flex h-[56px] items-center justify-between bg-white px-4 py-2'>
         <Link href={URLS.home}>
           <img src='/svgs/Logo.svg' />
         </Link>
