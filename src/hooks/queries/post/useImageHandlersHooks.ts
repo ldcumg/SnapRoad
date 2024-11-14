@@ -5,12 +5,12 @@ import {
 } from '@/hooks/queries/post/useBusinessImageMutation';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 
-// 이미지 업로드 처리
+/** 이미지 업로드 처리 */
 export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {
   const { addImages } = useImageUploadStore();
   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
 
-  const handleImageUpload = (files: FileList) => {
+  const handleImageUpload = async (files: FileList) => {
     if (!files) return;
     const fileArray = Array.from(files);
     if (fileArray.length > 10) {
@@ -18,15 +18,38 @@ export const useImageUploadLogic = (bucketName: string, folderName: string, user
       return;
     }
 
-    uploadBusinessImage.mutate(fileArray, {
-      onSuccess: (uploadedImages) => {
-        addImages(uploadedImages);
-      },
-    });
+    try {
+      const uploadedImages = await uploadBusinessImage.mutateAsync(fileArray);
+      addImages(uploadedImages);
+    } catch (error) {
+      console.error('이미지 업로드 중 오류가 발생했습니다:', error);
+    }
   };
 
   return { handleImageUpload };
 };
+
+// export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {
+//   const { addImages } = useImageUploadStore();
+//   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
+
+//   const handleImageUpload = (files: FileList) => {
+//     if (!files) return;
+//     const fileArray = Array.from(files);
+//     if (fileArray.length > 10) {
+//       alert('최대 10장의 이미지만 업로드할 수 있습니다.');
+//       return;
+//     }
+
+//     uploadBusinessImage.mutate(fileArray, {
+//       onSuccess: (uploadedImages) => {
+//         addImages(uploadedImages);
+//       },
+//     });
+//   };
+
+//   return { handleImageUpload };
+// };
 
 // 이미지 삭제 처리
 export const useImageDeleteLogic = (bucketName: string, folderName: string) => {

@@ -16,7 +16,6 @@ import imageCompression from 'browser-image-compression';
 import { v4 as uuidv4 } from 'uuid';
 
 /** 이미지를 업로드하는 훅 */
-/** 이미지를 업로드하는 훅 */
 export function useUploadBusinessImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
@@ -260,7 +259,7 @@ export function useCoverBusinessImage(userId: string, uploadSessionId: string) {
       }
     },
     onSuccess: () => {
-      console.log('대표 이미지 설정 성공');
+      // console.log('대표 이미지 설정 성공');
       queryClient.invalidateQueries({ queryKey: queryKeys.image.image(userId) });
     },
   });

@@ -14,7 +14,7 @@ import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { useRouter } from 'next/navigation';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect } from 'react';
 import { FieldValues, Controller } from 'react-hook-form';
 
 const EditForms = () => {

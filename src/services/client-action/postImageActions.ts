@@ -1,3 +1,4 @@
+import { ONE_DAY_FOR_SUPABASE } from '@/constants/time';
 import { ImagesAllWithoutPostId, ImagesWithoutPostId } from '@/types/projectType';
 import { formatDateToNumber } from '@/utils/dateUtils';
 import { removeFileExtension } from '@/utils/fileNameUtils';
@@ -11,26 +12,14 @@ import browserClient from '@/utils/supabase/client';
  * @returns 생성된 Signed URL
  */
 
-// export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
-//   const { data, error } = await browserClient.storage
-//     .from(bucketName)
-//     .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60); //1일
-//   if (error) {
-//     // console.error('Signed URL 생성 오류:', error);
-//     throw new Error('Signed URL 생성 실패', error);
-//   }
-//   console.log('singindUrl 성공', data.signedUrl);
-//   return data?.signedUrl;
-// };
-
 export const fetchSignedUrl = async (bucketName: string, folderName: string, filename: string) => {
   const { data, error } = await browserClient.storage
     .from(bucketName)
-    .createSignedUrl(`${folderName}/${filename}`, 24 * 60 * 60); // 24시간 유효
+    .createSignedUrl(`${folderName}/${filename}`, ONE_DAY_FOR_SUPABASE);
 
   if (error || !data?.signedUrl) {
     console.error(`Signed URL 생성 오류: ${error?.message}`);
-    return '/path/to/default/image.png'; // URL 생성 실패 시 기본 이미지 반환
+    return '/path/to/default/image.png';
   }
 
   // console.log('Signed URL 성공:', data.signedUrl);

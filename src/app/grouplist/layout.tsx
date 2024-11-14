@@ -1,5 +1,6 @@
-import TopButton from '@/components/_common/TopButton';
+// import TopButton from '@/components/_common/TopButton';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
+import { TopButton } from '@/stories/TopButton';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

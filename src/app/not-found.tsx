@@ -1,5 +1,6 @@
 'use client';
 
+import { IconNotFoundMarker } from '@/lib/icon/Icon_Not_Found_Marker';
 import { Button } from '@/stories/Button';
 import { useRouter } from 'next/navigation';
 
@@ -8,10 +9,7 @@ const NotFound = () => {
   return (
     <div className='flex h-screen w-full items-center justify-center'>
       <section className='flex flex-col items-center gap-10'>
-        <img
-          src='/svgs/Not_Found_Marker.svg'
-          alt=''
-        />
+        <IconNotFoundMarker />
         <div className='flex flex-col items-center gap-4 font-black text-gray-700'>
           <p className='text-[40px]'>Page Not Found</p>
           <p className='flex flex-col items-center text-body_md'>

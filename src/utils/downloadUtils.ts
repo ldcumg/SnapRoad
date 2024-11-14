@@ -1,3 +1,4 @@
+import { ONE_DAY_FOR_SUPABASE } from '@/constants/time';
 import browserClient from '@/utils/supabase/client';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -13,7 +14,7 @@ export const downloadSingleFile = async (bucketName: string, filename: string, f
   try {
     const { data, error } = await browserClient.storage
       .from(bucketName)
-      .createSignedUrl(`${folder}/${filename}`, 24 * 60 * 60 * 1000, { download: true });
+      .createSignedUrl(`${folder}/${filename}`, ONE_DAY_FOR_SUPABASE, { download: true });
 
     if (error || !data) throw new Error('파일 다운로드 실패');
 
@@ -46,7 +47,7 @@ export const downloadAllAsZip = async (
     try {
       const { data, error } = await browserClient.storage
         .from(bucketName)
-        .createSignedUrl(`${folder}/${image.filename}`, 24 * 60 * 60 * 1000, { download: true });
+        .createSignedUrl(`${folder}/${image.filename}`, ONE_DAY_FOR_SUPABASE, { download: true });
 
       if (error || !data) {
         console.error('파일 다운로드 실패:', error);

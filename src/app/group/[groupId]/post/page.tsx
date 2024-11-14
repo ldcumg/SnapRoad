@@ -5,7 +5,6 @@ import PostForms from '@/components/post/PostForms';
 import PostImage from '@/components/post/PostImage';
 import { Metadata } from 'next';
 
-
 export const metadata: Metadata = {
   title: '글쓰기',
   description: '여행지에 대한 새로운 글을 작성하세요.',
@@ -25,7 +24,7 @@ const PostPage = ({ params: { groupId } }: Props) => {
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
         <PostImageBottomSheet />
-        <PostImage showImages={false} />
+        {/* <PostImage showImages={false} /> */}
         <PostForms />
       </div>
     </>
