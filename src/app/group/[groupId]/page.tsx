@@ -27,7 +27,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
   useEffect(() => {
-    toMap();
+    mode === GroupDetailMode.map || toMap();
   }, []);
 
   if (isPending) return <Loading />;
