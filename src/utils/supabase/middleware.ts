@@ -1,3 +1,4 @@
+import URLS, { PRIVATEURLS } from '@/constants/urls';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -5,6 +6,7 @@ export const updateSession = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({
     request,
   });
+  const requestPathname = request.nextUrl.pathname;
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,31 +30,24 @@ export const updateSession = async (request: NextRequest) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log('request.nextUrl.pathname :>> ', request.nextUrl.pathname);
-  const privatePathname = ['/grouplist', '/group', '/mypage', '/makegroup','/post'];
-  const isPrivate = privatePathname.includes(request.nextUrl.pathname);
-  if (
-    !user &&
-    isPrivate
-    // !request.nextUrl.pathname.startsWith('/login') &&
-    // !request.nextUrl.pathname.startsWith('/signup') &&
-    // request.nextUrl.pathname !== '/'
-  ) {
+  const isPrivate = PRIVATEURLS.includes(requestPathname as URLS);
+  if (!user && isPrivate) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = URLS.logIn;
     return NextResponse.redirect(url);
   }
-  if (user?.id && request.nextUrl.pathname === '/') {
+  if (user?.id && requestPathname === '/') {
     const url = request.nextUrl.clone();
-    url.pathname = '/grouplist';
+    url.pathname = URLS.groupList;
     return NextResponse.redirect(url);
   }
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
-  const isAdminUser = user?.id === process.env.ADMIN_USER_ID;
 
-  if (isAdminRoute && !isAdminUser) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  // const isAdminRoute = requestPathname.startsWith('/admin');
+  // const isAdminUser = user?.id === process.env.ADMIN_USER_ID;
+
+  // if (isAdminRoute && !isAdminUser) {
+  //   return NextResponse.redirect(new URL('/', request.url));
+  // }
 
   return supabaseResponse;
 };

@@ -22,8 +22,10 @@ interface BottomSheetProps extends HTMLAttributes<HTMLDivElement> {
   onconfirmButtonClick?: () => void;
   oncancelButtonClick?: () => void;
   hasButton?: boolean;
-  customClassName?: string;
+  className?: string;
   backdrop?: boolean;
+  titleClassName?: string;
+  headerClassName?: string;
 }
 
 export const BottomSheet = ({
@@ -46,8 +48,10 @@ export const BottomSheet = ({
   onconfirmButtonClick,
   oncancelButtonClick,
   hasButton = true,
-  customClassName,
+  className,
   backdrop = true,
+  titleClassName,
+  headerClassName,
   ...props
 }: BottomSheetProps) => {
   const [rendered, setRendered] = useState(isOpen);
@@ -87,7 +91,7 @@ export const BottomSheet = ({
         >
           {/* 타이틀 및 취소/닫기 버튼 - showHeader가 true일 때만 렌더링 */}
           {showHeader && !hideTitle && (
-            <div className='flex items-center justify-between p-4'>
+            <div className={`${headerClassName} flex items-center justify-between p-4`}>
               {showBackButton && (
                 <button
                   onClick={onClose}
@@ -101,7 +105,7 @@ export const BottomSheet = ({
                   />
                 </button>
               )}
-              <h2 className='-ml-3 flex-1 text-center font-semibold'>{title}</h2>
+              <h2 className={titleClassName ?? '-ml-3 flex-1 text-center font-semibold'}>{title}</h2>
               {showCloseButton && (
                 <button
                   onClick={onClose}
@@ -111,14 +115,13 @@ export const BottomSheet = ({
                   <img
                     src='/svgs/Close_LG.svg'
                     alt='닫기'
-                    className='mr-2'
                   />
                 </button>
               )}
             </div>
           )}
 
-          <div className={`${customClassName} mb-5 p-4 text-gray-700`}>{children}</div>
+          <div className={`${className} mb-5 p-4 text-gray-700`}>{children}</div>
 
           {hasButton && (
             <div className='absolute bottom-0 left-0 right-0 flex space-x-4 border-t border-gray-300 bg-white p-4'>

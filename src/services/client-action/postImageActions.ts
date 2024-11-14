@@ -73,7 +73,16 @@ export const saveImageMetadata = async (
   groupId: string,
   currentDate: string,
   uploadSessionId: string,
-): Promise<ImagesAllWithoutPostId> => {
+) => {
+  // URL에서 기본 위도와 경도 값 추출
+  const url = new URL(window.location.href);
+  const defaultLat = url.searchParams.get('lat');
+  const defaultLng = url.searchParams.get('lng');
+
+  // EXIF 데이터가 없는 경우 URL에서 가져온 기본 값을 사용
+  const latitude = exifData?.latitude || defaultLat;
+  const longitude = exifData?.longitude || defaultLng;
+
   const { data, error } = await browserClient
     .from('images')
     .insert({
@@ -81,8 +90,10 @@ export const saveImageMetadata = async (
       post_image_url: signedUrl,
       created_at: currentDate,
       is_cover: false,
-      post_lat: exifData.latitude,
-      post_lng: exifData.longitude,
+      // post_lat: exifData.latitude,
+      // post_lng: exifData.longitude,
+      post_lat: latitude,
+      post_lng: longitude,
       origin_created_at: formatDateToNumber(exifData.dateTaken),
       user_id: userId,
       group_id: groupId,
@@ -132,7 +143,7 @@ async function resetCoverImages(userId: string, uploadSessionId: string) {
     console.error('대표 이미지 초기화 실패:', error.message);
     throw new Error('대표 이미지 초기화 실패');
   } else {
-    console.log('모든 대표 이미지 초기화 성공');
+    // console.log('모든 대표 이미지 초기화 성공');
   }
 }
 
@@ -143,7 +154,7 @@ async function setCoverImage(imageId: number) {
     console.error('대표 이미지 설정 실패:', error.message);
     throw new Error('대표 이미지 설정 실패');
   } else {
-    console.log('대표 이미지 설정 성공:', imageId);
+    // console.log('대표 이미지 설정 성공:', imageId);
   }
 }
 
@@ -151,7 +162,7 @@ export async function updateCoverImage(imageId: number, userId: string, uploadSe
   console.log('대표 이미지 업데이트 중:', { userId, imageId, uploadSessionId });
   await resetCoverImages(userId, uploadSessionId); // 모든 이미지를 초기화
   await setCoverImage(imageId); // 특정 이미지에 대해서만 is_cover: true 설정
-  console.log('대표 이미지가 설정되었습니다.');
+  // console.log('대표 이미지가 설정되었습니다.');
 }
 
 /**

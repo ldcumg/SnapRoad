@@ -1,5 +1,6 @@
 import { GroupWithCounts } from '@/types/groupTypes';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   const router = useRouter();
@@ -8,11 +9,11 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
       className='flex min-h-[244px] cursor-pointer flex-col items-center gap-2 rounded-xl border border-solid border-gray-100 bg-white p-4'
       onClick={() => router.push(`/group/${el?.group_id}`)}
     >
-      <div className='flex min-h-[130px] w-[130px] items-center'>
+      <div className='flex min-h-[130px] w-[130px] items-center justify-center'>
         <img
           src={el?.group_image_url}
           alt={`${el?.group_title}_이미지`}
-          className='object-contain'
+          className='h-full w-full object-fill'
           fetchPriority='high'
         />
       </div>
@@ -36,4 +37,4 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
   );
 };
 
-export default GroupItem;
+export default React.memo(GroupItem);
