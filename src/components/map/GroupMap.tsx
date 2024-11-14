@@ -49,7 +49,6 @@ const GroupMap = ({ groupId, point }: Props) => {
   const polyline: Set<Latlng> = new Set([]);
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
-
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
   const [mapLoading, mapError] = useKakaoLoader({
@@ -282,8 +281,9 @@ const GroupMap = ({ groupId, point }: Props) => {
         isPanto={true}
         onDragEnd={() => isPostsView || getSpotInfo()}
         onZoomChanged={(a) => {
-          // console.log(a)
-          console.log(a.sa)
+          console.log(a.sa[0]);
+          // console.log(Object.getOwnPropertyNames(a.sa[0]._clusters));
+          // console.log(Object.keys(a.sa[0]._clusters));
         }}
       >
         {isPostsView && !!postsCoverImages.length ? (
@@ -349,7 +349,7 @@ const GroupMap = ({ groupId, point }: Props) => {
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        /> 
+        />
 
         {!!spotInfo ? (
           <BottomSheet
