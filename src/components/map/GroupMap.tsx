@@ -120,20 +120,20 @@ const GroupMap = ({ groupId, point }: Props) => {
     isInputFocus && setIsInputFocus(false);
   };
 
-    /** 중심 좌표의 장소 정보 요청 */
-    const getSpotInfo = async () => {
-      if (!map) {
-        toast.error('지도를 불러오지 못 했습니다.');
-        return;
-      }
-  
-      const latlng = map.getCenter();
-  
-      const lat = latlng.getLat();
-      const lng = latlng.getLng();
-      const address = await getAddress({ lat, lng });
-      setSpotInfo({ placeName: '', address, lat, lng });
-    };
+  /** 중심 좌표의 장소 정보 요청 */
+  const getSpotInfo = async () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
+    const latlng = map.getCenter();
+
+    const lat = latlng.getLat();
+    const lng = latlng.getLng();
+    const address = await getAddress({ lat, lng });
+    setSpotInfo({ placeName: '', address, lat, lng });
+  };
 
   /** 사용자 위치 찾기 */
   const handleFindUserLocation = () => {
@@ -152,7 +152,7 @@ const GroupMap = ({ groupId, point }: Props) => {
       map.setLevel(5, { animate: true });
       map.panTo(new kakao.maps.LatLng(lat, lng));
       isPostsView && setIsPostsView(false);
-      getSpotInfo()
+      getSpotInfo();
     });
   };
 

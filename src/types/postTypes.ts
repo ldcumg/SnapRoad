@@ -1,3 +1,5 @@
+import type { createPostPositioningStore } from "@/stores/post/postPositioningStore";
+
 export type PostImage = {
   id: number;
   post_id: string;
@@ -51,3 +53,19 @@ export interface TagData {
   post_id: string;
   group_id: string;
 }
+
+export type PostPositioningState = {
+  positioning: boolean;
+  imageName: string;
+  imageUrl: string;
+  content: string;
+  tag: string;
+};
+
+export type PostPositioningActions = {
+  selectPosition: () => void;
+};
+
+export type PostPositioningStore = PostPositioningState & PostPositioningActions;
+
+export type PostPositioningStoreApi = ReturnType<typeof createPostPositioningStore>;

@@ -1,4 +1,4 @@
-import { GroupDetailModeProvider } from '@/components/providers/GroupDetailModeProvider';
+import { PostPositioningProvider } from '@/components/providers/GroupDetailModeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/lib/styles/globals.css';
 import * as Sentry from '@sentry/browser';
@@ -44,9 +44,9 @@ const RootLayout = ({
     >
       <body className={`font-sans`}>
         <QueryProvider>
-          <GroupDetailModeProvider>
+          <PostPositioningProvider>
             <main className='h-full w-full'>{children}</main>
-          </GroupDetailModeProvider>
+          </PostPositioningProvider>
         </QueryProvider>
       </body>
     </html>

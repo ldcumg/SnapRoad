@@ -1,23 +1,23 @@
 'use client';
 
-import { createGroupDetailModeStore } from '@/src/stores/groupDetail/groupDetailStore';
-import type { GroupDetailModeStoreApi } from '@/types/groupTypes';
+import { createPostPositioningStore } from '@/stores/post/postPositioningStore';
+import type { PostPositioningStoreApi } from '@/types/postTypes';
 import { createContext, useRef } from 'react';
 
-export const GroupDetailModeStoreContext = createContext<GroupDetailModeStoreApi | undefined>(undefined);
+export const PostPositioningStoreContext = createContext<PostPositioningStoreApi | undefined>(undefined);
 
-type GroupDetailModeStoreProviderProps = {
+type PostPositioningStoreProviderProps = {
   children: React.ReactNode;
 };
 
-export const GroupDetailModeProvider = ({ children }: GroupDetailModeStoreProviderProps) => {
-  const storeRef = useRef<GroupDetailModeStoreApi>();
+export const PostPositioningProvider = ({ children }: PostPositioningStoreProviderProps) => {
+  const storeRef = useRef<PostPositioningStoreApi>();
 
   if (!storeRef.current) {
-    storeRef.current = createGroupDetailModeStore();
+    storeRef.current = createPostPositioningStore();
   }
 
   return (
-    <GroupDetailModeStoreContext.Provider value={storeRef.current}>{children}</GroupDetailModeStoreContext.Provider>
+    <PostPositioningStoreContext.Provider value={storeRef.current}>{children}</PostPositioningStoreContext.Provider>
   );
 };

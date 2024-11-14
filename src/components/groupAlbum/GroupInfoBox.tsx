@@ -1,6 +1,5 @@
 'use client';
 
-import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
