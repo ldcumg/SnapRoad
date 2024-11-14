@@ -1,4 +1,4 @@
-import { PostPositioningStoreContext } from '@/components/providers/GroupDetailModeProvider';
+import { PostPositioningStoreContext } from '@/components/providers/PostPositioningProvider';
 import type { PostPositioningStore } from '@/types/postTypes';
 import { useContext } from 'react';
 import { useStore } from 'zustand';

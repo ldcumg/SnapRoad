@@ -1,4 +1,4 @@
-import { PostPositioningProvider } from '@/components/providers/GroupDetailModeProvider';
+import { PostPositioningProvider } from '@/components/providers/PostPositioningProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/lib/styles/globals.css';
 import * as Sentry from '@sentry/browser';
