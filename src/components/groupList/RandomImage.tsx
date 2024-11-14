@@ -44,14 +44,18 @@ const RandomImage = () => {
                 className='basis-[220px] rounded-xl p-0'
               >
                 <Card className='border-none'>
-                  <CardContent
-                    className='relative flex aspect-square items-center justify-center bg-contain bg-center bg-no-repeat p-0 md:bg-cover lg:bg-cover'
-                    style={{ backgroundImage: `url(${data.post_thumbnail_image})` }}
-                  >
+                  <CardContent className='relative flex aspect-square items-center justify-center p-0'>
                     <Link
                       href={`/group/${data.group_id}/post/${data.post_id}`}
-                      className='absolute inset-0 rounded-xl bg-gradient-to-b from-white to-black opacity-50'
-                    ></Link>
+                      className='absolute inset-0 rounded-xl'
+                    >
+                      <img
+                        src={`${data.post_thumbnail_image}`}
+                        alt={`${data.post_address}_사진`}
+                        className='h-full w-full rounded-xl object-cover'
+                      />
+                    </Link>
+                    <div className='absolute inset-0 h-[220px] w-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
                     <p className='absolute bottom-0 flex w-full flex-row justify-between px-4 py-4 text-white'>
                       <span className='text-title_lg'>{getSlicedAddress(data.post_address)}</span>
                       <span className='text-body_sm'>{formatDateToYY_MM_DD(data.created_at)}</span>
