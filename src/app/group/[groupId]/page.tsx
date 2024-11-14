@@ -19,7 +19,7 @@ type Props = Readonly<{
 }>;
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
