@@ -4,7 +4,7 @@ import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
 import buckets from '@/constants/buckets';
 import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
-import type { GroupInfo } from '@/types/groupTypes';
+import type { GroupInfo, GroupWithCounts, PostDataListType } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
 const getGroupDetails = async (group_id: string) => {
@@ -81,4 +81,64 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
   return { ...data, group_image_url: signedUrls[0] } as GroupInfo;
 };
 
-export { getGroupDetails, getGroupPostLists, getPostListsByGroupId, getRandomGroupId, getGroupInfo };
+const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
+  const groupImages = groups.map((group) => group.group_image_url);
+  return await getSignedImgUrls(buckets.groupImage, 1000 * 60 * 10, groupImages);
+};
+
+const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
+  const supabase = createClient();
+  const { data } = await supabase.auth.getUser();
+  if (data.user?.id) {
+    const userId = data.user.id;
+    let { data: groups }: { data: GroupWithCounts[] | null } = await supabase.rpc('get_user_groups_with_count', {
+      input_user_id: userId,
+      page: pageParam,
+    });
+    if (!groups) groups = [];
+    const images = await getGroupSignedImageUrls(groups);
+    if (images) {
+      groups = groups.map((group, idx) => {
+        return {
+          ...group,
+          group_image_url: images[idx].signedUrl,
+        };
+      });
+    }
+    return groups;
+  }
+};
+
+const getRandomPosts = async () => {
+  const supabase = createClient();
+  const { data } = await supabase.auth.getUser();
+  let dataList: PostDataListType = [];
+  if (data.user?.id) {
+    const userId = data.user.id;
+    const { data: postDataList }: { data: PostDataListType } = await supabase.rpc('get_user_posts_by_user_id', {
+      input_user_id: userId,
+    });
+    if (postDataList?.length) {
+      //TODO - tour_image버킷 폴더구조 변경 후 요청url변경필요
+      const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
+      const signedUrls = await getSignedImgUrls(buckets.tourImages, 59 * 10, imgNameArray);
+      if (signedUrls) {
+        dataList = postDataList.map((data, idx) => ({
+          ...data,
+          post_thumbnail_image: signedUrls[idx].signedUrl,
+        }));
+      }
+    }
+  }
+  return dataList;
+};
+
+export {
+  getGroupDetails,
+  getGroupPostLists,
+  getPostListsByGroupId,
+  getRandomGroupId,
+  getGroupInfo,
+  getInfiniteGroupData,
+  getRandomPosts,
+};

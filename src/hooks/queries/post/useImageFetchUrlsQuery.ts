@@ -1,8 +1,9 @@
+import queryKeys from '../queryKeys';
 import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { useQuery } from '@tanstack/react-query';
-import queryKeys from '../queryKeys';
 
+/** 이미지 미리보기 로직 */
 export function useFetchImageUrls(
   uploadSessionId: string,
   images: ImagesAllWithoutPostId[],

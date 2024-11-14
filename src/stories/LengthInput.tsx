@@ -1,5 +1,6 @@
 'use client';
 
+import { IconCloseCircle } from '@/lib/icon/Icon_Close_Circle';
 import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 type Props<T extends FieldValues> = {
@@ -29,10 +30,10 @@ const LengthInput = <T extends FieldValues>({
   maxLength,
 }: Props<T>) => {
   return (
-    <div className='flex flex-row w-full border-b border-solid border-gray-100 py-4'>
+    <div className='flex w-full flex-row border-b border-solid border-gray-100 py-4'>
       <input
         id={name}
-        className='w-full placeholder:text-gray-400 text-gray-900 text-body_lg outline-none'
+        className='w-full text-body_lg text-gray-900 outline-none placeholder:text-gray-400'
         {...register(name)}
         type='text'
         placeholder={placeholder}
@@ -41,18 +42,15 @@ const LengthInput = <T extends FieldValues>({
       <div className='flex flex-row items-center gap-2'>
         {curLength > 0 && (
           <button
-            className='w-6 h-6'
+            className='h-6 w-6'
             type='button'
             onClick={clearInputValue}
           >
-            <img
-              src='/svgs/Close_Circle.svg'
-              alt=''
-            />
+            <IconCloseCircle />
           </button>
         )}
         <p
-          className={`flex justify-center items-center ${curLength ? 'text-gray-900' : 'text-gray-300'} text-[#bdbdbd]`}
+          className={`flex items-center justify-center ${curLength ? 'text-gray-900' : 'text-gray-300'} text-[#bdbdbd]`}
         >
           {curLength}/{maxLength}
         </p>

@@ -30,10 +30,10 @@ const SearchResultMarker = ({ className, onClick }: { className?: string; onClic
         width='24'
         height='24'
         filterUnits='userSpaceOnUse'
-        color-interpolation-filters='sRGB'
+        colorInterpolationFilters='sRGB'
       >
         <feFlood
-          flood-opacity='0'
+          floodOpacity='0'
           result='BackgroundImageFix'
         />
         <feColorMatrix
