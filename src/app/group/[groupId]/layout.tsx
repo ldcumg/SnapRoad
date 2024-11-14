@@ -26,7 +26,7 @@ export const generateMetadata = async ({ params: { groupId } }: GenerateMetadata
 const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailLayoutProps) => {
   const queryClient = new QueryClient();
 
-  await Promise.all([
+  await Promise.allSettled([
     queryClient.prefetchQuery({
       queryKey: queryKeys.group.postsCoverImages(groupId),
       queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
