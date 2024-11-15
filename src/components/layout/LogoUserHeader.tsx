@@ -20,7 +20,10 @@ const LogoUserHeader = () => {
       {isUserInfoPending ? (
         <></>
       ) : isLoggedIn ? (
-        <Link href={'/mypage'}>
+        <Link
+          href={'/mypage'}
+          prefetch
+        >
           <img
             src={`${userInfo?.user_image_url ? userInfo.user_image_url : '/svgs/User.svg'}`}
             alt='유저이미지'
