@@ -15,19 +15,20 @@ type Props = Readonly<{ children: React.ReactNode }>;
 
 const GroupListLayout = async ({ children }: Props) => {
   const queryClient = new QueryClient();
+
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: queryKeys.group.groupRandomPosts(),
       queryFn: () => {
-        const a = getRandomPosts();
-        return a;
+        const randomPosts = getRandomPosts();
+        return randomPosts;
       },
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: queryKeys.group.groupList(),
-      queryFn: ({ pageParam = 1 }) => {
-        const a = getInfiniteGroupData({ pageParam });
-        return a;
+      queryFn: ({ pageParam }) => {
+        const groupData = getInfiniteGroupData({ pageParam });
+        return groupData;
       },
       retry: 0,
       initialPageParam: 0,

@@ -77,10 +77,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const file = new File([blob], 'group_image.jpg', { type: blob.type });
-    // FileList 객체 생성
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    return dataTransfer.files;
+    return [file];
   };
 
   useEffect(() => {
@@ -93,7 +90,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupImg: fileList as unknown as File[],
         });
         setImgPreview(groupDetailData.group_image_url);
-      } else if (groupDetailData) {
+      } else if (groupDetailData && !groupDetailData.group_image_url) {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
