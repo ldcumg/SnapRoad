@@ -160,7 +160,6 @@ const MakeGroupForm = ({ update_for }: Props) => {
         cropperModal={cropperModal}
         handleCropImage={handleCropImage}
       />
-      <button onClick={() => console.log(formState)}>dd</button>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-col items-center justify-center gap-6 px-4 pt-4'
