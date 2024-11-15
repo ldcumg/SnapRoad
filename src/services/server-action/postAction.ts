@@ -83,12 +83,14 @@ export const getPostsCoverImagesPerGroup = async ({
 export const fetchDeletePost = async (postId: string) => {
   const supabase = createClient();
 
-  const { data, error } = await supabase
-    .from('posts')
-    .update({ deleted_at: new Date().toISOString() })
-    .eq('post_id', postId)
-    .select();
+  const { data, error } = await supabase.rpc('delete_post_and_images', {
+    post_id: postId,
+  });
 
-  if (error) throw new Error(error.message);
-  return { message: '게시글 삭제 성공', data };
+  if (error) {
+    console.log('게시물 삭제 중 오류 발생 ', error);
+    throw new Error(`게시물 삭제 중 오류 발생: ${error.message}`);
+  }
+
+  return { message: '게시물 삭제 성공', data };
 };
