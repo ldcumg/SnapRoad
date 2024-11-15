@@ -45,7 +45,7 @@ const RootLayout = ({
       <body className={`font-sans`}>
         <QueryProvider>
           <GroupDetailModeProvider>
-            <main className='h-full w-full'>{children}</main>
+            <main className='mx-auto h-full w-full max-w-[1200px]'>{children}</main>
           </GroupDetailModeProvider>
         </QueryProvider>
       </body>
