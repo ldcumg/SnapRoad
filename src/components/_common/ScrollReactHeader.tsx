@@ -18,7 +18,7 @@ const ScrollReactHeader = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div
-      className={`z-2 fixed left-0 right-0 top-0 flex flex-row justify-between bg-white px-4 py-2 transition-all duration-300 ${
+      className={`fixed top-0 z-[2] mx-auto flex w-full max-w-[1200px] flex-row justify-between bg-white px-4 py-2 transition-all duration-300 ${
         hasScrolled ? 'border-b border-gray-300' : 'border-b-0'
       }`}
     >

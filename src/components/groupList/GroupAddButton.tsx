@@ -1,23 +1,25 @@
 'use client';
 
+import MakeGroupForm from '../makegroup/MakeGroupForm';
 import SubmitInviteForm from './SubmitInviteForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { Button } from '@/stories/Button';
 import { LinkButton } from '@/stories/LinkButton';
 import { Modal } from '@/stories/Modal';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 type Props = {
   dataLen?: number;
 };
 
 type AddButtonsProps = {
+  isDesktop: boolean;
   handleBottomSheetOpen: () => void;
 };
 
-const AddButtons = ({ handleBottomSheetOpen }: AddButtonsProps) => {
+const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
+  console.log('isDesktop :>> ', isDesktop);
   return (
     <>
       <Button
@@ -32,24 +34,42 @@ const AddButtons = ({ handleBottomSheetOpen }: AddButtonsProps) => {
           alt=''
         />
       </Button>
-      <LinkButton
-        label='그룹만들기'
-        href='/makegroup'
-        size='full'
-        className='text-tile_lg text-white'
-      >
-        <img
-          src='/svgs/Plus_LG.svg'
-          alt=''
-        />
-      </LinkButton>
+      {isDesktop ? (
+        <Button
+          label='그룹만들기'
+          size='full'
+          className='text-tile_lg text-white'
+          onClick={handleBottomSheetOpen}
+        >
+          <img
+            src='/svgs/Plus_LG.svg'
+            alt=''
+          />
+        </Button>
+      ) : (
+        <LinkButton
+          label='그룹만들기'
+          href='/makegroup'
+          size='full'
+          className='text-tile_lg text-white'
+        >
+          <img
+            src='/svgs/Plus_LG.svg'
+            alt=''
+          />
+        </LinkButton>
+      )}
     </>
   );
 };
 
 const GroupAddButton = ({ dataLen }: Props) => {
   const [isBottomSheetOpen, handleBottomSheetOpen] = useIsOpen();
-  const router = useRouter();
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
   return (
     <>
       {dataLen ? (
@@ -57,13 +77,21 @@ const GroupAddButton = ({ dataLen }: Props) => {
           <Modal
             isModalOpen={isBottomSheetOpen}
             handleModalOpen={handleBottomSheetOpen}
+            title={desktop ? '그룹 생성' : undefined}
           >
-            <SubmitInviteForm
-              isBottomSheetOpen={isBottomSheetOpen}
-              handleBottomSheetOpen={handleBottomSheetOpen}
-            />
+            {desktop ? (
+              <MakeGroupForm />
+            ) : (
+              <SubmitInviteForm
+                isBottomSheetOpen={isBottomSheetOpen}
+                handleBottomSheetOpen={handleBottomSheetOpen}
+              />
+            )}
           </Modal>
-          <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
+          <AddButtons
+            isDesktop={desktop}
+            handleBottomSheetOpen={handleBottomSheetOpen}
+          />
         </div>
       ) : (
         <div className='my-[186px] flex w-full flex-col justify-center gap-4'>
@@ -78,7 +106,10 @@ const GroupAddButton = ({ dataLen }: Props) => {
           </Modal>
           <p className='w-full text-center text-title_xl text-gray-500'>그룹을 만들어 추억을 남겨보세요!</p>
           <div className='flex flex-col gap-2 px-4 py-5'>
-            <AddButtons handleBottomSheetOpen={handleBottomSheetOpen} />
+            <AddButtons
+              isDesktop={desktop}
+              handleBottomSheetOpen={handleBottomSheetOpen}
+            />
           </div>
         </div>
       )}

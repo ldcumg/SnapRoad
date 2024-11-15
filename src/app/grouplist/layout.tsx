@@ -35,11 +35,11 @@ const GroupListLayout = async ({ children }: Props) => {
   ]);
 
   return (
-    <>
+    <div>
       <TopButton />
       <LogoUserHeader />
       <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>
-    </>
+    </div>
   );
 };
 
