@@ -1,6 +1,5 @@
 'use client';
 
-import BlankGroupList from './BlankGroupList';
 import GroupAddButton from './GroupAddButton';
 import GroupItem from './GroupItem';
 import GroupItemSkeleton from './GroupItemSkeleton';
@@ -21,8 +20,7 @@ const GroupList = () => {
   if (isFetchNextPageError) throw new Error('에러 발생!');
   return (
     <>
-      {/* 데이터 fetching중 버튼이 깜빡이지 않도록 */}
-      {!isFetching ? <GroupAddButton dataLen={dataLen} /> : <div className='h-4'></div>}
+      <GroupAddButton dataLen={dataLen} />
       <div className='flex w-full flex-col justify-between px-4'>
         {isFetching && !data ? (
           <GroupItemSkeleton />
