@@ -1,8 +1,8 @@
 'use client';
 
 import Loading from '@/app/loading';
-import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import MemberList from '@/components/groupDetail/MemberList';
+import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
