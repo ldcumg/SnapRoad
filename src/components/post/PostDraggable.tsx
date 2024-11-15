@@ -34,10 +34,10 @@ const PostDraggableImageList = () => {
   }, [images, selectedCover, setSelectedCover, handleSetCover]);
 
   return (
-    <div className='w-full overflow-y-hidden pb-4'>
+    <div className='w-full pb-4'>
       <div
         ref={sliderRef}
-        className='keen-slider'
+        className='keen-slider w-full !overflow-x-auto'
       >
         <div className='flex gap-4'>
           {images.length > 0 &&

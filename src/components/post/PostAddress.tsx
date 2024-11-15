@@ -11,7 +11,9 @@ interface groupIdProps {
 const PostAddress = ({ groupId }: groupIdProps) => {
   const { addressName, lat, lng } = useUserAndLocation(groupId);
   const router = useRouter();
-  const handleGoBack = () => router.back();
+  const handleGoBack = () => {
+    router.back();
+  };
 
   // 위도와 경도가 없는 경우 addressName을 "위치 없음"으로 설정
   const displayAddress = lat && lng ? addressName : '위치 없음';
