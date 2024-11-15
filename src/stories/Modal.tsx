@@ -34,7 +34,7 @@ export const Modal = ({ isModalOpen, handleModalOpen, children, title }: ModalPr
       )}
     >
       <div
-        className='absolute inset-0'
+        className='z-4 absolute inset-0'
         onClick={handleModalOpen}
       ></div>
       <div
