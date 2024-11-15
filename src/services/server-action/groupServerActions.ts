@@ -3,7 +3,7 @@
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
 import buckets from '@/constants/buckets';
-import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
+import { ONE_HOUR_FOR_SUPABASE } from '@/constants/time';
 import type { GroupInfo, GroupWithCounts, PostDataListType } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -62,10 +62,10 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
   if ((status !== 200 && error) || !data) throw new Error(error.message);
 
-  const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, data.group_image_url ?? '');
+  const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage, ONE_HOUR_FOR_SUPABASE, data.group_image_url ?? '');
 
   const profileImages = data.user_group.map((user) => user.profiles?.user_image_url ?? '');
-  const profileImagesUrls = getSignedImgUrls(buckets.avatars, TEN_MINUTES_FOR_SUPABASE, profileImages);
+  const profileImagesUrls = getSignedImgUrls(buckets.avatars, ONE_HOUR_FOR_SUPABASE, profileImages);
 
   const signedUrls = await Promise.all([groupImageSignedUrl, profileImagesUrls]);
 

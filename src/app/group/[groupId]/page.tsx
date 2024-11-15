@@ -1,12 +1,13 @@
 'use client';
 
 import Loading from '@/app/loading';
-import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
-import MemberList from '@/components/groupAlbum/MemberList';
+import GroupAlbum from '@/components/groupDetail/GroupAlbum';
+import MemberList from '@/components/groupDetail/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
 import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
 import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
+import { IconLogo } from '@/lib/icon/Icon_ Logo';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -88,10 +89,10 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
       <ToastContainer />
       <header className='z-50 flex h-[56px] items-center justify-between bg-white px-4 py-2'>
         <Link href={URLS.home}>
-          <img src='/svgs/Logo.svg' />
+          <IconLogo />
         </Link>
         <h1 className='text-label_md'>{groupInfo.group_title}</h1>
-        <div className='w-[63px] flex justify-end'>{handleChangeMode()}</div>
+        <div className='flex w-[63px] justify-end'>{handleChangeMode()}</div>
       </header>
       {groupDetailMode()}
     </div>

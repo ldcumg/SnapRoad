@@ -1,5 +1,5 @@
 import queryKeys from '../queryKeys';
-import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
+import { ONE_HOUR_FOR_TANSTACK } from '@/constants/time';
 import {
   getGroupDetails,
   getGroupInfo,
@@ -47,7 +47,7 @@ const useGroupInfoQuery = (groupId: string) =>
   useQuery({
     queryKey: queryKeys.group.info(groupId),
     queryFn: ({ queryKey }) => getGroupInfo({ queryKey }),
-    gcTime: TEN_MINUTES_FOR_TANSTACK,
+    gcTime: ONE_HOUR_FOR_TANSTACK,
   });
 
 export {
