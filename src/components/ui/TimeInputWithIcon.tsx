@@ -1,5 +1,5 @@
 import { IconClock } from '@/lib/icon/Icon_Clock';
-import { useState, forwardRef } from 'react';
+import { useState, useRef, useEffect, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -14,6 +14,7 @@ const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
   ({ value, onChange, onBlur, name }, ref) => {
     const [selectedTime, setSelectedTime] = useState<Date | null>(value ? new Date(value) : null);
     const [isTimePickerOpen, setTimePickerOpen] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const handleInputClick = () => {
       setTimePickerOpen(!isTimePickerOpen);
@@ -31,9 +32,26 @@ const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
       }
     };
 
+    // 외부 클릭 감지
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+          setTimePickerOpen(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
     return (
       <label className='input-no-calendar relative flex w-full items-center'>
-        <div className='relative w-full'>
+        <div
+          ref={wrapperRef} // wrapperRef로 감지
+          className='relative w-full'
+        >
           <input
             type='text'
             name={name}
