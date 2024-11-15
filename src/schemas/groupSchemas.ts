@@ -6,8 +6,7 @@ const groupSchema = z.object({
     .min(1, { message: '그룹명은 1글자 이상 8글자 이하여야 합니다.' })
     .max(8, { message: '그룹명은 1글자 이상 8글자 이하여야 합니다.' }),
   groupDesc: z.string().max(40, { message: '그룹 설명은 40글자 이하여야 합니다.' }),
-  //NOTE - 이미지 파일 관련 zod 유효성검사 처리가능한 방법 있는지 확인 필요
-  groupImg: z.array(z.instanceof(File)).optional(),
+  groupImg: z.union([z.array(z.instanceof(File)), z.null()]).optional(),
 });
 
 const inviteCodeRegex = new RegExp(/^[0-9A-Fa-f]{8}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{4}\-[0-9A-Fa-f]{12}$/);

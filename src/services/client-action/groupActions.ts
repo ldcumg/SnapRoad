@@ -3,7 +3,7 @@ import { GroupObjType, UpdateGroupObjType, UserGroupType } from '@/types/groupTy
 import browserClient from '@/utils/supabase/client';
 
 const uploadDefaultGroupImg = async (group_id: string) => {
-  const defaultImgRes = await fetch('/images/group_default_thumbnail.png');
+  const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
     .from(buckets.groupImage)
@@ -19,7 +19,7 @@ const uploadGroupImg = async (groupImg: File, group_id: string) => {
 };
 
 const updateDefaultGroupImg = async (group_id: string) => {
-  const defaultImgRes = await fetch('/images/group_default_thumbnail.png');
+  const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
     .from(buckets.groupImage)

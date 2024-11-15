@@ -1,5 +1,5 @@
 import { IconCalendarNr } from '@/lib/icon/Icon_Calendar_Nr';
-import { useState, forwardRef } from 'react';
+import { useState, useEffect, useRef, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -15,6 +15,8 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
     const [startDate, setStartDate] = useState<Date | null>(value ? new Date(value) : null);
     const [isDatePickerOpen, setDatePickerOpen] = useState(false);
 
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+
     const handleInputClick = () => {
       setDatePickerOpen(!isDatePickerOpen);
     };
@@ -24,7 +26,6 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
       setDatePickerOpen(false);
 
       if (onChange && date) {
-        // Date 객체를 문자열로 변환하고 ChangeEvent 형식으로 래핑
         const fakeEvent = {
           target: { value: date.toLocaleDateString('ko-KR') },
         } as React.ChangeEvent<HTMLInputElement>;
@@ -32,9 +33,27 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
       }
     };
 
+    // DatePicker 외부 클릭 감지
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+          setDatePickerOpen(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
     return (
       <label className='input-no-calendar relative flex w-full items-center'>
-        <div className='relative w-full'>
+        <div
+          ref={wrapperRef} // wrapperRef로 감지
+          className='relative w-full'
+        >
           <input
             type='text'
             name={name}
