@@ -14,23 +14,23 @@ const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages } = useImageUploadStore();
   const { handleDelete } = useImageDeleteLogic(buckets.tourImages, groupId);
-  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId);
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { data: imageUrls = [], refetch } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId, refetch);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleNewImageUpload = async (files: FileList | null) => {
     if (files) {
       setIsUploading(true);
-      setImages([]);
+      setImages([]); // 기존 이미지를 초기화
       try {
-        await handleImageUpload(files);
+        await handleImageUpload(files); // 새로운 이미지 업로드
       } catch (error) {
+        console.error('이미지 업로드 중 오류:', error);
       } finally {
         setIsUploading(false);
       }
     }
   };
-
   return (
     <div className='flex w-full justify-start gap-4 overflow-x-auto overflow-y-hidden pt-4'>
       {isUploading ? (

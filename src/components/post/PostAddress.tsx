@@ -12,7 +12,10 @@ const PostAddress = ({ groupId }: groupIdProps) => {
   const { addressName, lat, lng } = useUserAndLocation(groupId);
   const router = useRouter();
   const handleGoBack = () => {
-    router.back();
+    const isConfirmed = window.confirm('페이지를 벗어나시겠습니까?');
+    if (isConfirmed) {
+      router.back();
+    }
   };
 
   // 위도와 경도가 없는 경우 addressName을 "위치 없음"으로 설정

@@ -4,9 +4,16 @@ import {
   useCoverBusinessImage,
 } from '@/hooks/queries/post/useBusinessImageMutation';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
+import { QueryObserverResult } from '@tanstack/react-query';
 
 /** 이미지 업로드 처리 */
-export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {
+export const useImageUploadLogic = (
+  bucketName: string,
+  folderName: string,
+  userId: string,
+  groupId: string,
+  refetch: () => Promise<QueryObserverResult<string[], Error>>, 
+) => {
   const { addImages } = useImageUploadStore();
   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
 
@@ -21,6 +28,7 @@ export const useImageUploadLogic = (bucketName: string, folderName: string, user
     try {
       const uploadedImages = await uploadBusinessImage.mutateAsync(fileArray);
       addImages(uploadedImages);
+      await refetch();
     } catch (error) {
       console.error('이미지 업로드 중 오류가 발생했습니다:', error);
     }
@@ -28,28 +36,6 @@ export const useImageUploadLogic = (bucketName: string, folderName: string, user
 
   return { handleImageUpload };
 };
-
-// export const useImageUploadLogic = (bucketName: string, folderName: string, userId: string, groupId: string) => {
-//   const { addImages } = useImageUploadStore();
-//   const uploadBusinessImage = useUploadBusinessImage(bucketName, folderName, userId, groupId);
-
-//   const handleImageUpload = (files: FileList) => {
-//     if (!files) return;
-//     const fileArray = Array.from(files);
-//     if (fileArray.length > 10) {
-//       alert('최대 10장의 이미지만 업로드할 수 있습니다.');
-//       return;
-//     }
-
-//     uploadBusinessImage.mutate(fileArray, {
-//       onSuccess: (uploadedImages) => {
-//         addImages(uploadedImages);
-//       },
-//     });
-//   };
-
-//   return { handleImageUpload };
-// };
 
 // 이미지 삭제 처리
 export const useImageDeleteLogic = (bucketName: string, folderName: string) => {
@@ -60,7 +46,6 @@ export const useImageDeleteLogic = (bucketName: string, folderName: string) => {
     deleteBusinessImage.mutate(id, {
       onSuccess: () => {
         deleteImage(id);
-        // console.log('이미지가 삭제되었습니다.');
       },
     });
   };
@@ -82,7 +67,6 @@ export const useSetCoverLogic = (userId: string, uploadSessionId: string) => {
         }));
 
         setImages([...updatedImages]);
-        // console.log('대표 이미지가 설정되었습니다.', id);
       },
       onError: (error) => {
         console.error('대표 이미지 설정 오류:', error);
