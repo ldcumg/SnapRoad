@@ -32,7 +32,7 @@ export const Modal = ({ isModalOpen, handleModalOpen, children }: ModalProps) =>
       )}
     >
       <div
-        className='absolute inset-0'
+        className='z-4 absolute inset-0'
         onClick={handleModalOpen}
       ></div>
       <div className={cn(modalContentClass, isModalOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0')}>

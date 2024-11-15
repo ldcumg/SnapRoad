@@ -5,7 +5,6 @@ import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { usePostForm } from '@/hooks/byUse/usePostForm';
 import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
-import { IconArrowBackLG } from '@/lib/icon/Icon_Arrow_Back_LG';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
