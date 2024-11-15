@@ -33,10 +33,6 @@ const PostForms = () => {
   const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isFullHeightOpen) console.log('현재 이미지:', images);
-  }, [isFullHeightOpen, images]);
-
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
     const hashtags: string[] = value.hashtags || [];
@@ -83,7 +79,7 @@ const PostForms = () => {
         className='flex flex-col space-y-2 px-4'
         onSubmit={handleSubmit(handlePostForm)}
       >
-        <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto pb-4'>
+        <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
           {images.length > 0
             ? images.map((image, index) => (
                 <div
@@ -109,6 +105,11 @@ const PostForms = () => {
             </div>
           </button>
         </div>
+
+        <span className='!mb-4 block text-sm text-gray-500'>
+          * PNG, JPG 이외의 파일은 올리실 수 없습니다.
+          <br />* 한글 파일명은 업로드 불가능합니다.
+        </span>
 
         <TextAreaWithCounter
           id='formValue'
