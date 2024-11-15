@@ -21,9 +21,9 @@ const PostThumbnailImageList = () => {
   const handleNewImageUpload = async (files: FileList | null) => {
     if (files) {
       setIsUploading(true);
-      setImages([]); // 기존 이미지를 초기화
+      setImages([]);
       try {
-        await handleImageUpload(files); // 새로운 이미지 업로드
+        await handleImageUpload(files);
       } catch (error) {
         console.error('이미지 업로드 중 오류:', error);
       } finally {
@@ -31,6 +31,7 @@ const PostThumbnailImageList = () => {
       }
     }
   };
+
   return (
     <div className='flex w-full justify-start gap-4 overflow-x-auto overflow-y-hidden pt-4'>
       {isUploading ? (

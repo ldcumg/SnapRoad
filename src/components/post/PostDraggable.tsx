@@ -22,7 +22,7 @@ const PostDraggableImageList = () => {
     slides: {
       perView: 'auto',
     },
-    drag: false,
+    drag: true,
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const PostDraggableImageList = () => {
     <div className='w-full pb-4'>
       <div
         ref={sliderRef}
-        className='keen-slider w-full !overflow-x-auto'
+        className='keen-slider w-full !overflow-auto'
       >
         <div className='flex gap-4'>
           {images.length > 0 &&
