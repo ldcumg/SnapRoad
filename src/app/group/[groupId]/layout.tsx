@@ -26,18 +26,19 @@ export const generateMetadata = async ({ params: { groupId } }: GenerateMetadata
 const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailLayoutProps) => {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.group.posts(groupId),
-    queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
-    gcTime: TEN_MINUTES_FOR_TANSTACK,
-  });
-
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: queryKeys.group.postsImages(groupId),
-    queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
-    initialPageParam: 0,
-    gcTime: TEN_MINUTES_FOR_TANSTACK,
-  });
+  await Promise.allSettled([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.group.postsCoverImages(groupId),
+      queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
+      gcTime: TEN_MINUTES_FOR_TANSTACK,
+    }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: queryKeys.group.postsImages(groupId),
+      queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
+      initialPageParam: 0,
+      gcTime: TEN_MINUTES_FOR_TANSTACK,
+    }),
+  ]);
 
   return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 };
