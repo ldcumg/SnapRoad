@@ -64,7 +64,6 @@ const PostForms = () => {
 
   // 필드 값 감시
   const text = watch('desc');
-  // const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
 
