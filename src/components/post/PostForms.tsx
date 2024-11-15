@@ -33,10 +33,6 @@ const PostForms = () => {
   const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isFullHeightOpen) console.log('현재 이미지:', images);
-  }, [isFullHeightOpen, images]);
-
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
     const hashtags: string[] = value.hashtags || [];
