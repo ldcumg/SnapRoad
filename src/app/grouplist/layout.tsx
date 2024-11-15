@@ -15,30 +15,32 @@ type Props = Readonly<{ children: React.ReactNode }>;
 
 const GroupListLayout = async ({ children }: Props) => {
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.group.groupRandomPosts(),
-    queryFn: () => {
-      const a = getRandomPosts();
-      return a;
-    },
-  });
 
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: queryKeys.group.groupList(),
-    queryFn: ({ pageParam = 1 }) => {
-      const a = getInfiniteGroupData({ pageParam });
-      return a;
-    },
-    retry: 0,
-    initialPageParam: 0,
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.group.groupRandomPosts(),
+      queryFn: () => {
+        const randomPosts = getRandomPosts();
+        return randomPosts;
+      },
+    }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: queryKeys.group.groupList(),
+      queryFn: ({ pageParam }) => {
+        const groupData = getInfiniteGroupData({ pageParam });
+        return groupData;
+      },
+      retry: 0,
+      initialPageParam: 0,
+    }),
+  ]);
 
   return (
-    <>
+    <div>
       <TopButton />
       <LogoUserHeader />
       <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>
-    </>
+    </div>
   );
 };
 

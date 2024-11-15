@@ -13,6 +13,8 @@ const useGroupDetailQueryForUpdate = (group_id: string) => {
     queryKey: queryKeys.group.groupForUpdate(group_id),
     queryFn: () => getGroupDetails(group_id),
     enabled: !!group_id,
+    staleTime: 0,
+    gcTime: 0,
   });
 };
 

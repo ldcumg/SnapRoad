@@ -14,8 +14,8 @@ const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages } = useImageUploadStore();
   const { handleDelete } = useImageDeleteLogic(buckets.tourImages, groupId);
-  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId);
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { data: imageUrls = [], refetch } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId, refetch);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleNewImageUpload = async (files: FileList | null) => {
@@ -25,6 +25,7 @@ const PostThumbnailImageList = () => {
       try {
         await handleImageUpload(files);
       } catch (error) {
+        console.error('이미지 업로드 중 오류:', error);
       } finally {
         setIsUploading(false);
       }

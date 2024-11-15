@@ -77,10 +77,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const file = new File([blob], 'group_image.jpg', { type: blob.type });
-    // FileList 객체 생성
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    return dataTransfer.files;
+    return [file];
   };
 
   useEffect(() => {
@@ -93,7 +90,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupImg: fileList as unknown as File[],
         });
         setImgPreview(groupDetailData.group_image_url);
-      } else if (groupDetailData) {
+      } else if (groupDetailData && !groupDetailData.group_image_url) {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
@@ -106,8 +103,14 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
 
+  const isFetchingSomething = useIsFetching() > 0;
+
   const isValidToSubmit =
-    (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
+    (groupTitleLen > 0 && !formState.errors.groupTitle) ||
+    isFetchingBeforeData ||
+    isInserting ||
+    isUpdating ||
+    isFetchingSomething;
 
   const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -143,11 +146,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
       throw new Error('이미지 자르기 실패');
     }
   };
-  console.log('isInvalidating :>> ', isInvalidating);
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
-    <>
-      {(isFetchingBeforeData || isInserting || isUpdating || isInvalidating) && (
+    <div className='relative'>
+      {(isFetchingBeforeData || isInserting || isUpdating || isFetchingSomething) && (
         <div className='absolute z-[3000] flex h-full w-full items-center justify-center bg-black bg-opacity-10'>
           <Spinner color='primary-400' />
         </div>
@@ -176,10 +178,11 @@ const MakeGroupForm = ({ update_for }: Props) => {
           disabled={!isValidToSubmit}
           size='full'
           type='submit'
+          loading={isFetchingSomething}
           label={update_for ? '수정 완료' : '그룹 만들기'}
         />
       </form>
-    </>
+    </div>
   );
 };
 
