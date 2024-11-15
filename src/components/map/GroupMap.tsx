@@ -28,7 +28,7 @@ import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react
 
 type Props = {
   groupId: string;
-  point: { lat: number; lng: number } | null;
+  point: { lat: number; lng: number } | undefined;
 };
 
 const GroupMap = ({ groupId, point }: Props) => {
@@ -281,7 +281,11 @@ const GroupMap = ({ groupId, point }: Props) => {
         isPanto={true}
         onDragEnd={() => isPostsView || getSpotInfo()}
         onZoomChanged={(a) => {
-          console.log(a.sa[0]);
+          // console.log("a =>", a);
+          console.log(map);
+          // setTemp(a.sa[0]['_clusters']);
+          // console.log(a);
+          // console.log(JSON.stringify(a.sa[0]['_clusters']));
           // console.log(Object.getOwnPropertyNames(a.sa[0]._clusters));
           // console.log(Object.keys(a.sa[0]._clusters));
         }}
