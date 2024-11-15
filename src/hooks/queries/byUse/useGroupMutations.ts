@@ -11,7 +11,6 @@ type ErrorTypes = {
   message: string | null;
 };
 
-// TODO - invalidate필요시 쿼리키 추가 필요
 type InsertGroupType = {
   groupObj: GroupObjType;
   groupImg: File | null;
@@ -22,28 +21,26 @@ type updateGroupType = {
   groupImg: File | null;
 };
 
-const useUpdateGroupMutation = (group_id?: string) => {
+const useUpdateGroupMutation = (group_id: string) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ groupObj, groupImg }: updateGroupType) => await updateGroupData(groupObj, groupImg),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.group.info(group_id) });
       router.push(`/group/${group_id}`);
-      queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
-      // console.log('data :>> ', data);
     },
     onError: (error) => console.log('error :>> ', error),
   });
 };
 
-//TODO - invalidate필요시 쿼리키 추가 필요
 const useInsertGroupMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ groupObj, groupImg }: InsertGroupType) => await insertGroupData(groupObj, groupImg),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
-      // console.log('data :>> ', data);
     },
     onError: (error) => console.log('error :>> ', error),
   });

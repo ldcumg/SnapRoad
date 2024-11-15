@@ -1,4 +1,5 @@
 import URLS from '@/constants/urls';
+import { IconSuccess } from '@/lib/icon/Icon_ Success';
 import { Button } from '@/stories/Button';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -13,7 +14,7 @@ const SignUpSuccessPage = () => {
   return (
     <div className='flex h-screen flex-col items-center justify-center gap-7 px-4'>
       <div>
-        <img src='/svgs/Success.svg' />
+        <IconSuccess />
       </div>
       <p className='text-head_sm text-gray-900'>회원가입이 완료되었어요!</p>
       <div className='flex w-full gap-4 py-5'>

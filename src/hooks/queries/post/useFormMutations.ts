@@ -13,7 +13,7 @@ export const useSubmitForm = (groupId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.group.posts(groupId) });
       // router.push(URLS.groupList);
-      console.log(postForm);
+      // console.log(postForm);
     },
     onError: (error) => {
       alert(error.message);

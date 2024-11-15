@@ -66,3 +66,12 @@ export type GroupDetailModeActions = {
 export type GroupDetailModeStore = GroupDetailModeState & GroupDetailModeActions;
 
 export type GroupDetailModeStoreApi = ReturnType<typeof createGroupDetailModeStore>;
+
+export type PostData = {
+  created_at: string;
+  post_address: string;
+  post_thumbnail_image: string;
+  post_id: string;
+  group_id: string;
+};
+export type PostDataListType = PostData[] | null;
