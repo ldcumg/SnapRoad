@@ -106,8 +106,14 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
 
+  const isFetchingSomething = useIsFetching() > 0;
+
   const isValidToSubmit =
-    (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
+    (groupTitleLen > 0 && !formState.errors.groupTitle) ||
+    isFetchingBeforeData ||
+    isInserting ||
+    isUpdating ||
+    isFetchingSomething;
 
   const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -143,11 +149,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
       throw new Error('이미지 자르기 실패');
     }
   };
-  console.log('isInvalidating :>> ', isInvalidating);
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
-    <>
-      {(isFetchingBeforeData || isInserting || isUpdating || isInvalidating) && (
+    <div className='relative'>
+      {(isFetchingBeforeData || isInserting || isUpdating || isFetchingSomething) && (
         <div className='absolute z-[3000] flex h-full w-full items-center justify-center bg-black bg-opacity-10'>
           <Spinner color='primary-400' />
         </div>
@@ -176,10 +181,11 @@ const MakeGroupForm = ({ update_for }: Props) => {
           disabled={!isValidToSubmit}
           size='full'
           type='submit'
+          loading={isFetchingSomething}
           label={update_for ? '수정 완료' : '그룹 만들기'}
         />
       </form>
-    </>
+    </div>
   );
 };
 
