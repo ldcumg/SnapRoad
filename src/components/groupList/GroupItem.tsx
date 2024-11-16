@@ -19,7 +19,9 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
       </div>
       <div className='flex h-full w-full flex-col gap-2 pc:w-[132px] pc:justify-center'>
         <div className='flex flex-row justify-between pc:flex-col pc:gap-2'>
-          <p className='max-w-[100px] truncate text-label_sm text-gray-900 pc:text-title_lg'>{el?.group_title}</p>
+          <p className='max-w-[100px] truncate text-label_sm text-gray-900 pc:max-w-full pc:text-title_lg'>
+            {el?.group_title}
+          </p>
           <p className='flex flex-row items-center justify-center pc:justify-start pc:gap-1'>
             <img
               src='/svgs/User_Group.svg'
