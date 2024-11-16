@@ -4,6 +4,7 @@ import PlaceSearchForm from './PlaceSearchForm';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import MapPin from '@/lib/icon/Map_Pin';
+import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
@@ -24,7 +25,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
-import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
+import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 type Props = {
   groupId: string;
@@ -119,7 +120,22 @@ const GroupMap = ({ groupId, point }: Props) => {
     isInputFocus && setIsInputFocus(false);
   };
 
-  /** 사용자의 위치 찾기 */
+  /** 중심 좌표의 장소 정보 요청 */
+  const getSpotInfo = async () => {
+    if (!map) {
+      toast.error('지도를 불러오지 못 했습니다.');
+      return;
+    }
+
+    const latlng = map.getCenter();
+
+    const lat = latlng.getLat();
+    const lng = latlng.getLng();
+    const address = await getAddress({ lat, lng });
+    setSpotInfo({ placeName: '', address, lat, lng });
+  };
+
+  /** 사용자 위치 찾기 */
   const handleFindUserLocation = () => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
@@ -136,6 +152,7 @@ const GroupMap = ({ groupId, point }: Props) => {
       map.setLevel(5, { animate: true });
       map.panTo(new kakao.maps.LatLng(lat, lng));
       isPostsView && setIsPostsView(false);
+      getSpotInfo();
     });
   };
 
@@ -148,21 +165,6 @@ const GroupMap = ({ groupId, point }: Props) => {
     map.setLevel(4, { animate: true });
     map.panTo(new kakao.maps.LatLng(lat, lng));
     placeName && address && setSpotInfo({ placeName, address, lat, lng });
-  };
-
-  /** 중심 좌표의 장소 정보 요청 */
-  const getSpotInfo = async () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    const latlng = map.getCenter();
-
-    const lat = latlng.getLat();
-    const lng = latlng.getLng();
-    const address = await getAddress({ lat, lng });
-    setSpotInfo({ placeName: '', address, lat, lng });
   };
 
   /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
@@ -271,7 +273,7 @@ const GroupMap = ({ groupId, point }: Props) => {
         )}
       </button>
       {isPostsView || (
-        <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-[46%] -translate-y-[66%]' />
+        <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-1/2 -translate-y-[29%]' />
       )}
       <Map
         className='h-screen w-full'
@@ -332,18 +334,12 @@ const GroupMap = ({ groupId, point }: Props) => {
         ) : (
           <>
             {searchResult.markers.map((marker) => (
-              <MapMarker
+              <CustomOverlayMap
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => moveToMarker(marker)}
-                image={{
-                  src: '/svgs/Search_Result_Marker.svg',
-                  size: {
-                    width: 24,
-                    height: 35,
-                  },
-                }}
-              />
+              >
+                <SearchResultMarker onClick={() => moveToMarker(marker)} />
+              </CustomOverlayMap>
             ))}
           </>
         )}
@@ -394,8 +390,7 @@ const GroupMap = ({ groupId, point }: Props) => {
           </BottomSheet>
         ) : (
           <button
-            // className='fixed bottom-[100px] left-4 z-30'
-            className='fixed bottom-[16px] left-4 z-30 h-[44px] w-[44px] rounded-full bg-white'
+            className='fixed bottom-[100px] left-4 z-30 h-[44px] w-[44px] rounded-full bg-white'
             onClick={handleFindUserLocation}
           >
             <img
@@ -440,25 +435,23 @@ const GroupMap = ({ groupId, point }: Props) => {
             </ol>
           </BottomSheet>
         ) : (
-          !isPostsView && (
-            <div
-              className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+          <div
+            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+          >
+            <Button
+              type='button'
+              onClick={handleAddPostRoute}
+              variant='primary'
+              size='full'
+              className='bottom-4 z-50 h-[56px] px-6'
+              disabled={!isPostsView && !spotInfo?.address}
             >
-              <Button
-                type='button'
-                onClick={handleAddPostRoute}
-                variant='primary'
-                size='full'
-                className='bottom-4 z-50 h-[56px] px-6'
-                disabled={!isPostsView && !spotInfo?.address}
-              >
-                <span className='flex gap-2'>
-                  <img src='/svgs/Plus_LG.svg' />
-                  <p className='text-title_lg'>게시물 추가하기</p>
-                </span>
-              </Button>
-            </div>
-          )
+              <span className='flex gap-2'>
+                <img src='/svgs/Plus_LG.svg' />
+                <p className='text-title_lg'>게시물 추가하기</p>
+              </span>
+            </Button>
+          </div>
         )}
       </Map>
     </>

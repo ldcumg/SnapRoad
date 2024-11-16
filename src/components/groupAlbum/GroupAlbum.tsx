@@ -4,15 +4,16 @@ import GroupInfoBox from './GroupInfoBox';
 import Loading from '@/app/loading';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
-import { type GroupInfo } from '@/types/groupTypes';
+import { type GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
 type Props = {
   groupId: string;
   groupInfo: GroupInfo;
+  setMode: React.Dispatch<React.SetStateAction<GroupDetailMode>>;
 };
 
-const GroupAlbum = ({ groupId, groupInfo }: Props) => {
+const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
 
@@ -40,6 +41,7 @@ const GroupAlbum = ({ groupId, groupInfo }: Props) => {
       <GroupInfoBox
         groupId={groupId}
         groupInfo={groupInfo}
+        setMode={setMode}
       />
       {!!postsImages.length ? (
         <>
