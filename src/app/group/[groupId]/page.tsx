@@ -1,16 +1,16 @@
 'use client';
 
 import Loading from '@/app/loading';
-import MemberList from '@/components/groupDetail/MemberList';
 import GroupAlbum from '@/components/groupDetail/GroupAlbum';
+import MemberList from '@/components/groupDetail/MemberList';
 import GroupMap from '@/components/map/GroupMap';
 import URLS from '@/constants/urls';
-import { useGroupDetailModeStore } from '@/hooks/groupDetail/useGroupDetailModeStore';
 import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -20,7 +20,7 @@ type Props = Readonly<{
 }>;
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
-  const { mode, toMap, toAlbum } = useGroupDetailModeStore((state) => state);
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -33,13 +33,13 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
     switch (mode) {
       case GroupDetailMode.map:
         return (
-          <button onClick={toAlbum}>
+          <button onClick={() => setMode(GroupDetailMode.album)}>
             <img src='/svgs/Swap_Btn_To_Album.svg' />
           </button>
         );
       case GroupDetailMode.album:
         return (
-          <button onClick={toMap}>
+          <button onClick={() => setMode(GroupDetailMode.map)}>
             <img src='/svgs/Swap_Btn_To_Map.svg' />
           </button>
         );
@@ -47,7 +47,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
         return (
           <button
             className='h-10 w-10'
-            onClick={toAlbum}
+            onClick={() => setMode(GroupDetailMode.album)}
           >
             <img
               className='mx-auto'
@@ -75,6 +75,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
           <GroupAlbum
             groupId={groupId}
             groupInfo={groupInfo}
+            setMode={setMode}
           />
         );
       case GroupDetailMode.member:

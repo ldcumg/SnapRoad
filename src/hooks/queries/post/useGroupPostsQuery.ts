@@ -18,7 +18,7 @@ export const getGroupPostsImagesQuery = (groupId: string) => {
 /** 그룹 게시물들의 대표 이미지들 요청 쿼리 */
 export const getGroupPostsCoverImagesQuery = (groupId: string) => {
   return useQuery({
-    queryKey: queryKeys.group.posts(groupId),
+    queryKey: queryKeys.group.postsCoverImages(groupId),
     queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
     gcTime: ONE_HOUR_FOR_TANSTACK,
   });

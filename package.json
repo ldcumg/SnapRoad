@@ -36,7 +36,7 @@
     "exifr": "^7.1.3",
     "file-saver": "^2.0.5",
     "formidable": "^3.5.2",
-    "garlic-toast": "^0.0.7",
+    "garlic-toast": "^0.0.10",
     "jszip": "^3.10.1",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.454.0",
