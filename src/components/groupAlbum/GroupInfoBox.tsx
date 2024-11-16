@@ -15,7 +15,7 @@ const GroupInfoBox = ({ groupId, groupInfo: { group_image_url, user_group, group
       <div className='flex flex-row gap-4 border-b py-6'>
         <img
           className='h-[132px] min-h-[132px] w-[132px] min-w-[132px] object-cover'
-          src={group_image_url ?? '/images/group_default_thumbnail.png'}
+          src={group_image_url ?? '/images/group_default_thumbnail.jpg'}
           alt='그룹 이미지'
         />
         <div className='flex w-full flex-col gap-3'>
