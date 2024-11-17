@@ -50,7 +50,7 @@ const SubmitInviteForm = ({ isDesktop }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`z-50 mt-14 flex flex-col items-center justify-center gap-5 rounded-t-[20px] bg-white pc:mt-0 pc:flex-row`}
+      className={`z-50 mt-14 flex flex-col items-center justify-center gap-5 rounded-t-[20px] bg-white pc:z-0 pc:mt-0 pc:flex-row`}
     >
       <div className='flex w-full flex-col items-start gap-1 pc:flex-row pc:items-center'>
         <h3
