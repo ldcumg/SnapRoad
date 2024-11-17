@@ -117,7 +117,6 @@ const SignUpForm = () => {
           <img src='/svgs/Arrow_Forward_LG.svg' />
         </div>
 
-        {/* TODO 버튼 활성화 */}
         <Button
           type='submit'
           label='회원가입'
