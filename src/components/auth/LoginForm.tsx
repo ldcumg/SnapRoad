@@ -15,11 +15,13 @@ const LoginForm = () => {
     formState: { errors },
   } = useLoginForm();
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isError } = useLogin();
 
   const handleLogin = async (value: FieldValues) => {
     login(loginSchema.parse(value));
   };
+
+  if (isError) throw new Error('로그인 에러 발생');
 
   return (
     <div>
