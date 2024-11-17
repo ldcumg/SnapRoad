@@ -1,11 +1,16 @@
 'use client';
 
+import MakeGroupForm from '../makegroup/MakeGroupForm';
 import GroupInfoBox from './GroupInfoBox';
 import Loading from '@/app/loading';
 import useIntersect from '@/hooks/byUse/useIntersection';
+import { useIsOpen } from '@/hooks/byUse/useIsOpen';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import { Modal } from '@/stories/Modal';
 import { type GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 type Props = {
   groupId: string;
@@ -16,6 +21,12 @@ type Props = {
 const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
+  const [updateModal, handleUpdateModal] = useIsOpen();
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
 
   //NOTE - 고장
   const observerRef = useIntersect(async (entry, observer) => {
@@ -38,10 +49,24 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
   //TODO - 스켈레톤 UI
   return (
     <>
+      {desktop && (
+        <Modal
+          isModalOpen={updateModal}
+          handleModalOpen={handleUpdateModal}
+          title='그룹 수정'
+        >
+          <MakeGroupForm
+            update_for={groupId}
+            handleUpdateModal={handleUpdateModal}
+          />
+        </Modal>
+      )}
       <GroupInfoBox
         groupId={groupId}
         groupInfo={groupInfo}
         setMode={setMode}
+        handleUpdateModal={handleUpdateModal}
+        desktop={desktop}
       />
       {!!postsImages.length ? (
         <>
