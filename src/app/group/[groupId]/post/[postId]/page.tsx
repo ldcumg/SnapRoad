@@ -22,7 +22,6 @@ const PostDetailPage = async ({ params }: { params: { postId: string } }) => {
 
   return (
     <div className='w-full'>
-      {/* 헤더 (TODO 공통 만들어지면 변경하기)) */}
       <div className='relative mx-4 flex items-center py-4'>
         <MyPageHeader url={`/group/${postDetail.group_id}`} />
         <span className='mx-auto text-label_md text-gray-900'>{postDetail?.group?.group_title}</span>

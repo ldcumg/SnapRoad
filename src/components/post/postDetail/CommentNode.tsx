@@ -9,15 +9,9 @@ type CommentNodeProps = {
   comment: Comment;
   userDetail: UserDetail;
   postDetail: PostDetail;
-  // setIsWriteMode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CommentNode = ({
-  comment,
-  userDetail,
-  postDetail,
-  // setIsWriteMode
-}: CommentNodeProps) => {
+const CommentNode = ({ comment, userDetail, postDetail }: CommentNodeProps) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isWriteReplyMode, setIsWriteReplyMode] = useState<boolean>(false);
 
