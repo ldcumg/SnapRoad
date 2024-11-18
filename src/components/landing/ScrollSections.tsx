@@ -1,19 +1,16 @@
 'use client';
 
-import image1 from '@/public/images/landing/01_landing.jpg';
-import image2 from '@/public/images/landing/02_landing.jpg';
-import image3 from '@/public/images/landing/03_landing.jpg';
-import image4 from '@/public/images/landing/04_landing.jpg';
-import image5 from '@/public/images/landing/05_landing.jpg';
-import image6 from '@/public/images/landing/06_landing.jpg';
-import { Button } from '@/stories/Button';
+import image1 from '@/public/images/landing/01_landing.webp';
+import image2 from '@/public/images/landing/02_landing.webp';
+import image3 from '@/public/images/landing/03_landing.webp';
+import image4 from '@/public/images/landing/04_landing.webp';
+import image5 from '@/public/images/landing/05_landing.webp';
+import image6 from '@/public/images/landing/06_landing.webp';
 import { LinkButton } from '@/stories/LinkButton';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 const ScrollSections = () => {
-  const router = useRouter();
   const section1Ref = useRef<HTMLElement>(null);
   const section2Ref = useRef<HTMLElement>(null);
   const section3Ref = useRef<HTMLElement>(null);
@@ -71,6 +68,7 @@ const ScrollSections = () => {
             src={image1}
             alt='지도 마커 예시 사진'
             sizes='400px'
+            priority
             style={{
               width: '100%',
               height: 'auto',
