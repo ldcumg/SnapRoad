@@ -20,7 +20,6 @@ type Props = {
 
 const EditPage = async ({ params: { groupId, postId } }: Props) => {
   const user = await getSession();
-  const userDetail = await getProfile(user?.id!);
   const postDetail = await fetchPostDetail(postId);
 
   return (
@@ -30,7 +29,7 @@ const EditPage = async ({ params: { groupId, postId } }: Props) => {
         <PostAddress groupId={groupId} />
         <ImageBottomSheet />
         <PostImage showImages={false} />
-        <EditForms postDetail={postDetail} userDetail={userDetail} />
+        <EditForms postDetail={postDetail}  />
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface DateInputWithIconProps {
-  value?: string;
+  value?: Date;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   name?: string;
@@ -71,13 +71,13 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
             <IconCalendarNr />
           </span>
           {isDatePickerOpen && (
-            <div className='absolute left-0 bottom-full z-10 mb-2'>
+            <div className='absolute bottom-full left-0 z-10 mb-2'>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => handleDateChange(date as Date)}
                 inline
-                popperPlacement="top-end" // 위쪽으로 위치 설정
-                portalId="date-picker-portal"
+                popperPlacement='top-end' // 위쪽으로 위치 설정
+                portalId='date-picker-portal'
               />
             </div>
           )}
