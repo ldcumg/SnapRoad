@@ -3,7 +3,8 @@
 import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
-import { usePostForm } from '@/hooks/byUse/usePostForm';
+import { useEditForm } from '@/hooks/byUse/usePostForm';
+import { convertTo24HourFormatString } from '@/hooks/queries/post/ConvertTo24HourFormat';
 import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
@@ -13,29 +14,38 @@ import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
+import { PostDetail as postDetailType } from '@/types/postDetailTypes';
 import { useRouter } from 'next/navigation';
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FieldValues, Controller } from 'react-hook-form';
 
-const PostForms = () => {
+export type PostAndProfileProps = {
+  postDetail: postDetailType;
+};
+
+const EditForms = ({ postDetail }: PostAndProfileProps) => {
   const {
-    register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
-    watch,
-  } = usePostForm();
+  } = useEditForm();
 
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
-  const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
+  const { handleFullOpen } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
   const { images } = useImageUploadStore();
   const { mutateAsync: submitForm } = useSubmitForm(groupId);
   const router = useRouter();
 
   useEffect(() => {
-    // if (!isFullHeightOpen) console.log('현재 이미지:', images);
-  }, [isFullHeightOpen, images]);
+    if (postDetail) {
+      setValue('desc', postDetail.post_desc || '');
+      setValue('hashtags', postDetail.tags?.map((tag) => tag.tag_title) || []);
+      setValue('date', postDetail.post_date || '');
+      setValue('time', postDetail.post_time || '');
+    }
+  }, [postDetail, setValue]);
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
@@ -66,69 +76,67 @@ const PostForms = () => {
     }
   };
 
-  // 필드 값 감시
-  const text = watch('desc');
-  // const hashtags = watch('hashtags');
-  const date = watch('date');
-  const time = watch('time');
-
-  // 필드 빈값 확인
-  const isFormValueFilled = useMemo(() => {
-    return text && date && time;
-  }, [text, date, time]);
-
   return (
-    <>
-      <form
-        className='flex flex-col space-y-2 px-4'
-        onSubmit={handleSubmit(handlePostForm)}
-      >
-        <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-          {images.length > 0
-            ? images.map((image, index) => (
-                <div
-                  key={index}
-                  className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
-                >
-                  <img
-                    src={image.post_image_url || '/path/to/placeholder.png'}
-                    alt={`업로드된 이미지 ${index + 1}`}
-                    className='h-full w-full object-cover'
-                  />
-                </div>
-              ))
-            : null}
+    <form
+      className='flex flex-col space-y-2 px-4'
+      onSubmit={handleSubmit(handlePostForm)}
+    >
+      <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
+        {images.length > 0
+          ? images.map((image, index) => (
+              <div
+                key={index}
+                className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
+              >
+                <img
+                  src={image.post_image_url || '/path/to/placeholder.png'}
+                  alt={`업로드된 이미지 ${index + 1}`}
+                  className='h-full w-full object-cover'
+                />
+              </div>
+            ))
+          : null}
 
-          <button
-            onClick={handleFullOpen}
-            className={`flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50`}
-          >
-            <div className='flex flex-col items-center'>
-              <IconPluslg />
-              <p className='text-md mt-2'>사진 선택</p>
-            </div>
-          </button>
-        </div>
+        <button
+          type='button'
+          onClick={handleFullOpen}
+          className='flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+        >
+          <div className='flex flex-col items-center'>
+            <IconPluslg />
+            <p className='text-md mt-2'>사진 선택</p>
+          </div>
+        </button>
+      </div>
 
-        <span className='!mb-4 block text-sm text-gray-500'>
-          * PNG, JPG 이외의 파일은 올리실 수 없습니다.
-          <br />* 한글 파일명은 업로드 불가능합니다.
-        </span>
+      <span className='!mb-4 block text-sm text-gray-500'>
+        * PNG, JPG 이외의 파일은 올리실 수 없습니다.
+        <br />* 한글 파일명은 업로드 불가능합니다.
+      </span>
 
-        <TextAreaWithCounter
-          id='formValue'
-          variant='default'
-          maxLength={1000}
-          placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-          errorText={errors.desc && String(errors.desc.message)}
-          {...register('desc')}
-        />
+      <Controller
+        name='desc'
+        control={control}
+        defaultValue={postDetail.post_desc || ''}
+        render={({ field }) => (
+          <TextAreaWithCounter
+            id='formValue'
+            variant='default'
+            maxLength={1000}
+            placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
+            errorText={errors.desc && String(errors.desc.message)}
+            {...field}
+          />
+        )}
+      />
 
-        <Controller
-          name='hashtags'
-          control={control}
-          defaultValue={[]}
-          render={({ field }) => (
+      <Controller
+        name='hashtags'
+        control={control}
+        defaultValue={[]}
+        render={({ field }) => {
+          console.log('Hashtags Field Value:', field.value);
+          return (
             <div>
               <HashtagInput
                 hashtags={field.value || []}
@@ -136,20 +144,48 @@ const PostForms = () => {
               />
               {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
             </div>
-          )}
-        />
+          );
+        }}
+      />
 
-        <DateInputWithIcon {...register('date')} />
-        <TimeInputWithIcon {...register('time')} />
+      <Controller
+        name='date'
+        control={control}
+        defaultValue={postDetail.post_date ? new Date(postDetail.post_date) : null}
+        render={({ field }) => (
+          <DateInputWithIcon
+            value={field.value}
+            onChange={(e) => field.onChange(e.target.value)}
+            onBlur={field.onBlur}
+            name={field.name}
+          />
+        )}
+      />
 
-        <Button
-          type='submit'
-          label='게시물 업로드'
-          variant='primary'
-          className='font-bold'
-        />
-      </form>
-    </>
+      <Controller
+        name='time'
+        control={control}
+        defaultValue={postDetail.post_time ? convertTo24HourFormatString(postDetail.post_time) : ''}
+        render={({ field }) => (
+          <TimeInputWithIcon
+            value={field.value}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              field.onChange(e.target.value);
+            }}
+            onBlur={field.onBlur}
+            name={field.name}
+          />
+        )}
+      />
+
+      <Button
+        type='submit'
+        label='게시물 수정'
+        variant='primary'
+        className='font-bold'
+      />
+    </form>
   );
 };
-export default PostForms;
+
+export default EditForms;

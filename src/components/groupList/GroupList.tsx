@@ -28,10 +28,12 @@ const GroupList = () => {
           <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 pc:grid-cols-3'>
             {FlattedData.map((el) => {
               return (
-                <GroupItem
-                  key={el?.group_id}
-                  el={el}
-                />
+                el && (
+                  <GroupItem
+                    key={el?.group_id}
+                    el={el}
+                  />
+                )
               );
             })}
           </ul>

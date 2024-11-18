@@ -1,3 +1,4 @@
+import PostImageDownload from './PostImageDownload';
 import ProfileImage from './ProfileImage';
 import { PostDetail } from '@/types/postDetailTypes';
 import React from 'react';
@@ -9,12 +10,15 @@ export type ProfileProps = {
 const PostDetailDesc = ({ postDetail }: ProfileProps) => {
   return (
     <div className='flex flex-col gap-4 p-4'>
-      <div className='flex items-center gap-4'>
-        <ProfileImage
-          profileImageUrl={postDetail.post_author_user.signed_image_url}
-          size='medium'
-        />
-        <span className='text-label_md text-gray-900'>{postDetail.post_author_user.user_nickname}</span>
+      <div className='flex justify-between'>
+        <div className='flex items-center gap-4'>
+          <ProfileImage
+            profileImageUrl={postDetail.post_author_user.signed_image_url}
+            size='medium'
+          />
+          <span className='text-label_md text-gray-900'>{postDetail.post_author_user.user_nickname}</span>
+        </div>
+        <PostImageDownload postDetail={postDetail} />
       </div>
       <div>
         <p className='break-all text-body_md text-black'>{postDetail.post_desc}</p>
