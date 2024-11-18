@@ -2,6 +2,7 @@
   "extends": [
     "next/core-web-vitals",
     "next/typescript",
+    "plugin:css-modules/recommended",
     "plugin:storybook/recommended",
     "plugin:storybook/recommended"
   ],
