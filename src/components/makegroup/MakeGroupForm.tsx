@@ -25,12 +25,16 @@ type Props = {
   update_for?: string;
   handleUpdateModal?: () => void;
 };
+export type GroupFormType = {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: File[];
+};
 
 const MakeGroupForm = ({ update_for, handleUpdateModal }: Props) => {
   const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
-  const isInvalidating = useIsFetching({ queryKey: queryKeys.group.groupList() }) > 0;
   //NOTE - 업데이트 상태일 시 데이터 가져오기
   const { data: groupDetailData, isPending: isPendingBeforeData } = useGroupDetailQueryForUpdate(update_for as string);
   //NOTE - 그룹 테이블 insert mutation
@@ -38,7 +42,7 @@ const MakeGroupForm = ({ update_for, handleUpdateModal }: Props) => {
     isError: insertGroupDataError,
     mutateAsync: insertGroupDataMutate,
     isPending: isPendingInsertGroup,
-  } = useInsertGroupMutation();
+  } = useInsertGroupMutation(handleUpdateModal, handleUpdateModal && reset);
   //NOTE - 유저_그룹테이블 insert mutation
   const {
     isError: insertUserGroupError,

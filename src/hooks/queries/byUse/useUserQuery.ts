@@ -18,10 +18,12 @@ export const useUserInfoQuery = () => {
     queryKey: queryKeys.user.userInfo(),
     queryFn: async () => {
       const user = await getSession();
+      console.log('user :>> ', user);
       let userInfo: UserData = null;
       if (user?.id) {
         userInfo = await getUserData(user.id);
       }
+      console.log('userInfo :>> ', userInfo);
       return userInfo;
     },
     staleTime: 0,

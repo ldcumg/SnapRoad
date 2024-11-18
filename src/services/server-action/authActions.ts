@@ -73,7 +73,9 @@ export const getUserData = async (userId: string) => {
     .eq('user_id', userId)
     .single();
   if (error) throw new Error(error.message);
+  console.log('data :>> ', data);
   if (data?.user_image_url) {
+    console.log('data.user_image_url :>> ', data.user_image_url);
     const signedImgUrl = await getSignedImgUrl('avatars', 60 * 60 * 24, data.user_image_url);
     if (signedImgUrl) {
       data = { ...data, user_image_url: signedImgUrl };
