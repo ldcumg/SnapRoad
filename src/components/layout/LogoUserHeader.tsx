@@ -24,11 +24,18 @@ const LogoUserHeader = () => {
           href={'/mypage'}
           prefetch
         >
-          <img
-            src={`${userInfo?.user_image_url ? userInfo.user_image_url : '/svgs/User.svg'}`}
-            alt='유저이미지'
-            className='h-10 w-10 rounded-[20px]'
-          />
+          {userInfo?.user_image_url ? (
+            <img
+              src={userInfo.user_image_url}
+              alt='유저이미지'
+              className='h-10 w-10 rounded-[20px]'
+            />
+          ) : (
+            <img
+              src='/svgs/Profile.svg'
+              className='h-10 w-10 rounded-[20px]'
+            />
+          )}
         </Link>
       ) : (
         <Link
