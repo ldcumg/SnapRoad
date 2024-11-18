@@ -9,7 +9,10 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
   const [isVisible, setIsVisible] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const { mutate: deletePost } = useDeletePost();
+  const router = useRouter();
+  const { groupId, lat, lng, addressName: place } = usePostDataStore();
+
+  const { mutate: deletePost } = useDeletePost(groupId!);
 
   const toggleMenu = () => {
     setIsVisible((prev) => !prev);
@@ -29,12 +32,17 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
     };
   }, []);
 
-  const router = useRouter();
-  const { groupId, lat, lng, addressName: place } = usePostDataStore();
-
   const handlePosts = () => {
     // router.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
     router.push(`/group/${groupId}/post/${postId}/edit?lat=${lat}&lng=${lng}`);
+  };
+
+  const handleDeletePost = (postId: string) => {
+    const isConfirmed = confirm('게시물을 삭제하시겠습니까?');
+    if (isConfirmed) {
+      deletePost(postId);
+      router.push(`/group/${groupId}`);
+    }
   };
 
   return (
@@ -59,8 +67,8 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
               게시물 수정
             </button>
             <button
-              onClick={() => deletePost(postId)}
-              className='p-2.5 text-body_md text-danger'
+              onClick={() => handleDeletePost(postId)}
+              className='whitespace-nowrap p-2.5 text-body_md text-danger'
             >
               게시물 삭제
             </button>

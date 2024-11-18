@@ -3,7 +3,7 @@ import RandomImage from '@/components/groupList/RandomImage';
 
 const GroupListPage = async () => {
   return (
-    <div className='mx-auto mt-14 flex max-w-5xl flex-col items-center pt-4'>
+    <div className='mx-auto mt-14 flex max-w-[1200px] flex-col items-center pt-4'>
       <RandomImage />
       <GroupList />
     </div>

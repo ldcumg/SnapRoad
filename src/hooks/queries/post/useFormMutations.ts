@@ -11,7 +11,7 @@ export const useSubmitForm = (groupId: string) => {
   return useMutation({
     mutationFn: postForm,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.group.posts(groupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.postsCoverImages(groupId) });
       // router.push(URLS.groupList);
     },
     onError: (error) => {

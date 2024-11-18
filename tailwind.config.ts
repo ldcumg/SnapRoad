@@ -11,6 +11,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        pc: '1200px',
+      },
       colors: {
         origin: 'hsl(var(--origin))',
         background: 'hsl(var(--background))',
@@ -18,6 +21,7 @@ const config: Config = {
         danger: 'hsl(var(--danger))',
         primary: {
           50: 'hsl(var(--primary-50))',
+          100: 'hsl(var(--primary-100))',
           200: 'hsl(var(--primary-200))',
           400: 'hsl(var(--primary-400))',
           600: 'hsl(var(--primary-600))',

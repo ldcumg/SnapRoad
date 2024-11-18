@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '../ui/card';
 import RandomImageSkeleton from './RandomImageSkeleton';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useGroupRandomImageQuery } from '@/hooks/queries/group/useGroupQueries';
 import queryKeys from '@/hooks/queries/queryKeys';
 import { GroupWithCounts } from '@/types/groupTypes';
@@ -30,10 +30,10 @@ const RandomImage = () => {
   };
   const itemClassName = items.length === 1 ? 'justify-center' : 'gap-4 pl-4';
   return (
-    <>
+    <div className='relative mx-auto flex w-full max-w-[1200px] items-center justify-center'>
       {items.length > 0 ? (
         <Carousel
-          className='w-full max-w-sm md:max-w-lg lg:max-w-full'
+          className='relative w-full max-w-[1038px] overflow-visible'
           plugins={carouselOptions.plugins}
           opts={{ loop: carouselOptions.loop }}
         >
@@ -41,7 +41,7 @@ const RandomImage = () => {
             {items.map((data, index) => (
               <CarouselItem
                 key={index}
-                className='basis-[220px] rounded-xl p-0'
+                className='basis-[220px] rounded-xl p-0 pc:basis-[330px]'
               >
                 <Card className='border-none'>
                   <CardContent className='relative flex aspect-square items-center justify-center p-0'>
@@ -55,7 +55,7 @@ const RandomImage = () => {
                         className='h-full w-full rounded-xl object-cover'
                       />
                     </Link>
-                    <div className='absolute inset-0 h-[220px] w-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
+                    <div className='absolute inset-0 basis-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
                     <p className='absolute bottom-0 flex w-full flex-row justify-between px-4 py-4 text-white'>
                       <span className='text-title_lg'>{getSlicedAddress(data.post_address)}</span>
                       <span className='text-body_sm'>{formatDateToYY_MM_DD(data.created_at)}</span>
@@ -65,6 +65,14 @@ const RandomImage = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
+          <CarouselPrevious
+            className='absolute -left-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0 bg-primary-100 pc:flex'
+            name='randomItem'
+          />
+          <CarouselNext
+            className='absolute -right-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0 bg-primary-100 pc:flex'
+            name='randomItem'
+          />
         </Carousel>
       ) : !!groupListDataLen ? (
         <div className='flex h-[220px] w-[220px] flex-col items-center justify-center gap-9 pt-12'>
@@ -80,7 +88,7 @@ const RandomImage = () => {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 };
 
