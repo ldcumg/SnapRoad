@@ -52,7 +52,8 @@ const RandomImage = () => {
                       <img
                         src={`${data.post_thumbnail_image}`}
                         alt={`${data.post_address}_사진`}
-                        className='h-full w-full rounded-xl object-cover'
+                        className='h-[220px] w-[220px] rounded-xl object-cover pc:h-[330px] pc:w-[330px]'
+                        fetchPriority='high'
                       />
                     </Link>
                     <div className='absolute inset-0 basis-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
