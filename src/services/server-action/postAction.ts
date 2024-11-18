@@ -24,9 +24,10 @@ export const getPostsImagesPerGroup = async ({
     .eq('group_id', groupId)
     .not('post_id', 'is', null)
     .is('deleted_at', null)
+    .order('created_at', { ascending: true })
     .range(PAGE_PER * pageParam, PAGE_PER * pageParam + PAGE_PER - 1);
 
-  if ((status !== 200 && error) || !data) throw new Error(error.message);
+  if (error || !data) throw new Error(error.message);
 
   //TODO - util 함수로 만들기
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
@@ -59,9 +60,10 @@ export const getPostsCoverImagesPerGroup = async ({
     .eq('group_id', groupId)
     .eq('is_cover', true)
     .not('post_id', 'is', null)
-    .is('deleted_at', null);
+    .is('deleted_at', null)
+    .order('created_at', { ascending: true });
 
-  if ((status !== 200 && error) || !data) throw new Error(error.message);
+  if (error || !data) throw new Error(error.message);
 
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
   const postImagesUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, postImages);

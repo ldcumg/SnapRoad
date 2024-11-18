@@ -24,7 +24,7 @@ import { toast } from 'garlic-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { type FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 type Props = {
@@ -45,21 +45,22 @@ const GroupMap = ({ groupId, point }: Props) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  //TODO - Set으로 관리
-  // let polyline: Latlng[] = [];
-  const polyline: Set<Latlng> = new Set([]);
+
+  let polyline: Latlng[] = [];
+  console.log('polyline =>', polyline);
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
-  const [mapLoading, mapError] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-    libraries: ['services', 'clusterer'],
-  });
+  // const [mapLoading, mapError] = useKakaoLoader({
+  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+  //   libraries: ['services', 'clusterer'],
+  // });
+  // console.log(mapLoading);
 
-  useEffect(() => {
-    if (mapLoading) return;
-  }, [mapLoading]);
+  // useEffect(() => {
+  //   if (mapLoading) return;
+  // }, [mapLoading]);
 
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
@@ -205,14 +206,17 @@ const GroupMap = ({ groupId, point }: Props) => {
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
     const customMarker = marker as CustomMarkerClusterer;
+
+    polyline = [];
     customMarker._clusters.forEach((cluster) => {
       const customCluster = cluster as CustomCluster;
-      const { Ma, La } = cluster.getCenter() as CustomLatLng;
+      const { Ma: lat, La: lng } = cluster.getCenter() as CustomLatLng;
+      polyline.push({ lat, lng });
       clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
         setClusterStyle((prev) => [
           ...prev,
           {
-            centerLatLng: { lat: Ma, lng: La },
+            centerLatLng: { lat, lng },
             fontSize: '0px',
             width: '60px',
             height: '60px',
@@ -223,6 +227,7 @@ const GroupMap = ({ groupId, point }: Props) => {
           },
         ]);
     });
+    console.log(polyline);
   };
 
   /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
@@ -239,9 +244,7 @@ const GroupMap = ({ groupId, point }: Props) => {
     return index;
   };
 
-  const reconstitutePolyline = () => {
-    polyline.clear();
-  };
+  // reconstitutePolyline
 
   return (
     <>
@@ -282,15 +285,6 @@ const GroupMap = ({ groupId, point }: Props) => {
         level={13}
         isPanto={true}
         onDragEnd={() => isPostsView || getSpotInfo()}
-        onZoomChanged={(a) => {
-          // console.log("a =>", a);
-          console.log(map);
-          // setTemp(a.sa[0]['_clusters']);
-          // console.log(a);
-          // console.log(JSON.stringify(a.sa[0]['_clusters']));
-          // console.log(Object.getOwnPropertyNames(a.sa[0]._clusters));
-          // console.log(Object.keys(a.sa[0]._clusters));
-        }}
       >
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
@@ -301,13 +295,12 @@ const GroupMap = ({ groupId, point }: Props) => {
             onClustered={(marker) => onClusteredEvent(marker)}
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
-              console.log('marker =>', marker);
               clusterClickEvent(cluster);
               handleCustomOpen();
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.add({ lat: post_lat, lng: post_lng });
+              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -344,7 +337,7 @@ const GroupMap = ({ groupId, point }: Props) => {
           </>
         )}
         <Polyline
-          path={[[...polyline]]}
+          path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명

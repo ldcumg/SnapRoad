@@ -1,4 +1,4 @@
-import { ToastContainer } from 'garlic-toast';
+import ToastContainer from 'garlic-toast';
 import 'garlic-toast/style.css';
 
 const GarlicToast = () => {
