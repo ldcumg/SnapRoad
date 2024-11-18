@@ -4,7 +4,6 @@ import { getGroupInfo } from '@/services/server-action/groupServerActions';
 import { getPostsCoverImagesPerGroup, getPostsImagesPerGroup } from '@/services/server-action/postAction';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 
 type GenerateMetadataProps = {
   params: { groupId: string };
@@ -43,10 +42,6 @@ const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailL
 
   return (
     <>
-      <Script
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&libraries=services,clusterer&autoload=false`}
-        strategy='beforeInteractive'
-      />
       <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>
     </>
   );
