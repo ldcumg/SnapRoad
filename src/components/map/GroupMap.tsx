@@ -192,7 +192,7 @@ const GroupMap = ({ groupId, point }: Props) => {
   /** 게시물 추가 라우팅 */
   const handleAddPostRoute = () => {
     if (isPostsView) {
-      route.push(`/group/${groupId}/post`);
+      route.replace(`/group/${groupId}/post`);
       return;
     }
 
@@ -200,7 +200,7 @@ const GroupMap = ({ groupId, point }: Props) => {
     const { lat, lng, placeName, address } = spotInfo;
     const place = placeName || address;
 
-    route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
+    route.replace(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
