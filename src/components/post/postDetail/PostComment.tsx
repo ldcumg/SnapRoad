@@ -8,31 +8,6 @@ import Spinner from '@/stories/Spinner';
 import { Comment, CommentMap, CommentTree, PostDetail, UserDetail } from '@/types/postDetailTypes';
 import React, { useState } from 'react';
 
-export const buildCommentTree = (comments: Comment[]) => {
-  comments.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-  // 각 댓글을 저장할 맵
-  const commentMap: CommentMap = {};
-
-  comments.forEach((comment) => {
-    commentMap[comment.comment_id] = { ...comment, children: [] };
-  });
-
-  const tree: CommentTree[] = [];
-
-  comments.forEach((comment) => {
-    // parent_id가 null이면 최상위 댓글(부모)이므로 tree에 추가
-    if (comment.parent_id === null) {
-      tree.push(commentMap[comment.comment_id]);
-    } else {
-      // parent_id가 있으면 해당 부모의 children 배열에 추가
-      commentMap[comment.parent_id]?.children.push(commentMap[comment.comment_id]);
-    }
-  });
-
-  return tree;
-};
-
 type PostAndProfileProps = {
   postDetail: PostDetail;
   userDetail: UserDetail;
@@ -40,17 +15,18 @@ type PostAndProfileProps = {
 
 const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
   const [isWriteMode, setIsWriteMode] = useState<boolean>(false);
-  //   const [isWriteReplyMode, setIsWriteReplyMode] = useState<boolean>(false);
 
   const { data: comments, isLoading, isError } = useCommentsQuery(postDetail.post_id);
 
-  if (isError) return <>임시 오류 ...</>;
-  if (isLoading)
+  if (isError) throw new Error('게시글 상세 에러 발생');
+
+  if (isLoading) {
     return (
       <div className='absolute z-[3000] flex h-full w-full items-center justify-center'>
         <Spinner />
       </div>
     );
+  }
 
   const commentTree = comments ? buildCommentTree(comments) : [];
 
@@ -81,6 +57,31 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
       )}
     </>
   );
+};
+
+export const buildCommentTree = (comments: Comment[]) => {
+  comments.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+  // 각 댓글을 저장할 맵
+  const commentMap: CommentMap = {};
+
+  comments.forEach((comment) => {
+    commentMap[comment.comment_id] = { ...comment, children: [] };
+  });
+
+  const tree: CommentTree[] = [];
+
+  comments.forEach((comment) => {
+    // parent_id가 null이면 최상위 댓글(부모)이므로 tree에 추가
+    if (comment.parent_id === null) {
+      tree.push(commentMap[comment.comment_id]);
+    } else {
+      // parent_id가 있으면 해당 부모의 children 배열에 추가
+      commentMap[comment.parent_id]?.children.push(commentMap[comment.comment_id]);
+    }
+  });
+
+  return tree;
 };
 
 export default PostComment;

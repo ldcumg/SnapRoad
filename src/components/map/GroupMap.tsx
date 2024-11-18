@@ -24,12 +24,12 @@ import { toast } from 'garlic-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { type FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 type Props = {
   groupId: string;
-  point: { lat: number; lng: number } | null;
+  point: { lat: number; lng: number } | undefined;
 };
 
 const GroupMap = ({ groupId, point }: Props) => {
@@ -45,21 +45,22 @@ const GroupMap = ({ groupId, point }: Props) => {
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
-  //TODO - Set으로 관리
-  let polyline: Latlng[] = [];
+  const polyline: Latlng[] = [];
+
+  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
-  const [mapLoading, mapError] = useKakaoLoader({
-    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-    libraries: ['services', 'clusterer'],
-  });
+  // const [mapLoading, mapError] = useKakaoLoader({
+  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+  //   libraries: ['services', 'clusterer'],
+  // });
+  // console.log(mapLoading);
 
-  useEffect(() => {
-    if (mapLoading) return;
-  }, [mapLoading]);
+  // useEffect(() => {
+  //   if (mapLoading) return;
+  // }, [mapLoading]);
 
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
@@ -191,7 +192,7 @@ const GroupMap = ({ groupId, point }: Props) => {
   /** 게시물 추가 라우팅 */
   const handleAddPostRoute = () => {
     if (isPostsView) {
-      route.push(`/group/${groupId}/post`);
+      route.replace(`/group/${groupId}/post`);
       return;
     }
 
@@ -199,20 +200,23 @@ const GroupMap = ({ groupId, point }: Props) => {
     const { lat, lng, placeName, address } = spotInfo;
     const place = placeName || address;
 
-    route.push(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
+    route.replace(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
   };
 
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
     const customMarker = marker as CustomMarkerClusterer;
+
+    // polyline.current = [];
     customMarker._clusters.forEach((cluster) => {
       const customCluster = cluster as CustomCluster;
-      const { Ma, La } = cluster.getCenter() as CustomLatLng;
+      const { Ma: lat, La: lng } = cluster.getCenter() as CustomLatLng;
+      // polyline.current.push({ lat, lng });
       clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
         setClusterStyle((prev) => [
           ...prev,
           {
-            centerLatLng: { lat: Ma, lng: La },
+            centerLatLng: { lat, lng },
             fontSize: '0px',
             width: '60px',
             height: '60px',
@@ -238,6 +242,8 @@ const GroupMap = ({ groupId, point }: Props) => {
     }
     return index;
   };
+
+  // reconstitutePolyline
 
   return (
     <>
@@ -277,9 +283,7 @@ const GroupMap = ({ groupId, point }: Props) => {
         onCreate={setMap}
         level={13}
         isPanto={true}
-        onDragEnd={() => {
-          isPostsView || getSpotInfo();
-        }}
+        onDragEnd={() => isPostsView || getSpotInfo()}
       >
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
@@ -295,7 +299,7 @@ const GroupMap = ({ groupId, point }: Props) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              // post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -331,13 +335,13 @@ const GroupMap = ({ groupId, point }: Props) => {
             ))}
           </>
         )}
-        {/* <Polyline
+        <Polyline
           path={[polyline]}
           strokeWeight={5} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
-        /> */}
+        />
 
         {!!spotInfo ? (
           <BottomSheet
@@ -399,7 +403,11 @@ const GroupMap = ({ groupId, point }: Props) => {
             backdrop={false}
             title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
             titleClassName='text-title_lg'
-            onClose={handleCustomClose}
+            onClose={() => {
+              handleCustomClose();
+              //NOTE - 임시
+              setPostsPreview([]);
+            }}
             headerClassName='pt-[40px] pb-[12px]'
           >
             <ol className='flex flex-row gap-3 overflow-x-auto'>

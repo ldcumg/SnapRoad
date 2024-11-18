@@ -33,7 +33,7 @@ const RandomImage = () => {
     <div className='relative mx-auto flex w-full max-w-[1200px] items-center justify-center'>
       {items.length > 0 ? (
         <Carousel
-          className='relative w-full max-w-[1006px] overflow-visible'
+          className='relative w-full max-w-[1038px] overflow-visible'
           plugins={carouselOptions.plugins}
           opts={{ loop: carouselOptions.loop }}
         >
@@ -41,7 +41,7 @@ const RandomImage = () => {
             {items.map((data, index) => (
               <CarouselItem
                 key={index}
-                className='pc:basis-[330px] basis-[220px] rounded-xl p-0'
+                className='basis-[220px] rounded-xl p-0 pc:basis-[330px]'
               >
                 <Card className='border-none'>
                   <CardContent className='relative flex aspect-square items-center justify-center p-0'>
@@ -52,7 +52,8 @@ const RandomImage = () => {
                       <img
                         src={`${data.post_thumbnail_image}`}
                         alt={`${data.post_address}_사진`}
-                        className='h-full w-full rounded-xl object-cover'
+                        className='h-[220px] w-[220px] rounded-xl object-cover pc:h-[330px] pc:w-[330px]'
+                        fetchPriority='high'
                       />
                     </Link>
                     <div className='absolute inset-0 basis-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
@@ -66,11 +67,11 @@ const RandomImage = () => {
             ))}
           </CarouselContent>
           <CarouselPrevious
-            className='pc:flex bg-primary-100 absolute -left-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0'
+            className='absolute -left-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0 bg-primary-100 pc:flex'
             name='randomItem'
           />
           <CarouselNext
-            className='pc:flex bg-primary-100 absolute -right-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0'
+            className='absolute -right-[72px] top-1/2 hidden -translate-y-1/2 transform items-center justify-center border-0 bg-primary-100 pc:flex'
             name='randomItem'
           />
         </Carousel>
