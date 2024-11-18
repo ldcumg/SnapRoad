@@ -83,7 +83,7 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
 const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
   const groupImages = groups.map((group) => group.group_image_url);
-  return await getSignedImgUrls(buckets.groupImage, 1000 * 60 * 10, groupImages);
+  return await getSignedImgUrls(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, groupImages);
 };
 
 const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
@@ -121,7 +121,7 @@ const getRandomPosts = async () => {
     if (postDataList?.length) {
       //TODO - tour_image버킷 폴더구조 변경 후 요청url변경필요
       const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
-      const signedUrls = await getSignedImgUrls(buckets.tourImages, 59 * 10, imgNameArray);
+      const signedUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, imgNameArray);
       if (signedUrls) {
         dataList = postDataList.map((data, idx) => ({
           ...data,
