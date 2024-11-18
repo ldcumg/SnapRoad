@@ -44,7 +44,7 @@ export const postForm = async (formData: {
 
 // 포스트 업데이트
 export const updateForm = async (formData: {
-  postId: string; // 기존 포스트 ID
+  postId: string;
   userId: string;
   groupId: string;
   desc: string;
@@ -72,7 +72,7 @@ export const updateForm = async (formData: {
       post_thumbnail_image: formData.postThumbnailImage,
       image_array: formData.imageArray,
     })
-    .eq('post_id', formData.postId); // post_id를 기준으로 업데이트
+    .eq('post_id', formData.postId);
 
   if (error) {
     console.error('업데이트 실패:', error);
@@ -85,7 +85,6 @@ export const updateForm = async (formData: {
 // 포스트ID
 export const updateImagePostId = async (postId: string, uploadSessionId: string) => {
   const supabase = createClient();
-
   const { error } = await supabase.from('images').update({ post_id: postId }).eq('upload_session_id', uploadSessionId);
 
   if (error) {
@@ -114,5 +113,15 @@ export const saveTags = async (hashtags: string[], postId: string, groupId: stri
       console.error('태그 저장에 실패했습니다:', error.message);
       throw new Error('태그 저장 오류');
     }
+  }
+};
+
+// 해시태그 삭제
+export const deleteTags = async (postId: string, groupId: string) => {
+  const supabase = createClient();
+  const { error } = await supabase.from('tags').delete().eq('post_id', postId).eq('group_id', groupId);
+  if (error) {
+    console.error('해시태그 삭제 에러:', error);
+    throw new Error(error.message);
   }
 };

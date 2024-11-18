@@ -7,7 +7,7 @@ import { useEditForm } from '@/hooks/byUse/usePostForm';
 import { useUpdateForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
-import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
+import { saveTags, deleteTags, updateImagePostId } from '@/services/server-action/formActions';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
@@ -35,17 +35,19 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
   const { handleFullOpen } = useBottomSheetStore();
   const { images: uploadedImages } = useImageUploadStore();
   const { mutateAsync: updateForm } = useUpdateForm(groupId);
+
   const [existingImages, setExistingImages] = useState(postDetail.images || []);
+  const [hashtags, setHashtags] = useState<string[]>(postDetail.tags?.map((tag) => tag.tag_title) || []);
 
   useEffect(() => {
     if (postDetail) {
       setValue('desc', postDetail.post_desc || '');
-      setValue('hashtags', postDetail.tags?.map((tag) => tag.tag_title) || []);
+      setValue('hashtags', hashtags);
       setValue('date', postDetail.post_date || '');
       setValue('time', postDetail.post_time || '');
       setExistingImages(postDetail.images || []);
     }
-  }, [postDetail, setValue]);
+  }, [postDetail, setValue, hashtags]);
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId || !postDetail.post_id) return;
@@ -56,8 +58,6 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       alert('이미지가 없어 게시물을 수정할 수 없습니다.');
       return;
     }
-
-    const hashtags: string[] = value.hashtags || [];
 
     const parsedFormData = {
       ...formSchema.parse(value),
@@ -80,6 +80,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       }
 
       if (hashtags.length > 0) {
+        await deleteTags(postDetail.post_id, groupId);
         await saveTags(hashtags, postDetail.post_id, groupId);
       }
 
@@ -90,18 +91,12 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
     }
   };
 
-  useEffect(() => {
-    console.log('Uploaded Images:', uploadedImages);
-    console.log('Existing Images:', existingImages);
-  }, [uploadedImages, existingImages]);
-
   return (
     <form
       className='flex flex-col space-y-4 px-4'
       onSubmit={handleSubmit(handlePostForm)}
     >
       <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-        {/* uploadedImages가 비어 있을 경우 existingImages를 사용 */}
         {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => (
           <div
             key={image.post_image_name || image.signed_image_url || index}
@@ -146,11 +141,11 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       <Controller
         name='hashtags'
         control={control}
-        defaultValue={[]}
-        render={({ field }) => (
+        defaultValue={hashtags}
+        render={() => (
           <HashtagInput
-            hashtags={field.value || []}
-            setHashtags={field.onChange}
+            hashtags={hashtags}
+            setHashtags={setHashtags}
           />
         )}
       />
