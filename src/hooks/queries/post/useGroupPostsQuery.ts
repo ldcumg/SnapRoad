@@ -11,7 +11,7 @@ export const getGroupPostsImagesQuery = (groupId: string) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages, lastPageParam) =>
       !!lastPage.length && lastPage.length === 21 ? lastPageParam + 1 : null,
-    gcTime: ONE_HOUR_FOR_TANSTACK,
+    staleTime: ONE_HOUR_FOR_TANSTACK,
   });
 };
 
@@ -20,6 +20,6 @@ export const getGroupPostsCoverImagesQuery = (groupId: string) => {
   return useQuery({
     queryKey: queryKeys.group.postsCoverImages(groupId),
     queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
-    gcTime: ONE_HOUR_FOR_TANSTACK,
+    staleTime: ONE_HOUR_FOR_TANSTACK,
   });
 };

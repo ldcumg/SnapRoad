@@ -31,13 +31,13 @@ const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailL
     queryClient.prefetchQuery({
       queryKey: queryKeys.group.postsCoverImages(groupId),
       queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
-      gcTime: ONE_HOUR_FOR_TANSTACK,
+      staleTime: ONE_HOUR_FOR_TANSTACK,
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: queryKeys.group.postsImages(groupId),
       queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
       initialPageParam: 0,
-      gcTime: ONE_HOUR_FOR_TANSTACK,
+      staleTime: ONE_HOUR_FOR_TANSTACK,
     }),
   ]);
 

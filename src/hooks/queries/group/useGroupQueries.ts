@@ -49,7 +49,7 @@ const useGroupInfoQuery = (groupId: string) =>
   useQuery({
     queryKey: queryKeys.group.info(groupId),
     queryFn: ({ queryKey }) => getGroupInfo({ queryKey }),
-    gcTime: ONE_HOUR_FOR_TANSTACK,
+    staleTime: ONE_HOUR_FOR_TANSTACK,
   });
 
 export {
