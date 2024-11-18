@@ -9,10 +9,17 @@ import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 const SignUpForm = () => {
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
+
   const {
     register,
     handleSubmit,
@@ -63,7 +70,7 @@ const SignUpForm = () => {
   if (isError) throw new Error('회원가입 에러 발생');
 
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='m-auto flex w-full max-w-[23rem] flex-col gap-6'>
       <form
         onSubmit={handleSubmit(handleSignUp)}
         className='flex flex-col gap-6'
@@ -138,6 +145,7 @@ const SignUpForm = () => {
         confirmLabel='완료'
         cancelLabel='취소'
         showCloseButton={false}
+        className={desktop ? 'px-96' : ''}
       >
         <div className='flex flex-col gap-4'>
           <div className='flex gap-3'>

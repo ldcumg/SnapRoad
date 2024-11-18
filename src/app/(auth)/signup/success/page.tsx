@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const SignUpSuccessPage = () => {
   return (
-    <div className='flex h-screen flex-col items-center justify-center gap-7 px-4'>
+    <div className='m-auto flex h-screen w-full max-w-[23rem] flex-col items-center justify-center gap-7 px-4'>
       <div>
         <IconSuccess />
       </div>
