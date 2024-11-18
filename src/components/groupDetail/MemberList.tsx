@@ -9,8 +9,6 @@ type Props = {
 
 const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => {
   const copyInvitationCode = () => {
-    console.log('실행');
-
     window.navigator.clipboard.writeText(group_invite_code).then(() => {
       toast.alert('초대 코드를 복사했어요!', {
         position: 'b-c',
