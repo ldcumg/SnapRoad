@@ -33,7 +33,7 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
   }, []);
 
   const handlePosts = () => {
-    router.push(`/group/${groupId}/edit`);
+    router.push(`/group/${groupId}/post/${postId}/edit?lat=${lat}&lng=${lng}`);
   };
 
   const handleDeletePost = (postId: string) => {

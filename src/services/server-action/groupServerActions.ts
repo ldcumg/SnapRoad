@@ -81,11 +81,6 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
   return { ...data, group_image_url: signedUrls[0] } as GroupInfo;
 };
 
-const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
-  const groupImages = groups.map((group) => group.group_image_url);
-  return await getSignedImgUrls(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, groupImages);
-};
-
 const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
@@ -96,12 +91,24 @@ const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
       page: pageParam,
     });
     if (!groups) groups = [];
-    const images = await getGroupSignedImageUrls(groups);
+
+    const fetchSignedGroupImages = groups.map(async (group) => {
+      const response = await supabase.storage
+        .from(buckets.groupImage)
+        .createSignedUrl(`${group.group_image_url}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
+          transform: { width: 300, height: 300 },
+        });
+      return response.data?.signedUrl;
+    });
+
+    const images = await Promise.allSettled(fetchSignedGroupImages).then((res) =>
+      res.map((r) => (r.status === 'fulfilled' ? r.value : '')),
+    );
     if (images) {
       groups = groups.map((group, idx) => {
         return {
           ...group,
-          group_image_url: images[idx].signedUrl,
+          group_image_url: images[idx] as string,
         };
       });
     }
@@ -119,13 +126,22 @@ const getRandomPosts = async () => {
       input_user_id: userId,
     });
     if (postDataList?.length) {
-      //TODO - tour_image버킷 폴더구조 변경 후 요청url변경필요
       const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
-      const signedUrls = await getSignedImgUrls(buckets.tourImages, TEN_MINUTES_FOR_SUPABASE, imgNameArray);
-      if (signedUrls) {
+      const fetchPostImageUrls = imgNameArray.map(async (imgName) => {
+        const response = await supabase.storage
+          .from(buckets.tourImages)
+          .createSignedUrl(`${imgName}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
+            transform: { width: 300, height: 300 },
+          });
+        return response.data?.signedUrl;
+      });
+      const images = await Promise.allSettled(fetchPostImageUrls).then((res) =>
+        res.map((r) => (r.status === 'fulfilled' ? r.value : '')),
+      );
+      if (images) {
         dataList = postDataList.map((data, idx) => ({
           ...data,
-          post_thumbnail_image: signedUrls[idx].signedUrl,
+          post_thumbnail_image: images[idx] as string,
         }));
       }
     }
