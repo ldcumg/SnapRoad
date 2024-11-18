@@ -89,98 +89,105 @@ const config: Config = {
           '32px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         head_m: [
           '28px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         head_sm: [
           '24px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         title_xl: [
           '20px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         title_lg: [
           '18px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
+          },
+        ],
+        label_lg: [
+          '18px',
+          {
+            lineHeight: '135%',
+            fontWeight: 600,
           },
         ],
         label_md: [
           '16px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         label_sm: [
           '14px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         body_lg: [
           '18px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         body_md: [
           '16px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         body_sm: [
           '14px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         caption_bold_lg: [
           '12px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         caption_bold_md: [
           '10px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         caption_light_lg: [
           '12px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         caption_light_md: [
           '10px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
       },

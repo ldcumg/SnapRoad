@@ -16,7 +16,7 @@ import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { PostDetail as postDetailType } from '@/types/postDetailTypes';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, Controller } from 'react-hook-form';
 
 export type PostAndProfileProps = {
@@ -33,10 +33,11 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
 
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
   const { handleFullOpen } = useBottomSheetStore();
-  const place = addressName ? decodeURIComponent(addressName) : '';
-  const { images } = useImageUploadStore();
-  const { mutateAsync: submitForm } = useSubmitForm(groupId);
+
   const router = useRouter();
+  const { images: uploadedImages } = useImageUploadStore();
+  const [imagesArray, setImagesArray] = useState(postDetail.images || []);
+  const { mutateAsync: submitForm } = useSubmitForm(groupId);
 
   useEffect(() => {
     if (postDetail) {
@@ -49,7 +50,9 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
 
   const handlePostForm = async (value: FieldValues) => {
     if (!userId || !groupId) return;
+
     const hashtags: string[] = value.hashtags || [];
+    const finalImages = uploadedImages.length > 0 ? uploadedImages : imagesArray;
 
     const parsedFormData = {
       ...formSchema.parse(value),
@@ -57,15 +60,17 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       groupId,
       lat,
       lng,
-      place,
-      postThumbnailImage: images.find((img) => img.is_cover)?.post_image_name || '',
-      imageArray: images.map((img) => img.post_image_name || ''),
+      place: addressName || '',
+      postThumbnailImage: finalImages.find((img) => img.is_cover)?.post_image_name || '',
+      imageArray: finalImages.map((img) => img.post_image_name),
     };
 
     try {
       const res = await submitForm(parsedFormData);
-      const uploadSessionId = images[0]?.upload_session_id;
-      await updateImagePostId(res.postId, uploadSessionId);
+      const uploadSessionId = uploadedImages[0]?.upload_session_id;
+      if (uploadedImages.length > 0) {
+        await updateImagePostId(res.postId, uploadSessionId);
+      }
       if (hashtags.length > 0) {
         await saveTags(hashtags, res.postId, groupId);
       }
@@ -78,24 +83,22 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
 
   return (
     <form
-      className='flex flex-col space-y-2 px-4'
+      className='flex flex-col space-y-4 px-4'
       onSubmit={handleSubmit(handlePostForm)}
     >
       <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-        {images.length > 0
-          ? images.map((image, index) => (
-              <div
-                key={index}
-                className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
-              >
-                <img
-                  src={image.post_image_url || '/path/to/placeholder.png'}
-                  alt={`업로드된 이미지 ${index + 1}`}
-                  className='h-full w-full object-cover'
-                />
-              </div>
-            ))
-          : null}
+        {(uploadedImages.length > 0 ? uploadedImages : postDetail.images).map((image, index) => (
+          <div
+            key={image.post_image_name || image.signed_image_url}
+            className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
+          >
+            <img
+              src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
+              alt={`업로드된 이미지 ${index + 1}`}
+              className='h-full w-full object-cover'
+            />
+          </div>
+        ))}
 
         <button
           type='button'
@@ -108,11 +111,6 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
           </div>
         </button>
       </div>
-
-      <span className='!mb-4 block text-sm text-gray-500'>
-        * PNG, JPG 이외의 파일은 올리실 수 없습니다.
-        <br />* 한글 파일명은 업로드 불가능합니다.
-      </span>
 
       <Controller
         name='desc'
@@ -134,18 +132,12 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         name='hashtags'
         control={control}
         defaultValue={[]}
-        render={({ field }) => {
-          console.log('Hashtags Field Value:', field.value);
-          return (
-            <div>
-              <HashtagInput
-                hashtags={field.value || []}
-                setHashtags={field.onChange}
-              />
-              {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
-            </div>
-          );
-        }}
+        render={({ field }) => (
+          <HashtagInput
+            hashtags={field.value || []}
+            setHashtags={field.onChange}
+          />
+        )}
       />
 
       <Controller
@@ -169,9 +161,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         render={({ field }) => (
           <TimeInputWithIcon
             value={field.value}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              field.onChange(e.target.value);
-            }}
+            onChange={(e) => field.onChange(e.target.value)}
             onBlur={field.onBlur}
             name={field.name}
           />
@@ -183,6 +173,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         label='게시물 수정'
         variant='primary'
         className='font-bold'
+        size='large'
       />
     </form>
   );
