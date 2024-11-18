@@ -71,11 +71,13 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
             <IconCalendarNr />
           </span>
           {isDatePickerOpen && (
-            <div className='absolute left-0 top-full z-10 mt-2'>
+            <div className='absolute left-0 bottom-full z-10 mb-2'>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => handleDateChange(date as Date)}
                 inline
+                popperPlacement="top-end" // 위쪽으로 위치 설정
+                portalId="date-picker-portal"
               />
             </div>
           )}

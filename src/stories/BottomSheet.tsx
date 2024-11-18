@@ -69,7 +69,6 @@ export const BottomSheet = ({
 
   const baseStyle = 'fixed bottom-0 left-0 right-0 bg-white transition-all duration-500 ease-in-out z-50';
   const heightStyle = height === 'custom' ? customHeight : height === 'full' ? 'h-full' : 'h-1/2';
-  // const visibilityStyle = isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0';
   const visibilityStyle = isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full';
   const roundedStyle = rounded ? 'rounded-t-3xl' : '';
 

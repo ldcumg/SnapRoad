@@ -10,11 +10,43 @@ interface TimeInputWithIconProps {
   name?: string;
 }
 
+// 12시간제 시간을 24시간제로 변환하는 함수
+const convertTo24HourFormat = (time12hr: string): Date => {
+  if (!time12hr || typeof time12hr !== 'string') {
+    console.error('Invalid time format:', time12hr);
+    return new Date(); // 기본값을 반환하거나 오류 처리
+  }
+
+  const [time, modifier] = time12hr.split(' ');  // 예: ['10:30', '오후']
+  if (!time || !modifier) {
+    console.error('Invalid time string:', time12hr);
+    return new Date(); // 기본값을 반환하거나 오류 처리
+  }
+
+  let [hours, minutes] = time.split(':').map(Number);  // 시간을 나누고 숫자 형식으로 변환
+
+  if (modifier === '오후' && hours !== 12) {
+    hours += 12;  // 오후일 경우 12시간을 더하기
+  } else if (modifier === '오전' && hours === 12) {
+    hours = 0;  // 오전 12시를 0시로 처리
+  }
+
+  // 24시간제로 변환된 시간으로 Date 객체 생성
+  return new Date(`1970-01-01T${hours}:${minutes}:00Z`); // 유효한 날짜 형식으로 생성
+};
+
 const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
   ({ value, onChange, onBlur, name }, ref) => {
-    const [selectedTime, setSelectedTime] = useState<Date | null>(value ? new Date(value) : null);
+    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
     const [isTimePickerOpen, setTimePickerOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+    // 12시간제 시간 값이 있을 경우 24시간제로 변환
+    useEffect(() => {
+      if (value) {
+        setSelectedTime(convertTo24HourFormat(value));
+      }
+    }, [value]);
 
     const handleInputClick = () => {
       setTimePickerOpen(!isTimePickerOpen);
@@ -47,13 +79,10 @@ const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
     }, []);
 
     return (
-      <label className='input-no-calendar relative flex w-full items-center'>
-        <div
-          ref={wrapperRef} // wrapperRef로 감지
-          className='relative w-full'
-        >
+      <label className="input-no-calendar relative flex w-full items-center">
+        <div ref={wrapperRef} className="relative w-full">
           <input
-            type='text'
+            type="text"
             name={name}
             value={
               selectedTime
@@ -63,25 +92,25 @@ const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
             readOnly
             onClick={handleInputClick}
             onBlur={onBlur}
-            className='w-full border-none p-2 pr-10'
+            className="w-full border-none p-2 pr-10"
             ref={ref}
           />
           <span
-            className='absolute right-3 top-2 cursor-pointer'
+            className="absolute right-3 top-2 cursor-pointer"
             onClick={handleInputClick}
           >
             <IconClock />
           </span>
           {isTimePickerOpen && (
-            <div className='absolute left-0 top-full z-10 mt-2'>
+            <div className="absolute bottom-full left-0 z-10 mb-2">
               <DatePicker
                 selected={selectedTime}
                 onChange={(date) => handleTimeChange(date as Date)}
                 showTimeSelect
                 showTimeSelectOnly
-                timeIntervals={30} // 시간 간격 30분
-                timeCaption='시간'
-                dateFormat='HH:mm'
+                timeIntervals={10}
+                timeCaption="시간"
+                dateFormat="HH:mm"
                 inline
               />
             </div>
@@ -89,7 +118,7 @@ const TimeInputWithIcon = forwardRef<HTMLInputElement, TimeInputWithIconProps>(
         </div>
       </label>
     );
-  },
+  }
 );
 
 TimeInputWithIcon.displayName = 'TimeInputWithIcon';
