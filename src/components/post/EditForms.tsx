@@ -1,10 +1,10 @@
 'use client';
 
-import { convertTo24HourFormatString } from '../post/ConvertTo24HourFormat';
 import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { useEditForm } from '@/hooks/byUse/usePostForm';
+import { convertTo24HourFormatString } from '@/hooks/queries/post/ConvertTo24HourFormat';
 import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';

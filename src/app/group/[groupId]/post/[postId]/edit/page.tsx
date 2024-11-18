@@ -4,14 +4,12 @@ import PostAddress from '@/components/post/PostAddress';
 import ImageBottomSheet from '@/components/post/PostBottomSheet';
 import PostImage from '@/components/post/PostImage';
 import { fetchPostDetail } from '@/services/postDetailService';
-import { getSession } from '@/services/server-action/authActions';
-import { getProfile } from '@/services/server-action/profilesAction';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: '수정하기',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  description: '여행지에 대한 수정할 글을 작성하세요.',
+  keywords: '여행지에 대한 수정할 글을 작성하세요.',
 };
 
 type Props = {
@@ -19,7 +17,6 @@ type Props = {
 };
 
 const EditPage = async ({ params: { groupId, postId } }: Props) => {
-  const user = await getSession();
   const postDetail = await fetchPostDetail(postId);
 
   return (

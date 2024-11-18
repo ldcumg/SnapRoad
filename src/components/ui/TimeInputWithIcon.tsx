@@ -1,6 +1,6 @@
 'use client';
 
-import { stringTo24HourDate } from '../post/ConvertTo24HourFormat';
+import { stringTo24HourDate } from '@/hooks/queries/post/ConvertTo24HourFormat';
 import { IconClock } from '@/lib/icon/Icon_Clock';
 import { useState, useRef, useEffect, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
