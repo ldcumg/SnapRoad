@@ -75,13 +75,13 @@ const PostForms = ({ groupId }: { groupId: string }) => {
       onSubmit={handleSubmit(handlePostForm)}
     >
       {desktop ? (
-        <div>
-          <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
+        <>
+          <div className='mb-4 flex w-full items-center justify-center gap-4 overflow-x-auto'>
             {images.length > 0 &&
               images.map((image, index) => (
                 <div
                   key={index}
-                  className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
+                  className='relative h-[588px] min-w-[588px] max-w-[588px] flex-1 overflow-hidden border border-gray-200'
                 >
                   <img
                     src={image.post_image_url || '/path/to/placeholder.png'}
@@ -93,7 +93,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
 
             <button
               onClick={handleFullOpen}
-              className='flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+              className='flex h-[588px] min-w-[588px] max-w-[588px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
             >
               <div className='flex flex-col items-center'>
                 <IconPluslg />
@@ -112,12 +112,12 @@ const PostForms = ({ groupId }: { groupId: string }) => {
             errorText={errors.desc && String(errors.desc.message)}
             {...register('desc')}
           />
-        </div>
+        </>
       ) : (
-        <div>
+        <>
           <PostAddress groupId={groupId} />
 
-          <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
+          <div className='mb-4 flex w-full items-start justify-start gap-4 overflow-x-auto'>
             {images.length > 0 &&
               images.map((image, index) => (
                 <div
@@ -151,7 +151,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
             errorText={errors.desc && String(errors.desc.message)}
             {...register('desc')}
           />
-        </div>
+        </>
       )}
 
       <Controller
@@ -173,6 +173,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
         type='submit'
         label='게시물 업로드'
         variant='primary'
+        className={`${isDesktop ? 'mx-auto mt-[105px] w-1/2' : ''}`}
         size='large'
       />
     </form>

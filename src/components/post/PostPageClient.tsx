@@ -22,7 +22,7 @@ const PostPageClient = ({ groupId }: Props) => {
   }
 
   return (
-    <section className={`${isDesktop ? 'mt-36' : 'mt-14'}`}>
+    <section className={`${isDesktop ? 'mx-auto mb-20 mt-36 max-w-[654px]' : 'mt-14'}`}>
       <PostImageBottomSheet />
       <PostForms groupId={groupId} />
     </section>
