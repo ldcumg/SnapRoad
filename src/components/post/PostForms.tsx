@@ -27,7 +27,7 @@ const PostForms = () => {
   } = usePostForm();
 
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
-  const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
+  const { handleFullOpen } = useBottomSheetStore();
   const place = addressName ? decodeURIComponent(addressName) : '';
   const { images } = useImageUploadStore();
   const { mutateAsync: submitForm } = useSubmitForm(groupId);
@@ -64,14 +64,8 @@ const PostForms = () => {
 
   // 필드 값 감시
   const text = watch('desc');
-  // const hashtags = watch('hashtags');
   const date = watch('date');
   const time = watch('time');
-
-  // 필드 빈값 확인
-  const isFormValueFilled = useMemo(() => {
-    return text && date && time;
-  }, [text, date, time]);
 
   return (
     <>
