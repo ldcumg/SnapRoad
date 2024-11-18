@@ -1,9 +1,9 @@
 'use client';
 
-import PostAddress from '@/components/post/PostAddress';
-import PostImageBottomSheet from '@/components/post/PostBottomSheet';
-import PostForms from '@/components/post/PostForms';
+import PostImageBottomSheet from './PostBottomSheet';
+import PostForms from './PostForms';
 import useMediaQuery from '@/hooks/byUse/useMediaQuery';
+import { useEffect, useState } from 'react';
 
 type Props = {
   groupId: string;
@@ -11,24 +11,21 @@ type Props = {
 
 const PostPageClient = ({ groupId }: Props) => {
   const isDesktop = useMediaQuery('(min-width: 1200px)');
-  console.log('isDesktop :>> ', isDesktop);
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(true);
+  }, []);
+
+  if (!desktop) {
+    return <section className='mt-14' />;
+  }
 
   return (
-    <div className='mt-14'>
-      {isDesktop ? (
-        <div className='mt-20'>
-          <PostForms />
-          <PostAddress groupId={groupId} />
-          <PostImageBottomSheet />
-        </div>
-      ) : (
-        <div>
-          <PostAddress groupId={groupId} />
-          <PostImageBottomSheet />
-          <PostForms />
-        </div>
-      )}
-    </div>
+    <section className={`${isDesktop ? 'mt-36' : 'mt-14'}`}>
+      <PostImageBottomSheet />
+      <PostForms groupId={groupId} />
+    </section>
   );
 };
 
