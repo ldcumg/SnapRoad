@@ -92,16 +92,18 @@ const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
     });
     if (!groups) groups = [];
 
-    const a = groups.map(async (group) => {
-      const b = await supabase.storage
+    const fetchSignedGroupImages = groups.map(async (group) => {
+      const response = await supabase.storage
         .from(buckets.groupImage)
         .createSignedUrl(`${group.group_image_url}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
           transform: { width: 300, height: 300 },
         });
-      return b.data?.signedUrl;
+      return response.data?.signedUrl;
     });
 
-    const images = await Promise.allSettled(a).then((res) => res.map((r) => (r.status === 'fulfilled' ? r.value : '')));
+    const images = await Promise.allSettled(fetchSignedGroupImages).then((res) =>
+      res.map((r) => (r.status === 'fulfilled' ? r.value : '')),
+    );
     if (images) {
       groups = groups.map((group, idx) => {
         return {
@@ -125,15 +127,15 @@ const getRandomPosts = async () => {
     });
     if (postDataList?.length) {
       const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
-      const a = imgNameArray.map(async (imgName) => {
-        const b = await supabase.storage
+      const fetchPostImageUrls = imgNameArray.map(async (imgName) => {
+        const response = await supabase.storage
           .from(buckets.tourImages)
           .createSignedUrl(`${imgName}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
             transform: { width: 300, height: 300 },
           });
-        return b.data?.signedUrl;
+        return response.data?.signedUrl;
       });
-      const images = await Promise.allSettled(a).then((res) =>
+      const images = await Promise.allSettled(fetchPostImageUrls).then((res) =>
         res.map((r) => (r.status === 'fulfilled' ? r.value : '')),
       );
       if (images) {
