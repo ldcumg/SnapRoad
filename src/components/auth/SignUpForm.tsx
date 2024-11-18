@@ -20,7 +20,8 @@ const SignUpForm = () => {
     watch,
   } = useSignUpForm();
 
-  const { mutate: signUp } = useSignUp();
+  const { mutate: signUp, isError } = useSignUp();
+
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
   /** 모달 밖 체크박스 상태 */
@@ -58,6 +59,8 @@ const SignUpForm = () => {
   const isFormFilled = useMemo(() => {
     return email && password && confirmPassword && nickname;
   }, [email, password, confirmPassword, nickname]);
+
+  if (isError) throw new Error('회원가입 에러 발생');
 
   return (
     <div className='flex flex-col gap-6'>
@@ -114,7 +117,6 @@ const SignUpForm = () => {
           <img src='/svgs/Arrow_Forward_LG.svg' />
         </div>
 
-        {/* TODO 버튼 활성화 */}
         <Button
           type='submit'
           label='회원가입'

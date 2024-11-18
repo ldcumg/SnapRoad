@@ -10,12 +10,14 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: signUp,
-    onSuccess: () => {
-      router.push(URLS.signupSuccess);
+    onSuccess: (data) => {
+      if (data.error) {
+        alert(data.error.message);
+      } else {
+        router.push(URLS.signupSuccess);
+      }
     },
-    onError: (error) => {
-      alert(error.message);
-    },
+    onError: (error) => console.log('회원가입 시도 중 오류 발생 :>> ', error),
   });
 };
 
@@ -26,11 +28,13 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      router.push(URLS.home);
+      if (data.error) {
+        alert(data.error.message);
+      } else {
+        router.push(URLS.home);
+      }
     },
-    onError: (error) => {
-      alert(error.message);
-    },
+    onError: (error) => console.log('로그인 시도 중 오류 발생 :>> ', error),
   });
 };
 

@@ -22,23 +22,27 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
   console.log('isDesktop :>> ', isDesktop);
   return (
     <>
-      <Button
-        label='초대코드 입력'
-        onClick={handleBottomSheetOpen}
-        size='full'
-        className='text-tile_lg text-gray-700'
-        variant='outlineGray'
-      >
-        <img
-          src='/svgs/User_Group.svg'
-          alt=''
-        />
-      </Button>
+      {isDesktop ? (
+        <SubmitInviteForm isDesktop={isDesktop} />
+      ) : (
+        <Button
+          label='초대코드 입력'
+          onClick={handleBottomSheetOpen}
+          size='full'
+          className='text-tile_lg text-gray-700'
+          variant='outlineGray'
+        >
+          <img
+            src='/svgs/User_Group.svg'
+            alt=''
+          />
+        </Button>
+      )}
       {isDesktop ? (
         <Button
           label='그룹만들기'
-          size='full'
-          className='text-tile_lg text-white'
+          size='large'
+          className='text-tile_lg px-7 py-4 text-white'
           onClick={handleBottomSheetOpen}
         >
           <img
@@ -79,14 +83,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
             handleModalOpen={handleBottomSheetOpen}
             title={desktop ? '그룹 생성' : undefined}
           >
-            {desktop ? (
-              <MakeGroupForm />
-            ) : (
-              <SubmitInviteForm
-                isBottomSheetOpen={isBottomSheetOpen}
-                handleBottomSheetOpen={handleBottomSheetOpen}
-              />
-            )}
+            {desktop ? <MakeGroupForm /> : <SubmitInviteForm />}
           </Modal>
           <AddButtons
             isDesktop={desktop}
@@ -99,10 +96,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
             isModalOpen={isBottomSheetOpen}
             handleModalOpen={handleBottomSheetOpen}
           >
-            <SubmitInviteForm
-              isBottomSheetOpen={isBottomSheetOpen}
-              handleBottomSheetOpen={handleBottomSheetOpen}
-            />
+            {desktop ? <MakeGroupForm /> : <SubmitInviteForm />}
           </Modal>
           <p className='w-full text-center text-title_xl text-gray-500'>그룹을 만들어 추억을 남겨보세요!</p>
           <div className='flex flex-col gap-2 px-4 py-5'>

@@ -6,11 +6,10 @@ import browserClient from '@/utils/supabase/client';
 import { FieldValues, useFormState } from 'react-hook-form';
 
 type Props = {
-  isBottomSheetOpen: boolean;
-  handleBottomSheetOpen: () => void;
+  isDesktop?: boolean;
 };
 
-const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) => {
+const SubmitInviteForm = ({ isDesktop }: Props) => {
   const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
   const { register, handleSubmit, formState, control, setValue, clearErrors } = useInviteGroupForm();
 
@@ -51,29 +50,43 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`${isBottomSheetOpen ? 'flex' : 'hidden'} flex-col justify-center items-center z-50 bg-white gap-5 rounded-t-[20px] mt-14`}
+      className={`z-50 mt-14 flex flex-col items-center justify-center gap-5 rounded-t-[20px] bg-white pc:z-0 pc:mt-0 pc:flex-row`}
     >
-      <div className='flex flex-col items-start w-full gap-1'>
-        <h3 className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'}`}>초대코드 입력</h3>
+      <div className='flex w-full flex-col items-start gap-1 pc:flex-row pc:items-center'>
+        <h3
+          className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'} text-center pc:h-8 pc:w-[132px] pc:text-head_sm`}
+        >
+          초대코드 입력
+        </h3>
         <div
-          className={`flex flex-row w-full border border-solid ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl py-4 px-3`}
+          className={`flex w-full flex-row border border-solid pc:w-auto pc:gap-3 pc:px-4 pc:py-2 ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl px-3 py-4`}
         >
           <input
             type='text'
-            className=' bg-white w-full outline-none focus:outline-none rounded-xl'
+            className='w-full rounded-xl bg-white outline-none focus:outline-none pc:min-w-[330px]'
             placeholder='코드를 입력해주세요'
             {...register('inviteCode')}
           />
-          <button
-            className=''
-            type='button'
-            onClick={clearInputValue}
-          >
-            <img
-              src='/svgs/Close_Circle.svg'
-              alt=''
+          {isDesktop ? (
+            <Button
+              type='submit'
+              label='가입'
+              variant='primary'
+              size='small'
+              disabled={!isValid}
             />
-          </button>
+          ) : (
+            <button
+              className=''
+              type='button'
+              onClick={clearInputValue}
+            >
+              <img
+                src='/svgs/Close_Circle.svg'
+                alt=''
+              />
+            </button>
+          )}
         </div>
         {/* {formState.errors.inviteCode && (
           <p className='text-[12px] text-red-600'>{formState.errors.inviteCode.message}</p>
@@ -84,7 +97,7 @@ const SubmitInviteForm = ({ isBottomSheetOpen, handleBottomSheetOpen }: Props) =
         label='그룹 추가하기'
         variant='primary'
         size='large'
-        className='w-full'
+        className='w-full pc:hidden'
         disabled={!isValid}
       >
         <img
