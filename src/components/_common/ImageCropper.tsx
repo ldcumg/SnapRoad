@@ -23,18 +23,6 @@ const ImageCropper = ({ unCroppedImage, setCroppedAreaPixels, cropperModal, hand
   return (
     <div
       className='fixed left-0 top-0 z-[5000] flex h-full w-full items-center justify-center bg-black bg-opacity-70'
-      // style={{
-      //   position: 'fixed',
-      //   top: 0,
-      //   left: 0,
-      //   width: '100vw',
-      //   height: '100vh',
-      //   backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      //   display: 'flex',
-      //   alignItems: 'center',
-      //   justifyContent: 'center',
-      //   zIndex: 1000,
-      // }}
       onClick={(e) => e.stopPropagation()}
     >
       <div style={{ position: 'relative', width: '80%', height: '80%' }}>
