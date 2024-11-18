@@ -4,8 +4,7 @@ import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { useEditForm } from '@/hooks/byUse/usePostForm';
-import { convertTo24HourFormatString } from '@/hooks/queries/post/ConvertTo24HourFormat';
-import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
+import { useUpdateForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
@@ -31,13 +30,12 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
     formState: { errors },
   } = useEditForm();
 
+  const router = useRouter();
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
   const { handleFullOpen } = useBottomSheetStore();
-
-  const router = useRouter();
   const { images: uploadedImages } = useImageUploadStore();
-  const [imagesArray, setImagesArray] = useState(postDetail.images || []);
-  const { mutateAsync: submitForm } = useSubmitForm(groupId);
+  const { mutateAsync: updateForm } = useUpdateForm(groupId);
+  const [existingImages, setExistingImages] = useState(postDetail.images || []);
 
   useEffect(() => {
     if (postDetail) {
@@ -45,17 +43,25 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       setValue('hashtags', postDetail.tags?.map((tag) => tag.tag_title) || []);
       setValue('date', postDetail.post_date || '');
       setValue('time', postDetail.post_time || '');
+      setExistingImages(postDetail.images || []);
     }
   }, [postDetail, setValue]);
 
   const handlePostForm = async (value: FieldValues) => {
-    if (!userId || !groupId) return;
+    if (!userId || !groupId || !postDetail.post_id) return;
+
+    const finalImages = [...existingImages, ...uploadedImages];
+
+    if (finalImages.length === 0) {
+      alert('이미지가 없어 게시물을 수정할 수 없습니다.');
+      return;
+    }
 
     const hashtags: string[] = value.hashtags || [];
-    const finalImages = uploadedImages.length > 0 ? uploadedImages : imagesArray;
 
     const parsedFormData = {
       ...formSchema.parse(value),
+      postId: postDetail.post_id,
       userId,
       groupId,
       lat,
@@ -66,20 +72,28 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
     };
 
     try {
-      const res = await submitForm(parsedFormData);
-      const uploadSessionId = uploadedImages[0]?.upload_session_id;
+      await updateForm(parsedFormData);
+
       if (uploadedImages.length > 0) {
-        await updateImagePostId(res.postId, uploadSessionId);
+        const uploadSessionId = uploadedImages[0]?.upload_session_id;
+        await updateImagePostId(postDetail.post_id, uploadSessionId);
       }
+
       if (hashtags.length > 0) {
-        await saveTags(hashtags, res.postId, groupId);
+        await saveTags(hashtags, postDetail.post_id, groupId);
       }
-      router.push(`/group/${groupId}/post/${res.postId}`);
+
+      router.push(`/group/${groupId}/post/${postDetail.post_id}`);
     } catch (error) {
       console.error('폼 제출 에러:', error);
       alert('폼 제출에 실패했습니다. 다시 시도해 주세요.');
     }
   };
+
+  useEffect(() => {
+    console.log('Uploaded Images:', uploadedImages);
+    console.log('Existing Images:', existingImages);
+  }, [uploadedImages, existingImages]);
 
   return (
     <form
@@ -87,14 +101,15 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       onSubmit={handleSubmit(handlePostForm)}
     >
       <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-        {(uploadedImages.length > 0 ? uploadedImages : postDetail.images).map((image, index) => (
+        {/* uploadedImages가 비어 있을 경우 existingImages를 사용 */}
+        {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => (
           <div
-            key={image.post_image_name || image.signed_image_url}
+            key={image.post_image_name || image.signed_image_url || index}
             className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
           >
             <img
               src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
-              alt={`업로드된 이미지 ${index + 1}`}
+              alt={`이미지 ${index + 1}`}
               className='h-full w-full object-cover'
             />
           </div>
@@ -157,7 +172,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       <Controller
         name='time'
         control={control}
-        defaultValue={postDetail.post_time ? convertTo24HourFormatString(postDetail.post_time) : ''}
+        defaultValue={postDetail.post_time || ''}
         render={({ field }) => (
           <TimeInputWithIcon
             value={field.value}

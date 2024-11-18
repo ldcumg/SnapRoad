@@ -7,10 +7,6 @@ const LayoutMain = ({ children }: { children: React.ReactNode }) => {
   const isGroupPage = /^\/group\/[^/]+$/.test(pathname);
   const isGroupPostPage = /^\/group\/[^/]+\/post$/.test(pathname);
 
-  console.log('현재 경로:', pathname);
-  console.log('isGroupPage:', isGroupPage);
-  console.log('isGroupPostPage:', isGroupPostPage);
-
   return (
     <main
       className={`h-full w-full ${

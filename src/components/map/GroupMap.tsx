@@ -432,7 +432,7 @@ const GroupMap = ({ groupId, point }: Props) => {
           </BottomSheet>
         ) : (
           <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 left-0 right-0 z-50 w-auto ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
           >
             <Button
               type='button'
