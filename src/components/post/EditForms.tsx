@@ -4,8 +4,7 @@ import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import { useEditForm } from '@/hooks/byUse/usePostForm';
-import { convertTo24HourFormatString } from '@/hooks/queries/post/ConvertTo24HourFormat';
-import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
+import { useUpdateForm } from '@/hooks/queries/post/useFormMutations';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, updateImagePostId } from '@/services/server-action/formActions';
@@ -16,7 +15,7 @@ import { Button } from '@/stories/Button';
 import TextAreaWithCounter from '@/stories/TextAreas';
 import { PostDetail as postDetailType } from '@/types/postDetailTypes';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, Controller } from 'react-hook-form';
 
 export type PostAndProfileProps = {
@@ -31,12 +30,12 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
     formState: { errors },
   } = useEditForm();
 
+  const router = useRouter();
   const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
   const { handleFullOpen } = useBottomSheetStore();
-  const place = addressName ? decodeURIComponent(addressName) : '';
-  const { images } = useImageUploadStore();
-  const { mutateAsync: submitForm } = useSubmitForm(groupId);
-  const router = useRouter();
+  const { images: uploadedImages } = useImageUploadStore();
+  const { mutateAsync: updateForm } = useUpdateForm(groupId);
+  const [existingImages, setExistingImages] = useState(postDetail.images || []);
 
   useEffect(() => {
     if (postDetail) {
@@ -44,58 +43,77 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       setValue('hashtags', postDetail.tags?.map((tag) => tag.tag_title) || []);
       setValue('date', postDetail.post_date || '');
       setValue('time', postDetail.post_time || '');
+      setExistingImages(postDetail.images || []);
     }
   }, [postDetail, setValue]);
 
   const handlePostForm = async (value: FieldValues) => {
-    if (!userId || !groupId) return;
+    if (!userId || !groupId || !postDetail.post_id) return;
+
+    const finalImages = [...existingImages, ...uploadedImages];
+
+    if (finalImages.length === 0) {
+      alert('이미지가 없어 게시물을 수정할 수 없습니다.');
+      return;
+    }
+
     const hashtags: string[] = value.hashtags || [];
 
     const parsedFormData = {
       ...formSchema.parse(value),
+      postId: postDetail.post_id,
       userId,
       groupId,
       lat,
       lng,
-      place,
-      postThumbnailImage: images.find((img) => img.is_cover)?.post_image_name || '',
-      imageArray: images.map((img) => img.post_image_name || ''),
+      place: addressName || '',
+      postThumbnailImage: finalImages.find((img) => img.is_cover)?.post_image_name || '',
+      imageArray: finalImages.map((img) => img.post_image_name),
     };
 
     try {
-      const res = await submitForm(parsedFormData);
-      const uploadSessionId = images[0]?.upload_session_id;
-      await updateImagePostId(res.postId, uploadSessionId);
-      if (hashtags.length > 0) {
-        await saveTags(hashtags, res.postId, groupId);
+      await updateForm(parsedFormData);
+
+      if (uploadedImages.length > 0) {
+        const uploadSessionId = uploadedImages[0]?.upload_session_id;
+        await updateImagePostId(postDetail.post_id, uploadSessionId);
       }
-      router.push(`/group/${groupId}/post/${res.postId}`);
+
+      if (hashtags.length > 0) {
+        await saveTags(hashtags, postDetail.post_id, groupId);
+      }
+
+      router.push(`/group/${groupId}/post/${postDetail.post_id}`);
     } catch (error) {
       console.error('폼 제출 에러:', error);
       alert('폼 제출에 실패했습니다. 다시 시도해 주세요.');
     }
   };
 
+  useEffect(() => {
+    console.log('Uploaded Images:', uploadedImages);
+    console.log('Existing Images:', existingImages);
+  }, [uploadedImages, existingImages]);
+
   return (
     <form
-      className='flex flex-col space-y-2 px-4'
+      className='flex flex-col space-y-4 px-4'
       onSubmit={handleSubmit(handlePostForm)}
     >
       <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-        {images.length > 0
-          ? images.map((image, index) => (
-              <div
-                key={index}
-                className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
-              >
-                <img
-                  src={image.post_image_url || '/path/to/placeholder.png'}
-                  alt={`업로드된 이미지 ${index + 1}`}
-                  className='h-full w-full object-cover'
-                />
-              </div>
-            ))
-          : null}
+        {/* uploadedImages가 비어 있을 경우 existingImages를 사용 */}
+        {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => (
+          <div
+            key={image.post_image_name || image.signed_image_url || index}
+            className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
+          >
+            <img
+              src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
+              alt={`이미지 ${index + 1}`}
+              className='h-full w-full object-cover'
+            />
+          </div>
+        ))}
 
         <button
           type='button'
@@ -108,11 +126,6 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
           </div>
         </button>
       </div>
-
-      <span className='!mb-4 block text-sm text-gray-500'>
-        * PNG, JPG 이외의 파일은 올리실 수 없습니다.
-        <br />* 한글 파일명은 업로드 불가능합니다.
-      </span>
 
       <Controller
         name='desc'
@@ -134,18 +147,12 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         name='hashtags'
         control={control}
         defaultValue={[]}
-        render={({ field }) => {
-          console.log('Hashtags Field Value:', field.value);
-          return (
-            <div>
-              <HashtagInput
-                hashtags={field.value || []}
-                setHashtags={field.onChange}
-              />
-              {errors.hashtags && <p className='mt-1 text-sm text-danger'>{String(errors.hashtags.message)}</p>}
-            </div>
-          );
-        }}
+        render={({ field }) => (
+          <HashtagInput
+            hashtags={field.value || []}
+            setHashtags={field.onChange}
+          />
+        )}
       />
 
       <Controller
@@ -165,13 +172,11 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
       <Controller
         name='time'
         control={control}
-        defaultValue={postDetail.post_time ? convertTo24HourFormatString(postDetail.post_time) : ''}
+        defaultValue={postDetail.post_time || ''}
         render={({ field }) => (
           <TimeInputWithIcon
             value={field.value}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              field.onChange(e.target.value);
-            }}
+            onChange={(e) => field.onChange(e.target.value)}
             onBlur={field.onBlur}
             name={field.name}
           />
@@ -183,6 +188,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         label='게시물 수정'
         variant='primary'
         className='font-bold'
+        size='large'
       />
     </form>
   );

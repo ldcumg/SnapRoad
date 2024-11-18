@@ -136,7 +136,7 @@ const PostForms = () => {
           type='submit'
           label='게시물 업로드'
           variant='primary'
-          className='font-bold'
+          size='large'
         />
       </form>
     </>

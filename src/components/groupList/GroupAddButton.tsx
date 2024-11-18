@@ -29,7 +29,7 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
           label='초대코드 입력'
           onClick={handleBottomSheetOpen}
           size='full'
-          className='text-tile_lg text-gray-700'
+          className='text-title_lg text-gray-700'
           variant='outlineGray'
         >
           <img
@@ -42,7 +42,7 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
         <Button
           label='그룹만들기'
           size='large'
-          className='text-tile_lg px-7 py-4 text-white'
+          className='px-7 py-4 text-white'
           onClick={handleBottomSheetOpen}
         >
           <img
@@ -55,7 +55,7 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
           label='그룹만들기'
           href='/makegroup'
           size='full'
-          className='text-tile_lg text-white'
+          className='text-white'
         >
           <img
             src='/svgs/Plus_LG.svg'

@@ -71,6 +71,7 @@ export interface ImagesAllWithoutPostId extends Omit<Images, 'post_id'> {
   blobUrl: string;
   id: number;
   post_image_name: string;
+  signed_image_url?: string;
   is_cover: boolean;
   isUploaded: boolean;
   post_id?: string;

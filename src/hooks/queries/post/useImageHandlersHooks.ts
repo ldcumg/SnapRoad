@@ -22,15 +22,11 @@ export const useImageUploadLogic = (
 
     const fileArray = Array.from(files);
 
-    // 파일명 및 확장자 필터링
     const validFiles = fileArray.filter((file) => {
       const fileName = file.name;
       const fileExtension = fileName.split('.').pop()?.toLowerCase();
       const isValidExtension = ['png', 'jpg', 'jpeg'].includes(fileExtension || '');
-      // 파일 이름 유효성 검사: 영어, 숫자, 밑줄, 하이픈, 점, 괄호, 공백 허용
       const isEnglishName = /^[\w-. ()]+$/.test(fileName);
-      // 디버깅: 통과되지 않은 파일 출력
-      // console.log(`파일 검사: ${fileName}, 확장자: ${isValidExtension}, 파일명: ${isEnglishName}`);
 
       if (!isValidExtension) {
         alert(`${fileName}은 허용되지 않는 파일 형식입니다. PNG 또는 JPG만 가능합니다.`);
@@ -44,7 +40,7 @@ export const useImageUploadLogic = (
 
     if (validFiles.length === 0) {
       alert('유효한 파일이 없습니다. 다시 시도해 주세요.');
-      return; // 유효한 파일이 없으면 업로드 중단
+      return;
     }
 
     if (validFiles.length > 10) {
