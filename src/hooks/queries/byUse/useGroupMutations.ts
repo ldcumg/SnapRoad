@@ -21,7 +21,7 @@ type updateGroupType = {
   groupImg: File | null;
 };
 
-const useUpdateGroupMutation = (group_id: string) => {
+const useUpdateGroupMutation = (group_id: string, handleUpdateModal?: () => void) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
@@ -29,6 +29,7 @@ const useUpdateGroupMutation = (group_id: string) => {
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.group.groupList() });
       await queryClient.invalidateQueries({ queryKey: queryKeys.group.info(group_id) });
+      handleUpdateModal && handleUpdateModal();
       router.push(`/group/${group_id}`);
     },
     onError: (error) => console.log('error :>> ', error),

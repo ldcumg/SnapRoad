@@ -23,9 +23,10 @@ import { FieldValues } from 'react-hook-form';
 
 type Props = {
   update_for?: string;
+  handleUpdateModal?: () => void;
 };
 
-const MakeGroupForm = ({ update_for }: Props) => {
+const MakeGroupForm = ({ update_for, handleUpdateModal }: Props) => {
   const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
@@ -49,7 +50,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     isError: updateGroupDataError,
     mutateAsync: updateGroupDataMutate,
     isPending: isPendingUpdate,
-  } = useUpdateGroupMutation(update_for as string);
+  } = useUpdateGroupMutation(update_for as string, handleUpdateModal);
 
   const isFetchingBeforeData = isPendingBeforeData && update_for;
   const isInserting = isPendingInsertGroup || isPendingInsertUserGroup;

@@ -50,20 +50,20 @@ const SubmitInviteForm = ({ isDesktop }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={`pc:mt-0 pc:flex-row z-50 mt-14 flex flex-col items-center justify-center gap-5 rounded-t-[20px] bg-white`}
+      className={`z-50 mt-14 flex flex-col items-center justify-center gap-5 rounded-t-[20px] bg-white pc:z-0 pc:mt-0 pc:flex-row`}
     >
-      <div className='pc:flex-row pc:items-center flex w-full flex-col items-start gap-1'>
+      <div className='flex w-full flex-col items-start gap-1 pc:flex-row pc:items-center'>
         <h3
-          className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'} pc:text-head_sm pc:w-[132px] pc:h-8 text-center`}
+          className={`text-label_sm ${isValid ? 'text-primary-400' : 'text-gray-900'} text-center pc:h-8 pc:w-[132px] pc:text-head_sm`}
         >
           초대코드 입력
         </h3>
         <div
-          className={`pc:gap-3 pc:w-auto pc:py-2 pc:px-4 flex w-full flex-row border border-solid ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl px-3 py-4`}
+          className={`flex w-full flex-row border border-solid pc:w-auto pc:gap-3 pc:px-4 pc:py-2 ${isValid ? 'border-primary-400' : 'border-gray-100'} rounded-xl px-3 py-4`}
         >
           <input
             type='text'
-            className='pc:min-w-[330px] w-full rounded-xl bg-white outline-none focus:outline-none'
+            className='w-full rounded-xl bg-white outline-none focus:outline-none pc:min-w-[330px]'
             placeholder='코드를 입력해주세요'
             {...register('inviteCode')}
           />
@@ -97,7 +97,7 @@ const SubmitInviteForm = ({ isDesktop }: Props) => {
         label='그룹 추가하기'
         variant='primary'
         size='large'
-        className='pc:hidden w-full'
+        className='w-full pc:hidden'
         disabled={!isValid}
       >
         <img
