@@ -29,7 +29,7 @@ const EditPage = async ({ params: { groupId, postId } }: Props) => {
         <PostAddress groupId={groupId} />
         <ImageBottomSheet />
         <PostImage showImages={false} />
-        <EditForms postDetail={postDetail}  />
+        <EditForms postDetail={postDetail} />
       </div>
     </>
   );

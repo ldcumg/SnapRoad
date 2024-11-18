@@ -154,8 +154,8 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         defaultValue={postDetail.post_date ? new Date(postDetail.post_date) : null}
         render={({ field }) => (
           <DateInputWithIcon
-            value={field.value} // Date 객체로 전달
-            onChange={(e) => field.onChange(e.target.value)} // react-hook-form으로 전달
+            value={field.value}
+            onChange={(e) => field.onChange(e.target.value)}
             onBlur={field.onBlur}
             name={field.name}
           />
@@ -169,7 +169,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         render={({ field }) => (
           <TimeInputWithIcon
             value={field.value}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               field.onChange(e.target.value);
             }}
             onBlur={field.onBlur}

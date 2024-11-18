@@ -76,7 +76,7 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
                 selected={startDate}
                 onChange={(date) => handleDateChange(date as Date)}
                 inline
-                popperPlacement='top-end' // 위쪽으로 위치 설정
+                popperPlacement='top-end'
                 portalId='date-picker-portal'
               />
             </div>
