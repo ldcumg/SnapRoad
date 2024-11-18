@@ -46,8 +46,8 @@ const GroupMap = ({ groupId, point }: Props) => {
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
 
-  let polyline: Latlng[] = [];
-  console.log('polyline =>', polyline);
+  const polyline: Latlng[] = [];
+
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
@@ -207,11 +207,11 @@ const GroupMap = ({ groupId, point }: Props) => {
   const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
     const customMarker = marker as CustomMarkerClusterer;
 
-    polyline = [];
+    // polyline.current = [];
     customMarker._clusters.forEach((cluster) => {
       const customCluster = cluster as CustomCluster;
       const { Ma: lat, La: lng } = cluster.getCenter() as CustomLatLng;
-      polyline.push({ lat, lng });
+      // polyline.current.push({ lat, lng });
       clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
         setClusterStyle((prev) => [
           ...prev,
@@ -227,7 +227,6 @@ const GroupMap = ({ groupId, point }: Props) => {
           },
         ]);
     });
-    console.log(polyline);
   };
 
   /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
