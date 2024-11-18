@@ -403,7 +403,11 @@ const GroupMap = ({ groupId, point }: Props) => {
             backdrop={false}
             title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
             titleClassName='text-title_lg'
-            onClose={handleCustomClose}
+            onClose={() => {
+              handleCustomClose();
+              //NOTE - 임시
+              setPostsPreview([]);
+            }}
             headerClassName='pt-[40px] pb-[12px]'
           >
             <ol className='flex flex-row gap-3 overflow-x-auto'>
