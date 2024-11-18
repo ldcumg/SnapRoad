@@ -24,8 +24,8 @@ const ImagePreview = ({ imgPreview }: Props) => {
         <div className='relative flex h-[216px] w-[232px] items-start justify-center rounded-xl'>
           <img
             className='h-[200px] w-[200px] rounded-xl'
-            src='/images/group_default_thumbnail.jpg'
-            alt=''
+            src='/images/group_default_thumbnail.webp'
+            alt='그룹 기본 이미지'
           />
           <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-[24px] border border-solid border-gray-100 bg-white shadow-BG_S'>
             <img

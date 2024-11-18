@@ -1,8 +1,9 @@
 import { GroupWithCounts } from '@/types/groupTypes';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
+const GroupItem = ({ el }: { el: GroupWithCounts }) => {
   const router = useRouter();
   return (
     <li
@@ -11,9 +12,9 @@ const GroupItem = ({ el }: { el?: GroupWithCounts }) => {
     >
       <div className='flex min-h-[130px] w-[130px] items-center justify-center pc:h-[200px] pc:w-[200px]'>
         <img
-          src={el?.group_image_url}
-          alt={`${el?.group_title}_이미지`}
-          className='h-full w-full object-fill'
+          src={el.group_image_url}
+          alt={`${el.group_title}_이미지`}
+          className='h-[130px] w-[130px] object-fill pc:h-[200px] pc:w-[200px]'
           fetchPriority='high'
         />
       </div>
