@@ -60,7 +60,7 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
     .is('deleted_at', null)
     .single();
 
-  if ((status !== 200 && error) || !data) throw new Error(error.message);
+  if (error || !data) throw new Error(error.message);
 
   const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, data.group_image_url ?? '');
 

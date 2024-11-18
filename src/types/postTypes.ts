@@ -1,4 +1,4 @@
-import type { createPostPositioningStore } from "@/stores/post/postPositioningStore";
+import type { createPostPositioningStore } from '@/stores/post/postPositioningStore';
 
 export type PostImage = {
   id: number;
