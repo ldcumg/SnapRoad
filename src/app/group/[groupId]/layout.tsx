@@ -6,7 +6,6 @@ import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
-
 type GenerateMetadataProps = {
   params: { groupId: string };
 };

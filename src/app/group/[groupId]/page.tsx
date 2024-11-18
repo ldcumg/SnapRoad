@@ -33,7 +33,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
         return (
           <GroupMap
             groupId={groupId}
-            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : undefined}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } :undefined}
           />
         );
       case GroupDetailMode.album:
