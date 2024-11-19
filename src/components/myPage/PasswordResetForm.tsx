@@ -25,7 +25,7 @@ const PasswordResetForm = () => {
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='m-auto flex w-full max-w-[23rem] flex-col'>
       <form
         onSubmit={handleSubmit(handleConfirmPasswords)}
         className='flex flex-col gap-10'

@@ -18,7 +18,7 @@ const Profile = ({ userId }: { userId: string }) => {
     );
 
   return (
-    <div className='mb-16 mt-12 flex flex-col items-center'>
+    <div className='m-auto mb-16 mt-12 flex w-full max-w-[23rem] flex-col items-center'>
       <div className='h-[184px] w-[184px] overflow-hidden rounded-full'>
         <img
           alt='프로필 이미지'

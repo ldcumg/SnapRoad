@@ -1,6 +1,7 @@
 import { getSignedImgUrl } from './server-action/getSignedImgUrl';
 import buckets from '@/constants/buckets';
 import tables from '@/constants/tables';
+import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { ImageDetail, PostDetail } from '@/types/postDetailTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -28,7 +29,11 @@ export const fetchPostDetail = async (postId: string) => {
 
   // 해당 게시글을 쓴 유저의 signed url
   if (data?.post_author_user?.user_image_url) {
-    const signedImageUrl = await getSignedImgUrl('avatars', 86400, data.post_author_user.user_image_url);
+    const signedImageUrl = await getSignedImgUrl(
+      'avatars',
+      TEN_MINUTES_FOR_SUPABASE,
+      data.post_author_user.user_image_url,
+    );
     (data.post_author_user as typeof data.post_author_user & { signed_image_url: string | null }).signed_image_url =
       signedImageUrl ?? null;
   }

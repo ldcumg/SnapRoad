@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 const TermsAgreementPage = () => {
   return (
     <div className='px-4'>
-      <div className='flex items-center py-4 relative'>
+      <div className='relative flex items-center py-4'>
         <MyPageBack />
-        <span className='text-gray-900 text-label_md mx-auto'>개인정보 수집 · 이용 약관</span>
+        <span className='mx-auto text-label_md text-gray-900'>개인정보 수집 · 이용 약관</span>
       </div>
       <div className='py-8'>
         <AgreeList />

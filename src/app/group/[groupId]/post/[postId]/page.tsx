@@ -1,6 +1,8 @@
 import MyPageHeader from '@/components/myPage/MyPageHeader';
 import PostComment from '@/components/post/postDetail/PostComment';
 import PostDetail from '@/components/post/postDetail/PostDetail';
+import PostDetailHeader from '@/components/post/postDetail/PostDetailHeader';
+import URLS from '@/constants/urls';
 import { fetchPostDetail } from '@/services/postDetailService';
 import { getSession } from '@/services/server-action/authActions';
 import { getProfile } from '@/services/server-action/profilesAction';
@@ -22,18 +24,17 @@ const PostDetailPage = async ({ params }: { params: { postId: string } }) => {
 
   return (
     <div className='w-full'>
-      <div className='relative mx-4 flex items-center py-4'>
-        <MyPageHeader url={`/group/${postDetail.group_id}`} />
-        <span className='mx-auto text-label_md text-gray-900'>{postDetail?.group?.group_title}</span>
+      <PostDetailHeader postDetail={postDetail} />
+      <div className='m-auto w-full md:max-w-[40%]'>
+        <PostDetail
+          userDetail={userDetail}
+          postDetail={postDetail}
+        />
+        <PostComment
+          userDetail={userDetail}
+          postDetail={postDetail}
+        />
       </div>
-      <PostDetail
-        userDetail={userDetail}
-        postDetail={postDetail}
-      />
-      <PostComment
-        userDetail={userDetail}
-        postDetail={postDetail}
-      />
     </div>
   );
 };

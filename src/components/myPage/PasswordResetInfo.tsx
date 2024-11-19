@@ -26,7 +26,7 @@ const PasswordResetInfo = () => {
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='m-auto flex w-full max-w-[23rem] flex-col'>
       <form onSubmit={handleSubmit(handleSendEmailResetPassword)}>
         <Input
           label={'이메일 주소'}

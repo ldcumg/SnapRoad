@@ -1,6 +1,6 @@
 import PostDetailCarousel from './PostDetailCarousel';
 import PostDetailDesc from './PostDetailDesc';
-import PostDetailHeader from './PostDetailHeader';
+import PostDetailTitle from './PostDetailTitle';
 import { PostDetail as postDetailType, UserDetail } from '@/types/postDetailTypes';
 import React from 'react';
 
@@ -13,7 +13,7 @@ const PostDetail = ({ userDetail, postDetail }: PostAndProfileProps) => {
   return (
     <div className='border-b'>
       {/* 상단 게시글 정보 */}
-      <PostDetailHeader
+      <PostDetailTitle
         userDetail={userDetail}
         postDetail={postDetail}
       />

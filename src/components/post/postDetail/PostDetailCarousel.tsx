@@ -1,12 +1,27 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { ImageDetail } from '@/types/postDetailTypes';
 import 'keen-slider/keen-slider.min.css';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
+
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
@@ -49,6 +64,12 @@ const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
             </CarouselItem>
           ))}
         </CarouselContent>
+        {desktop && images.length > 1 && (
+          <>
+            <CarouselPrevious className='bg-white' />
+            <CarouselNext className='bg-white' />
+          </>
+        )}
       </Carousel>
       {images.length > 1 && (
         <ul className='flex justify-center gap-2 py-4'>

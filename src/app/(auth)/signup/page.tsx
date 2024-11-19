@@ -1,5 +1,5 @@
 import SignUpForm from '@/components/auth/SignUpForm';
-import { IconLogo } from '@/lib/icon/Icon_ Logo';
+import SignUpHeader from '@/components/auth/SignUpHeader';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,11 +9,8 @@ export const metadata: Metadata = {
 
 const SignUpPage = () => {
   return (
-    <div className='mb-32 px-4'>
-      <div className='flex flex-col items-center gap-4 pb-5 pt-10'>
-        <IconLogo />
-        <span className='text-title_xl text-gray-900'>회원가입</span>
-      </div>
+    <div className='mb-32 px-4 py-2'>
+      <SignUpHeader />
       <SignUpForm />
     </div>
   );
