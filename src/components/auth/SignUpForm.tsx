@@ -1,6 +1,7 @@
 'use client';
 
 import AgreeList from './AgreeList';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useSignUp } from '@/hooks/queries/auth/useAuthMutations';
 import { useSignUpForm } from '@/hooks/useCustomForm/useAuthForm';
 import { signUpSchema } from '@/schemas/authSchemas';

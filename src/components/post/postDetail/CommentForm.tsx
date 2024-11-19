@@ -42,6 +42,11 @@ const CommentForm = ({ setIsWriteMode, setIsWriteReplyMode, parentId, postId, us
     if (setIsWriteReplyMode) setIsWriteReplyMode(false); // 대댓글 등록 했으면 닫기
   };
 
+  const handleCommentCancel = () => {
+    if (setIsWriteMode) setIsWriteMode(false);
+    if (setIsWriteReplyMode) setIsWriteReplyMode(false);
+  };
+
   return (
     <div className='p-4'>
       <form
@@ -56,7 +61,14 @@ const CommentForm = ({ setIsWriteMode, setIsWriteReplyMode, parentId, postId, us
             className='resize-none pb-6'
           />
         </div>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-1'>
+          <Button
+            type='submit'
+            variant='primary'
+            label='취소 '
+            size='small'
+            onClick={handleCommentCancel}
+          />
           <Button
             type='submit'
             variant='primary'

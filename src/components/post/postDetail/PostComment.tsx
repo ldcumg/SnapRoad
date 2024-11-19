@@ -6,7 +6,7 @@ import CommentWriteButton from './CommentWriteButton';
 import { useCommentsQuery } from '@/hooks/queries/comments/useCommentQueries';
 import Spinner from '@/stories/Spinner';
 import { Comment, CommentMap, CommentTree, PostDetail, UserDetail } from '@/types/postDetailTypes';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type PostAndProfileProps = {
   postDetail: PostDetail;
@@ -17,6 +17,13 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
   const [isWriteMode, setIsWriteMode] = useState<boolean>(false);
 
   const { data: comments, isLoading, isError } = useCommentsQuery(postDetail.post_id);
+  const formRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (isWriteMode && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [isWriteMode]);
 
   if (isError) throw new Error('게시글 상세 에러 발생');
 
@@ -32,6 +39,8 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
 
   return (
     <>
+      {/* 댓글 작성 버튼 */}
+      {!isWriteMode && <CommentWriteButton setIsWriteMode={setIsWriteMode} />}
       <ul>
         {commentTree.map((comment) => (
           <CommentNode
@@ -43,17 +52,15 @@ const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
         ))}
       </ul>
       {/* 댓글 작성 버튼 */}
-      {isWriteMode ? (
-        <>
+      {isWriteMode && (
+        <div ref={formRef}>
           <CommentForm
             parentId={null}
             postId={postDetail.post_id}
             userDetail={userDetail}
             setIsWriteMode={setIsWriteMode}
           />
-        </>
-      ) : (
-        <CommentWriteButton setIsWriteMode={setIsWriteMode} />
+        </div>
       )}
     </>
   );
