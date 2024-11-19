@@ -2,7 +2,6 @@
 
 import ImageCropper from '../_common/ImageCropper';
 import InputSection from '@/components/makegroup/InputSection';
-import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import {
   useInsertGroupMutation,
@@ -11,6 +10,7 @@ import {
 } from '@/hooks/queries/byUse/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/group/useGroupQueries';
 import queryKeys from '@/hooks/queries/queryKeys';
+import { useMakeGroupForm } from '@/hooks/useCustomForm/useGroupForm';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
