@@ -1,7 +1,9 @@
+import queryKeys from '../queryKeys';
 import { fetchImageUrls } from '@/services/client-action/fetchImageUrlsAction';
 import { ImagesAllWithoutPostId } from '@/types/projectType';
 import { useQuery } from '@tanstack/react-query';
 
+/** 이미지 미리보기 로직 */
 export function useFetchImageUrls(
   uploadSessionId: string,
   images: ImagesAllWithoutPostId[],
@@ -9,7 +11,7 @@ export function useFetchImageUrls(
   folderName: string,
 ) {
   return useQuery({
-    queryKey: ['imageUrls', uploadSessionId],
+    queryKey: queryKeys.image.imageUrl(uploadSessionId),
     queryFn: () => fetchImageUrls(images, bucketName, folderName),
     enabled: images.length > 0,
   });

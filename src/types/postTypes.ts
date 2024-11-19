@@ -1,3 +1,5 @@
+import type { createPostPositioningStore } from '@/stores/post/postPositioningStore';
+
 export type PostImage = {
   id: number;
   post_id: string;
@@ -27,3 +29,43 @@ export interface ImageUpload {
   user_id?: string;
   blobUrl?: string;
 }
+
+export interface PostData {
+  user_id: string;
+  group_id: string;
+  post_desc: string;
+  post_date: string;
+  post_time: string;
+  post_lat: number | null;
+  post_lng: number | null;
+  post_thumbnail_image: string;
+  image_array: string[];
+  post_address: string;
+}
+
+export interface UpdateImagePostIdParams {
+  postId: string;
+  uploadSessionId: string;
+}
+
+export interface TagData {
+  tag_title: string;
+  post_id: string;
+  group_id: string;
+}
+
+export type PostPositioningState = {
+  positioning: boolean;
+  imageName: string;
+  imageUrl: string;
+  content: string;
+  tag: string;
+};
+
+export type PostPositioningActions = {
+  selectPosition: () => void;
+};
+
+export type PostPositioningStore = PostPositioningState & PostPositioningActions;
+
+export type PostPositioningStoreApi = ReturnType<typeof createPostPositioningStore>;

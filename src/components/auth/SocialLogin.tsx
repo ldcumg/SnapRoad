@@ -12,6 +12,7 @@ const SocialLogin = () => {
         onClick={() => signInWithOAuth('kakao')}
         width={42}
         height={42}
+        className='cursor-pointer'
       />
       <img
         src='/svgs/Google_login.svg'
@@ -19,6 +20,7 @@ const SocialLogin = () => {
         onClick={() => signInWithOAuth('google')}
         width={42}
         height={42}
+        className='cursor-pointer'
       />
       <img
         src='/svgs/Github_login.svg'
@@ -26,6 +28,7 @@ const SocialLogin = () => {
         onClick={() => signInWithOAuth('github')}
         width={42}
         height={42}
+        className='cursor-pointer'
       />
     </div>
   );

@@ -1,24 +1,24 @@
-'use client';
+import LogoUserHeader from '@/components/layout/LogoUserHeader';
+import PostPageClient from '@/components/post/PostPageClient';
+import { Metadata } from 'next';
 
-import ImageBottomSheet from '@/components/post/ImageBottomSheet';
-import PostAddress from '@/components/post/PostAddress';
-import PostForm from '@/components/post/PostForm';
-import PostImage from '@/components/post/PostImage';
+export const metadata: Metadata = {
+  title: '글쓰기',
+  description: '여행지에 대한 새로운 글을 작성하세요.',
+  keywords: '여행지, 글쓰기, 여행지 포스트',
+};
 
 type Props = {
   params: { groupId: string };
 };
 
-const writePage = ({ params: { groupId } }: Props) => {
+const PostPage = ({ params: { groupId } }: Props) => {
   return (
-    <div className='w-full'>
-      {/* <h1>{groupId}</h1> */}
-      <PostAddress groupId={groupId} />
-      <ImageBottomSheet />
-      <PostImage showImages={true} />
-      <PostForm />
-    </div>
+    <>
+      <LogoUserHeader />
+      <PostPageClient groupId={groupId} />
+    </>
   );
 };
 
-export default writePage;
+export default PostPage;

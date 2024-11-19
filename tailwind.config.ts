@@ -11,6 +11,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        pc: '1200px',
+      },
       colors: {
         origin: 'hsl(var(--origin))',
         background: 'hsl(var(--background))',
@@ -18,6 +21,7 @@ const config: Config = {
         danger: 'hsl(var(--danger))',
         primary: {
           50: 'hsl(var(--primary-50))',
+          100: 'hsl(var(--primary-100))',
           200: 'hsl(var(--primary-200))',
           400: 'hsl(var(--primary-400))',
           600: 'hsl(var(--primary-600))',
@@ -85,98 +89,105 @@ const config: Config = {
           '32px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         head_m: [
           '28px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         head_sm: [
           '24px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         title_xl: [
           '20px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         title_lg: [
           '18px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
+          },
+        ],
+        label_lg: [
+          '18px',
+          {
+            lineHeight: '135%',
+            fontWeight: 600,
           },
         ],
         label_md: [
           '16px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         label_sm: [
           '14px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         body_lg: [
           '18px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         body_md: [
           '16px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         body_sm: [
           '14px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         caption_bold_lg: [
           '12px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         caption_bold_md: [
           '10px',
           {
             lineHeight: '135%',
-            fontWeight: '600',
+            fontWeight: 600,
           },
         ],
         caption_light_lg: [
           '12px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
         caption_light_md: [
           '10px',
           {
             lineHeight: '150%',
-            fontWeight: '300',
+            fontWeight: 300,
           },
         ],
       },
@@ -194,6 +205,20 @@ const config: Config = {
       backgroundImage: {
         'white-to-transparent-to-white':
           'linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0.5) 22.5%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 55%,rgba(255, 255, 255, 0.5) 77.5%, white 90%)',
+      },
+      animation: {
+        'color-change': 'colorChange 0.9s linear infinite',
+        'color-change-pink': 'colorChangePink 0.9s linear infinite',
+      },
+      keyframes: {
+        colorChange: {
+          '0%, 80%': { backgroundColor: '#DDDFE3' },
+          '90%, 100%': { backgroundColor: '#009E6C' },
+        },
+        colorChangePink: {
+          '0%, 80%': { backgroundColor: '#DDDFE3' },
+          '90%, 100%': { backgroundColor: '#EB8ADA' },
+        },
       },
     },
   },

@@ -1,5 +1,6 @@
 'use client';
 
+import AgreeList from './AgreeList';
 import { useSignUpForm } from '@/hooks/byUse/useAuthForm';
 import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
 import { signUpSchema } from '@/schemas/authSchemas';
@@ -8,7 +9,7 @@ import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 const SignUpForm = () => {
@@ -19,13 +20,14 @@ const SignUpForm = () => {
     watch,
   } = useSignUpForm();
 
-  const { mutate: signUp } = useSignUp();
+  const { mutate: signUp, isError } = useSignUp();
+
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
-  /** 체크박스 상태 */
+  /** 모달 밖 체크박스 상태 */
   const [isChecked, setIsChecked] = useState(false);
 
-  /** BottomSheet 내부 체크박스 상태 */
+  /** 모달 안 체크박스 상태 */
   const [isCheckedInSheet, setIsCheckedInSheet] = useState(false);
 
   /** 폼 제출 핸들러 */
@@ -33,13 +35,32 @@ const SignUpForm = () => {
     signUp(signUpSchema.parse(value));
   };
 
-  /** 완료 버튼 핸들러
-   * BottomSheet 체크박스 상태 메인 체크박스에 반영
-   */
+  /** 완료 버튼 핸들러: 모달 안 상태를 모달 밖에 반영 */
   const handleComplete = () => {
-    setIsChecked(isCheckedInSheet);
+    setIsChecked(isCheckedInSheet); // 모달 안 상태를 모달 밖 상태에 반영
     handleFullClose();
   };
+
+  const handleCheckboxToggle = () => {
+    setIsCheckedInSheet((prev) => {
+      const newState = !prev;
+      setIsChecked(newState); // 모달 밖 상태도 함께 업데이트
+      return newState;
+    });
+  };
+
+  // 모든 필드 값 감시
+  const email = watch('email');
+  const password = watch('password');
+  const confirmPassword = watch('confirmPassword');
+  const nickname = watch('nickname');
+
+  // 모든 필드가 비어있지 않은지 확인
+  const isFormFilled = useMemo(() => {
+    return email && password && confirmPassword && nickname;
+  }, [email, password, confirmPassword, nickname]);
+
+  if (isError) throw new Error('회원가입 에러 발생');
 
   return (
     <div className='flex flex-col gap-6'>
@@ -81,59 +102,51 @@ const SignUpForm = () => {
           />
         </div>
 
-        {/* TODO 약관 모달? */}
-        <div>
-          <input
-            type='checkbox'
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
-          />
-          <span
-            onClick={handleFullOpen}
-            className='cursor-pointer'
-          >
-            개인정보 수집·이용 약관 동의
-          </span>
+        {/* 모달 밖 체크박스 UI */}
+        <div
+          className='flex justify-between'
+          onClick={handleFullOpen}
+        >
+          <div className='flex items-center gap-4'>
+            <img
+              src={isChecked ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='h-[24px] w-[24px]'
+            />
+            <span className='cursor-pointer text-caption_bold_lg text-black'>개인정보 수집·이용 약관 동의</span>
+          </div>
+          <img src='/svgs/Arrow_Forward_LG.svg' />
         </div>
 
-        {/* TODO 버튼 활성화 */}
         <Button
           type='submit'
           label='회원가입'
           variant='primary'
+          disabled={!isChecked || !isFormFilled || Object.keys(errors).length > 0} // 수정된 부분
         />
       </form>
-      <div className='flex justify-center gap-2 text-gray-700 text-caption_bold_lg'>
+      <div className='flex justify-center gap-2 text-caption_bold_lg text-gray-700'>
         <span>이미 아이디가 있으신가요?</span>
         <Link href={'/login'}>로그인</Link>
       </div>
 
       <BottomSheet
         isOpen={isFullHeightOpen}
-        onClose={handleFullClose}
+        onClose={handleFullClose} // 취소 버튼을 누르면 바텀시트 닫기
+        onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
         title='개인정보 수집·이용 약관 동의'
-        buttonLabel='완료'
-        onButtonClick={handleComplete}
         height='full'
+        confirmLabel='완료'
+        cancelLabel='취소'
+        showCloseButton={false}
       >
         <div className='flex flex-col gap-4'>
-          <p>여기에 개인정보 수집·이용 약관 내용을 입력하세요.</p>
-          <input
-            type='checkbox'
-            checked={isCheckedInSheet}
-            onChange={(e) => setIsCheckedInSheet(e.target.checked)}
-          />
-          <span>개인정보 수집·이용 약관에 동의합니다.</span>
-          <div className='flex gap-2'>
-            <Button
-              label='취소'
-              onClick={handleFullClose}
+          <div className='flex gap-3'>
+            <img
+              src={isCheckedInSheet ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
+              className='h-[24px] w-[24px]'
+              onClick={handleCheckboxToggle}
             />
-            <Button
-              label='완료'
-              onClick={handleComplete}
-              disabled={!isCheckedInSheet} // 체크박스가 체크되어야 활성화
-            />
+            <AgreeList />
           </div>
         </div>
       </BottomSheet>

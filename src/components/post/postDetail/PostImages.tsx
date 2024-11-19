@@ -57,17 +57,17 @@ const PostImages = ({ images }: PostImagesProps) => {
       <div
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className='flex w-full h-[300px] justify-start items-center overflow-hidden'
+        className='flex h-[300px] w-full items-center justify-start overflow-hidden'
       >
         <div
           ref={moveCarousel}
-          className='flex w-full	h-full'
+          className='flex h-full w-full'
         >
           {images.map((image) =>
             image ? (
               <div
                 key={image}
-                className='flex-shrink-0 flex-[0_0_100%] relative h-full'
+                className='relative h-full flex-[0_0_100%] flex-shrink-0'
               >
                 <Image
                   key={image}
@@ -86,7 +86,7 @@ const PostImages = ({ images }: PostImagesProps) => {
         <button onClick={handleMovePrev}>앞</button>
         <button onClick={handleMoveNext}>뒤</button>
       </div> */}
-      <ul className='flex gap-1 justify-center'>
+      <ul className='flex justify-center gap-1'>
         {images.map((_, index) => {
           return (
             <li

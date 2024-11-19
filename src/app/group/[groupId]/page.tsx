@@ -1,27 +1,28 @@
 'use client';
 
-import GroupAlbum from '@/components/groupAlbum/GroupAlbum';
-import MemberList from '@/components/groupAlbum/MemberList';
+import Loading from '@/app/loading';
+import GroupAlbum from '@/components/groupDetail/GroupAlbum';
+import GroupDetailHeader from '@/components/groupDetail/GroupDetailHeader';
+import MemberList from '@/components/groupDetail/MemberList';
 import GroupMap from '@/components/map/GroupMap';
-import URLS from '@/constants/urls';
-import { useGroupInfoQuery } from '@/hooks/queries/byUse/useGroupQueries';
-// import Close_Member_List from '@/public/svgs/Close_Member_List.svg';
+import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
-type Props = Readonly<{ params: { groupId: string } }>;
+type Props = Readonly<{
+  params: { groupId: string };
+  searchParams: { lat: string; lng: string };
+}>;
 
-const GroupPage = ({ params: { groupId } }: Props) => {
-  //TODO - zustand 관리
-  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.album);
+const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
+  const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
-  if (isPending) return <>로딩</>;
+  if (isPending) return <Loading />;
 
   if (isError) throw new Error(error.message);
 
@@ -29,7 +30,12 @@ const GroupPage = ({ params: { groupId } }: Props) => {
   const groupDetailMode = () => {
     switch (mode) {
       case GroupDetailMode.map:
-        return <GroupMap groupId={groupId} />;
+        return (
+          <GroupMap
+            groupId={groupId}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } :undefined}
+          />
+        );
       case GroupDetailMode.album:
         return (
           <GroupAlbum
@@ -45,42 +51,14 @@ const GroupPage = ({ params: { groupId } }: Props) => {
     }
   };
 
-  /** 조건부 렌더링 버튼 */
-  const handleChangeMode = () => {
-    switch (mode) {
-      case GroupDetailMode.map:
-        return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
-            <img src='/svgs/Swap_Btn_To_Album.svg' />
-          </button>
-        );
-      case GroupDetailMode.album:
-        return (
-          <button onClick={() => setMode(GroupDetailMode.map)}>
-            <img src='/svgs/Swap_Btn_To_Map.svg' />
-          </button>
-        );
-      case GroupDetailMode.member:
-        return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
-            <img src='/svgs/Close_Member_List.svg' />
-          </button>
-        );
-      default:
-        throw new Error('잘못된 요청입니다.');
-    }
-  };
-
   return (
     <div className='flex h-screen flex-col'>
       <ToastContainer />
-      <header className='flex items-center justify-between px-4 py-2'>
-        <Link href={URLS.home}>
-          <img src='/svgs/Logo.svg' />
-        </Link>
-        <h2>{groupInfo.group_title}</h2>
-        {handleChangeMode()}
-      </header>
+      <GroupDetailHeader
+        groupTitle={groupInfo.group_title}
+        mode={mode}
+        setMode={setMode}
+      />
       {groupDetailMode()}
     </div>
   );

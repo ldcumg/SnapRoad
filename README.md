@@ -36,7 +36,7 @@
 ### 🖌️서란(디자이너) : 디자인 시스템, 모바일/웹 디자인
 
 ## 개발 기간 및 작업 관리
-#### MVP 개발 기간 : 2024-10-18 ~ 2024-11-07
+#### MVP 개발 기간 : 2024-10-18 ~ 2024-11-06
 #### User Test : 2024-11-08 ~ 2024-11-??
 #### 추가 개발 기간 : 2024-11-?? ~
 #### GitHub의 PullRequest 와 approve를 통해 개발 브랜치로의 지속 통합을 진행
@@ -44,7 +44,16 @@
 #### 매일 오전(개발 스크럼), 오후 스크럼(통합 스크럼)을 진행하여 지속적으로 진행상황을 공유하고, 변경사항에 대해 소통
 
 ## SnapRoad는 이런 걸 할 수 있어요
-서비스 소개 사진 들어갈 자리
+![랜딩페이지](https://github.com/user-attachments/assets/4adaf382-4ff6-4894-b562-809ccc66bc08)
+![로그인/회원가입](https://github.com/user-attachments/assets/8a9edd4b-f669-4df1-a13a-c22b5ae009e8)
+![마이페이지](https://github.com/user-attachments/assets/f4e24d58-8e8e-4f88-a6d9-4630ad1481df)
+![그룹리스트/그룹생성](https://github.com/user-attachments/assets/751d11b0-2de8-43ab-be50-7a136049fa6c)
+![지도검색](https://github.com/user-attachments/assets/007cd988-434a-4ce5-8380-a4d1c8099433)
+![지도형게시물_1](https://github.com/user-attachments/assets/3af517a4-aaa5-4933-b50a-0ff244311a23)
+![지도형게시물_2](https://github.com/user-attachments/assets/7a16463b-9937-4483-8069-0f6e4f5ee05f)
+![앨범형게시물](https://github.com/user-attachments/assets/88208f85-b823-46b9-abab-cfbf9380b1c3)
+![그룹게시물등록](https://github.com/user-attachments/assets/8eb69d8d-ea72-44c9-91a1-9fa79029988c)
+![그룹게시물상세](https://github.com/user-attachments/assets/eab934bb-2686-453d-b54e-cbfc1875c822)
 
 ## SnapRoad는 이런 기술을 사용했어요
 ![기술의사결정](https://github.com/user-attachments/assets/b0dd07ec-5f2a-4cf0-9c8b-d2f3a2462fb5)
@@ -81,20 +90,21 @@
   - 왜 카카오 지도를 사용했나?
     - 국내 여행에 관련된 서비스를 제공하다보니 카카오 지도 사용하여 여러 데이터를 받을 수 있음
 + `Zod` `React Hook Form`
-  - 간결한 유효성 검사 통합
-    - Zod의 Schema, React Hook Form의 resolver를 결합하여 폼의 유효성 검사를 쉽게 관리
-    - Zod 스키마를 zodResolver로 연결하여, 설정된 상태에 따라 Zod Schema를 사용해 유효성 검사를 수행
-  - 코드 가독성 및 유지 보수성 향상
-    - 유효성 검사 로직과 Zod Schema 분리로 폼 관련 로직을 쉽게 이해하고 유지보수 가능
-  - 타입 안전성
-    - Zod Schema를 통해 생성된 타입을 활용하여 타입스크립트가 제공하는 타입 안정성을 확보
-    - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능
+  - 왜 Zod와 React-Hook-Form을 사용했나?
+    - 간결한 유효성 검사 통합
+      - Zod의 Schema, React Hook Form의 resolver를 결합하여 폼의 유효성 검사를 쉽게 관리
+      - Zod 스키마를 zodResolver로 연결하여, 설정된 상태에 따라 Zod Schema를 사용해 유효성 검사를 수행
+    - 코드 가독성 및 유지 보수성 향상
+      - 유효성 검사 로직과 Zod Schema 분리로 폼 관련 로직을 쉽게 이해하고 유지보수 가능
+    - 타입 안전성
+      - Zod Schema를 통해 생성된 타입을 활용하여 타입스크립트가 제공하는 타입 안정성을 확보
+      - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능
 
 ## SnapRoad의 데이터 테이블 구조
 ![erd](https://github.com/user-attachments/assets/8f8f924c-e2df-448d-b613-5f76429840be)
 
 ## SnapRoad의 MVP 데이터 요청 흐름도
-![]()
+![데이터 요청 흐름](https://github.com/user-attachments/assets/9cbb0b64-1603-4975-a201-9da34bdd40a6)
 
 ## 트러블 슈팅
 ### 최유나
@@ -265,6 +275,9 @@
 #### 트러블 슈팅 분석
 - 최적화 이전 17개에 달하는 요청이 sql문으로 최적화 후 7개로 줄였으며 최대 요청시간도 0.8초로 최적화 완료
 ![성능개선결과](https://github.com/user-attachments/assets/e2133ae7-0ba8-41af-b581-0dfeea98c9fb)
+#### 추가 트러블슈팅 자료
+[데이터 테이블 설정 미비로 인한 오류 수정](https://codingpracticenote.tistory.com/349)
+
 <br/>
 
 ### 정민지
@@ -317,7 +330,7 @@ create trigger on_auth_user_created
 3. 이미지 올리는데 너무 오래걸리는데 이건 어떻게 처리해야하는지
 
 ### 이원빈
-1. 지도 첫 화면에서 게시물들이 다 보이게 지도 위치 재조정하기
+1. 검색 결과 더보기 적용하기
 2. 지도에 마커로 보여줄 게시물들의 정보를 서버 상태에서 prefetch하기
 3. 그룹 앨범 토글버튼 hover시 prefetch하기
 

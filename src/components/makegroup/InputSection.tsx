@@ -5,7 +5,7 @@ import { FormState, UseFormRegister } from 'react-hook-form';
 interface FormValues {
   groupTitle: string;
   groupDesc: string;
-  groupImg: null;
+  groupImg: File[];
 }
 
 type Props = {
@@ -15,11 +15,20 @@ type Props = {
   groupTitleLen: number;
   groupDescLen: number;
   clearInputValue: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleInputImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDescLen, clearInputValue }: Props) => {
+const InputSection = ({
+  register,
+  formState,
+  imgPreview,
+  groupTitleLen,
+  groupDescLen,
+  clearInputValue,
+  handleInputImageChange,
+}: Props) => {
   return (
-    <section className='flex flex-col justify-center items-center gap-2 w-full'>
+    <section className='flex w-full flex-col items-center justify-center gap-2'>
       <div>
         <label htmlFor='group_image'>
           <ImagePreview imgPreview={imgPreview} />
@@ -29,13 +38,14 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
           id='group_image'
           accept='image/*'
           className='hidden'
-          {...register('groupImg')}
+          onChange={handleInputImageChange}
         />
       </div>
-      <div className='flex flex-col justify-center gap-6 w-full'>
+      <div className='flex w-full flex-col justify-center gap-6'>
         <LengthInput
           register={register}
           name='groupTitle'
+          placeholder='그룹 이름을 입력해주세요.'
           clearInputValue={clearInputValue}
           curLength={groupTitleLen}
           maxLength={8}
@@ -43,12 +53,12 @@ const InputSection = ({ register, formState, imgPreview, groupTitleLen, groupDes
         {/* <p className='text-red-600 min-h-[20px] text-[14px]'>
           {formState.errors.groupTitle && formState.errors.groupTitle.message}
         </p> */}
-        <div className='relative flex justify-center w-full'>
+        <div className='relative flex w-full justify-center'>
           <textarea
             id='group_desc'
-            className='w-full h-[140px] bg-white text-gray-900 text-body-md p-3 placeholder:text-gray-400 resize-none outline-none border border-solid border-gray-100 rounded-xl '
+            className='text-body-md h-[140px] w-full resize-none rounded-xl border border-solid border-gray-100 bg-white p-3 text-gray-900 outline-none placeholder:text-gray-400'
             {...register('groupDesc')}
-            placeholder='이 그룹에 대해서 설명해주세요.'
+            placeholder='그룹에 대해서 설명해주세요.'
             maxLength={40}
           />
           <p className='absolute bottom-3 right-3 text-gray-300'>{groupDescLen}/40</p>

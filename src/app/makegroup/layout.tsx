@@ -2,9 +2,8 @@ import MakeGroupHeader from '@/components/makegroup/MakeGroupHeader';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js Project',
-  description: 'A Next.js project with TypeScript and TailwindCSS.',
-  keywords: 'Next.js, Typescript, TailwindCSS',
+  title: '그룹 생성하기',
+  description: '그룹을 생성하여 여행을 기록해보세요!',
 };
 
 type Props = Readonly<{ children: React.ReactNode }>;

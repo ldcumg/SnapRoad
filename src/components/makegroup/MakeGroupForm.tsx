@@ -1,33 +1,64 @@
 'use client';
 
+import ImageCropper from '../_common/ImageCropper';
 import InputSection from '@/components/makegroup/InputSection';
 import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
+import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import {
   useInsertGroupMutation,
   useInsertUserGroupMutation,
   useUpdateGroupMutation,
 } from '@/hooks/queries/byUse/useGroupMutations';
-import { useGroupDetailQueryForUpdate } from '@/hooks/queries/byUse/useGroupQueries';
+import { useGroupDetailQueryForUpdate } from '@/hooks/queries/group/useGroupQueries';
+import queryKeys from '@/hooks/queries/queryKeys';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
+import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
+import { AreaPixedType, unCroppedImg } from '@/types/CropTypes';
+import getCroppedImg from '@/utils/getCroppedImage';
 import browserClient from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import { useIsFetching } from '@tanstack/react-query';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 type Props = {
   update_for?: string;
+  handleUpdateModal?: () => void;
+};
+export type GroupFormType = {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: File[];
 };
 
-const MakeGroupForm = ({ update_for }: Props) => {
+const MakeGroupForm = ({ update_for, handleUpdateModal }: Props) => {
   const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
-  const { isError: insertGroupDataError, mutateAsync: insertGroupDataMutate } = useInsertGroupMutation();
-  const { isError: insertUserGroupError, mutate: insertUserGroupMutate } = useInsertUserGroupMutation();
+  //NOTE - 업데이트 상태일 시 데이터 가져오기
+  const { data: groupDetailData, isPending: isPendingBeforeData } = useGroupDetailQueryForUpdate(update_for as string);
+  //NOTE - 그룹 테이블 insert mutation
+  const {
+    isError: insertGroupDataError,
+    mutateAsync: insertGroupDataMutate,
+    isPending: isPendingInsertGroup,
+  } = useInsertGroupMutation(handleUpdateModal, handleUpdateModal && reset);
+  //NOTE - 유저_그룹테이블 insert mutation
+  const {
+    isError: insertUserGroupError,
+    mutate: insertUserGroupMutate,
+    isPending: isPendingInsertUserGroup,
+  } = useInsertUserGroupMutation();
+  //NOTE - 그룹 테이블 update mutation
+  const {
+    isError: updateGroupDataError,
+    mutateAsync: updateGroupDataMutate,
+    isPending: isPendingUpdate,
+  } = useUpdateGroupMutation(update_for as string, handleUpdateModal);
 
-  const { isError: updateGroupDataError, mutateAsync: updateGroupDataMutate } = useUpdateGroupMutation(
-    update_for as string,
-  );
+  const isFetchingBeforeData = isPendingBeforeData && update_for;
+  const isInserting = isPendingInsertGroup || isPendingInsertUserGroup;
+  const isUpdating = isPendingUpdate && update_for;
 
   const onSubmit = async (value: FieldValues) => {
     //TODO - 파일 확장자 관련 유효성 검사 필요
@@ -51,14 +82,8 @@ const MakeGroupForm = ({ update_for }: Props) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const file = new File([blob], 'group_image.jpg', { type: blob.type });
-
-    // FileList 객체 생성
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    return dataTransfer.files;
+    return [file];
   };
-
-  const { data: groupDetailData, isPending, isLoading } = useGroupDetailQueryForUpdate(update_for as string);
 
   useEffect(() => {
     const fillGroupData = async () => {
@@ -67,9 +92,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
-          groupImg: fileList as unknown as null,
+          groupImg: fileList as unknown as File[],
         });
-      } else if (groupDetailData) {
+        setImgPreview(groupDetailData.group_image_url);
+      } else if (groupDetailData && !groupDetailData.group_image_url) {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
@@ -81,29 +107,67 @@ const MakeGroupForm = ({ update_for }: Props) => {
 
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
-  const groupThumbnail = watch('groupImg') as FileList | null;
-  useEffect(() => {
-    if (groupThumbnail && groupThumbnail.length) {
-      setImgPreview(URL.createObjectURL(groupThumbnail['0']));
-    }
-  }, [groupThumbnail]);
+
+  const isFetchingSomething = useIsFetching() > 0;
+
+  const isValidToSubmit =
+    (groupTitleLen > 0 && !formState.errors.groupTitle) ||
+    isFetchingBeforeData ||
+    isInserting ||
+    isUpdating ||
+    isFetchingSomething;
+
   const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setValue('groupTitle', '');
     clearErrors('groupTitle');
   };
 
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<AreaPixedType>(null);
+  const [unCroppedImage, setUnCroppedImage] = useState<unCroppedImg>(null);
+  const [cropperModal, handleCropperModal] = useIsOpen(false);
+
+  // NOTE - 동일 파일을 다시 자르길 원할 때 다시 업로드하면 변화를 체크하지 못함
+  const handleInputImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    if (e.target.files && e.target.files[0]) {
+      handleCropperModal();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = () => {
+        setUnCroppedImage(reader.result);
+      };
+    }
+  };
+
+  const handleCropImage = async () => {
+    if (!croppedAreaPixels || !unCroppedImage) return; // 크롭 영역과 이미지가 있어야 함
+    try {
+      const cropped = (await getCroppedImg(unCroppedImage as string, croppedAreaPixels)) as File;
+      setValue('groupImg', [cropped]);
+      setImgPreview(URL.createObjectURL(cropped as Blob));
+      handleCropperModal();
+      setUnCroppedImage(null); // 크롭한 이미지 리셋
+    } catch (e) {
+      throw new Error('이미지 자르기 실패');
+    }
+  };
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
-    <>
-      {update_for && isPending && (
-        <div className='w-full h-full absolute z-[3000] bg-black opacity-10 flex justify-center items-center'>
-          <Spinner />
+    <div className='relative'>
+      {(isFetchingBeforeData || isInserting || isUpdating || isFetchingSomething) && (
+        <div className='absolute z-[3000] flex h-full w-full items-center justify-center bg-black bg-opacity-10'>
+          <Spinner color='primary-400' />
         </div>
       )}
+      <ImageCropper
+        unCroppedImage={unCroppedImage}
+        setCroppedAreaPixels={setCroppedAreaPixels}
+        cropperModal={cropperModal}
+        handleCropImage={handleCropImage}
+      />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-col justify-center items-center gap-6 px-4 pt-4'
+        className='flex flex-col items-center justify-center gap-6 px-4 pt-4'
       >
         <InputSection
           register={register}
@@ -112,15 +176,18 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupTitleLen={groupTitleLen}
           groupDescLen={groupDescLen}
           clearInputValue={clearInputValue}
+          handleInputImageChange={handleInputImageChange}
         />
-        <button
-          className='cursor-pointer bg-primary-400 w-full py-4 rounded-xl text-white text-title_lg'
+        <Button
+          variant='primary'
+          disabled={!isValidToSubmit}
+          size='full'
           type='submit'
-        >
-          {update_for ? '수정 완료' : '그룹 만들기'}
-        </button>
+          loading={isFetchingSomething}
+          label={update_for ? '수정 완료' : '그룹 만들기'}
+        />
       </form>
-    </>
+    </div>
   );
 };
 

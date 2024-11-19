@@ -1,56 +1,59 @@
+import { useCommentForm } from '@/hooks/byUse/useCommentForm';
 import { usePostComment } from '@/hooks/queries/byUse/useCommentMutation';
 import { Button } from '@/stories/Button';
-import React, { useState } from 'react';
+import { UserDetail } from '@/types/postDetailTypes';
+import React, { useEffect } from 'react';
+import { FieldValues } from 'react-hook-form';
 
-interface CommentFormProps {
-  postId: string;
-  user: {
-    profiles: {
-      user_id: string;
-      user_image_url: string | null;
-      user_nickname: string | null;
-    };
-    profileImageUrl: string | undefined;
-  };
-  parentId: string | null;
-  setIsWriteMode: React.Dispatch<React.SetStateAction<boolean>>;
+type CommentFormProps = {
+  setIsWriteMode?: React.Dispatch<React.SetStateAction<boolean>>;
   setIsWriteReplyMode?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+  parentId: string | null;
+  postId: string;
+  userDetail: UserDetail;
+};
 
-const CommentForm = ({ postId, user, parentId, setIsWriteMode, setIsWriteReplyMode }: CommentFormProps) => {
-  const [comment, setComment] = useState<string>('');
+const CommentForm = ({ setIsWriteMode, setIsWriteReplyMode, parentId, postId, userDetail }: CommentFormProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setFocus,
+  } = useCommentForm();
 
   const { mutate: fetchPostComment } = usePostComment();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  useEffect(() => {
+    setFocus('comment');
+  }, [setFocus]);
 
+  const comment = watch('comment');
+
+  const onSubmitComment = async (value: FieldValues) => {
     fetchPostComment({
       postId: postId,
-      userId: user?.profiles.user_id!,
+      userId: userDetail?.profiles.user_id!,
       parentId: parentId,
-      commentDesc: comment,
+      commentDesc: value.comment,
     });
-    setComment('');
-    setIsWriteMode(false);
-    if (setIsWriteReplyMode) setIsWriteReplyMode(false);
+
+    if (setIsWriteMode) setIsWriteMode(false); // 글 등록을 했으면 등록 폼 닫기
+    if (setIsWriteReplyMode) setIsWriteReplyMode(false); // 대댓글 등록 했으면 닫기
   };
 
   return (
-    <div className='py-4 '>
+    <div className='p-4'>
       <form
         className='flex flex-col gap-2'
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmitComment)}
       >
-        <div className='flex flex-col border rounded-[12px] py-2 px-3 gap-1 bg-white'>
-          <span className='text-gray-900 text-label_sm'>{user?.profiles.user_nickname}</span>
-          <input
-            value={comment}
-            onChange={(e) => {
-              setComment(e.target.value);
-            }}
+        <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
+          <span className='text-label_sm text-gray-900'>{userDetail?.profiles.user_nickname}</span>
+          <textarea
+            {...register('comment')}
             placeholder='댓글을 입력해주세요.'
-            className='pb-6'
+            className='resize-none pb-6'
           />
         </div>
         <div className='flex justify-end'>
@@ -59,6 +62,7 @@ const CommentForm = ({ postId, user, parentId, setIsWriteMode, setIsWriteReplyMo
             variant='primary'
             label='등록 '
             size='small'
+            disabled={!comment}
           />
         </div>
       </form>
