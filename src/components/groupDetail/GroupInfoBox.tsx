@@ -31,7 +31,7 @@ const GroupInfoBox = ({
             <button onClick={() => setMode(GroupDetailMode.member)}>
               <div className='flex flex-row items-center gap-[4px] rounded-xl border border-gray-100 px-[8px] py-[4px]'>
                 <img src='/svgs/Group_Member.svg' />
-                <p className='text-label_sm pc:text-label_md'>{user_group.length}</p>
+                <span className='text-label_sm pc:text-label_md'>{user_group.length}</span>
               </div>
             </button>
             {desktop ? (
@@ -44,7 +44,7 @@ const GroupInfoBox = ({
               </Link>
             )}
           </div>
-          <p className='word-break: break-all text-caption_light_lg pc:text-body_sm'>{group_desc}</p>
+          <span className='word-break: break-all text-caption_light_lg pc:text-body_sm'>{group_desc}</span>
         </div>
       </div>
     </div>

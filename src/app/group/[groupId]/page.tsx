@@ -40,6 +40,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
         return (
           <GroupMap
             groupId={groupId}
+            desktop={desktop}
             point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : undefined}
           />
         );

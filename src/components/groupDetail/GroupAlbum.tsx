@@ -90,8 +90,8 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
         </>
       ) : (
         <div className='mt-[160px] flex h-full flex-col items-center text-title_lg text-gray-500 pc:mt-[264.5px]'>
-          <p>게시물이 없습니다.</p>
-          <p>추억을 공유해보세요!</p>
+          <span>게시물이 없습니다.</span>
+          <span>추억을 공유해보세요!</span>
         </div>
       )}
       {/* TODO - 스크롤 없을 시 숨기기 */}

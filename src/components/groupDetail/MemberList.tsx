@@ -26,7 +26,7 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
           onClick={copyInvitationCode}
         >
           <img src='/svgs/User_Plus.svg' />
-          <p className='text-label_sm text-gray-700'>초대코드 복사</p>
+          <span className='text-label_sm text-gray-700'>초대코드 복사</span>
         </button>
       </div>
       <ol className='flex flex-col justify-center gap-[24px] p-[16px] pc:mx-auto pc:grid pc:w-[1194px] pc:grid-cols-3 pc:gap-x-[30px] pc:gap-y-[60px] pc:p-0'>
@@ -46,12 +46,12 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
                 alt='프로필 이미지'
               />
               <div className='flex gap-[8px] pc:gap-[12px]'>
-                <p className='rounded-xl bg-gray-50 px-[8px] py-[4px] text-caption_light_md text-gray-500 pc:text-caption_light_lg'>
+                <span className='rounded-xl bg-gray-50 px-[8px] py-[4px] text-caption_light_md text-gray-500 pc:text-caption_light_lg'>
                   {is_owner ? '그룹장' : '멤버'}
-                </p>
+                </span>
                 <div className='flex items-center gap-[4px]'>
-                  <p className='text-caption_bold_lg text-gray-700 pc:text-label_sm'>{user_nickname}</p>
-                  <p className='text-caption_light_md text-gray-500 pc:text-caption_light_lg'>{user_email}</p>
+                  <span className='text-caption_bold_lg text-gray-700 pc:text-label_sm'>{user_nickname}</span>
+                  <span className='text-caption_light_md text-gray-500 pc:text-caption_light_lg'>{user_email}</span>
                 </div>
               </div>
             </li>
