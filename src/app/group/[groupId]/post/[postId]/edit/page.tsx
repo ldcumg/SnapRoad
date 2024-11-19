@@ -2,7 +2,6 @@ import LogoUserHeader from '@/components/layout/LogoUserHeader';
 import EditForms from '@/components/post/EditForms';
 import PostAddress from '@/components/post/PostAddress';
 import ImageBottomSheet from '@/components/post/PostBottomSheet';
-import PostImage from '@/components/post/PostImage';
 import { fetchPostDetail } from '@/services/postDetailService';
 import type { Metadata } from 'next';
 
@@ -25,7 +24,6 @@ const EditPage = async ({ params: { groupId, postId } }: Props) => {
       <div className='mt-14'>
         <PostAddress groupId={groupId} />
         <ImageBottomSheet />
-        <PostImage showImages={false} />
         <EditForms postDetail={postDetail} />
       </div>
     </>

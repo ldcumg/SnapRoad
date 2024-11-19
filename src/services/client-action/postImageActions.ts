@@ -1,7 +1,5 @@
 import { ONE_DAY_FOR_SUPABASE } from '@/constants/time';
-import { ImagesAllWithoutPostId, ImagesWithoutPostId } from '@/types/projectType';
 import { formatDateToNumber } from '@/utils/dateUtils';
-import { removeFileExtension } from '@/utils/fileNameUtils';
 import browserClient from '@/utils/supabase/client';
 
 /**
@@ -22,7 +20,6 @@ export const fetchSignedUrl = async (bucketName: string, folderName: string, fil
     return '/path/to/default/image.png';
   }
 
-  // console.log('Signed URL 성공:', data.signedUrl);
   return data.signedUrl;
 };
 
@@ -63,12 +60,10 @@ export const saveImageMetadata = async (
   currentDate: string,
   uploadSessionId: string,
 ) => {
-  // URL에서 기본 위도와 경도 값 추출
   const url = new URL(window.location.href);
   const defaultLat = url.searchParams.get('lat');
   const defaultLng = url.searchParams.get('lng');
 
-  // EXIF 데이터가 없는 경우 URL에서 가져온 기본 값을 사용
   const latitude = exifData?.latitude || defaultLat;
   const longitude = exifData?.longitude || defaultLng;
 
@@ -79,8 +74,6 @@ export const saveImageMetadata = async (
       post_image_url: signedUrl,
       created_at: currentDate,
       is_cover: false,
-      // post_lat: exifData.latitude,
-      // post_lng: exifData.longitude,
       post_lat: latitude,
       post_lng: longitude,
       origin_created_at: formatDateToNumber(exifData.dateTaken),
@@ -131,9 +124,7 @@ async function resetCoverImages(userId: string, uploadSessionId: string) {
   if (error) {
     console.error('대표 이미지 초기화 실패:', error.message);
     throw new Error('대표 이미지 초기화 실패');
-  } else {
-    // console.log('모든 대표 이미지 초기화 성공');
-  }
+  } 
 }
 
 async function setCoverImage(imageId: number) {
@@ -142,16 +133,12 @@ async function setCoverImage(imageId: number) {
   if (error) {
     console.error('대표 이미지 설정 실패:', error.message);
     throw new Error('대표 이미지 설정 실패');
-  } else {
-    // console.log('대표 이미지 설정 성공:', imageId);
-  }
+  } 
 }
 
 export async function updateCoverImage(imageId: number, userId: string, uploadSessionId: string) {
-  console.log('대표 이미지 업데이트 중:', { userId, imageId, uploadSessionId });
-  await resetCoverImages(userId, uploadSessionId); // 모든 이미지를 초기화
-  await setCoverImage(imageId); // 특정 이미지에 대해서만 is_cover: true 설정
-  // console.log('대표 이미지가 설정되었습니다.');
+  await resetCoverImages(userId, uploadSessionId); 
+  await setCoverImage(imageId);
 }
 
 /**

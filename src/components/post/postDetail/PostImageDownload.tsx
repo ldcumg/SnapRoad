@@ -28,7 +28,7 @@ const PostImageDownload = ({ postDetail }: ProfileProps) => {
   return (
     <div
       onClick={handleDownloadImages}
-      className='flex items-center'
+      className='flex cursor-pointer items-center'
     >
       <Icon_Download />
     </div>

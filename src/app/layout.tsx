@@ -1,3 +1,4 @@
+import LayoutMain from '@/components/layout/LayoutMain';
 import { PostPositioningProvider } from '@/components/providers/PostPositioningProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import '@/lib/styles/globals.css';
@@ -9,10 +10,7 @@ Sentry.init({
   release: 'snpaRoad@2.3.12',
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   tracesSampleRate: 1.0,
-  tracePropagationTargets: [
-    'localhost', // 개발 환경
-    /^https:\/\/snaproad\.co\.kr\/api/, // SnapRoad의 API 엔드포인트
-  ],
+  tracePropagationTargets: ['localhost', /^https:\/\/snaproad\.co\.kr\/api/],
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });
@@ -42,10 +40,10 @@ const RootLayout = ({
       lang='ko'
       suppressHydrationWarning
     >
-      <body className={`font-sans`}>
+      <body className='font-sans'>
         <QueryProvider>
           <PostPositioningProvider>
-            <main className='mx-auto h-full w-full max-w-[1200px]'>{children}</main>
+            <LayoutMain>{children}</LayoutMain>
           </PostPositioningProvider>
         </QueryProvider>
       </body>

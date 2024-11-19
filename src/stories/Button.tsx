@@ -36,7 +36,7 @@ export const Button = ({
   const sizeStyle = {
     small: 'px-4 py-2 text-label_sm rounded-[4px]',
     medium: 'px-5 py-3 text-label_md rounded-[8px]',
-    large: 'px-6 py-3 text-title_lg rounded-[12px]',
+    large: 'px-6 py-3 text-label-lg rounded-[12px]',
     full: 'px-5 py-3 text-label_md rounded-[8px] w-full',
   }[size];
 
