@@ -58,7 +58,9 @@ const RandomImage = () => {
                     </Link>
                     <div className='absolute inset-0 basis-[220px] rounded-xl bg-gradient-to-b from-transparent to-black'></div>
                     <p className='absolute bottom-0 flex w-full flex-row justify-between px-4 py-4 text-white'>
-                      <span className='text-title_lg'>{getSlicedAddress(data.post_address)}</span>
+                      <span className='max-w-[110px] text-ellipsis text-title_lg pc:max-w-[185px]'>
+                        {getSlicedAddress(data.post_address)}
+                      </span>
                       <span className='text-body_sm'>{formatDateToYY_MM_DD(data.created_at)}</span>
                     </p>
                   </CardContent>
