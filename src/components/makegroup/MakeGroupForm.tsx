@@ -7,9 +7,8 @@ import {
   useInsertGroupMutation,
   useInsertUserGroupMutation,
   useUpdateGroupMutation,
-} from '@/hooks/queries/byUse/useGroupMutations';
+} from '@/hooks/queries/group/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/group/useGroupQueries';
-import queryKeys from '@/hooks/queries/queryKeys';
 import { useMakeGroupForm } from '@/hooks/useCustomForm/useGroupForm';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
