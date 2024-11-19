@@ -7,13 +7,13 @@ const LoginOptions = () => {
   return (
     <div className='flex justify-center gap-6'>
       <Link
-        className='text-gray-700 text-body_md'
-        href={'/mypage/password-reset'}
+        className='text-body_md text-gray-700'
+        href={'/mypage/password'}
       >
         비밀번호 찾기
       </Link>
       <Link
-        className='text-gray-700 text-label_md'
+        className='text-label_md text-gray-700'
         href={'/signup'}
       >
         회원가입

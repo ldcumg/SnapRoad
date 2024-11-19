@@ -76,7 +76,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
 
   // TODO 분리
   return (
-    <div className='mt-12 flex flex-col'>
+    <div className='m-auto mt-12 flex w-full max-w-[23rem] flex-col'>
       <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className='flex flex-col items-center'>
           <div className='relative h-[184px] w-[184px]'>

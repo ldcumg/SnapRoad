@@ -1,6 +1,7 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { createClient } from '@/utils/supabase/server';
 
 export const getProfile = async (userId: string) => {
@@ -11,7 +12,7 @@ export const getProfile = async (userId: string) => {
   if (error) throw new Error(error.message);
 
   const userProfile = profiles;
-  const signedImgUrl = await getSignedImgUrl('avatars', 86400, userProfile.user_image_url as string);
+  const signedImgUrl = await getSignedImgUrl('avatars', TEN_MINUTES_FOR_SUPABASE, userProfile.user_image_url as string);
 
   return { profiles: profiles, profileImageUrl: signedImgUrl ?? null };
 };

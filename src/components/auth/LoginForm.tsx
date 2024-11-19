@@ -24,7 +24,7 @@ const LoginForm = () => {
   if (isError) throw new Error('로그인 에러 발생');
 
   return (
-    <div className='md:m-auto md:w-full md:max-w-[50%]'>
+    <div className='m-auto w-full max-w-[23rem]'>
       <form
         onSubmit={handleSubmit(handleLogin)}
         className='flex flex-col gap-8'
