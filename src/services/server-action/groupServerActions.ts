@@ -3,7 +3,7 @@
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
 import buckets from '@/constants/buckets';
-import { ONE_HOUR_FOR_SUPABASE } from '@/constants/time';
+import { ONE_HOUR_FOR_SUPABASE, TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import type { GroupInfo, GroupWithCounts, PostDataListType } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
