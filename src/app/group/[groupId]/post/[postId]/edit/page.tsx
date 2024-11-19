@@ -1,7 +1,5 @@
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
-import EditForms from '@/components/post/EditForms';
-import PostAddress from '@/components/post/PostAddress';
-import ImageBottomSheet from '@/components/post/PostBottomSheet';
+import EditPageClient from '@/components/post/EditPageClient';
 import { fetchPostDetail } from '@/services/postDetailService';
 import type { Metadata } from 'next';
 
@@ -12,20 +10,19 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  params: { groupId: string; postId: string };
+  params: { postId: string; groupId: string };
 };
 
-const EditPage = async ({ params: { groupId, postId } }: Props) => {
+const EditPage = async ({ params: { postId, groupId } }: Props) => {
   const postDetail = await fetchPostDetail(postId);
 
   return (
     <>
       <LogoUserHeader />
-      <div className='mt-14'>
-        <PostAddress groupId={groupId} />
-        <ImageBottomSheet />
-        <EditForms postDetail={postDetail} />
-      </div>
+      <EditPageClient
+        postDetail={postDetail}
+        groupId={groupId}
+      />
     </>
   );
 };

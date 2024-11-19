@@ -17,10 +17,6 @@ const PostPageClient = ({ groupId }: Props) => {
     setDesktop(true);
   }, []);
 
-  if (!desktop) {
-    return <section className='mt-14' />;
-  }
-
   return (
     <section className={`${isDesktop ? 'mx-auto mb-20 mt-36 max-w-[654px]' : 'mt-14'}`}>
       <PostImageBottomSheet />

@@ -104,18 +104,9 @@ const PostForms = ({ groupId }: { groupId: string }) => {
           </div>
 
           <PostAddress groupId={groupId} />
-
-          <TextAreaWithCounter
-            id='formValue'
-            variant='default'
-            maxLength={1000}
-            placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-            errorText={errors.desc && String(errors.desc.message)}
-            {...register('desc')}
-          />
         </>
       ) : (
-        <div className=''>
+        <>
           <PostAddress groupId={groupId} />
           <div className='mb-4 flex w-full items-start justify-start gap-4 overflow-x-auto'>
             {images.length > 0 &&
@@ -142,8 +133,10 @@ const PostForms = ({ groupId }: { groupId: string }) => {
               </div>
             </button>
           </div>
+        </>
+      )}
 
-          <TextAreaWithCounter
+   <TextAreaWithCounter
             id='formValue'
             variant='default'
             maxLength={1000}
@@ -151,9 +144,6 @@ const PostForms = ({ groupId }: { groupId: string }) => {
             errorText={errors.desc && String(errors.desc.message)}
             {...register('desc')}
           />
-        </div>
-      )}
-
       <Controller
         name='hashtags'
         control={control}
@@ -173,7 +163,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
         type='submit'
         label='게시물 업로드'
         variant='primary'
-        className={`${isDesktop ? 'mx-auto !mt-24 w-1/2' : ''}`}
+        className='mx-auto mt-6 inline-flex w-full items-center justify-center rounded-[12px] bg-primary-400 px-6 py-3 text-white hover:bg-primary-600 focus:outline-none lg:!mt-24 lg:w-1/2'
         size='large'
       />
     </form>
