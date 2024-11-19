@@ -1,5 +1,6 @@
 'use server';
 
+import tables from '@/constants/tables';
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { createClient } from '@/utils/supabase/server';
 
@@ -8,7 +9,7 @@ export const fetchGetComments = async (postId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('comment')
+    .from(tables.comment)
     .select('*, profiles(*)')
     .eq('post_id', postId)
     .is('deleted_at', null);
@@ -22,7 +23,7 @@ export const fetchComments = async (postId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('comment')
+    .from(tables.comment)
     .select('*, comment_author_user:profiles (user_id, user_nickname, user_image_url) ')
     .eq('post_id', postId)
     .is('deleted_at', null);
@@ -57,7 +58,7 @@ export const fetchInsertComment = async (newComment: {
 }) => {
   const supabase = createClient();
 
-  const { data, error } = await supabase.from('comment').insert([
+  const { data, error } = await supabase.from(tables.comment).insert([
     {
       post_id: newComment.postId,
       user_id: newComment.userId,
@@ -75,7 +76,7 @@ export const fetchDeleteComment = async (commentId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('comment')
+    .from(tables.comment)
     .update({ deleted_at: new Date().toISOString() })
     .eq('comment_id', commentId)
     .select();
@@ -89,7 +90,7 @@ export const fetchUpdateComment = async (commentId: string, commentDesc: string)
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('comment')
+    .from(tables.comment)
     .update({ comment_desc: commentDesc })
     .eq('comment_id', commentId)
     .select();

@@ -1,6 +1,7 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import tables from '@/constants/tables';
 import { createClient } from '@/utils/supabase/server';
 
 /** 회원가입 */
@@ -68,7 +69,7 @@ export const resetPassword = async (newPassword: string) => {
 export const getUserData = async (userId: string) => {
   const supabase = createClient();
   let { data, error } = await supabase
-    .from('profiles')
+    .from(tables.profiles)
     .select('user_nickname, user_image_url')
     .eq('user_id', userId)
     .single();

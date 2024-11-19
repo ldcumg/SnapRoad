@@ -1,13 +1,14 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import tables from '@/constants/tables';
 import { createClient } from '@/utils/supabase/server';
 
 export const getProfile = async (userId: string) => {
   const supabase = createClient();
 
   /** 프로필 정보 가져오기 */
-  const { data: profiles, error } = await supabase.from('profiles').select('*').eq('user_id', userId).single();
+  const { data: profiles, error } = await supabase.from(tables.profiles).select('*').eq('user_id', userId).single();
   if (error) throw new Error(error.message);
 
   const userProfile = profiles;
@@ -26,7 +27,7 @@ export const updateProfile = async (userId: string, imageName: string, newNickna
   // });
 
   const { data, error } = await supabase
-    .from('profiles')
+    .from(tables.profiles)
     .update({ user_image_url: imageName, user_nickname: newNickname })
     .eq('user_id', userId);
 
