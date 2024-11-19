@@ -173,7 +173,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
         type='submit'
         label='게시물 업로드'
         variant='primary'
-        className={`${isDesktop ? 'mx-auto mt-[105px] w-1/2' : ''}`}
+        className={`${isDesktop ? 'mx-auto !mt-24 w-1/2' : ''}`}
         size='large'
       />
     </form>
