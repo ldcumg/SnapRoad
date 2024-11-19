@@ -3,7 +3,7 @@
 import URLS from '@/constants/urls';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
 import { GroupDetailMode } from '@/types/groupTypes';
-import { Link } from 'lucide-react';
+import Link from 'next/link';
 
 type Props = {
   groupTitle: string;
