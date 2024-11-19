@@ -8,13 +8,13 @@ const LayoutMain = ({ children }: { children: React.ReactNode }) => {
   const isGroupPostPage = /^\/group\/[^/]+\/post$/.test(pathname);
 
   return (
-    <main
+    <div
       className={`h-full w-full ${
         isGroupPage ? '' : isGroupPostPage ? 'mx-auto max-w-[1200px]' : 'mx-auto max-w-[1200px]'
       }`}
     >
       {children}
-    </main>
+    </div>
   );
 };
 
