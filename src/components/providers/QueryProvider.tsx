@@ -1,6 +1,6 @@
 'use client';
 
-import { ONE_HOUR_FOR_TANSTACK } from '@/constants/time';
+import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
 import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -10,7 +10,7 @@ const makeQueryClient = () => {
       queries: {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
-        staleTime: ONE_HOUR_FOR_TANSTACK,
+        staleTime: TEN_MINUTES_FOR_TANSTACK,
       },
     },
   });
