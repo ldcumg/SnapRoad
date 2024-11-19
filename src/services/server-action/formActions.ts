@@ -7,8 +7,8 @@ export const postForm = async (formData: {
   userId: string;
   groupId: string;
   desc: string;
-  date: string;
-  time: string;
+  date?: string;
+  time?: string;
   lat?: number | null;
   lng?: number | null;
   place?: string;
@@ -48,8 +48,8 @@ export const updateForm = async (formData: {
   userId: string;
   groupId: string;
   desc: string;
-  date: string;
-  time: string;
+  date?: string;
+  time?: string;
   lat?: number | null;
   lng?: number | null;
   place?: string;
