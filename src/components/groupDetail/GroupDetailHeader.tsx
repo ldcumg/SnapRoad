@@ -44,7 +44,7 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
     }
   };
   return (
-    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px]'>
+    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px] pc:border-b'>
       <Link href={URLS.home}>
         <IconLogo />
       </Link>
