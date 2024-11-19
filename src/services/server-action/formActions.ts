@@ -1,5 +1,6 @@
 'use server';
 
+import tables from '@/constants/tables';
 import { createClient } from '@/utils/supabase/server';
 
 // 포스트
@@ -18,7 +19,7 @@ export const postForm = async (formData: {
   const supabase = createClient();
 
   const { data, error: postFormError } = await supabase
-    .from('posts')
+    .from(tables.posts)
     .insert({
       group_id: formData.groupId,
       user_id: formData.userId,
@@ -59,7 +60,7 @@ export const updateForm = async (formData: {
   const supabase = createClient();
 
   const { error } = await supabase
-    .from('posts')
+    .from(tables.posts)
     .update({
       group_id: formData.groupId,
       user_id: formData.userId,
@@ -85,7 +86,7 @@ export const updateForm = async (formData: {
 // 포스트ID
 export const updateImagePostId = async (postId: string, uploadSessionId: string) => {
   const supabase = createClient();
-  const { error } = await supabase.from('images').update({ post_id: postId }).eq('upload_session_id', uploadSessionId);
+  const { error } = await supabase.from(tables.images).update({ post_id: postId }).eq('upload_session_id', uploadSessionId);
 
   if (error) {
     console.error('이미지에 post_id 업데이트에 실패했습니다:', error.message);
@@ -108,7 +109,7 @@ export const saveTags = async (hashtags: string[], postId: string, groupId: stri
 
   if (hashtagData.length > 0) {
     const supabase = createClient();
-    const { error } = await supabase.from('tags').insert(hashtagData);
+    const { error } = await supabase.from(tables.tags).insert(hashtagData);
     if (error) {
       console.error('태그 저장에 실패했습니다:', error.message);
       throw new Error('태그 저장 오류');
@@ -119,7 +120,7 @@ export const saveTags = async (hashtags: string[], postId: string, groupId: stri
 // 해시태그 삭제
 export const deleteTags = async (postId: string, groupId: string) => {
   const supabase = createClient();
-  const { error } = await supabase.from('tags').delete().eq('post_id', postId).eq('group_id', groupId);
+  const { error } = await supabase.from(tables.tags).delete().eq('post_id', postId).eq('group_id', groupId);
   if (error) {
     console.error('해시태그 삭제 에러:', error);
     throw new Error(error.message);

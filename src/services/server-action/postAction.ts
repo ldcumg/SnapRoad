@@ -2,6 +2,7 @@
 
 import { getSignedImgUrls } from './getSignedImgUrls';
 import buckets from '@/constants/buckets';
+import tables from '@/constants/tables';
 import { ONE_HOUR_FOR_SUPABASE } from '@/constants/time';
 import type { PostCoverImage, PostImage } from '@/types/postTypes';
 import { createClient } from '@/utils/supabase/server';
@@ -18,8 +19,8 @@ export const getPostsImagesPerGroup = async ({
 
   const PAGE_PER = 21;
 
-  const { status, data, error } = await supabase
-    .from('images')
+  const { data, error } = await supabase
+    .from(tables.images)
     .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .not('post_id', 'is', null)
@@ -54,8 +55,8 @@ export const getPostsCoverImagesPerGroup = async ({
 }): Promise<PostCoverImage[]> => {
   const supabase = createClient();
 
-  const { status, data, error } = await supabase
-    .from('images')
+  const { data, error } = await supabase
+    .from(tables.images)
     .select('post_id, post_image_name, post_lat, post_lng')
     .eq('group_id', groupId)
     .eq('is_cover', true)
