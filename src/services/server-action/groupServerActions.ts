@@ -3,7 +3,7 @@
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
 import buckets from '@/constants/buckets';
-import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
+import { ONE_HOUR_FOR_SUPABASE, TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import type { GroupInfo, GroupWithCounts, PostDataListType } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
 
@@ -21,33 +21,6 @@ const getGroupDetails = async (group_id: string) => {
   }
 };
 
-type PostLists = {
-  group_id: string;
-};
-
-const getGroupPostLists = async (user_id: string) => {
-  const supabase = createClient();
-  const { data, error } = await supabase.from('user_group').select('group_id').eq('user_id', user_id).limit(10);
-  if (error) throw error;
-  return data as PostLists[];
-};
-
-const getPostListsByGroupId = async (group_id: string) => {
-  const supabase = createClient();
-  const { data, error } = await supabase.from('posts').select('post_thumbnail_image').eq('group_id', group_id).single();
-  if (error) throw error;
-  return data;
-};
-
-const getRandomGroupId = async (userId: string) => {
-  const supabase = createClient();
-  const { data, error } = await supabase.rpc('get_group_id_by_user', {
-    insert_user_id: userId,
-  });
-  if (data) return data as string;
-  return null;
-};
-
 const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Promise<GroupInfo> => {
   const supabase = createClient();
 
@@ -62,10 +35,10 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
 
   if (error || !data) throw new Error(error.message);
 
-  const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, data.group_image_url ?? '');
+  const groupImageSignedUrl = getSignedImgUrl(buckets.groupImage, ONE_HOUR_FOR_SUPABASE, data.group_image_url ?? '');
 
   const profileImages = data.user_group.map((user) => user.profiles?.user_image_url ?? '');
-  const profileImagesUrls = getSignedImgUrls(buckets.avatars, TEN_MINUTES_FOR_SUPABASE, profileImages);
+  const profileImagesUrls = getSignedImgUrls(buckets.avatars, ONE_HOUR_FOR_SUPABASE, profileImages);
 
   const signedUrls = await Promise.all([groupImageSignedUrl, profileImagesUrls]);
 
@@ -149,12 +122,4 @@ const getRandomPosts = async () => {
   return dataList;
 };
 
-export {
-  getGroupDetails,
-  getGroupPostLists,
-  getPostListsByGroupId,
-  getRandomGroupId,
-  getGroupInfo,
-  getInfiniteGroupData,
-  getRandomPosts,
-};
+export { getGroupDetails, getGroupInfo, getInfiniteGroupData, getRandomPosts };

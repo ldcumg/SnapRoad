@@ -1,9 +1,9 @@
 'use client';
 
-import { useProfileForm } from '@/hooks/byUse/useProfileForm';
-import { useUpdateProfile } from '@/hooks/queries/byUse/useProfileMutation';
-import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { useUploadImage } from '@/hooks/queries/byUse/useStorageMutation';
+import { useUpdateProfile } from '@/hooks/queries/profiles/useProfileMutation';
+import { useProfilesQuery } from '@/hooks/queries/profiles/useProfilesQueries';
+import { useProfileForm } from '@/hooks/useCustomForm/useProfileForm';
 import { Button } from '@/stories/Button';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';

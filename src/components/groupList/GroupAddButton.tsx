@@ -83,7 +83,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
             handleModalOpen={handleBottomSheetOpen}
             title={desktop ? '그룹 생성' : undefined}
           >
-            {desktop ? <MakeGroupForm /> : <SubmitInviteForm />}
+            {desktop ? <MakeGroupForm handleUpdateModal={handleBottomSheetOpen} /> : <SubmitInviteForm />}
           </Modal>
           <AddButtons
             isDesktop={desktop}

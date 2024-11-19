@@ -3,8 +3,8 @@
 import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
-import { useEditForm } from '@/hooks/byUse/usePostForm';
 import { useUpdateForm } from '@/hooks/queries/post/useFormMutations';
+import { useEditForm } from '@/hooks/useCustomForm/usePostForm';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import { formSchema } from '@/schemas/formSchemas';
 import { saveTags, deleteTags, updateImagePostId } from '@/services/server-action/formActions';

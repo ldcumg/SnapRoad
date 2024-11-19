@@ -1,6 +1,6 @@
 'use client';
 
-import { useSignOut } from '@/hooks/queries/byUse/useAuthMutations';
+import { useSignOut } from '@/hooks/queries/auth/useAuthMutations';
 import { signOut } from '@/services/server-action/authActions';
 import Link from 'next/link';
 import React from 'react';

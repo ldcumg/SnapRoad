@@ -52,15 +52,14 @@ const GroupMap = ({ groupId, point }: Props) => {
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
-  // const [mapLoading, mapError] = useKakaoLoader({
-  //   appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
-  //   libraries: ['services', 'clusterer'],
-  // });
-  // console.log(mapLoading);
+  const [mapLoading, mapError] = useKakaoLoader({
+    appkey: process.env.NEXT_PUBLIC_KAKAO_KEY!,
+    libraries: ['services', 'clusterer'],
+  });
 
-  // useEffect(() => {
-  //   if (mapLoading) return;
-  // }, [mapLoading]);
+  useEffect(() => {
+    if (mapLoading) return;
+  }, [mapLoading]);
 
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {

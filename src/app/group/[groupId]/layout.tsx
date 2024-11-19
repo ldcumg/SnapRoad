@@ -1,10 +1,9 @@
-import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
+import { ONE_HOUR_FOR_TANSTACK } from '@/constants/time';
 import queryKeys from '@/hooks/queries/queryKeys';
 import { getGroupInfo } from '@/services/server-action/groupServerActions';
 import { getPostsCoverImagesPerGroup, getPostsImagesPerGroup } from '@/services/server-action/postAction';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 
 type GenerateMetadataProps = {
   params: { groupId: string };
@@ -31,22 +30,18 @@ const GroupDetailLayout = async ({ children, params: { groupId } }: GroupDetailL
     queryClient.prefetchQuery({
       queryKey: queryKeys.group.postsCoverImages(groupId),
       queryFn: ({ queryKey }) => getPostsCoverImagesPerGroup({ queryKey }),
-      gcTime: TEN_MINUTES_FOR_TANSTACK,
+      staleTime: ONE_HOUR_FOR_TANSTACK,
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: queryKeys.group.postsImages(groupId),
       queryFn: ({ queryKey, pageParam }) => getPostsImagesPerGroup({ queryKey, pageParam }),
       initialPageParam: 0,
-      gcTime: TEN_MINUTES_FOR_TANSTACK,
+      staleTime: ONE_HOUR_FOR_TANSTACK,
     }),
   ]);
 
   return (
     <>
-      <Script
-        src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&libraries=services,clusterer&autoload=false`}
-        strategy='beforeInteractive'
-      />
       <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>
     </>
   );
