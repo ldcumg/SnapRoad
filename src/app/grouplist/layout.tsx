@@ -1,5 +1,6 @@
 // import TopButton from '@/components/_common/TopButton';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
+import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
 import queryKeys from '@/hooks/queries/queryKeys';
 import { getInfiniteGroupData, getRandomPosts } from '@/services/server-action/groupServerActions';
 import { TopButton } from '@/stories/TopButton';
@@ -23,6 +24,7 @@ const GroupListLayout = async ({ children }: Props) => {
         const randomPosts = getRandomPosts();
         return randomPosts;
       },
+      staleTime: TEN_MINUTES_FOR_TANSTACK,
     }),
     queryClient.prefetchInfiniteQuery({
       queryKey: queryKeys.group.groupList(),
@@ -30,6 +32,7 @@ const GroupListLayout = async ({ children }: Props) => {
         const groupData = getInfiniteGroupData({ pageParam });
         return groupData;
       },
+      staleTime: TEN_MINUTES_FOR_TANSTACK,
       retry: 0,
       initialPageParam: 0,
     }),
