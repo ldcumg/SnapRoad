@@ -385,7 +385,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             postsPreView={postsPreView}
             setPostsPreview={setPostsPreview}
           >
-            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:max-w-[900px]'>
+            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:max-w-[856px] pc:min-w-[456px]'>
               {postsPreView.map((post) => (
                 <li
                   className='h-[132px] w-[132px] pc:h-[152px] pc:w-[152px]'
