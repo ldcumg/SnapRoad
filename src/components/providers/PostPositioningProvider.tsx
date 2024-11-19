@@ -6,11 +6,11 @@ import { createContext, useRef } from 'react';
 
 export const PostPositioningStoreContext = createContext<PostPositioningStoreApi | undefined>(undefined);
 
-type PostPositioningStoreProviderProps = {
+type Props = {
   children: React.ReactNode;
 };
 
-export const PostPositioningProvider = ({ children }: PostPositioningStoreProviderProps) => {
+export const PostPositioningProvider = ({ children }: Props) => {
   const storeRef = useRef<PostPositioningStoreApi>();
 
   if (!storeRef.current) {

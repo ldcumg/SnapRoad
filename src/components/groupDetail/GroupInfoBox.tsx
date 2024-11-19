@@ -28,7 +28,7 @@ const GroupInfoBox = ({
         />
         <div className='flex w-full flex-col gap-3'>
           <div className='flex flex-row justify-between'>
-            <button onClick={() => setMode(GroupDetailMode.album)}>
+            <button onClick={() => setMode(GroupDetailMode.member)}>
               <div className='flex flex-row items-center gap-1 rounded-xl border border-gray-100 px-2 py-1'>
                 <img src='/svgs/Group_Member.svg' />
                 <p className='text-label_sm'>{user_group.length}</p>
