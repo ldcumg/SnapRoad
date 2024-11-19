@@ -22,6 +22,7 @@ const LogoUserHeader = () => {
       ) : isLoggedIn ? (
         <Link
           href={'/mypage'}
+          aria-label='link to mypage'
           prefetch
         >
           {userInfo?.user_image_url ? (
@@ -34,6 +35,7 @@ const LogoUserHeader = () => {
             <img
               src='/svgs/Profile.svg'
               className='h-10 w-10 rounded-[20px]'
+              alt='유저'
             />
           )}
         </Link>
