@@ -3,7 +3,7 @@
 import CommentForm from './CommentForm';
 import CommentNode from './CommentNode';
 import CommentWriteButton from './CommentWriteButton';
-import { useCommentsQuery } from '@/hooks/queries/byUse/useCommentQueries';
+import { useCommentsQuery } from '@/hooks/queries/comments/useCommentQueries';
 import Spinner from '@/stories/Spinner';
 import { Comment, CommentMap, CommentTree, PostDetail, UserDetail } from '@/types/postDetailTypes';
 import React, { useState } from 'react';
