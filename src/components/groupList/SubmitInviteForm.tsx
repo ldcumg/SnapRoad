@@ -77,9 +77,9 @@ const SubmitInviteForm = ({ isDesktop }: Props) => {
             />
           ) : (
             <button
-              className=''
               type='button'
               onClick={clearInputValue}
+              aria-label='clear input value'
             >
               <img
                 src='/svgs/Close_Circle.svg'
