@@ -4,6 +4,7 @@ import tables from '@/constants/tables';
 import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { ImageDetail, PostDetail } from '@/types/postDetailTypes';
 import { createClient } from '@/utils/supabase/server';
+import * as Sentry from '@sentry/nextjs';
 
 export const fetchPostDetail = async (postId: string) => {
   const supabase = createClient();
@@ -23,8 +24,7 @@ export const fetchPostDetail = async (postId: string) => {
     .single();
 
   if (error) {
-    console.error('error ... : ', error);
-    throw new Error('게시글 상세 정보 조회 시 오류가 발생했습니다.');
+    throw new Error(error.message);
   }
 
   // 해당 게시글을 쓴 유저의 signed url
