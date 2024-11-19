@@ -1,7 +1,7 @@
 'use client';
 
 import AgreeList from './AgreeList';
-import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
+import { useSignUp } from '@/hooks/queries/auth/useAuthMutations';
 import { useSignUpForm } from '@/hooks/useCustomForm/useAuthForm';
 import { signUpSchema } from '@/schemas/authSchemas';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';

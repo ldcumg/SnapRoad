@@ -1,6 +1,6 @@
 'use client';
 
-import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
+import { useLogin } from '@/hooks/queries/auth/useAuthMutations';
 import { useLoginForm } from '@/hooks/useCustomForm/useAuthForm';
 import { loginSchema } from '@/schemas/authSchemas';
 import { Button } from '@/stories/Button';

@@ -1,4 +1,4 @@
-import { useInsertUserGroupMutation } from '@/hooks/queries/byUse/useGroupMutations';
+import { useInsertUserGroupMutation } from '@/hooks/queries/group/useGroupMutations';
 import { useInviteGroupForm } from '@/hooks/useCustomForm/useGroupForm';
 import { makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';

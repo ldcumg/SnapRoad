@@ -1,4 +1,4 @@
-import { usePostComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { usePostComment } from '@/hooks/queries/comments/useCommentMutation';
 import { useCommentForm } from '@/hooks/useCustomForm/useCommentForm';
 import { Button } from '@/stories/Button';
 import { UserDetail } from '@/types/postDetailTypes';
