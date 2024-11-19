@@ -1,6 +1,6 @@
 'use client';
 
-import { useResetPasswordForm } from '@/hooks/byUse/useAuthForm';
+import { useResetPasswordForm } from '@/hooks/useCustomForm/useAuthForm';
 import { resetPassword } from '@/services/server-action/authActions';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';

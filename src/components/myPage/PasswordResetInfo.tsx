@@ -1,6 +1,6 @@
 'use client';
 
-import { useSendEmailForm } from '@/hooks/byUse/useAuthForm';
+import { useSendEmailForm } from '@/hooks/useCustomForm/useAuthForm';
 import { sendEmailResetPassword } from '@/services/client-action/authClientAction';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
@@ -34,8 +34,8 @@ const PasswordResetInfo = () => {
           errorText={errors.email && String(errors.email.message)}
           {...register('email')}
         />
-        <div className='text-sm mt-1'>{success && <span>이메일을 확인하세요!</span>}</div>
-        <div className='flex flex-col mt-10'>
+        <div className='mt-1 text-sm'>{success && <span>이메일을 확인하세요!</span>}</div>
+        <div className='mt-10 flex flex-col'>
           <Button
             type='submit'
             label='재설정 링크 전송하기'
