@@ -5,10 +5,11 @@ import GroupAlbum from '@/components/groupDetail/GroupAlbum';
 import GroupDetailHeader from '@/components/groupDetail/GroupDetailHeader';
 import MemberList from '@/components/groupDetail/MemberList';
 import GroupMap from '@/components/map/GroupMap';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { GroupDetailMode } from '@/types/groupTypes';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
@@ -19,6 +20,12 @@ type Props = Readonly<{
 
 const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) => {
   const [mode, setMode] = useState<GroupDetailMode>(GroupDetailMode.map);
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
 
   const { data: groupInfo, isPending, isError, error } = useGroupInfoQuery(groupId);
 
@@ -33,7 +40,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
         return (
           <GroupMap
             groupId={groupId}
-            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } :undefined}
+            point={lat && lng ? { lat: Number(lat), lng: Number(lng) } : undefined}
           />
         );
       case GroupDetailMode.album:
@@ -42,6 +49,7 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
             groupId={groupId}
             groupInfo={groupInfo}
             setMode={setMode}
+            desktop={desktop}
           />
         );
       case GroupDetailMode.member:

@@ -19,10 +19,10 @@ const GroupInfoBox = ({
   desktop,
 }: Props) => {
   return (
-    <div className='px-4'>
-      <div className='flex flex-row gap-4 border-b py-6'>
+    <div className='px-4 pc:flex pc:justify-center pc:border-b'>
+      <div className='flex flex-row gap-[16px] border-b py-6 pc:w-[582px] pc:gap-[20px] pc:border-b-0 pc:p-[24px]'>
         <img
-          className='h-[132px] min-h-[132px] w-[132px] min-w-[132px] object-cover'
+          className='h-[132px] min-h-[132px] w-[132px] min-w-[132px] object-cover pc:h-[220px] pc:min-h-[220px] pc:w-[220px] pc:min-w-[220px]'
           src={group_image_url ?? '/images/group_default_thumbnail.jpg'}
           alt='그룹 이미지'
         />
