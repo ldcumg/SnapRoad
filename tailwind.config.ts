@@ -13,6 +13,7 @@ const config: Config = {
     extend: {
       screens: {
         pc: '1200px',
+        ssm: '369px',
       },
       colors: {
         origin: 'hsl(var(--origin))',
