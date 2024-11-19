@@ -64,14 +64,15 @@ const PostForms = ({ groupId }: { groupId: string }) => {
       }
       router.push(`/group/${groupId}/post/${res.postId}`);
     } catch (error) {
-      console.error('폼 제출 에러:', error);
-      alert('폼 제출에 실패했습니다. 다시 시도해 주세요.');
+      console.error('폼 데이터 검증 에러:', error);
+      alert('폼 데이터가 유효하지 않습니다. 모든 필드를 확인하세요.');
+      return;
     }
   };
 
   return (
     <form
-      className='flex flex-col space-y-4 px-4'
+      className='mb-8 flex flex-col space-y-4 !px-4'
       onSubmit={handleSubmit(handlePostForm)}
     >
       {desktop ? (
@@ -114,9 +115,8 @@ const PostForms = ({ groupId }: { groupId: string }) => {
           />
         </>
       ) : (
-        <>
+        <div className=''>
           <PostAddress groupId={groupId} />
-
           <div className='mb-4 flex w-full items-start justify-start gap-4 overflow-x-auto'>
             {images.length > 0 &&
               images.map((image, index) => (
@@ -151,7 +151,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
             errorText={errors.desc && String(errors.desc.message)}
             {...register('desc')}
           />
-        </>
+        </div>
       )}
 
       <Controller

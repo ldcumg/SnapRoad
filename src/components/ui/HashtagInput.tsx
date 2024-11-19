@@ -32,12 +32,12 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   };
 
   return (
-    <div className='flex flex-wrap items-center rounded-md border border-gray-200 bg-white px-3 py-2'>
+    <div className='flex flex-wrap items-center rounded-md border border-gray-100 bg-white px-3 py-2'>
       <div className='flex flex-wrap gap-2'>
         {hashtags.map((tag, index) => (
           <span
             key={index}
-            className='flex items-center rounded-full bg-gray-100 px-2 py-1 text-sm font-medium text-gray-700'
+            className='flex items-center py-1 text-sm font-medium text-gray-700'
           >
             #{tag}
             <button
@@ -57,7 +57,7 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         placeholder='해시태그를 입력하고 Enter 키를 누르세요'
-        className='ml-2 flex-grow text-gray-700 placeholder-gray-400 outline-none'
+        className='ml-1 flex-grow text-gray-700 placeholder-gray-400 outline-none'
         autoCorrect='off'
         autoCapitalize='none'
         autoComplete='off'

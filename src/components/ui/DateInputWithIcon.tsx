@@ -18,12 +18,12 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const handleInputClick = () => {
-      setDatePickerOpen(!isDatePickerOpen);
+      setDatePickerOpen((prev) => !prev);
     };
 
     const handleDateChange = (date: Date | null) => {
       setStartDate(date);
-      setDatePickerOpen(false);
+      setDatePickerOpen(false); // 날짜 선택 후 바로 닫기
 
       if (onChange && date) {
         const fakeEvent = {
@@ -51,7 +51,7 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
     return (
       <label className='input-no-calendar relative flex w-full items-center'>
         <div
-          ref={wrapperRef} // wrapperRef로 감지
+          ref={wrapperRef}
           className='relative w-full'
         >
           <input
@@ -76,8 +76,8 @@ const DateInputWithIcon = forwardRef<HTMLInputElement, DateInputWithIconProps>(
                 selected={startDate}
                 onChange={(date) => handleDateChange(date as Date)}
                 inline
-                popperPlacement='top-end'
                 portalId='date-picker-portal'
+                popperPlacement='top-end'
               />
             </div>
           )}
