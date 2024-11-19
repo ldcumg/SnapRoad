@@ -1,7 +1,7 @@
 'use client';
 
 import ScrollReactHeader from '../_common/ScrollReactHeader';
-import { useUserInfoQuery } from '@/hooks/queries/byUse/useUserQuery';
+import { useUserInfoQuery } from '@/hooks/queries/auth/useUserQuery';
 import Link from 'next/link';
 
 const LogoUserHeader = () => {
