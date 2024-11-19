@@ -2,7 +2,6 @@
 
 import PostImageBottomSheet from './PostBottomSheet';
 import PostForms from './PostForms';
-import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -10,15 +9,8 @@ type Props = {
 };
 
 const PostPageClient = ({ groupId }: Props) => {
-  const isDesktop = useMediaQuery('(min-width: 1200px)');
-  const [desktop, setDesktop] = useState(false);
-
-  useEffect(() => {
-    setDesktop(true);
-  }, []);
-
   return (
-    <section className={`${isDesktop ? 'mx-auto mb-20 mt-36 max-w-[654px]' : 'mt-14'}`}>
+    <section className='mt-14 lg:mb-20 lg:mt-36'>
       <PostImageBottomSheet />
       <PostForms groupId={groupId} />
     </section>

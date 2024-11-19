@@ -101,7 +101,7 @@ const EditForms = ({ postDetail, groupId }: PostAndProfileProps) => {
 
   return (
     <form
-      className='mb-8 flex flex-col space-y-4 !px-4'
+      className='mb-8 flex flex-col space-y-4 !px-4 lg:max-w-[654px] lg:mx-auto'
       onSubmit={handleSubmit(handlePostForm)}
     >
       {desktop ? (
