@@ -4,7 +4,6 @@ import PlaceSearchForm from './PlaceSearchForm';
 import PostsPreviewLayout from './PostsPreviewLayout';
 import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
-import useKakaoMap from '@/hooks/map/useKakaoMap';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
@@ -34,19 +33,12 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     hasMore: false,
   });
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
-  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'> | null>(null);
+  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
+
   const polyline: LatLng[] = [];
-  const {
-    getSpotInfo,
-    handleFindUserLocation,
-    moveToMarker,
-    clusterClickEvent,
-    handleAddPostRoute,
-    onClusteredEvent,
-    clusterCalculator,
-  } = useKakaoMap(map as kakao.maps.Map);
+
+  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
@@ -69,7 +61,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   // 게시물 상세 페이지에서 올 경우 해당 게시물 위치
   useEffect(() => {
     if (!!point && map) {
-      moveToMarker({ ...point, setSpotInfo });
+      moveToMarker(point);
       map.setLevel(4, { animate: true });
     }
   }, [map]);
@@ -97,7 +89,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
       searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
     );
 
-    searchInput && moveToMarker({ ...results[0], setSpotInfo });
+    searchInput && moveToMarker(results[0]);
 
     if (is_end) {
       setSearchResult((prev) => ({ ...prev, hasMore: false }));
