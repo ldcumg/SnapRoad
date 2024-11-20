@@ -1,4 +1,4 @@
-const Icon_To_Map = ({ className }: { className?: string }) => (
+const IconToMap = ({ className }: { className?: string }) => (
   <svg
     width='40'
     height='40'
@@ -22,4 +22,4 @@ const Icon_To_Map = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default Icon_To_Map;
+export default IconToMap;

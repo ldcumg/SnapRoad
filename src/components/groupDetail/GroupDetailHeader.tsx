@@ -3,8 +3,8 @@
 import URLS from '@/constants/urls';
 import CloseLg from '@/lib/icon/Close_Lg';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
-import Icon_To_Album from '@/lib/icon/Icon_To_Album';
-import Icon_To_Map from '@/lib/icon/Icon_To_Map';
+import IconToAlbum from '@/lib/icon/Icon_To_Album';
+import IconToMap from '@/lib/icon/Icon_To_Map';
 import { GroupDetailMode } from '@/types/groupTypes';
 import Link from 'next/link';
 
@@ -21,13 +21,13 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
       case GroupDetailMode.map:
         return (
           <button onClick={() => setMode(GroupDetailMode.album)}>
-            <Icon_To_Album />
+            <IconToAlbum />
           </button>
         );
       case GroupDetailMode.album:
         return (
           <button onClick={() => setMode(GroupDetailMode.map)}>
-            <Icon_To_Map />
+            <IconToMap />
           </button>
         );
       case GroupDetailMode.member:

@@ -1,4 +1,4 @@
-const Icon_To_Album = ({ className }: { className?: string }) => (
+const IconToAlbum = ({ className }: { className?: string }) => (
   <svg
     width='40'
     height='40'
@@ -28,4 +28,4 @@ const Icon_To_Album = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default Icon_To_Album;
+export default IconToAlbum;

@@ -1,5 +1,7 @@
 'use client';
 
+import IconMember from '@/lib/icon/Icon_Member';
+import IconSetting from '@/lib/icon/Icon_Setting';
 import { GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
@@ -30,17 +32,17 @@ const GroupInfoBox = ({
           <div className='flex flex-row justify-between'>
             <button onClick={() => setMode(GroupDetailMode.member)}>
               <div className='flex flex-row items-center gap-[4px] rounded-xl border border-gray-100 px-[8px] py-[4px]'>
-                <img src='/svgs/Group_Member.svg' />
+                <IconMember />
                 <span className='text-label_sm pc:text-label_md'>{user_group.length}</span>
               </div>
             </button>
             {desktop ? (
               <button onClick={handleUpdateModal}>
-                <img src='/svgs/Setting.svg' />
+                <IconSetting />
               </button>
             ) : (
               <Link href={`/makegroup?update_for=${groupId}`}>
-                <img src='/svgs/Setting.svg' />
+                <IconSetting />
               </Link>
             )}
           </div>
