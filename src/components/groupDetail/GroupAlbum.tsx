@@ -8,8 +8,8 @@ import useIntersect from '@/hooks/byUse/useIntersection';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { Modal } from '@/stories/Modal';
+import { TopButton } from '@/stories/TopButton';
 import type { GroupDetailMode, GroupInfo } from '@/types/groupTypes';
-import Link from 'next/link';
 
 type Props = {
   groupId: string;
@@ -34,10 +34,6 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
   if (isError) throw new Error(error.message);
 
   const postsImages = data.pages.flat();
-
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   //TODO - 스켈레톤 UI
   return (
@@ -67,13 +63,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
         isFetchingNextPage={isFetchingNextPage}
         observerRef={observerRef}
       />
-      {/* TODO - 스크롤 없을 시 숨기기 */}
-      <button
-        className='fixed bottom-4 right-4'
-        onClick={handleScrollTop}
-      >
-        <img src='/svgs/Top_Btn.svg' />
-      </button>
+      <TopButton />
     </>
   );
 };
