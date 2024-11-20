@@ -1,13 +1,14 @@
 'use client';
 
 import PlaceSearchForm from './PlaceSearchForm';
+import PostsPreviewLayout from './PostsPreviewLayout';
+import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
-import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import type {
   ClusterStyle,
@@ -29,12 +30,13 @@ import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverla
 
 type Props = {
   groupId: string;
+  desktop: boolean;
   point: { lat: number; lng: number } | undefined;
 };
 
-const GroupMap = ({ groupId, point }: Props) => {
+const GroupMap = ({ groupId, desktop, point }: Props) => {
   const route = useRouter();
-  const { isCustomHeightOpen, handleCustomOpen, handleCustomClose } = useBottomSheetStore((state) => state);
+  const { handleCustomOpen } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
@@ -248,13 +250,14 @@ const GroupMap = ({ groupId, point }: Props) => {
     <>
       {isInputFocus && <div className='fixed inset-0 z-40 bg-black bg-opacity-40'></div>}
       <PlaceSearchForm
+        desktop={desktop}
         searchLocation={searchLocation}
         setSearchResult={setSearchResult}
         setIsInputFocus={setIsInputFocus}
         hasSearchResult={!!searchResult.markers[0]}
       />
       <button
-        className='fixed right-4 top-[136px] z-30 h-[44px] w-[44px] rounded-full bg-white'
+        className='fixed right-[16px] top-[136px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:top-[72.5px]'
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
@@ -342,46 +345,32 @@ const GroupMap = ({ groupId, point }: Props) => {
           strokeStyle={'solid'} // 선 스타일
         />
 
-        {!!spotInfo ? (
-          <BottomSheet
-            height='custom'
-            customHeight=''
-            rounded={true}
-            isOpen={true}
-            showHeader={false}
-            hasButton={false}
-            className='mb-0 pb-2 pt-7'
-            backdrop={false}
+        {!!spotInfo && (
+          <SearchResultLayout
+            desktop={desktop}
+            handleFindUserLocation={handleFindUserLocation}
           >
-            <button
-              className='absolute -top-4 left-4 z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white'
-              onClick={handleFindUserLocation}
-            >
-              <img
-                className='mx-auto my-auto'
-                src='/svgs/Geolocation_btn.svg'
-              />
-            </button>
             {searchResult.hasMore && (
               <button
-                className='absolute -top-4 left-1/2 flex h-11 -translate-x-1/2 -translate-y-full flex-row items-center gap-3 rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+                className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
                 type='button'
                 onClick={searchLocation}
               >
-                <p className='text-body_md'>검색결과 더보기</p>
+                <span className='text-body_md'>검색결과 더보기</span>
                 <img src='/svgs/Reload.svg' />
               </button>
             )}
-            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-1'}`}>
-              <h5 className='text-label_md'>
+            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-[4px]'} pc:mx-auto`}>
+              <h5 className='text-label_md pc:mx-auto'>
                 {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
               </h5>
-              {!!spotInfo.placeName && <p className='text-body_md'>{spotInfo.address}</p>}
+              {!!spotInfo.placeName && <span className='text-body_md pc:mx-auto'>{spotInfo.address}</span>}
             </div>
-          </BottomSheet>
-        ) : (
+          </SearchResultLayout>
+        )}
+        {(!spotInfo || desktop) && (
           <button
-            className='fixed bottom-[100px] left-4 z-30 h-[44px] w-[44px] rounded-full bg-white'
+            className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
             onClick={handleFindUserLocation}
           >
             <img
@@ -391,28 +380,15 @@ const GroupMap = ({ groupId, point }: Props) => {
           </button>
         )}
         {!!postsPreView.length ? (
-          <BottomSheet
-            height='custom'
-            customHeight='250px'
-            rounded={true}
-            isOpen={isCustomHeightOpen}
-            showHeader={true}
-            showBackButton={false}
-            hasButton={false}
-            backdrop={false}
-            title={`총 ${postsPreView.length}개의 게시물이 있어요!`}
-            titleClassName='text-title_lg'
-            onClose={() => {
-              handleCustomClose();
-              //NOTE - 임시
-              setPostsPreview([]);
-            }}
-            headerClassName='pt-[40px] pb-[12px]'
+          <PostsPreviewLayout
+            desktop={desktop}
+            postsPreView={postsPreView}
+            setPostsPreview={setPostsPreview}
           >
-            <ol className='flex flex-row gap-3 overflow-x-auto'>
+            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:max-w-[856px] pc:min-w-[456px]'>
               {postsPreView.map((post) => (
                 <li
-                  className='h-[132px] w-[132px]'
+                  className='h-[132px] w-[132px] pc:h-[152px] pc:w-[152px]'
                   key={post.postId}
                 >
                   <Link
@@ -420,7 +396,7 @@ const GroupMap = ({ groupId, point }: Props) => {
                     href={`/group/${groupId}/post/${post.postId}`}
                   >
                     <img
-                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover'
+                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover pc:min-h-[152px] pc:min-w-[152px] pc:rounded-[12px]'
                       src={post.postImageUrl}
                       alt={`Post ${post.postId}`}
                     />
@@ -428,22 +404,22 @@ const GroupMap = ({ groupId, point }: Props) => {
                 </li>
               ))}
             </ol>
-          </BottomSheet>
+          </PostsPreviewLayout>
         ) : (
           <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-50 w-full ${!!spotInfo || 'bg-white'} px-4 pb-4 pt-3`}
+            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-30 w-full ${!!spotInfo || 'bg-white'} rounded-[28px] px-[16px] pb-[16px] pt-[12px] pc:bottom-[28px] pc:left-1/2 pc:flex pc:w-[628px] pc:-translate-x-1/2 pc:items-center pc:p-[40px]`}
           >
             <Button
               type='button'
               onClick={handleAddPostRoute}
               variant='primary'
-              size='full'
-              className='bottom-4 z-50 h-[56px] px-6'
+              size={desktop ? 'large' : 'full'}
+              className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'
               disabled={!isPostsView && !spotInfo?.address}
             >
-              <span className='flex gap-2'>
+              <span className='flex gap-[8px]'>
                 <img src='/svgs/Plus_LG.svg' />
-                <p className='text-title_lg'>게시물 추가하기</p>
+                <span className='text-title_lg'>게시물 추가하기</span>
               </span>
             </Button>
           </div>

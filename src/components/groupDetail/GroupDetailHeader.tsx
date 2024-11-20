@@ -44,11 +44,11 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
     }
   };
   return (
-    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-4 py-2'>
+    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px] pc:border-b'>
       <Link href={URLS.home}>
         <IconLogo />
       </Link>
-      <h1 className='text-label_md'>{groupTitle}</h1>
+      <h1 className='text-label_md pc:text-title_xl'>{groupTitle}</h1>
       <div className='flex w-[63px] justify-end'>{handleChangeMode()}</div>
     </header>
   );

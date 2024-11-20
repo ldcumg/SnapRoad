@@ -5,28 +5,22 @@ import GroupInfoBox from './GroupInfoBox';
 import Loading from '@/app/loading';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
-import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { Modal } from '@/stories/Modal';
 import { type GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 type Props = {
   groupId: string;
   groupInfo: GroupInfo;
   setMode: React.Dispatch<React.SetStateAction<GroupDetailMode>>;
+  desktop: boolean;
 };
 
-const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
+const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
   const { data, isPending, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } =
     getGroupPostsImagesQuery(groupId);
   const [updateModal, handleUpdateModal] = useIsOpen();
-  const isDesktop = useMediaQuery('(min-width: 1200px)');
-  const [desktop, setDesktop] = useState(false);
-  useEffect(() => {
-    setDesktop(isDesktop);
-  }, [isDesktop]);
 
   //NOTE - 고장
   const observerRef = useIntersect(async (entry, observer) => {
@@ -70,10 +64,10 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
       />
       {!!postsImages.length ? (
         <>
-          <ol className='m-[15px] grid grid-cols-3 justify-items-center gap-1'>
+          <ol className='mx-auto grid grid-cols-3 justify-items-center gap-[4px] py-[15px] pc:grid-cols-5 pc:gap-[8px] pc:py-[40px]'>
             {postsImages.map((image) => (
               <li
-                className='h-[112px] w-[112px]'
+                className='h-[112px] w-[112px] pc:h-[232px] pc:w-[232px]'
                 key={image.id}
               >
                 <Link
@@ -81,7 +75,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
                   href={`/group/${groupId}/post/${image.post_id}`}
                 >
                   <img
-                    className='mx-auto my-auto h-full w-full rounded-[8px] object-cover'
+                    className='mx-auto my-auto h-full w-full rounded-[8px] object-cover pc:rounded-[12px]'
                     src={image.post_image_url}
                   />
                 </Link>
@@ -95,11 +89,12 @@ const GroupAlbum = ({ groupId, groupInfo, setMode }: Props) => {
           ></div>
         </>
       ) : (
-        <div className='mt-40 flex h-full flex-col items-center text-title_lg text-gray-500'>
-          <p>게시물이 없습니다.</p>
-          <p>추억을 공유해보세요!</p>
+        <div className='mt-[160px] flex h-full flex-col items-center text-title_lg text-gray-500 pc:mt-[264.5px]'>
+          <span>게시물이 없습니다.</span>
+          <span>추억을 공유해보세요!</span>
         </div>
       )}
+      {/* TODO - 스크롤 없을 시 숨기기 */}
       <button
         className='fixed bottom-4 right-4'
         onClick={handleScrollTop}
