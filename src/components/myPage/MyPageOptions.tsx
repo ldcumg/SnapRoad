@@ -7,7 +7,7 @@ const MyPageOptions = () => {
       <Link href={'/mypage/account-setting'}>
         <span className='text-caption_light_lg text-gray-500 underline'>계정설정</span>
       </Link>
-      <Link href={'/mypage/terms'}>
+      <Link href={'/terms'}>
         <span className='text-caption_light_lg text-gray-500 underline'>개인 정보 약관</span>
       </Link>
     </div>

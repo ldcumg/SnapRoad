@@ -113,16 +113,21 @@ const SignUpForm = () => {
         {/* 모달 밖 체크박스 UI */}
         <div
           className='flex justify-between'
-          onClick={handleFullOpen}
+          // onClick={handleFullOpen}
         >
           <div className='flex items-center gap-4'>
             <img
               src={isChecked ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
               className='h-[24px] w-[24px]'
+              onClick={handleCheckboxToggle}
             />
-            <span className='cursor-pointer text-caption_bold_lg text-black'>개인정보 수집·이용 약관 동의</span>
+            <span className='text-caption_bold_lg text-black'>개인정보 수집·이용 약관 동의</span>
           </div>
-          <img src='/svgs/Arrow_Forward_LG.svg' />
+          <img
+            src='/svgs/Arrow_Forward_LG.svg'
+            className='cursor-pointer'
+            onClick={handleFullOpen}
+          />
         </div>
 
         <Button
@@ -139,23 +144,24 @@ const SignUpForm = () => {
       </div>
 
       <BottomSheet
+        hasButton={false}
         isOpen={isFullHeightOpen}
-        onClose={handleFullClose} // 취소 버튼을 누르면 바텀시트 닫기
-        onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
+        onClose={handleFullClose}
+        // onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
         title='개인정보 수집·이용 약관 동의'
         height='full'
-        confirmLabel='완료'
-        cancelLabel='취소'
+        // confirmLabel='완료'
+        // cancelLabel='취소'
         showCloseButton={false}
         className={desktop ? 'px-96' : ''}
       >
         <div className='flex flex-col gap-4'>
           <div className='flex gap-3'>
-            <img
+            {/* <img
               src={isCheckedInSheet ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
               className='h-[24px] w-[24px]'
               onClick={handleCheckboxToggle}
-            />
+            /> */}
             <AgreeList />
           </div>
         </div>
