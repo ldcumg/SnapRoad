@@ -15,7 +15,7 @@ const LoginForm = () => {
     formState: { errors },
   } = useLoginForm();
 
-  const { mutate: login, isError } = useLogin();
+  const { mutate: login, isError, isPending } = useLogin();
 
   const handleLogin = async (value: FieldValues) => {
     login(loginSchema.parse(value));
@@ -49,6 +49,7 @@ const LoginForm = () => {
           type='submit'
           label='로그인'
           variant='primary'
+          loading={isPending}
         />
       </form>
     </div>
