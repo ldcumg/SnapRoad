@@ -29,6 +29,7 @@ const GroupPostList = ({ groupId, postsImages, isFetchingNextPage, observerRef }
                   <img
                     className='mx-auto my-auto h-full w-full rounded-[8px] object-cover pc:rounded-[12px]'
                     src={image.post_image_url}
+                    alt={image.post_image_name}
                   />
                 </Link>
               </li>
