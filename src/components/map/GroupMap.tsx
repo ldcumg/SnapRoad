@@ -17,7 +17,7 @@ import type {
   CustomLatLngBounds,
   CustomMarker,
   CustomMarkerClusterer,
-  Latlng,
+  LatLng,
   Location,
   LocationInfo,
 } from '@/types/mapTypes';
@@ -48,7 +48,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
 
-  const polyline: Latlng[] = [];
+  const polyline: LatLng[] = [];
 
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
@@ -104,147 +104,18 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     searchInput && moveToMarker(results[0]);
 
     if (is_end) {
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: false };
-      });
+      setSearchResult((prev) => ({ ...prev, hasMore: false }));
       searchKeyword.current = { keyword: '', page: 1 };
       return;
     }
 
-    searchResult.hasMore ||
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: true };
-      });
+    searchResult.hasMore || setSearchResult((prev) => ({ ...prev, hasMore: true }));
     searchInput
       ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
       : (searchKeyword.current.page = searchKeyword.current.page += 1);
 
     isInputFocus && setIsInputFocus(false);
   };
-
-  /** 중심 좌표의 장소 정보 요청 */
-  const getSpotInfo = async () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    const latlng = map.getCenter();
-
-    const lat = latlng.getLat();
-    const lng = latlng.getLng();
-    const address = await getAddress({ lat, lng });
-    setSpotInfo({ placeName: '', address, lat, lng });
-  };
-
-  /** 사용자 위치 찾기 */
-  const handleFindUserLocation = () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    if (!navigator.geolocation) {
-      toast.alert('위치 정보 제공 동의가 필요합니다.');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude: lat, longitude: lng } = position.coords;
-      map.setLevel(5, { animate: true });
-      map.panTo(new kakao.maps.LatLng(lat, lng));
-      isPostsView && setIsPostsView(false);
-      getSpotInfo();
-    });
-  };
-
-  /** 마커로 화면 이동 */
-  const moveToMarker = ({ placeName, address, lat, lng }: Partial<Location> & Latlng) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-    map.setLevel(4, { animate: true });
-    map.panTo(new kakao.maps.LatLng(lat, lng));
-    placeName && address && setSpotInfo({ placeName, address, lat, lng });
-  };
-
-  /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
-  const clusterClickEvent = (cluster: kakao.maps.Cluster) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-    const bounds = new kakao.maps.LatLngBounds();
-
-    const clusterMarkersInfo = cluster.getMarkers().map((marker) => {
-      const customMarker = marker as CustomMarker;
-
-      bounds.extend(new kakao.maps.LatLng(customMarker.getPosition().getLat(), customMarker.getPosition().getLng()));
-      return {
-        postId: customMarker.getImage().Wh,
-        postImageUrl: customMarker.getImage().ok,
-      };
-    });
-    map.panTo(bounds);
-    setPostsPreview(clusterMarkersInfo);
-  };
-
-  /** 게시물 추가 라우팅 */
-  const handleAddPostRoute = () => {
-    if (isPostsView) {
-      route.replace(`/group/${groupId}/post`);
-      return;
-    }
-
-    if (!spotInfo) return;
-    const { lat, lng, placeName, address } = spotInfo;
-    const place = placeName || address;
-
-    route.replace(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
-  };
-
-  /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
-  const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
-    const customMarker = marker as CustomMarkerClusterer;
-
-    // polyline.current = [];
-    customMarker._clusters.forEach((cluster) => {
-      const customCluster = cluster as CustomCluster;
-      const { Ma: lat, La: lng } = cluster.getCenter() as CustomLatLng;
-      // polyline.current.push({ lat, lng });
-      clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
-        setClusterStyle((prev) => [
-          ...prev,
-          {
-            centerLatLng: { lat, lng },
-            fontSize: '0px',
-            width: '60px',
-            height: '60px',
-            background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
-            backgroundSize: 'cover',
-            borderRadius: '100%',
-            border: 'solid 4px #EB84DA',
-          },
-        ]);
-    });
-  };
-
-  /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
-  const clusterCalculator = () => {
-    if (!map) return;
-    const { ha, qa, oa, pa } = map.getBounds() as CustomLatLngBounds;
-    const viewport = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
-
-    let index;
-    for (let i = 0; i < clusterStyle.length; i++) {
-      const { lat, lng } = clusterStyle[i].centerLatLng;
-      if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
-    }
-    return index;
-  };
-
-  // reconstitutePolyline
 
   return (
     <>
