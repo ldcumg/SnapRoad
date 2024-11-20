@@ -25,7 +25,7 @@ const SearchResultLayout = ({ desktop, children, handleFindUserLocation }: Props
       isOpen={true}
       showHeader={false}
       hasButton={false}
-      className='mb-0 pb-2 pt-7'
+      className='mb-0 pb-[8px] pt-[28px]'
       backdrop={false}
     >
       <button

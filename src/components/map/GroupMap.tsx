@@ -352,11 +352,11 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           >
             {searchResult.hasMore && (
               <button
-                className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-7 py-2 shadow-BG_S'
+                className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-[24px] py-[8px] shadow-BG_S'
                 type='button'
                 onClick={searchLocation}
               >
-                <span className='text-body_md'>검색결과 더보기</span>
+                <span className='whitespace-nowrap text-body_md'>검색결과 더보기</span>
                 <img src='/svgs/Reload.svg' />
               </button>
             )}
@@ -385,7 +385,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             postsPreView={postsPreView}
             setPostsPreview={setPostsPreview}
           >
-            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:max-w-[856px] pc:min-w-[456px]'>
+            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:min-w-[456px] pc:max-w-[856px]'>
               {postsPreView.map((post) => (
                 <li
                   className='h-[132px] w-[132px] pc:h-[152px] pc:w-[152px]'
