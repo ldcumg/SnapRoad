@@ -1,6 +1,6 @@
 'use client';
 
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { Icon_Download } from '@/lib/icon/Icon_Download';
 import { PostDetail } from '@/types/postDetailTypes';
 import { downloadAllAsZip } from '@/utils/downloadUtils';
@@ -19,7 +19,7 @@ const PostImageDownload = ({ postDetail }: ProfileProps) => {
       const zipFilename = `SnapRoad_${postDetail.group.group_title || '그룹_이미지'}.zip`;
       const folder = postDetail.group_id || '';
 
-      await downloadAllAsZip(buckets.tourImages, images, zipFilename, folder);
+      await downloadAllAsZip(BUCKETS.tourImages, images, zipFilename, folder);
     } catch (error) {
       console.error('이미지 ZIP 다운로드 중 오류 발생:', error);
     }

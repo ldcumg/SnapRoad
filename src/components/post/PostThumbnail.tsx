@@ -1,7 +1,7 @@
 'use client';
 
 import PostLoadingSpinner from './PostLoadingSpinner';
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useImageDeleteLogic, useImageUploadLogic } from '@/hooks/queries/post/useImageHandlersHooks';
 import { IconCloseCircle } from '@/lib/icon/Icon_Close_Circle';
@@ -13,9 +13,9 @@ import { useState } from 'react';
 const PostThumbnailImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setImages } = useImageUploadStore();
-  const { handleDelete } = useImageDeleteLogic(buckets.tourImages, groupId);
-  const { data: imageUrls = [], refetch } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
-  const { handleImageUpload } = useImageUploadLogic(buckets.tourImages, groupId, userId, groupId, refetch);
+  const { handleDelete } = useImageDeleteLogic(BUCKETS.tourImages, groupId);
+  const { data: imageUrls = [], refetch } = useFetchImageUrls(uploadSessionId, images, BUCKETS.tourImages, groupId);
+  const { handleImageUpload } = useImageUploadLogic(BUCKETS.tourImages, groupId, userId, groupId, refetch);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleNewImageUpload = async (files: FileList | null) => {

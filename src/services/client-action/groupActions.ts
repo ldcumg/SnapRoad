@@ -1,4 +1,4 @@
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { GroupObjType, UpdateGroupObjType, UserGroupType } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 
@@ -6,14 +6,14 @@ const uploadDefaultGroupImg = async (group_id: string) => {
   const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, defaultImgBlob);
   return { data, error };
 };
 
 const uploadGroupImg = async (groupImg: File, group_id: string) => {
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, groupImg);
   return { data, error };
 };
@@ -22,7 +22,7 @@ const updateDefaultGroupImg = async (group_id: string) => {
   const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, defaultImgBlob, {
       upsert: true,
     });
@@ -30,7 +30,7 @@ const updateDefaultGroupImg = async (group_id: string) => {
 };
 const updateGroupImg = async (groupImg: File, group_id: string) => {
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, groupImg, {
       upsert: true,
     });

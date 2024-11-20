@@ -1,4 +1,4 @@
-enum tables {
+enum TABLES {
   profiles = 'profiles',
   group = 'group',
   user_group = 'user_group',
@@ -9,4 +9,4 @@ enum tables {
   drafts = 'drafts',
 }
 
-export default tables;
+export default TABLES;
