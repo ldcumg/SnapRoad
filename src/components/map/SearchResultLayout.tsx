@@ -1,5 +1,6 @@
 'use client';
 
+import IconGeolocation from '@/lib/icon/Icon_Geolocation';
 import { BottomSheet } from '@/stories/BottomSheet';
 
 type Props = Readonly<{
@@ -32,9 +33,8 @@ const SearchResultLayout = ({ desktop, children, handleFindUserLocation }: Props
         className='absolute -top-[16px] left-[16px] z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white'
         onClick={handleFindUserLocation}
       >
-        <img
-          className='mx-auto my-auto'
-          src='/svgs/Geolocation_btn.svg'
+        <IconGeolocation
+        className='m-auto'
         />
       </button>
       {children}

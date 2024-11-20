@@ -1,8 +1,8 @@
 'use client';
 
 import URLS from '@/constants/urls';
-import CloseLg from '@/lib/icon/Close_Lg';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
+import Icon_Close from '@/lib/icon/Icon_Close';
 import IconToAlbum from '@/lib/icon/Icon_To_Album';
 import IconToMap from '@/lib/icon/Icon_To_Map';
 import { GroupDetailMode } from '@/types/groupTypes';
@@ -43,7 +43,7 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
             className='h-10 w-10'
             onClick={() => setMode(GroupDetailMode.album)}
           >
-            <CloseLg className='mx-auto' />
+            <Icon_Close className='mx-auto' />
           </button>
         );
       default:

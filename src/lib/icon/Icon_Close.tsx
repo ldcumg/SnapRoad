@@ -1,4 +1,4 @@
-const CloseLg = ({ className }: { className?: string }) => (
+const Icon_Close = ({ className }: { className?: string }) => (
   <svg
     width='24'
     height='24'
@@ -16,4 +16,4 @@ const CloseLg = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default CloseLg;
+export default Icon_Close;

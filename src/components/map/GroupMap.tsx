@@ -5,6 +5,12 @@ import PostsPreviewLayout from './PostsPreviewLayout';
 import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import IconGeolocation from '@/lib/icon/Icon_Geolocation';
+import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
+import IconPostPlus from '@/lib/icon/Icon_Post_Plus';
+import IconReload from '@/lib/icon/Icon_Reload';
+import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
+import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
@@ -264,17 +270,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
       >
-        {isPostsView ? (
-          <img
-            className='mx-auto my-auto'
-            src='/svgs/Switch_btn_to_mappin_marker.svg'
-          />
-        ) : (
-          <img
-            className='mx-auto my-auto'
-            src='/svgs/Switch_btn_to_image_marker.svg'
-          />
-        )}
+        {isPostsView ? <IconSwitchToMappin className='m-auto' /> : <IconSwitchToPostMarker className='m-auto' />}
       </button>
       {isPostsView || (
         <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-1/2 -translate-y-[29%]' />
@@ -357,7 +353,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                 onClick={searchLocation}
               >
                 <span className='whitespace-nowrap text-body_md'>검색결과 더보기</span>
-                <img src='/svgs/Reload.svg' />
+                <IconReload />
               </button>
             )}
             <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-[4px]'} pc:mx-auto`}>
@@ -373,10 +369,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
             onClick={handleFindUserLocation}
           >
-            <img
-              className='mx-auto my-auto'
-              src='/svgs/Geolocation_btn.svg'
-            />
+            <IconGeolocation className='m-auto' />
           </button>
         )}
         {!!postsPreView.length ? (
@@ -399,6 +392,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                       className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover pc:min-h-[152px] pc:min-w-[152px] pc:rounded-[12px]'
                       src={post.postImageUrl}
                       alt={`Post ${post.postId}`}
+                      fetchPriority='high'
                     />
                   </Link>
                 </li>
@@ -418,7 +412,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
               disabled={!isPostsView && !spotInfo?.address}
             >
               <span className='flex gap-[8px]'>
-                <img src='/svgs/Plus_LG.svg' />
+                <IconPostPlus />
                 <span className='text-title_lg'>게시물 추가하기</span>
               </span>
             </Button>
