@@ -1,7 +1,10 @@
 'use client';
 
 import URLS from '@/constants/urls';
+import CloseLg from '@/lib/icon/Close_Lg';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
+import Icon_To_Album from '@/lib/icon/Icon_To_Album';
+import Icon_To_Map from '@/lib/icon/Icon_To_Map';
 import { GroupDetailMode } from '@/types/groupTypes';
 import Link from 'next/link';
 
@@ -18,13 +21,13 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
       case GroupDetailMode.map:
         return (
           <button onClick={() => setMode(GroupDetailMode.album)}>
-            <img src='/svgs/Swap_Btn_To_Album.svg' />
+            <Icon_To_Album />
           </button>
         );
       case GroupDetailMode.album:
         return (
           <button onClick={() => setMode(GroupDetailMode.map)}>
-            <img src='/svgs/Swap_Btn_To_Map.svg' />
+            <Icon_To_Map />
           </button>
         );
       case GroupDetailMode.member:
@@ -33,19 +36,16 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
             className='h-10 w-10'
             onClick={() => setMode(GroupDetailMode.album)}
           >
-            <img
-              className='mx-auto'
-              src='/svgs/Close_Member_List.svg'
-            />
+            <CloseLg className='mx-auto' />
           </button>
         );
       default:
         throw new Error('잘못된 요청입니다.');
     }
   };
-  
+
   return (
-    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px] pc:border-b'>
+    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:border-b pc:px-[24px] pc:py-[8px]'>
       <Link href={URLS.home}>
         <IconLogo />
       </Link>

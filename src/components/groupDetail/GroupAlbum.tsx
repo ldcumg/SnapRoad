@@ -35,7 +35,6 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
 
   const postsImages = data.pages.flat();
 
-  //TODO - 스켈레톤 UI
   return (
     <>
       {desktop && (

@@ -11,6 +11,7 @@ type Props = {
 };
 
 const GroupPostList = ({ groupId, postsImages, isFetchingNextPage, observerRef }: Props) => {
+  //TODO - 스켈레톤 UI
   return (
     <>
       {!!postsImages.length ? (
