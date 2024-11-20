@@ -69,6 +69,7 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
                 resetField(SEARCH_INPUT);
                 setFocus(SEARCH_INPUT);
               }}
+              aria-label='검색창 초기화'
             >
               <IconResetInput />
             </button>
@@ -81,6 +82,7 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
               setSearchResult({ markers: [], hasMore: false });
               resetField(SEARCH_INPUT);
             }}
+            aria-label='검색결과 지우기'
           >
             <Icon_Close />
           </button>
@@ -88,6 +90,7 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
           <button
             className='absolute right-[16px] top-1/2 -translate-y-1/2'
             type='submit'
+            aria-label='장소 검색'
           >
             <IconMapSearch />
           </button>

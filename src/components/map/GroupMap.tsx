@@ -269,6 +269,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           isPostsView && setPostsPreview([]);
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
+        aria-label='맵핀, 게시물 전환'
       >
         {isPostsView ? <IconSwitchToMappin className='m-auto' /> : <IconSwitchToPostMarker className='m-auto' />}
       </button>
@@ -351,6 +352,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                 className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-[24px] py-[8px] shadow-BG_S'
                 type='button'
                 onClick={searchLocation}
+                aria-label='검색결과 더보기'
               >
                 <span className='whitespace-nowrap text-body_md'>검색결과 더보기</span>
                 <IconReload />
@@ -368,6 +370,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           <button
             className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
             onClick={handleFindUserLocation}
+            aria-label='사용자 위치 찾기'
           >
             <IconGeolocation className='m-auto' />
           </button>

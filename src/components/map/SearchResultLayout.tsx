@@ -32,10 +32,9 @@ const SearchResultLayout = ({ desktop, children, handleFindUserLocation }: Props
       <button
         className='absolute -top-[16px] left-[16px] z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white'
         onClick={handleFindUserLocation}
+        aria-label='사용자 위치 찾기'
       >
-        <IconGeolocation
-        className='m-auto'
-        />
+        <IconGeolocation className='m-auto' />
       </button>
       {children}
     </BottomSheet>
