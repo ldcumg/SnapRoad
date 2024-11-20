@@ -5,18 +5,21 @@ import Link from 'next/link';
 
 type Props = {
   groupId: string;
+  desktop: boolean;
   postsImages: PostImage[];
   isFetchingNextPage: boolean;
   observerRef: React.RefObject<HTMLDivElement>;
 };
 
-const GroupPostList = ({ groupId, postsImages, isFetchingNextPage, observerRef }: Props) => {
+const GroupPostList = ({ groupId, desktop, postsImages, isFetchingNextPage, observerRef }: Props) => {
+  const PRIORITY_CRITERIA = desktop ? 10 : 6;
+
   return (
     <>
       {!!postsImages.length ? (
         <>
           <ol className='mx-auto grid grid-cols-3 justify-items-center gap-[4px] py-[15px] pc:grid-cols-5 pc:gap-[8px] pc:py-[40px]'>
-            {postsImages.map((image) => (
+            {postsImages.map((image, index) => (
               <li
                 className='h-[112px] w-[112px] pc:h-[232px] pc:w-[232px]'
                 key={image.id}
@@ -29,6 +32,7 @@ const GroupPostList = ({ groupId, postsImages, isFetchingNextPage, observerRef }
                     className='mx-auto my-auto h-full w-full rounded-[8px] object-cover pc:rounded-[12px]'
                     src={image.post_image_url}
                     alt={image.post_image_name}
+                    fetchPriority={index < PRIORITY_CRITERIA ? 'high' : 'low'}
                   />
                 </Link>
               </li>

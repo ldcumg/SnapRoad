@@ -83,7 +83,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
 
   if (isPending || mapLoading) return <Loading />;
 
-  if (mapError) return new Error('지도를 불러오지 못 했습니다.');
+  if (mapError) throw new Error('지도를 불러오지 못 했습니다.');
 
   if (isError) throw new Error(error.message);
 
@@ -372,6 +372,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           >
             <PostsPreview
               groupId={groupId}
+              desktop={desktop}
               postsPreView={postsPreView}
             />
           </PostsPreviewLayout>

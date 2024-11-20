@@ -27,6 +27,7 @@ const GroupInfoBox = ({
           className='h-[132px] min-h-[132px] w-[132px] min-w-[132px] object-cover pc:h-[220px] pc:min-h-[220px] pc:w-[220px] pc:min-w-[220px]'
           src={group_image_url ?? '/images/group_default_thumbnail.jpg'}
           alt='그룹 이미지'
+          fetchPriority='high'
         />
         <div className='flex w-full flex-col gap-[12px]'>
           <div className='flex flex-row justify-between'>

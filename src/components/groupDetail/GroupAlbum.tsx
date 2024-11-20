@@ -58,6 +58,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
       />
       <GroupPostList
         groupId={groupId}
+        desktop={desktop}
         postsImages={postsImages}
         isFetchingNextPage={isFetchingNextPage}
         observerRef={observerRef}
