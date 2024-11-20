@@ -5,15 +5,17 @@ import '@/lib/styles/globals.css';
 import * as Sentry from '@sentry/browser';
 import type { Metadata } from 'next';
 
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  release: 'snpaRoad@2.3.12',
-  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
-  tracesSampleRate: 1.0,
-  tracePropagationTargets: ['localhost', /^https:\/\/snaproad\.co\.kr\/api/],
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-});
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    release: 'snpaRoad@2.3.12',
+    integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: ['localhost', /^https:\/\/snaproad\.co\.kr\/api/],
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 
 export const metadata: Metadata = {
   title: 'Snap Road',
@@ -28,7 +30,12 @@ export const metadata: Metadata = {
     description: 'Snap-Road: 우리들의 여행기록',
     images: 'https://www.snaproad.co.kr/images/ogImage/og_image.jpg',
   },
+  icons: {
+    icon: '/favicon.ico',
+  },
+  manifest: '/manifest.ts', 
 };
+
 
 const RootLayout = ({
   children,
