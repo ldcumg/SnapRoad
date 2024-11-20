@@ -1,5 +1,6 @@
 'use client';
 
+import IconInvitation from '@/lib/icon/Icon_Invitation';
 import type { GroupInfo } from '@/types/groupTypes';
 import { toast } from 'garlic-toast';
 
@@ -25,7 +26,7 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
           className='flex items-center gap-[8px] rounded border border-black px-[16px] py-[8px] pc:px-[20px] pc:py-[12px]'
           onClick={copyInvitationCode}
         >
-          <img src='/svgs/User_Plus.svg' />
+          <IconInvitation />
           <span className='text-label_sm text-gray-700'>초대코드 복사</span>
         </button>
       </div>
