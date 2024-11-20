@@ -68,9 +68,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
-      postsCoverImages.forEach(
-        ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
-      );
+      postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
       postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
@@ -102,6 +100,12 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
     const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+
+    if (!results[0]) {
+      toast.error('검색결과가 존재하지 않습니다.', { progressBar: false, closeOnClick: true, autoClose: true });
+      return;
+    }
+
     setSearchResult(({ markers, hasMore }) =>
       searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
     );
@@ -297,7 +301,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
