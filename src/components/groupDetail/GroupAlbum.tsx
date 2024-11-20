@@ -1,9 +1,9 @@
 'use client';
 
 import MakeGroupForm from '../makegroup/MakeGroupForm';
+import GroupDetailSkeleton from './GroupDetailSkeleton';
 import GroupInfoBox from './GroupInfoBox';
 import GroupPostList from './GroupPostList';
-import Loading from '@/app/loading';
 import useIntersect from '@/hooks/byUse/useIntersection';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
@@ -29,7 +29,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
     hasNextPage && !isFetchingNextPage && !isFetching && fetchNextPage();
   });
 
-  if (isPending) return <Loading />;
+  if (isPending) return <GroupDetailSkeleton desktop={desktop} />;
 
   if (isError) throw new Error(error.message);
 
