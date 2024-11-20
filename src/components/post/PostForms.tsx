@@ -4,6 +4,8 @@ import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import PostAddress from './PostAddress';
+import { Card, CardContent } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
 import { usePostForm } from '@/hooks/useCustomForm/usePostForm';
@@ -77,8 +79,7 @@ const PostForms = ({ groupId }: { groupId: string }) => {
     >
       {desktop ? (
         <>
-          <div className='mb-4 flex w-full items-center justify-center gap-4 overflow-x-auto'>
-            {images.length > 0 &&
+          {/* {images.length > 0 &&
               images.map((image, index) => (
                 <div
                   key={index}
@@ -90,7 +91,6 @@ const PostForms = ({ groupId }: { groupId: string }) => {
                     className='h-full w-full object-cover'
                   />
                 </div>
-              ))}
 
             <button
               onClick={handleFullOpen}
@@ -101,21 +101,85 @@ const PostForms = ({ groupId }: { groupId: string }) => {
                 <p className='text-md mt-2'>사진 선택</p>
               </div>
             </button>
+              ))} */}
+
+          <div className='relative mx-auto mb-4'>
+            {images.length === 0 ? (
+              <button
+                onClick={handleFullOpen}
+                className='flex h-[588px] w-[588px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+              >
+                <div className='flex flex-col items-center'>
+                  <IconPluslg />
+                  <p className='text-md mt-2'>사진 선택</p>
+                </div>
+              </button>
+            ) : (
+              <div className='relative -ml-8 flex w-full flex-row-reverse gap-4 pb-4'>
+                <Carousel
+                  className='relative w-full overflow-visible'
+                  opts={{
+                    loop: true,
+                  }}
+                >
+                  <CarouselContent className='flex w-[588px] gap-4'>
+                    {images.map((image, index) => (
+                      <CarouselItem
+                        key={index}
+                        className='relative h-[588px] min-w-[588px] flex-1 overflow-hidden md:border md:border-gray-200'
+                      >
+                        <img
+                          src={image.post_image_url || '/path/to/placeholder.png'}
+                          alt={`업로드된 이미지 ${index + 1}`}
+                          className='h-full w-full object-cover'
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+
+                  <CarouselPrevious
+                    className='absolute -left-8 top-1/2 z-[2] flex !h-10 !w-10 -translate-y-1/2 transform items-center justify-center rounded-full !border-0 bg-white text-gray-800 shadow-md hover:bg-gray-300'
+                    type='button'
+                  />
+                  <CarouselNext
+                    className='absolute -right-8 top-1/2 z-[2] flex !h-10 !w-10 -translate-y-1/2 transform items-center justify-center rounded-full !border-0 bg-white text-gray-800 shadow-md hover:bg-gray-300'
+                    type='button'
+                  />
+                </Carousel>
+
+                <button
+                  onClick={handleFullOpen}
+                  className='flex h-[72px] min-w-[72px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+                >
+                  <div className='flex flex-col items-center'>
+                    <p className='text-md mt-2'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        width='24'
+                        height='24'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                      >
+                        <path
+                          d='M9.14286 12.9524L11.0476 14.8571M9.61905 7.71429L6.28571 6.28571M16.7619 7.2381L19.619 4.38095M16.2857 14.381L17.7143 17.7143M22 12.4762L18.6667 11.0476M11.5238 2L12.9524 5.33333M12.4762 9.61905L14.381 11.5238L3.90476 22L2 20.0952L12.4762 9.61905Z'
+                          stroke='black'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
+                      </svg>
+                    </p>
+                  </div>
+                </button>
+              </div>
+            )}
           </div>
 
-          <PostAddress groupId={groupId} />
-
-          <TextAreaWithCounter
-            id='formValue'
-            variant='default'
-            maxLength={1000}
-            placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-            errorText={errors.desc && String(errors.desc.message)}
-            {...register('desc')}
-          />
+          <div className='flex flex-col space-y-4 md:mx-auto md:w-[620px]'>
+            <PostAddress groupId={groupId} />
+          </div>
         </>
       ) : (
-        <div className=''>
+        <>
           <PostAddress groupId={groupId} />
           <div className='mb-4 flex w-full items-start justify-start gap-4 overflow-x-auto'>
             {images.length > 0 &&
@@ -142,40 +206,41 @@ const PostForms = ({ groupId }: { groupId: string }) => {
               </div>
             </button>
           </div>
-
-          <TextAreaWithCounter
-            id='formValue'
-            variant='default'
-            maxLength={1000}
-            placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
-            errorText={errors.desc && String(errors.desc.message)}
-            {...register('desc')}
-          />
-        </div>
+        </>
       )}
 
-      <Controller
-        name='hashtags'
-        control={control}
-        defaultValue={[]}
-        render={({ field }) => (
-          <HashtagInput
-            hashtags={field.value || []}
-            setHashtags={field.onChange}
-          />
-        )}
-      />
+      <div className='flex flex-col space-y-4 md:mx-auto md:w-[620px]'>
+        <TextAreaWithCounter
+          id='formValue'
+          variant='default'
+          maxLength={1000}
+          placeholder='추억을 기록할 수 있는 글을 남겨보세요.'
+          errorText={errors.desc && String(errors.desc.message)}
+          {...register('desc')}
+        />
+        <Controller
+          name='hashtags'
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <HashtagInput
+              hashtags={field.value || []}
+              setHashtags={field.onChange}
+            />
+          )}
+        />
 
-      <DateInputWithIcon {...register('date')} />
-      <TimeInputWithIcon {...register('time')} />
+        <DateInputWithIcon {...register('date')} />
+        <TimeInputWithIcon {...register('time')} />
 
-      <Button
-        type='submit'
-        label='게시물 업로드'
-        variant='primary'
-        className={`${isDesktop ? 'mx-auto !mt-24 w-1/2' : ''}`}
-        size='large'
-      />
+        <Button
+          type='submit'
+          label='게시물 업로드'
+          variant='primary'
+          className='mx-auto mt-6 inline-flex w-full items-center justify-center rounded-[12px] bg-primary-400 px-6 py-3 text-white hover:bg-primary-600 focus:outline-none md:!mt-24 md:w-1/2'
+          size='large'
+        />
+      </div>
     </form>
   );
 };

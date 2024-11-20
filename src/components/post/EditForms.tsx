@@ -3,6 +3,8 @@
 import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
+import PostAddress from './PostAddress';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useUpdateForm } from '@/hooks/queries/post/useFormMutations';
 import { useEditForm } from '@/hooks/useCustomForm/usePostForm';
 import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
@@ -19,10 +21,11 @@ import { useEffect, useState } from 'react';
 import { FieldValues, Controller } from 'react-hook-form';
 
 export type PostAndProfileProps = {
+  groupId: string;
   postDetail: postDetailType;
 };
 
-const EditForms = ({ postDetail }: PostAndProfileProps) => {
+const EditForms = ({ postDetail, groupId }: PostAndProfileProps) => {
   const {
     handleSubmit,
     control,
@@ -30,14 +33,19 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
     formState: { errors },
   } = useEditForm();
 
-  const router = useRouter();
-  const { userId = '', groupId = '', addressName, lat, lng } = usePostDataStore();
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+  const { userId = '', addressName, lat, lng } = usePostDataStore();
   const { handleFullOpen } = useBottomSheetStore();
   const { images: uploadedImages } = useImageUploadStore();
   const { mutateAsync: updateForm } = useUpdateForm(groupId);
-
   const [existingImages, setExistingImages] = useState(postDetail.images || []);
   const [hashtags, setHashtags] = useState<string[]>(postDetail.tags?.map((tag) => tag.tag_title) || []);
+  const router = useRouter();
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
 
   useEffect(() => {
     if (postDetail) {
@@ -93,34 +101,74 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
 
   return (
     <form
-      className='flex flex-col space-y-4 px-4'
+      className='mb-8 flex flex-col space-y-4 !px-4 lg:max-w-[654px] lg:mx-auto'
       onSubmit={handleSubmit(handlePostForm)}
     >
-      <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
-        {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => (
-          <div
-            key={image.post_image_name || image.signed_image_url || index}
-            className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
-          >
-            <img
-              src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
-              alt={`이미지 ${index + 1}`}
-              className='h-full w-full object-cover'
-            />
-          </div>
-        ))}
+      {desktop ? (
+        <>
+          <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
+            {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => {
+              if (!image.signed_image_url) return null;
 
-        <button
-          type='button'
-          onClick={handleFullOpen}
-          className='flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
-        >
-          <div className='flex flex-col items-center'>
-            <IconPluslg />
-            <p className='text-md mt-2'>사진 선택</p>
+              return (
+                <div
+                  key={image.post_image_name || image.signed_image_url || index}
+                  className='relative h-[588px] min-w-[588px] max-w-[588px] flex-1 overflow-hidden border border-gray-200'
+                >
+                  <img
+                    src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
+                    alt={`업로드된 이미지 ${index + 1}`}
+                    className='h-full w-full object-cover'
+                  />
+                </div>
+              );
+            })}
+
+            <button
+              type='button'
+              onClick={handleFullOpen}
+              className='flex h-[588px] min-w-[588px] max-w-[588px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+            >
+              <div className='flex flex-col items-center'>
+                <IconPluslg />
+                <p className='text-md mt-2'>사진 선택</p>
+              </div>
+            </button>
           </div>
-        </button>
-      </div>
+
+          <PostAddress groupId={groupId} />
+        </>
+      ) : (
+        <>
+          <PostAddress groupId={groupId} />
+
+          <div className='mb-4 flex w-full content-center items-start gap-4 overflow-x-auto'>
+            {(uploadedImages.length > 0 ? uploadedImages : existingImages).map((image, index) => (
+              <div
+                key={image.post_image_name || image.signed_image_url || index}
+                className='relative h-[240px] min-w-[240px] max-w-[240px] flex-1 overflow-hidden border border-gray-200'
+              >
+                <img
+                  src={image.signed_image_url || image.post_image_url || '/path/to/placeholder.png'}
+                  alt={`이미지 ${index + 1}`}
+                  className='h-full w-full object-cover'
+                />
+              </div>
+            ))}
+
+            <button
+              type='button'
+              onClick={handleFullOpen}
+              className='flex h-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
+            >
+              <div className='flex flex-col items-center'>
+                <IconPluslg />
+                <p className='text-md mt-2'>사진 선택</p>
+              </div>
+            </button>
+          </div>
+        </>
+      )}
 
       <Controller
         name='desc'
@@ -137,7 +185,6 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
           />
         )}
       />
-
       <Controller
         name='hashtags'
         control={control}
@@ -182,8 +229,7 @@ const EditForms = ({ postDetail }: PostAndProfileProps) => {
         type='submit'
         label='게시물 수정'
         variant='primary'
-        className='font-bold'
-        size='large'
+        className='mx-auto mt-6 inline-flex w-full items-center justify-center rounded-[12px] bg-primary-400 px-6 py-3 text-white hover:bg-primary-600 focus:outline-none lg:!mt-24 lg:w-1/2'
       />
     </form>
   );

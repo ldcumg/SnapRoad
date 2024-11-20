@@ -37,13 +37,13 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
         {hashtags.map((tag, index) => (
           <span
             key={index}
-            className='flex items-center py-1 text-sm font-medium text-gray-700'
+            className='flex items-center py-1 font-medium text-gray-700'
           >
             #{tag}
             <button
               type='button'
               onClick={() => removeHashtag(tag)}
-              className='ml-1 text-gray-500 hover:text-red-500'
+              className='ml-1 text-gray-500 hover:text-danger'
               aria-label={`${tag} 해시태그 삭제`}
             >
               &times;
