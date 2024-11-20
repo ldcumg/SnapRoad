@@ -59,10 +59,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     libraries: ['services', 'clusterer'],
   });
 
-  useEffect(() => {
-    if (mapLoading) return;
-  }, [mapLoading]);
-
+  // 게시물 좌표 기준으로 지도 위치 재설정
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
@@ -73,6 +70,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     }
   }, [map, postsCoverImages]);
 
+  // 게시물 상세 페이지에서 올 경우 해당 게시물 위치
   useEffect(() => {
     if (!!point && map) {
       moveToMarker(point);
@@ -80,7 +78,9 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     }
   }, [map]);
 
-  if (isPending) return <Loading />;
+  if (mapLoading || isPending) return <Loading />;
+
+  if (mapError) return new Error('지도를 불러오지 못 했습니다.');
 
   if (isError) throw new Error(error.message);
 

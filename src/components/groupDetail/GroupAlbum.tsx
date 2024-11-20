@@ -7,7 +7,7 @@ import useIntersect from '@/hooks/byUse/useIntersection';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import { getGroupPostsImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import { Modal } from '@/stories/Modal';
-import { type GroupDetailMode, type GroupInfo } from '@/types/groupTypes';
+import type { GroupDetailMode, GroupInfo } from '@/types/groupTypes';
 import Link from 'next/link';
 
 type Props = {
@@ -22,12 +22,10 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
     getGroupPostsImagesQuery(groupId);
   const [updateModal, handleUpdateModal] = useIsOpen();
 
-  //NOTE - 고장
-  const observerRef = useIntersect(async (entry, observer) => {
+  const observerRef = useIntersect((entry, observer) => {
     observer.unobserve(entry.target);
-    if (hasNextPage && !isFetchingNextPage && !isFetching) {
-      fetchNextPage();
-    }
+
+    hasNextPage && !isFetchingNextPage && !isFetching && fetchNextPage();
   });
 
   if (isPending) return <Loading />;
@@ -84,6 +82,7 @@ const GroupAlbum = ({ groupId, groupInfo, setMode, desktop }: Props) => {
           </ol>
           {isFetchingNextPage && <div className='mx-auto'>게시물을 불러오는 중입니다...</div>}
           <div
+            className='bg-black'
             id='observerTarget'
             ref={observerRef}
           ></div>

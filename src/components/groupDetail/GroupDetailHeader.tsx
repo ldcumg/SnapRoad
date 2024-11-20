@@ -43,6 +43,7 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
         throw new Error('잘못된 요청입니다.');
     }
   };
+  
   return (
     <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px] pc:border-b'>
       <Link href={URLS.home}>
