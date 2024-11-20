@@ -1,15 +1,6 @@
 'use client';
 
-import { getAddress } from '@/services/server-action/mapAction';
-import type {
-  Location,
-  LatLng,
-  CustomMarker,
-  CustomMarkerClusterer,
-  CustomCluster,
-  CustomLatLng,
-  CustomLatLngBounds,
-} from '@/types/mapTypes';
+import type { Location, LatLng, CustomMarker, CustomMarkerClusterer, CustomCluster, CustomLatLng, CustomLatLngBounds } from '@/types/mapTypes';
 import { useRouter } from 'next/router';
 
 const useMap = (map: kakao.maps.Map) => {

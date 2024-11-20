@@ -7,12 +7,23 @@ import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
-import { keywordSearch } from '@/services/server-action/mapAction';
+import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import type { ClusterStyle, LatLng, LocationInfo } from '@/types/mapTypes';
+import type {
+  ClusterStyle,
+  CustomCluster,
+  CustomLatLng,
+  CustomLatLngBounds,
+  CustomMarker,
+  CustomMarkerClusterer,
+  LatLng,
+  Location,
+  LocationInfo,
+} from '@/types/mapTypes';
 import { toast } from 'garlic-toast';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
@@ -24,9 +35,10 @@ type Props = {
 };
 
 const GroupMap = ({ groupId, desktop, point }: Props) => {
+  const route = useRouter();
   const { handleCustomOpen } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
-  const [isPostsView, setIsPostsView] = useState<boolean>(true);
+  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],
