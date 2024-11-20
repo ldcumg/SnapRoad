@@ -58,7 +58,7 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
         />
 
         {isVisible && (
-          <div className='absolute right-1 top-5 z-10 flex flex-col rounded-md bg-white'>
+          <div className='absolute right-0 top-[30px] z-10 flex flex-col rounded-md border border-gray-100 bg-white'>
             <button
               className='whitespace-nowrap p-2.5 text-body_md text-gray-900'
               onClick={handlePosts}
@@ -67,7 +67,7 @@ const OptionsMenu = ({ postId }: { postId: string }) => {
             </button>
             <button
               onClick={() => handleDeletePost(postId)}
-              className='whitespace-nowrap p-2.5 text-body_md text-danger'
+              className='whitespace-nowrap border-t border-gray-100 p-2.5 text-body_md text-danger'
             >
               게시물 삭제
             </button>

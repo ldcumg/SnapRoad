@@ -45,6 +45,7 @@ const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
   return (
     <>
       <Carousel
+      className="relative"
         orientation='horizontal'
         opts={{ loop: false }}
         setApi={setApi}
@@ -53,7 +54,7 @@ const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
           {sortedImages.map((image, index) => (
             <CarouselItem key={index}>
               <Card className='border-none'>
-                <CardContent className='flex h-[375px] w-full items-center justify-center p-0'>
+                <CardContent className='flex h-[375px] md:h-[588px] w-full items-center justify-center p-0'>
                   <img
                     src={image.signed_image_url!}
                     alt={'게시글 상세 이미지'}
@@ -66,8 +67,8 @@ const PostDetailCarousel = ({ images }: { images: ImageDetail[] }) => {
         </CarouselContent>
         {desktop && images.length > 1 && (
           <>
-            <CarouselPrevious className='bg-white' />
-            <CarouselNext className='bg-white' />
+                <CarouselPrevious className='absolute -left-8 top-1/2 z-[2] flex !h-10 !w-10 -translate-y-1/2 transform items-center justify-center rounded-full !border-0 bg-white text-gray-800 shadow-md hover:bg-gray-300' />
+            <CarouselNext className='absolute -right-8 top-1/2 z-[2] flex !h-10 !w-10 -translate-y-1/2 transform items-center justify-center rounded-full !border-0 bg-white text-gray-800 shadow-md hover:bg-gray-300' />
           </>
         )}
       </Carousel>

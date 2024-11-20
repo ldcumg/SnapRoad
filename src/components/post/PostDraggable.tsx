@@ -39,7 +39,7 @@ const PostDraggableImageList = () => {
         ref={sliderRef}
         className='keen-slider w-full !overflow-auto'
       >
-        <div className='flex gap-4'>
+        <div className='flex gap-4 overflow-x-auto'>
           {images.length > 0 &&
             images.map((image, index) => {
               if (image.id === undefined || !imageUrls[index]) return null;
