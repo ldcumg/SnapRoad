@@ -5,9 +5,9 @@ import { getPostsCoverImagesPerGroup, getPostsImagesPerGroup } from '@/services/
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import type { Metadata } from 'next';
 
-type GenerateMetadataProps = {
+type GenerateMetadataProps = Readonly<{
   params: { groupId: string };
-};
+}>;
 
 type GroupDetailLayoutProps = Readonly<{
   children: React.ReactNode;

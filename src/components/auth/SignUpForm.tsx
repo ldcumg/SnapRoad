@@ -28,7 +28,7 @@ const SignUpForm = () => {
     watch,
   } = useSignUpForm();
 
-  const { mutate: signUp, isError } = useSignUp();
+  const { mutate: signUp, isError, isPending } = useSignUp();
 
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
@@ -130,6 +130,7 @@ const SignUpForm = () => {
           label='회원가입'
           variant='primary'
           disabled={!isChecked || !isFormFilled || Object.keys(errors).length > 0} // 수정된 부분
+          loading={isPending}
         />
       </form>
       <div className='flex justify-center gap-2 text-caption_bold_lg text-gray-700'>

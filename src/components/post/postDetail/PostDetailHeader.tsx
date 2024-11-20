@@ -21,11 +21,11 @@ const PostDetailHeader = ({ postDetail }: { postDetail: PostDetail }) => {
 
   return (
     <div>
-      <div className='relative mx-4 flex items-center py-4'>
+      {/* <div className='relative mx-4 flex items-center py-4'>
         <MyPageHeader url={URLS.groupList} />
         <span className='mx-auto text-label_md text-gray-900'>{postDetail?.group?.group_title}</span>
-      </div>
-      {/* {desktop ? (
+      </div> */}
+      {desktop ? (
         <div className='pb-16'>
           <LogoUserHeader />
         </div>
@@ -34,7 +34,7 @@ const PostDetailHeader = ({ postDetail }: { postDetail: PostDetail }) => {
           <MyPageHeader url={URLS.groupList} />
           <span className='mx-auto text-label_md text-gray-900'>{postDetail?.group?.group_title}</span>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import React from 'react';
 const Profile = ({ userId }: { userId: string }) => {
   const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useProfilesQuery(userId);
 
-  if (isProfileError) return <>오류...</>;
+  if (isProfileError) throw new Error('프로필 조회 오류');
   if (isProfileLoading)
     return (
       <div className='absolute z-[3000] flex h-full w-full items-center justify-center'>
