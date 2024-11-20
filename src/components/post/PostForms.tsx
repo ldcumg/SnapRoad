@@ -4,7 +4,6 @@ import DateInputWithIcon from '../ui/DateInputWithIcon';
 import HashtagInput from '../ui/HashtagInput';
 import TimeInputWithIcon from '../ui/TimeInputWithIcon';
 import PostAddress from './PostAddress';
-import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useSubmitForm } from '@/hooks/queries/post/useFormMutations';
@@ -79,30 +78,6 @@ const PostForms = ({ groupId }: { groupId: string }) => {
     >
       {desktop ? (
         <>
-          {/* {images.length > 0 &&
-              images.map((image, index) => (
-                <div
-                  key={index}
-                  className='relative h-[588px] min-w-[588px] max-w-[588px] flex-1 overflow-hidden border border-gray-200'
-                >
-                  <img
-                    src={image.post_image_url || '/path/to/placeholder.png'}
-                    alt={`업로드된 이미지 ${index + 1}`}
-                    className='h-full w-full object-cover'
-                  />
-                </div>
-
-            <button
-              onClick={handleFullOpen}
-              className='flex h-[588px] min-w-[588px] max-w-[588px] flex-shrink-0 cursor-pointer items-center justify-center border border-gray-100 bg-gray-50'
-            >
-              <div className='flex flex-col items-center'>
-                <IconPluslg />
-                <p className='text-md mt-2'>사진 선택</p>
-              </div>
-            </button>
-              ))} */}
-
           <div className='relative mx-auto mb-4'>
             {images.length === 0 ? (
               <button

@@ -59,7 +59,7 @@ const PostDetailPage = async ({ params }: { params: { postId: string } }) => {
   return (
     <div className='w-full'>
       <PostDetailHeader postDetail={postDetail} />
-      <div className='m-auto w-full md:max-w-[40%]'>
+      <div className='m-auto w-full md:max-w-[588px]'>
         <PostDetail
           userDetail={userDetail}
           postDetail={postDetail}

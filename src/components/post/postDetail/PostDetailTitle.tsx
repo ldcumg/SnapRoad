@@ -10,7 +10,7 @@ export type PostAndProfileProps = {
 
 const PostDetailTitle = ({ userDetail, postDetail }: PostAndProfileProps) => {
   return (
-    <div className='flex justify-between p-4'>
+    <div className='flex justify-between p-4 md:px-0'>
       <div className='flex items-center gap-2'>
         <Link href={`/group/${postDetail.group_id}?lat=${postDetail.post_lat}&lng=${postDetail.post_lng}`}>
           <img
