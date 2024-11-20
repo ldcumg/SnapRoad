@@ -20,19 +20,26 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
     switch (mode) {
       case GroupDetailMode.map:
         return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
+          <button
+            aria-label='앨범 버튼'
+            onClick={() => setMode(GroupDetailMode.album)}
+          >
             <IconToAlbum />
           </button>
         );
       case GroupDetailMode.album:
         return (
-          <button onClick={() => setMode(GroupDetailMode.map)}>
+          <button
+            aria-label='지도로 가기'
+            onClick={() => setMode(GroupDetailMode.map)}
+          >
             <IconToMap />
           </button>
         );
       case GroupDetailMode.member:
         return (
           <button
+            aria-label='앨범으로 가기'
             className='h-10 w-10'
             onClick={() => setMode(GroupDetailMode.album)}
           >

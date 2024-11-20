@@ -30,14 +30,20 @@ const GroupInfoBox = ({
         />
         <div className='flex w-full flex-col gap-[12px]'>
           <div className='flex flex-row justify-between'>
-            <button onClick={() => setMode(GroupDetailMode.member)}>
+            <button
+              aria-label='멤버리스트로 가기'
+              onClick={() => setMode(GroupDetailMode.member)}
+            >
               <div className='flex flex-row items-center gap-[4px] rounded-xl border border-gray-100 px-[8px] py-[4px]'>
                 <IconMember />
                 <span className='text-label_sm pc:text-label_md'>{user_group.length}</span>
               </div>
             </button>
             {desktop ? (
-              <button onClick={handleUpdateModal}>
+              <button
+                aria-label='그룹 정보 수정 모달 열기'
+                onClick={handleUpdateModal}
+              >
                 <IconSetting />
               </button>
             ) : (

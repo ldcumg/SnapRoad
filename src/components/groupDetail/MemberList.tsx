@@ -25,6 +25,7 @@ const MemberList = ({ groupInfo: { user_group, group_invite_code } }: Props) => 
         <button
           className='flex items-center gap-[8px] rounded border border-black px-[16px] py-[8px] pc:px-[20px] pc:py-[12px]'
           onClick={copyInvitationCode}
+          aria-label='유저 초대하기'
         >
           <IconInvitation />
           <span className='text-label_sm text-gray-700'>초대코드 복사</span>
