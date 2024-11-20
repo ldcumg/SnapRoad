@@ -2,8 +2,8 @@
 
 import { getSignedImgUrl } from './getSignedImgUrl';
 import { getSignedImgUrls } from './getSignedImgUrls';
-import buckets from '@/constants/buckets';
-import tables from '@/constants/tables';
+import BUCKETS from '@/constants/buckets';
+import TABLES from '@/constants/tables';
 import { ONE_HOUR_FOR_SUPABASE, TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import type { GroupInfo, GroupWithCounts, PostDataListType } from '@/types/groupTypes';
 import { createClient } from '@/utils/supabase/server';
@@ -11,7 +11,7 @@ import { createClient } from '@/utils/supabase/server';
 const getGroupDetails = async (group_id: string) => {
   const supabase = createClient();
   const state = await supabase
-    .from(tables.group)
+    .from(TABLES.group)
     .select('group_title, group_desc, group_id, group_status, group_image_url')
     .eq('group_id', group_id)
     .single();
@@ -26,7 +26,7 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from(tables.group)
+    .from(TABLES.group)
     .select(
       'group_title, group_desc, group_image_url, group_invite_code, user_group(is_owner, profiles(user_image_url, user_nickname, user_email))',
     )
@@ -37,11 +37,11 @@ const getGroupInfo = async ({ queryKey: [groupId] }: { queryKey: string[] }): Pr
   if (error || !data) throw new Error(error.message);
 
   const groupImageSignedUrl = data.group_image_url
-    ? getSignedImgUrl(buckets.groupImage, ONE_HOUR_FOR_SUPABASE, data.group_image_url)
+    ? getSignedImgUrl(BUCKETS.groupImage, ONE_HOUR_FOR_SUPABASE, data.group_image_url)
     : '';
 
   const profileImages = data.user_group.map((user) => user.profiles?.user_image_url ?? '');
-  const profileImagesUrls = getSignedImgUrls(buckets.avatars, ONE_HOUR_FOR_SUPABASE, profileImages);
+  const profileImagesUrls = getSignedImgUrls(BUCKETS.avatars, ONE_HOUR_FOR_SUPABASE, profileImages);
 
   const signedUrls = await Promise.all([groupImageSignedUrl, profileImagesUrls]);
 
@@ -70,7 +70,7 @@ const getInfiniteGroupData = async ({ pageParam }: { pageParam: number }) => {
 
     const fetchSignedGroupImages = groups.map(async (group) => {
       const response = await supabase.storage
-        .from(buckets.groupImage)
+        .from(BUCKETS.groupImage)
         .createSignedUrl(`${group.group_image_url}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
           transform: { width: 300, height: 300 },
         });
@@ -105,7 +105,7 @@ const getRandomPosts = async () => {
       const imgNameArray = postDataList.map((postData) => `${postData.group_id}/${postData.post_thumbnail_image}`);
       const fetchPostImageUrls = imgNameArray.map(async (imgName) => {
         const response = await supabase.storage
-          .from(buckets.tourImages)
+          .from(BUCKETS.tourImages)
           .createSignedUrl(`${imgName}?format=webp`, TEN_MINUTES_FOR_SUPABASE, {
             transform: { width: 300, height: 300 },
           });

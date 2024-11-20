@@ -1,5 +1,5 @@
 import { getSignedImgUrls } from './server-action/getSignedImgUrls';
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { GroupObjType, GroupWithCounts, UserGroupType } from '@/types/groupTypes';
 import { FieldValues } from 'react-hook-form';
@@ -34,7 +34,7 @@ const makeUserGroupDataToObj = (userId: string, is_owner: boolean, group_id: str
 
 const getGroupSignedImageUrls = async (groups: GroupWithCounts[]) => {
   const groupImages = groups.map((group) => group.group_image_url);
-  return await getSignedImgUrls(buckets.groupImage, TEN_MINUTES_FOR_SUPABASE, groupImages);
+  return await getSignedImgUrls(BUCKETS.groupImage, TEN_MINUTES_FOR_SUPABASE, groupImages);
 };
 
 export { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj, getGroupSignedImageUrls };

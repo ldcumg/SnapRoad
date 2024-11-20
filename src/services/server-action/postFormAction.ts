@@ -1,6 +1,6 @@
 'use server';
 
-import tables from '@/constants/tables';
+import TABLES from '@/constants/tables';
 import { createClient } from '@/utils/supabase/client';
 
 // 포스트 생성
@@ -18,7 +18,7 @@ export async function createPost(post: {
 }) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from(tables.posts)
+    .from(TABLES.posts)
     .insert([
       {
         user_id: post.userId,
@@ -42,7 +42,7 @@ export async function createPost(post: {
 export async function updateImagesPostId(postId: string, uploadSessionId: string) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from(tables.images)
+    .from(TABLES.images)
     .update({ post_id: postId })
     .eq('upload_session_id', uploadSessionId);
   if (error) throw new Error('이미지 업데이트 오류');
@@ -52,7 +52,7 @@ export async function updateImagesPostId(postId: string, uploadSessionId: string
 // 태그 저장
 export async function saveTags(tags: { tag: string; postId: string; groupId: string }) {
   const supabase = createClient();
-  const { data, error } = await supabase.from(tables.tags).insert({
+  const { data, error } = await supabase.from(TABLES.tags).insert({
     tag_title: tags.tag,
     post_id: tags.postId,
     group_id: tags.groupId,

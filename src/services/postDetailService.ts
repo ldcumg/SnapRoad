@@ -1,6 +1,6 @@
 import { getSignedImgUrl } from './server-action/getSignedImgUrl';
-import buckets from '@/constants/buckets';
-import tables from '@/constants/tables';
+import BUCKETS from '@/constants/buckets';
+import TABLES from '@/constants/tables';
 import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { ImageDetail, PostDetail } from '@/types/postDetailTypes';
 import { createClient } from '@/utils/supabase/server';
@@ -10,7 +10,7 @@ export const fetchPostDetail = async (postId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from(tables.posts)
+    .from(TABLES.posts)
     .select(
       `
     *,
@@ -52,7 +52,7 @@ export const fetchPostDetail = async (postId: string) => {
     // MEMO : data.images가 배열이 아닌 경우 map 호출 X, undefined 반환
     data.images?.map(async (image) => {
       const signedImageUrl = await getSignedImgUrl(
-        buckets.tourImages,
+        BUCKETS.tourImages,
         86400,
         `${image.group_id}/${image.post_image_name}`,
       );

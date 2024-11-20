@@ -2,6 +2,9 @@
 
 import URLS from '@/constants/urls';
 import { IconLogo } from '@/lib/icon/Icon_ Logo';
+import Icon_Close from '@/lib/icon/Icon_Close';
+import IconToAlbum from '@/lib/icon/Icon_To_Album';
+import IconToMap from '@/lib/icon/Icon_To_Map';
 import { GroupDetailMode } from '@/types/groupTypes';
 import Link from 'next/link';
 
@@ -17,34 +20,39 @@ const GroupDetailHeader = ({ groupTitle, mode, setMode }: Props) => {
     switch (mode) {
       case GroupDetailMode.map:
         return (
-          <button onClick={() => setMode(GroupDetailMode.album)}>
-            <img src='/svgs/Swap_Btn_To_Album.svg' />
+          <button
+            aria-label='앨범 버튼'
+            onClick={() => setMode(GroupDetailMode.album)}
+          >
+            <IconToAlbum />
           </button>
         );
       case GroupDetailMode.album:
         return (
-          <button onClick={() => setMode(GroupDetailMode.map)}>
-            <img src='/svgs/Swap_Btn_To_Map.svg' />
+          <button
+            aria-label='지도로 가기'
+            onClick={() => setMode(GroupDetailMode.map)}
+          >
+            <IconToMap />
           </button>
         );
       case GroupDetailMode.member:
         return (
           <button
+            aria-label='앨범으로 가기'
             className='h-10 w-10'
             onClick={() => setMode(GroupDetailMode.album)}
           >
-            <img
-              className='mx-auto'
-              src='/svgs/Close_Member_List.svg'
-            />
+            <Icon_Close className='mx-auto' />
           </button>
         );
       default:
         throw new Error('잘못된 요청입니다.');
     }
   };
+
   return (
-    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:px-[24px] pc:py-[8px] pc:border-b'>
+    <header className='z-50 flex h-[56px] items-center justify-between bg-white px-[16px] py-[8px] pc:border-b pc:px-[24px] pc:py-[8px]'>
       <Link href={URLS.home}>
         <IconLogo />
       </Link>

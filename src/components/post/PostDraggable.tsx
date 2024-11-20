@@ -1,7 +1,7 @@
 'use client';
 
 import PostSortableImage from './PostSortable';
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useSetCoverLogic } from '@/hooks/queries/post/useImageHandlersHooks';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 const PostDraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setSelectedCover, selectedCover } = useImageUploadStore();
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKETS.tourImages, groupId);
   const { handleSetCover } = useSetCoverLogic(userId, uploadSessionId);
 
   const [sliderRef] = useKeenSlider({

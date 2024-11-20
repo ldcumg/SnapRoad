@@ -1,8 +1,8 @@
 'use server';
 
 import { getSignedImgUrls } from './getSignedImgUrls';
-import buckets from '@/constants/buckets';
-import tables from '@/constants/tables';
+import BUCKETS from '@/constants/buckets';
+import TABLES from '@/constants/tables';
 import { ONE_HOUR_FOR_SUPABASE } from '@/constants/time';
 import type { PostCoverImage, PostImage } from '@/types/postTypes';
 import { createClient } from '@/utils/supabase/server';
@@ -20,7 +20,7 @@ export const getPostsImagesPerGroup = async ({
   const PAGE_PER = 21;
 
   const { data, error } = await supabase
-    .from(tables.images)
+    .from(TABLES.images)
     .select('id, post_id, post_image_name')
     .eq('group_id', groupId)
     .not('post_id', 'is', null)
@@ -32,7 +32,7 @@ export const getPostsImagesPerGroup = async ({
 
   //TODO - util 함수로 만들기
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
-  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, ONE_HOUR_FOR_SUPABASE, postImages);
+  const postImagesUrls = await getSignedImgUrls(BUCKETS.tourImages, ONE_HOUR_FOR_SUPABASE, postImages);
 
   const dataWithSignedUrl = data.map((post) => {
     if (!postImagesUrls) return;
@@ -56,7 +56,7 @@ export const getPostsCoverImagesPerGroup = async ({
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from(tables.images)
+    .from(TABLES.images)
     .select('post_id, post_image_name, post_lat, post_lng')
     .eq('group_id', groupId)
     .eq('is_cover', true)
@@ -67,7 +67,7 @@ export const getPostsCoverImagesPerGroup = async ({
   if (error || !data) throw new Error(error.message);
 
   const postImages = data.map((post) => `${groupId}/${post.post_image_name}`);
-  const postImagesUrls = await getSignedImgUrls(buckets.tourImages, ONE_HOUR_FOR_SUPABASE, postImages);
+  const postImagesUrls = await getSignedImgUrls(BUCKETS.tourImages, ONE_HOUR_FOR_SUPABASE, postImages);
 
   const dataWithSignedUrl = data.map((post) => {
     if (!postImagesUrls) return;

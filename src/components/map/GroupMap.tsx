@@ -1,10 +1,16 @@
 'use client';
 
 import PlaceSearchForm from './PlaceSearchForm';
+import PostsPreview from './PostsPreview';
 import PostsPreviewLayout from './PostsPreviewLayout';
+import SearchResult from './SearchResult';
 import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
+import IconGeolocation from '@/lib/icon/Icon_Geolocation';
+import IconPostPlus from '@/lib/icon/Icon_Post_Plus';
+import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
+import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
@@ -17,12 +23,11 @@ import type {
   CustomLatLngBounds,
   CustomMarker,
   CustomMarkerClusterer,
-  Latlng,
+  LatLng,
   Location,
   LocationInfo,
 } from '@/types/mapTypes';
 import { toast } from 'garlic-toast';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -48,7 +53,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
 
-  const polyline: Latlng[] = [];
+  const polyline: LatLng[] = [];
 
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
 
@@ -59,20 +64,16 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     libraries: ['services', 'clusterer'],
   });
 
-  useEffect(() => {
-    if (mapLoading) return;
-  }, [mapLoading]);
-
+  // 게시물 좌표 기준으로 지도 위치 재설정
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
-      postsCoverImages.forEach(
-        ({ post_lat, post_lng }) => post_lat && post_lng && bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)),
-      );
+      postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
       postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
     }
   }, [map, postsCoverImages]);
 
+  // 게시물 상세 페이지에서 올 경우 해당 게시물 위치
   useEffect(() => {
     if (!!point && map) {
       moveToMarker(point);
@@ -80,7 +81,9 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     }
   }, [map]);
 
-  if (isPending) return <Loading />;
+  if (isPending || mapLoading) return <Loading />;
+
+  if (mapError) throw new Error('지도를 불러오지 못 했습니다.');
 
   if (isError) throw new Error(error.message);
 
@@ -97,6 +100,12 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
 
     const keyword = searchInput ?? searchKeyword.current.keyword;
     const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+
+    if (!results[0]) {
+      toast.error('검색결과가 존재하지 않습니다.', { progressBar: false, closeOnClick: true, autoClose: true });
+      return;
+    }
+
     setSearchResult(({ markers, hasMore }) =>
       searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
     );
@@ -159,7 +168,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   };
 
   /** 마커로 화면 이동 */
-  const moveToMarker = ({ placeName, address, lat, lng }: Partial<Location> & Latlng) => {
+  const moveToMarker = ({ placeName, address, lat, lng }: Partial<Location> & LatLng) => {
     if (!map) {
       toast.error('지도를 불러오지 못 했습니다.');
       return;
@@ -263,18 +272,9 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           isPostsView && setPostsPreview([]);
           isPostsView ? getSpotInfo() : setSpotInfo(undefined);
         }}
+        aria-label='맵핀, 게시물 전환'
       >
-        {isPostsView ? (
-          <img
-            className='mx-auto my-auto'
-            src='/svgs/Switch_btn_to_mappin_marker.svg'
-          />
-        ) : (
-          <img
-            className='mx-auto my-auto'
-            src='/svgs/Switch_btn_to_image_marker.svg'
-          />
-        )}
+        {isPostsView ? <IconSwitchToMappin className='m-auto' /> : <IconSwitchToPostMarker className='m-auto' />}
       </button>
       {isPostsView || (
         <MapPin className='fixed left-1/2 top-1/2 z-30 h-[48px] w-[28px] -translate-x-1/2 -translate-y-[29%]' />
@@ -301,7 +301,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
+              polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
@@ -312,15 +312,13 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                     handleCustomOpen();
                   }}
                   image={{
-                    // 기본 마커 이미지
                     src: post_image_url,
                     size: {
                       width: 60,
                       height: 60,
-                    }, // 마커이미지의 크기
+                    },
                     options: { shape: 'circle', offset: { x: 30, y: 30 }, alt: post_id },
                   }}
-                  // title={post_id} // 마우스 호버 시 표시
                 />
               );
             })}
@@ -339,7 +337,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         )}
         <Polyline
           path={[polyline]}
-          strokeWeight={5} // 선 두께
+          strokeWeight={6} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
@@ -350,33 +348,20 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             desktop={desktop}
             handleFindUserLocation={handleFindUserLocation}
           >
-            {searchResult.hasMore && (
-              <button
-                className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-[24px] py-[8px] shadow-BG_S'
-                type='button'
-                onClick={searchLocation}
-              >
-                <span className='whitespace-nowrap text-body_md'>검색결과 더보기</span>
-                <img src='/svgs/Reload.svg' />
-              </button>
-            )}
-            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-[4px]'} pc:mx-auto`}>
-              <h5 className='text-label_md pc:mx-auto'>
-                {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
-              </h5>
-              {!!spotInfo.placeName && <span className='text-body_md pc:mx-auto'>{spotInfo.address}</span>}
-            </div>
+            <SearchResult
+              spotInfo={spotInfo}
+              searchResult={searchResult}
+              searchLocation={searchLocation}
+            />
           </SearchResultLayout>
         )}
         {(!spotInfo || desktop) && (
           <button
             className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
             onClick={handleFindUserLocation}
+            aria-label='사용자 위치 찾기'
           >
-            <img
-              className='mx-auto my-auto'
-              src='/svgs/Geolocation_btn.svg'
-            />
+            <IconGeolocation className='m-auto' />
           </button>
         )}
         {!!postsPreView.length ? (
@@ -385,25 +370,11 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             postsPreView={postsPreView}
             setPostsPreview={setPostsPreview}
           >
-            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:min-w-[456px] pc:max-w-[856px]'>
-              {postsPreView.map((post) => (
-                <li
-                  className='h-[132px] w-[132px] pc:h-[152px] pc:w-[152px]'
-                  key={post.postId}
-                >
-                  <Link
-                    className='block h-full w-full'
-                    href={`/group/${groupId}/post/${post.postId}`}
-                  >
-                    <img
-                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover pc:min-h-[152px] pc:min-w-[152px] pc:rounded-[12px]'
-                      src={post.postImageUrl}
-                      alt={`Post ${post.postId}`}
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ol>
+            <PostsPreview
+              groupId={groupId}
+              desktop={desktop}
+              postsPreView={postsPreView}
+            />
           </PostsPreviewLayout>
         ) : (
           <div
@@ -418,7 +389,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
               disabled={!isPostsView && !spotInfo?.address}
             >
               <span className='flex gap-[8px]'>
-                <img src='/svgs/Plus_LG.svg' />
+                <IconPostPlus />
                 <span className='text-title_lg'>게시물 추가하기</span>
               </span>
             </Button>

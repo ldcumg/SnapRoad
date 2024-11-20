@@ -1,5 +1,4 @@
 import { GroupWithCounts } from '@/types/groupTypes';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 

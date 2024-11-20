@@ -4,12 +4,12 @@ export type Location = {
   address: string;
 };
 
-export type Latlng = {
+export type LatLng = {
   lat: number;
   lng: number;
 };
 
-export type LocationInfo = Location & Latlng;
+export type LocationInfo = Location & LatLng;
 
 export type SearchResult = {
   id: string;
