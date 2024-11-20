@@ -59,7 +59,6 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     libraries: ['services', 'clusterer'],
   });
 
-  // 게시물 좌표 기준으로 지도 위치 재설정
   useEffect(() => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
