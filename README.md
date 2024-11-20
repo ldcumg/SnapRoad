@@ -11,7 +11,10 @@
 - [SnapRoad의 데이터 테이블 구조](#snaproad의-데이터-테이블-구조) 
 - [SnapRoad의 MVP 데이터 요청 흐름도](#snaproad의-mvp-데이터-요청-흐름도) 
 - [트러블 슈팅](#트러블-슈팅) 
+- [Sentry](#sentry-error-log)
+- [LightHouse](#light-house)
 - [개선 목표](#개선-목표)
+- [기술 블로그](#snaproad-기술블로그)
 
 ## [SnapRoad 이용하기](https://snap-road.vercel.app)
 
@@ -28,7 +31,7 @@
 + 최종 MVP 스펙 : 로그인/회원가입, 회원정보 확인/수정, 그룹생성/수정, 그룹 초대수락, 이미지와 지역정보를 포함한 게시글 작성, 게시글에 댓글과 대댓글 작성
 
 ## 팀원 구성 및 역할
-### 💻최유나(리더) : 게시글 작성 / 수정 페이지, 공통 컴포넌트
+### 💻최유나(리더) : 게시글 작성 / 수정 페이지, 공통 컴포넌트(storybook)
 ### 💻이원빈(부리더) : 그룹 상세 페이지 지도 / 앨범, 카카오 지도 API
 ### 💻전상국 : 랜딩 페이지 , 그룹 리스트 페이지 , 그룹 생성/수정 페이지, ERD
 ### 💻정민지 : 로그인/회원가입 페이지 , 마이페이지 , 게시글 상세 페이지, ERD
@@ -54,6 +57,8 @@
 ![앨범형게시물](https://github.com/user-attachments/assets/88208f85-b823-46b9-abab-cfbf9380b1c3)
 ![그룹게시물등록](https://github.com/user-attachments/assets/8eb69d8d-ea72-44c9-91a1-9fa79029988c)
 ![그룹게시물상세](https://github.com/user-attachments/assets/eab934bb-2686-453d-b54e-cbfc1875c822)
+<br/>
+<br/>
 
 ## SnapRoad는 이런 기술을 사용했어요
 ![기술의사결정](https://github.com/user-attachments/assets/b0dd07ec-5f2a-4cf0-9c8b-d2f3a2462fb5)
@@ -98,15 +103,38 @@
       - 유효성 검사 로직과 Zod Schema 분리로 폼 관련 로직을 쉽게 이해하고 유지보수 가능
     - 타입 안전성
       - Zod Schema를 통해 생성된 타입을 활용하여 타입스크립트가 제공하는 타입 안정성을 확보
-      - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능
+      - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능 
+
++ `LightHouse`
+  - 왜 LightHouse를 사용했나?
+     - 웹 성능 측정: 페이지 로딩 속도와 렌더링 최적화를 위해 사용
+     - 접근성 분석: 다양한 사용자 환경에서 접근성을 점검
+     - SEO 개선: 검색 엔진에서 사이트 순위를 높이기 위해 SEO 상태 분석
+     - PWA 품질 검토: Progressive Web App 지원 상태를 확인
+     - 자동화된 테스트: 성능 및 품질 문제를 자동으로 진단하고 해결 방안을 도출
++ `Sentery`
+  - 왜 Sentery 사용했나?
+       - 실시간 오류 추적: 사용자 테스트 중 발생한 오류를 즉시 감지 및 분석
+       - 사용자 행동 기록: 오류 전후의 사용자 행동을 추적해 문제를 재현
+       - 환경 데이터 수집: 브라우저, 운영체제 등 유저 환경 정보를 분석
+       - 성능 문제 진단: 느린 응답 시간 및 성능 저하를 모니터링
+       - 효율적 디버깅: 스택 트레이스와 오류 로그를 통해 문제 해결 속도 향상
+<br/>
+<br/>
 
 ## SnapRoad의 데이터 테이블 구조
+
 ![erd](https://github.com/user-attachments/assets/8f8f924c-e2df-448d-b613-5f76429840be)
+
+<br/>
 
 ## SnapRoad의 MVP 데이터 요청 흐름도
 ![데이터 요청 흐름](https://github.com/user-attachments/assets/9cbb0b64-1603-4975-a201-9da34bdd40a6)
 
+<br/>
+
 ## 트러블 슈팅
+
 ### 최유나
 #### 문제상황
 - 폼 제출 시 여러개의 뮤테이션이 순차적으로 실행되어야 하는 상황이 발생
@@ -275,6 +303,8 @@
 #### 트러블 슈팅 분석
 - 최적화 이전 17개에 달하는 요청이 sql문으로 최적화 후 7개로 줄였으며 최대 요청시간도 0.8초로 최적화 완료
 ![성능개선결과](https://github.com/user-attachments/assets/e2133ae7-0ba8-41af-b581-0dfeea98c9fb)
+
+
 #### 추가 트러블슈팅 자료
 [데이터 테이블 설정 미비로 인한 오류 수정](https://codingpracticenote.tistory.com/349)
 
@@ -320,6 +350,33 @@ create trigger on_auth_user_created
 
 - 트리거 함수 만들 때 수파베이스에서 제공하는 coalesce 를 사용하여 모든 경우에 대비하도록 함
 
+
+[그 외 트러블 ISSUE](https://github.com/ldcumg/SnapRoad/issues)
+<br/>
+
+## Sentry Error Log
+
+### sentry를 사용한 이유
+1. 실시간 오류 확인: 사용자 테스트 중 발생한 오류를 즉시 감지하고 원인을 파악했습니다.
+2. 사용자 행동 추적: 오류 발생 전 유저의 행동(클릭, 페이지 이동 등)을 기록해 문제 상황을 재현했습니다.
+3. 환경 정보 수집: 브라우저, OS 등 유저 환경 데이터를 통해 특정 환경에서의 문제를 분석했습니다.
+4. 성능 이슈 모니터링: 로드 시간 지연이나 성능 저하를 발견하고 최적화 기회를 찾았습니다.
+5. 효율적인 디버깅: 스택 트레이스와 행동 로그로 오류를 빠르게 해결할 수 있었습니다.
+
+![image](https://github.com/user-attachments/assets/8e0bdf15-32d2-4b35-80ea-0bcc0dce4581)
+
+[센트리 에러로그 수정 사항](https://www.notion.so/teamsparta/77136ee9d3b540ad851a7227e0da07a5?v=1432dc3ef51481a59e56000cc6568886)
+<br/>
+
+## Light House
+### 라이트 하우스를 사용한 이유
+LightHouse는 웹 성능 최적화, 접근성 확인, SEO 분석, PWA 지원 점검, 그리고 자동화된 문제 탐지를 통해 사용자 경험을 개선하고, 개발 중 발생할 수 있는 품질 문제를 효과적으로 진단 및 해결하기 위해서 사용하였습니다.
+
+### 라이트 하우스 성능 최적화 전
+![라이트 하우스 성능 최적화 전](https://github.com/user-attachments/assets/53520bf6-ca26-41b4-bd98-07c3e96d80ac)
+### 라이트 하우스 성능 최적화 후
+![라이트 하우스 성능 최적화 후](https://github.com/user-attachments/assets/941c2b4f-93f5-46ea-aea2-c41e0f01bc82)
+[LightHouse](https://www.notion.so/teamsparta/f5ab168ac7d74544968885c1fb7306f2?v=8756ed0964354691837def54e226a92c)
 <br/>
 
 ## 개선 목표
@@ -342,3 +399,12 @@ create trigger on_auth_user_created
 ### 정민지
 1. 댓글 대댓글 구조 개선(부모,자식 따로 렌더링하도록 했는데 유지보수와 확장성을 위해 재귀적 구조로 개선)
 2. signedurl 만료와 캐싱 관련 문제(tanstackquery의 staletime과 signedurl의 유효기간을 적절히 조정하여 문제 방지)
+
+<br/>
+
+## SnapRoad 기술블로그
+[SnapRoad에서 SignedUrl을 사용한 이유](https://codingpracticenote.tistory.com/351)<br/>
+[Storybook 도입기](https://velog.io/@yuna-c/Storybook-%EB%8F%84%EC%9E%85%EA%B8%B0)<br/>
+[카카오맵 api 클러스터 마커에 게시물 이미지 적용하기](https://velog.io/@ldcumg/%EC%B9%B4%EC%B9%B4%EC%98%A4%EB%A7%B5-api-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EB%A7%88%EC%BB%A4%EC%97%90-%EA%B2%8C%EC%8B%9C%EB%AC%BC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)<br/>
+<br/>
+
