@@ -1,14 +1,14 @@
 'use client';
 
 import PlaceSearchForm from './PlaceSearchForm';
+import PostsPreview from './PostsPreview';
 import PostsPreviewLayout from './PostsPreviewLayout';
+import SearchResult from './SearchResult';
 import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import IconGeolocation from '@/lib/icon/Icon_Geolocation';
-import { IconPluslg } from '@/lib/icon/Icon_Plus_lg';
 import IconPostPlus from '@/lib/icon/Icon_Post_Plus';
-import IconReload from '@/lib/icon/Icon_Reload';
 import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
 import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
@@ -28,7 +28,6 @@ import type {
   LocationInfo,
 } from '@/types/mapTypes';
 import { toast } from 'garlic-toast';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -309,15 +308,13 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                     handleCustomOpen();
                   }}
                   image={{
-                    // 기본 마커 이미지
                     src: post_image_url,
                     size: {
                       width: 60,
                       height: 60,
-                    }, // 마커이미지의 크기
+                    },
                     options: { shape: 'circle', offset: { x: 30, y: 30 }, alt: post_id },
                   }}
-                  // title={post_id} // 마우스 호버 시 표시
                 />
               );
             })}
@@ -336,7 +333,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         )}
         <Polyline
           path={[polyline]}
-          strokeWeight={5} // 선 두께
+          strokeWeight={6} // 선 두께
           strokeColor={'#FFABF1'} // 선 색깔
           strokeOpacity={1} // 선 불투명도 1에서 0 사이의 값 0에 가까울수록 투명
           strokeStyle={'solid'} // 선 스타일
@@ -347,23 +344,11 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             desktop={desktop}
             handleFindUserLocation={handleFindUserLocation}
           >
-            {searchResult.hasMore && (
-              <button
-                className='absolute -top-[16px] left-1/2 flex h-[44px] -translate-x-1/2 -translate-y-full flex-row items-center gap-[12px] rounded-[22px] bg-white px-[24px] py-[8px] shadow-BG_S'
-                type='button'
-                onClick={searchLocation}
-                aria-label='검색결과 더보기'
-              >
-                <span className='whitespace-nowrap text-body_md'>검색결과 더보기</span>
-                <IconReload />
-              </button>
-            )}
-            <div className={`flex flex-col ${!!spotInfo.placeName && 'gap-[4px]'} pc:mx-auto`}>
-              <h5 className='text-label_md pc:mx-auto'>
-                {(spotInfo.placeName || spotInfo.address) ?? '위치정보를 불러올 수 없습니다.'}
-              </h5>
-              {!!spotInfo.placeName && <span className='text-body_md pc:mx-auto'>{spotInfo.address}</span>}
-            </div>
+            <SearchResult
+              spotInfo={spotInfo}
+              searchResult={searchResult}
+              searchLocation={searchLocation}
+            />
           </SearchResultLayout>
         )}
         {(!spotInfo || desktop) && (
@@ -381,26 +366,10 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             postsPreView={postsPreView}
             setPostsPreview={setPostsPreview}
           >
-            <ol className='flex flex-row gap-[12px] overflow-x-auto pc:min-w-[456px] pc:max-w-[856px]'>
-              {postsPreView.map((post) => (
-                <li
-                  className='h-[132px] w-[132px] pc:h-[152px] pc:w-[152px]'
-                  key={post.postId}
-                >
-                  <Link
-                    className='block h-full w-full'
-                    href={`/group/${groupId}/post/${post.postId}`}
-                  >
-                    <img
-                      className='h-full min-h-[132px] w-full min-w-[132px] rounded-[8px] object-cover pc:min-h-[152px] pc:min-w-[152px] pc:rounded-[12px]'
-                      src={post.postImageUrl}
-                      alt={`Post ${post.postId}`}
-                      fetchPriority='high'
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ol>
+            <PostsPreview
+              groupId={groupId}
+              postsPreView={postsPreView}
+            />
           </PostsPreviewLayout>
         ) : (
           <div
