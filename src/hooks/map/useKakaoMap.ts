@@ -2,7 +2,6 @@
 
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import type {
-  LatLng,
   CustomMarker,
   CustomMarkerClusterer,
   CustomCluster,
