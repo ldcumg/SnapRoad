@@ -1,6 +1,5 @@
 'use client';
 
-import BlankGroupList from './BlankGroupList';
 import GroupAddButton from './GroupAddButton';
 import GroupItem from './GroupItem';
 import GroupItemSkeleton from './GroupItemSkeleton';
@@ -21,19 +20,20 @@ const GroupList = () => {
   if (isFetchNextPageError) throw new Error('에러 발생!');
   return (
     <>
-      {/* 데이터 fetching중 버튼이 깜빡이지 않도록 */}
-      {!isFetching ? <GroupAddButton dataLen={dataLen} /> : <div className='h-4'></div>}
+      <GroupAddButton dataLen={dataLen} />
       <div className='flex w-full flex-col justify-between px-4'>
         {isFetching && !data ? (
           <GroupItemSkeleton />
         ) : FlattedData?.length ? (
-          <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
+          <ul className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 pc:grid-cols-3'>
             {FlattedData.map((el) => {
               return (
-                <GroupItem
-                  key={el?.group_id}
-                  el={el}
-                />
+                el && (
+                  <GroupItem
+                    key={el?.group_id}
+                    el={el}
+                  />
+                )
               );
             })}
           </ul>

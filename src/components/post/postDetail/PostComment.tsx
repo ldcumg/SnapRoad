@@ -3,10 +3,68 @@
 import CommentForm from './CommentForm';
 import CommentNode from './CommentNode';
 import CommentWriteButton from './CommentWriteButton';
-import { useCommentsQuery } from '@/hooks/queries/byUse/useCommentQueries';
+import { useCommentsQuery } from '@/hooks/queries/comments/useCommentQueries';
 import Spinner from '@/stories/Spinner';
 import { Comment, CommentMap, CommentTree, PostDetail, UserDetail } from '@/types/postDetailTypes';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+type PostAndProfileProps = {
+  postDetail: PostDetail;
+  userDetail: UserDetail;
+};
+
+const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
+  const [isWriteMode, setIsWriteMode] = useState<boolean>(false);
+
+  const { data: comments, isLoading, isError } = useCommentsQuery(postDetail.post_id);
+  const formRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (isWriteMode && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [isWriteMode]);
+
+  if (isError) throw new Error('게시글 상세 에러 발생');
+
+  if (isLoading) {
+    return (
+      <div className='absolute z-[3000] flex h-full w-full items-center justify-center'>
+        <Spinner />
+      </div>
+    );
+  }
+
+  const commentTree = comments ? buildCommentTree(comments) : [];
+
+  return (
+    <>
+      {/* 댓글 작성 버튼 */}
+      {!isWriteMode && <CommentWriteButton setIsWriteMode={setIsWriteMode} />}
+      <ul>
+        {commentTree.map((comment) => (
+          <CommentNode
+            key={comment.comment_id}
+            comment={comment}
+            userDetail={userDetail}
+            postDetail={postDetail}
+          />
+        ))}
+      </ul>
+      {/* 댓글 작성 버튼 */}
+      {isWriteMode && (
+        <div ref={formRef}>
+          <CommentForm
+            parentId={null}
+            postId={postDetail.post_id}
+            userDetail={userDetail}
+            setIsWriteMode={setIsWriteMode}
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 export const buildCommentTree = (comments: Comment[]) => {
   comments.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
@@ -31,56 +89,6 @@ export const buildCommentTree = (comments: Comment[]) => {
   });
 
   return tree;
-};
-
-type PostAndProfileProps = {
-  postDetail: PostDetail;
-  userDetail: UserDetail;
-};
-
-const PostComment = ({ userDetail, postDetail }: PostAndProfileProps) => {
-  const [isWriteMode, setIsWriteMode] = useState<boolean>(false);
-  //   const [isWriteReplyMode, setIsWriteReplyMode] = useState<boolean>(false);
-
-  const { data: comments, isLoading, isError } = useCommentsQuery(postDetail.post_id);
-
-  if (isError) return <>임시 오류 ...</>;
-  if (isLoading)
-    return (
-      <div className='absolute z-[3000] flex h-full w-full items-center justify-center'>
-        <Spinner />
-      </div>
-    );
-
-  const commentTree = comments ? buildCommentTree(comments) : [];
-
-  return (
-    <>
-      <ul>
-        {commentTree.map((comment) => (
-          <CommentNode
-            key={comment.comment_id}
-            comment={comment}
-            userDetail={userDetail}
-            postDetail={postDetail}
-          />
-        ))}
-      </ul>
-      {/* 댓글 작성 버튼 */}
-      {isWriteMode ? (
-        <>
-          <CommentForm
-            parentId={null}
-            postId={postDetail.post_id}
-            userDetail={userDetail}
-            setIsWriteMode={setIsWriteMode}
-          />
-        </>
-      ) : (
-        <CommentWriteButton setIsWriteMode={setIsWriteMode} />
-      )}
-    </>
-  );
 };
 
 export default PostComment;

@@ -1,7 +1,7 @@
 'use client';
 
 import ScrollReactHeader from '../_common/ScrollReactHeader';
-import { useUserInfoQuery } from '@/hooks/queries/byUse/useUserQuery';
+import { useUserInfoQuery } from '@/hooks/queries/auth/useUserQuery';
 import Link from 'next/link';
 
 const LogoUserHeader = () => {
@@ -20,12 +20,24 @@ const LogoUserHeader = () => {
       {isUserInfoPending ? (
         <></>
       ) : isLoggedIn ? (
-        <Link href={'/mypage'}>
-          <img
-            src={`${userInfo?.user_image_url ? userInfo.user_image_url : '/svgs/User.svg'}`}
-            alt='유저이미지'
-            className='h-10 w-10 rounded-[20px]'
-          />
+        <Link
+          href={'/mypage'}
+          aria-label='link to mypage'
+          prefetch
+        >
+          {userInfo?.user_image_url ? (
+            <img
+              src={userInfo.user_image_url}
+              alt='유저이미지'
+              className='h-10 w-10 rounded-[20px]'
+            />
+          ) : (
+            <img
+              src='/svgs/Profile.svg'
+              className='h-10 w-10 rounded-[20px]'
+              alt='유저'
+            />
+          )}
         </Link>
       ) : (
         <Link

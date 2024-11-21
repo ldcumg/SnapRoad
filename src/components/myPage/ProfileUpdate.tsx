@@ -1,9 +1,9 @@
 'use client';
 
-import { useProfileForm } from '@/hooks/byUse/useProfileForm';
-import { useUpdateProfile } from '@/hooks/queries/byUse/useProfileMutation';
-import { useProfilesQuery } from '@/hooks/queries/byUse/useProfilesQueries';
 import { useUploadImage } from '@/hooks/queries/byUse/useStorageMutation';
+import { useUpdateProfile } from '@/hooks/queries/profiles/useProfileMutation';
+import { useProfilesQuery } from '@/hooks/queries/profiles/useProfilesQueries';
+import { useProfileForm } from '@/hooks/useCustomForm/useProfileForm';
 import { Button } from '@/stories/Button';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -76,7 +76,7 @@ const ProfileUpdate = ({ userId }: { userId: string }) => {
 
   // TODO 분리
   return (
-    <div className='mt-12 flex flex-col'>
+    <div className='m-auto mt-12 flex w-full max-w-[23rem] flex-col'>
       <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <div className='flex flex-col items-center'>
           <div className='relative h-[184px] w-[184px]'>

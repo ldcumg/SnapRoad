@@ -1,18 +1,26 @@
 'use client';
 
 import AgreeList from './AgreeList';
-import { useSignUpForm } from '@/hooks/byUse/useAuthForm';
-import { useSignUp } from '@/hooks/queries/byUse/useAuthMutations';
+import useMediaQuery from '@/hooks/byUse/useMediaQuery';
+import { useSignUp } from '@/hooks/queries/auth/useAuthMutations';
+import { useSignUpForm } from '@/hooks/useCustomForm/useAuthForm';
 import { signUpSchema } from '@/schemas/authSchemas';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { BottomSheet } from '@/stories/BottomSheet';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 const SignUpForm = () => {
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const [desktop, setDesktop] = useState(false);
+
+  useEffect(() => {
+    setDesktop(isDesktop);
+  }, [isDesktop]);
+
   const {
     register,
     handleSubmit,
@@ -20,7 +28,8 @@ const SignUpForm = () => {
     watch,
   } = useSignUpForm();
 
-  const { mutate: signUp } = useSignUp();
+  const { mutate: signUp, isError, isPending } = useSignUp();
+
   const { isFullHeightOpen, handleFullOpen, handleFullClose } = useBottomSheetStore();
 
   /** 모달 밖 체크박스 상태 */
@@ -59,8 +68,10 @@ const SignUpForm = () => {
     return email && password && confirmPassword && nickname;
   }, [email, password, confirmPassword, nickname]);
 
+  if (isError) throw new Error('회원가입 에러 발생');
+
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='m-auto flex w-full max-w-[23rem] flex-col gap-6'>
       <form
         onSubmit={handleSubmit(handleSignUp)}
         className='flex flex-col gap-6'
@@ -102,24 +113,29 @@ const SignUpForm = () => {
         {/* 모달 밖 체크박스 UI */}
         <div
           className='flex justify-between'
-          onClick={handleFullOpen}
+          // onClick={handleFullOpen}
         >
           <div className='flex items-center gap-4'>
             <img
               src={isChecked ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
               className='h-[24px] w-[24px]'
+              onClick={handleCheckboxToggle}
             />
-            <span className='cursor-pointer text-caption_bold_lg text-black'>개인정보 수집·이용 약관 동의</span>
+            <span className='text-caption_bold_lg text-black'>개인정보 수집·이용 약관 동의</span>
           </div>
-          <img src='/svgs/Arrow_Forward_LG.svg' />
+          <img
+            src='/svgs/Arrow_Forward_LG.svg'
+            className='cursor-pointer'
+            onClick={handleFullOpen}
+          />
         </div>
 
-        {/* TODO 버튼 활성화 */}
         <Button
           type='submit'
           label='회원가입'
           variant='primary'
           disabled={!isChecked || !isFormFilled || Object.keys(errors).length > 0} // 수정된 부분
+          loading={isPending}
         />
       </form>
       <div className='flex justify-center gap-2 text-caption_bold_lg text-gray-700'>
@@ -128,22 +144,24 @@ const SignUpForm = () => {
       </div>
 
       <BottomSheet
+        hasButton={false}
         isOpen={isFullHeightOpen}
-        onClose={handleFullClose} // 취소 버튼을 누르면 바텀시트 닫기
-        onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
+        onClose={handleFullClose}
+        // onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
         title='개인정보 수집·이용 약관 동의'
         height='full'
-        confirmLabel='완료'
-        cancelLabel='취소'
+        // confirmLabel='완료'
+        // cancelLabel='취소'
         showCloseButton={false}
+        className={desktop ? 'px-96' : ''}
       >
         <div className='flex flex-col gap-4'>
           <div className='flex gap-3'>
-            <img
+            {/* <img
               src={isCheckedInSheet ? '/svgs/Check_box_active.svg' : '/svgs/Check_box.svg'}
               className='h-[24px] w-[24px]'
               onClick={handleCheckboxToggle}
-            />
+            /> */}
             <AgreeList />
           </div>
         </div>

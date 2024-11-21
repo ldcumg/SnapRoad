@@ -1,4 +1,4 @@
-import DotSpinner from '@/components/_common/DotSpinner';
+import { DotSpinner } from '@/stories/DotSpinner';
 
 const Loading = () => {
   return (

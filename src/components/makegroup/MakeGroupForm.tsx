@@ -2,15 +2,14 @@
 
 import ImageCropper from '../_common/ImageCropper';
 import InputSection from '@/components/makegroup/InputSection';
-import { useMakeGroupForm } from '@/hooks/byUse/useGroupForm';
 import { useIsOpen } from '@/hooks/byUse/useIsOpen';
 import {
   useInsertGroupMutation,
   useInsertUserGroupMutation,
   useUpdateGroupMutation,
-} from '@/hooks/queries/byUse/useGroupMutations';
+} from '@/hooks/queries/group/useGroupMutations';
 import { useGroupDetailQueryForUpdate } from '@/hooks/queries/group/useGroupQueries';
-import queryKeys from '@/hooks/queries/queryKeys';
+import { useMakeGroupForm } from '@/hooks/useCustomForm/useGroupForm';
 import { makeGroupDataForUpdate, makeGroupDataToObj, makeUserGroupDataToObj } from '@/services/groupServices';
 import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
@@ -23,13 +22,18 @@ import { FieldValues } from 'react-hook-form';
 
 type Props = {
   update_for?: string;
+  handleUpdateModal?: () => void;
+};
+export type GroupFormType = {
+  groupTitle: string;
+  groupDesc: string;
+  groupImg: File[];
 };
 
-const MakeGroupForm = ({ update_for }: Props) => {
+const MakeGroupForm = ({ update_for, handleUpdateModal }: Props) => {
   const { register, handleSubmit, formState, watch, reset, setValue, clearErrors } = useMakeGroupForm();
   const [imgPreview, setImgPreview] = useState<string | null>(null);
 
-  const isInvalidating = useIsFetching({ queryKey: queryKeys.group.groupList() }) > 0;
   //NOTE - 업데이트 상태일 시 데이터 가져오기
   const { data: groupDetailData, isPending: isPendingBeforeData } = useGroupDetailQueryForUpdate(update_for as string);
   //NOTE - 그룹 테이블 insert mutation
@@ -37,7 +41,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     isError: insertGroupDataError,
     mutateAsync: insertGroupDataMutate,
     isPending: isPendingInsertGroup,
-  } = useInsertGroupMutation();
+  } = useInsertGroupMutation(handleUpdateModal, handleUpdateModal && reset);
   //NOTE - 유저_그룹테이블 insert mutation
   const {
     isError: insertUserGroupError,
@@ -49,7 +53,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     isError: updateGroupDataError,
     mutateAsync: updateGroupDataMutate,
     isPending: isPendingUpdate,
-  } = useUpdateGroupMutation(update_for as string);
+  } = useUpdateGroupMutation(update_for as string, handleUpdateModal);
 
   const isFetchingBeforeData = isPendingBeforeData && update_for;
   const isInserting = isPendingInsertGroup || isPendingInsertUserGroup;
@@ -77,10 +81,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const file = new File([blob], 'group_image.jpg', { type: blob.type });
-    // FileList 객체 생성
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    return dataTransfer.files;
+    return [file];
   };
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const MakeGroupForm = ({ update_for }: Props) => {
           groupImg: fileList as unknown as File[],
         });
         setImgPreview(groupDetailData.group_image_url);
-      } else if (groupDetailData) {
+      } else if (groupDetailData && !groupDetailData.group_image_url) {
         reset({
           groupTitle: groupDetailData.group_title ?? '',
           groupDesc: groupDetailData.group_desc ?? '',
@@ -106,8 +107,14 @@ const MakeGroupForm = ({ update_for }: Props) => {
   const groupTitleLen = watch('groupTitle').length;
   const groupDescLen = watch('groupDesc').length;
 
+  const isFetchingSomething = useIsFetching() > 0;
+
   const isValidToSubmit =
-    (groupTitleLen > 0 && !formState.errors.groupTitle) || isFetchingBeforeData || isInserting || isUpdating;
+    (groupTitleLen > 0 && !formState.errors.groupTitle) ||
+    isFetchingBeforeData ||
+    isInserting ||
+    isUpdating ||
+    isFetchingSomething;
 
   const clearInputValue = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -143,11 +150,10 @@ const MakeGroupForm = ({ update_for }: Props) => {
       throw new Error('이미지 자르기 실패');
     }
   };
-  console.log('isInvalidating :>> ', isInvalidating);
   if (insertGroupDataError || insertUserGroupError || updateGroupDataError) throw new Error('에러 발생!');
   return (
-    <>
-      {(isFetchingBeforeData || isInserting || isUpdating || isInvalidating) && (
+    <div className='relative'>
+      {(isFetchingBeforeData || isInserting || isUpdating || isFetchingSomething) && (
         <div className='absolute z-[3000] flex h-full w-full items-center justify-center bg-black bg-opacity-10'>
           <Spinner color='primary-400' />
         </div>
@@ -176,10 +182,11 @@ const MakeGroupForm = ({ update_for }: Props) => {
           disabled={!isValidToSubmit}
           size='full'
           type='submit'
+          loading={isFetchingSomething}
           label={update_for ? '수정 완료' : '그룹 만들기'}
         />
       </form>
-    </>
+    </div>
   );
 };
 

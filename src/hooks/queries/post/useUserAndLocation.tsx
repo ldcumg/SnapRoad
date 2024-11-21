@@ -1,4 +1,4 @@
-import { useUserQuery } from '@/hooks/queries/byUse/useUserQuery';
+import { useUserQuery } from '@/hooks/queries/auth/useUserQuery';
 import { usePostDataStore } from '@/stores/post/usePostDataStore';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';

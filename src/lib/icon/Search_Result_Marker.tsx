@@ -1,4 +1,4 @@
-const SearchResultMarker = ({ className }: { className?: string }) => (
+const SearchResultMarker = ({ className, onClick }: { className?: string; onClick?: () => void }) => (
   <svg
     width='24'
     height='24'
@@ -6,6 +6,7 @@ const SearchResultMarker = ({ className }: { className?: string }) => (
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
     className={className}
+    onClick={onClick}
   >
     <g filter='url(#filter0_d_1435_8822)'>
       <circle
@@ -29,10 +30,10 @@ const SearchResultMarker = ({ className }: { className?: string }) => (
         width='24'
         height='24'
         filterUnits='userSpaceOnUse'
-        color-interpolation-filters='sRGB'
+        colorInterpolationFilters='sRGB'
       >
         <feFlood
-          flood-opacity='0'
+          floodOpacity='0'
           result='BackgroundImageFix'
         />
         <feColorMatrix

@@ -1,28 +1,28 @@
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { GroupObjType, UpdateGroupObjType, UserGroupType } from '@/types/groupTypes';
 import browserClient from '@/utils/supabase/client';
 
 const uploadDefaultGroupImg = async (group_id: string) => {
-  const defaultImgRes = await fetch('/images/group_default_thumbnail.png');
+  const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, defaultImgBlob);
   return { data, error };
 };
 
 const uploadGroupImg = async (groupImg: File, group_id: string) => {
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, groupImg);
   return { data, error };
 };
 
 const updateDefaultGroupImg = async (group_id: string) => {
-  const defaultImgRes = await fetch('/images/group_default_thumbnail.png');
+  const defaultImgRes = await fetch('/images/group_default_thumbnail.jpg');
   const defaultImgBlob = await defaultImgRes.blob();
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, defaultImgBlob, {
       upsert: true,
     });
@@ -30,7 +30,7 @@ const updateDefaultGroupImg = async (group_id: string) => {
 };
 const updateGroupImg = async (groupImg: File, group_id: string) => {
   const { data, error } = await browserClient.storage
-    .from(buckets.groupImage)
+    .from(BUCKETS.groupImage)
     .upload(`${group_id}_thumbnail`, groupImg, {
       upsert: true,
     });
@@ -74,11 +74,6 @@ const insertUserGroupData = async (userGroupObj: UserGroupType) => {
   else if (state.status === 201) return { data: state.data, error: state.error, groupId: userGroupObj.group_id };
 };
 
-type GroupListType = {
-  pageParam: number;
-  userId: string;
-};
-
 export type GroupListResponseType = {
   id: number;
   user_id: string;
@@ -93,32 +88,4 @@ export type GroupListResponseType = {
   };
 };
 
-const getGroupListByPage = async ({ pageParam, userId }: GroupListType) => {
-  const state = await browserClient
-    .from('user_group')
-    .select(
-      `
-      id,
-      user_id,
-      group_id,
-      group_data: group(
-        group_id,
-        group_title,
-        group_desc,
-        group_image_url,
-        updated_at
-      )`,
-    )
-    .eq('user_id', userId)
-    .range(pageParam * 6, pageParam * 5 + 5);
-  if (state.status !== 200) throw state.error;
-  return state.data as GroupListResponseType[] | null;
-};
-
-const getGroupUsersCount = async (groupId: string) => {
-  const state = await browserClient.from('user_group').select('user_id').eq('group_id', groupId);
-  if (state.status !== 200) throw state.error;
-  return state.data?.length;
-};
-
-export { updateGroupData, insertGroupData, insertUserGroupData, getGroupListByPage, getGroupUsersCount };
+export { updateGroupData, insertGroupData, insertUserGroupData };

@@ -39,7 +39,6 @@ const InputSection = ({
           accept='image/*'
           className='hidden'
           onChange={handleInputImageChange}
-          // {...register('groupImg')}
         />
       </div>
       <div className='flex w-full flex-col justify-center gap-6'>

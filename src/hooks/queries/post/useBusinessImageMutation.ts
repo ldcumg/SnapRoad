@@ -16,7 +16,6 @@ import imageCompression from 'browser-image-compression';
 import { v4 as uuidv4 } from 'uuid';
 
 /** 이미지를 업로드하는 훅 */
-/** 이미지를 업로드하는 훅 */
 export function useUploadBusinessImage(bucketName: string, folderName: string, userId: string, groupId: string) {
   const queryClient = useQueryClient();
   const { setImages } = useImageUploadStore();
@@ -228,9 +227,9 @@ export function useDeleteBusinessImage(bucketName: string, folderName: string) {
     onError: (error) => {
       console.error('삭제 실패:', error);
     },
-    onSuccess: (deletedId) => {
-      // console.log(`이미지 ${deletedId} 삭제 성공`);
-    },
+    // onSuccess: (deletedId) => {
+    //   console.log(`이미지 ${deletedId} 삭제 성공`);
+    // },
   });
 }
 
@@ -259,10 +258,10 @@ export function useCoverBusinessImage(userId: string, uploadSessionId: string) {
         setImages(context.previousImages);
       }
     },
-    onSuccess: () => {
-      console.log('대표 이미지 설정 성공');
-      queryClient.invalidateQueries({ queryKey: queryKeys.image.image(userId) });
-    },
+    // onSuccess: () => {
+    //   console.log('대표 이미지 설정 성공');
+    //   queryClient.invalidateQueries({ queryKey: queryKeys.image.image(userId) });
+    // },
   });
 }
 

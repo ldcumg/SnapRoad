@@ -1,6 +1,6 @@
 'use server';
 
-import type { LocationInfo, Latlng, SearchResult } from '@/types/mapTypes';
+import type { LocationInfo, LatLng, SearchResult } from '@/types/mapTypes';
 import type { FieldValues } from 'react-hook-form';
 
 const MAP_BASE_URL = 'https://dapi.kakao.com/v2/local';
@@ -29,6 +29,7 @@ export const keywordSearch = async ({
     documents,
     meta: { is_end },
   } = await response.json();
+
   const results = documents.map(({ id, place_name, road_address_name, address_name, y, x }: SearchResult) => {
     const address = road_address_name || address_name;
     return { id, placeName: place_name, address, lat: Number(y), lng: Number(x) };
@@ -38,7 +39,7 @@ export const keywordSearch = async ({
 };
 
 /** 위도, 경도로 주소 요청 */
-export const getAddress = async ({ lat, lng }: Latlng): Promise<string> => {
+export const getAddress = async ({ lat, lng }: LatLng): Promise<string> => {
   const res = await fetch(`${MAP_BASE_URL}/geo/coord2address?y=${lat}&x=${lng}`, {
     method: 'GET',
     cache: 'no-store',

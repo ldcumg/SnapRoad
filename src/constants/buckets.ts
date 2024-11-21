@@ -1,8 +1,8 @@
-enum buckets {
+enum BUCKETS {
   groupImage = 'group_image',
   avatars = 'avatars',
   tourImages = 'tour_images',
   publicImages = 'public_images',
 }
 
-export default buckets;
+export default BUCKETS;

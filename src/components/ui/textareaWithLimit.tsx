@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { UseFormRegister } from 'react-hook-form';
 
 const TextAreaWithLimit = () => {
   const [text, setText] = useState<string>('');

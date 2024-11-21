@@ -21,7 +21,7 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
+    if (e.key === 'Enter') {
       e.preventDefault();
       addHashtag();
     }
@@ -32,18 +32,19 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
   };
 
   return (
-    <div className='flex flex-wrap items-center rounded-md border border-gray-100 bg-white px-3 py-3'>
+    <div className='flex flex-wrap items-center rounded-md border border-gray-100 bg-white px-3 py-2'>
       <div className='flex flex-wrap gap-2'>
         {hashtags.map((tag, index) => (
           <span
             key={index}
-            className='flex items-center text-base font-semibold text-gray-500'
+            className='flex items-center py-1 font-medium text-gray-700'
           >
             #{tag}
             <button
               type='button'
               onClick={() => removeHashtag(tag)}
-              className='ml-1 text-gray-400 hover:text-danger'
+              className='ml-1 text-gray-500 hover:text-danger'
+              aria-label={`${tag} 해시태그 삭제`}
             >
               &times;
             </button>
@@ -55,8 +56,11 @@ const HashtagInput = ({ hashtags, setHashtags }: HashtagInputProps) => {
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
-        placeholder='# 해시태그를 추가해 보세요'
-        className='ml-1 min-w-[100px] flex-grow outline-none'
+        placeholder='해시태그를 입력하고 Enter 키를 누르세요'
+        className='ml-1 flex-grow text-gray-700 placeholder-gray-400 outline-none'
+        autoCorrect='off'
+        autoCapitalize='none'
+        autoComplete='off'
       />
     </div>
   );

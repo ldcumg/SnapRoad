@@ -1,5 +1,3 @@
-import type { createGroupDetailModeStore } from '@/stores/groupDetail/groupDetailStore';
-
 export type GroupObjType = {
   group_id: string;
   group_title: string;
@@ -53,16 +51,12 @@ export enum GroupDetailMode {
   member = 'member',
 }
 
-export type GroupDetailModeState = {
-  mode: GroupDetailMode;
+export type PostData = {
+  created_at: string;
+  post_address: string;
+  post_thumbnail_image: string;
+  post_id: string;
+  group_id: string;
 };
 
-export type GroupDetailModeActions = {
-  toMap: () => void;
-  toAlbum: () => void;
-  toMember: () => void;
-};
-
-export type GroupDetailModeStore = GroupDetailModeState & GroupDetailModeActions;
-
-export type GroupDetailModeStoreApi = ReturnType<typeof createGroupDetailModeStore>;
+export type PostDataListType = PostData[] | null;

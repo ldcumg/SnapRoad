@@ -1,8 +1,8 @@
 const queryKeys = {
   group: {
     info: (groupId: string) => [groupId, 'groupInfo'],
-    posts: (groupId: string) => [groupId, 'groupPosts'],
     postsImages: (groupId: string) => [groupId, 'groupPostsImages'],
+    postsCoverImages: (groupId: string) => [groupId, 'groupPostsCoverImages'],
     groupForUpdate: (groupId: string) => [groupId, 'groupDetailForUpdate'],
     groupDetail: (groupId: string) => [groupId, 'groupDetail'],
     groupList: () => ['groupList'],
@@ -20,6 +20,6 @@ const queryKeys = {
     images: () => ['images'],
     tags: () => ['tags'],
   },
-};
+} as const;
 
 export default queryKeys;

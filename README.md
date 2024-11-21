@@ -11,7 +11,10 @@
 - [SnapRoad의 데이터 테이블 구조](#snaproad의-데이터-테이블-구조) 
 - [SnapRoad의 MVP 데이터 요청 흐름도](#snaproad의-mvp-데이터-요청-흐름도) 
 - [트러블 슈팅](#트러블-슈팅) 
+- [Sentry](#sentry-error-log)
+- [LightHouse](#light-house)
 - [개선 목표](#개선-목표)
+- [기술 블로그](#snaproad-기술블로그)
 
 ## [SnapRoad 이용하기](https://snap-road.vercel.app)
 
@@ -28,7 +31,7 @@
 + 최종 MVP 스펙 : 로그인/회원가입, 회원정보 확인/수정, 그룹생성/수정, 그룹 초대수락, 이미지와 지역정보를 포함한 게시글 작성, 게시글에 댓글과 대댓글 작성
 
 ## 팀원 구성 및 역할
-### 💻최유나(리더) : 게시글 작성 / 수정 페이지, 공통 컴포넌트
+### 💻최유나(리더) : 게시글 작성 / 수정 페이지, 공통 컴포넌트(storybook)
 ### 💻이원빈(부리더) : 그룹 상세 페이지 지도 / 앨범, 카카오 지도 API
 ### 💻전상국 : 랜딩 페이지 , 그룹 리스트 페이지 , 그룹 생성/수정 페이지, ERD
 ### 💻정민지 : 로그인/회원가입 페이지 , 마이페이지 , 게시글 상세 페이지, ERD
@@ -37,8 +40,9 @@
 
 ## 개발 기간 및 작업 관리
 #### MVP 개발 기간 : 2024-10-18 ~ 2024-11-06
-#### User Test : 2024-11-08 ~ 2024-11-??
-#### 추가 개발 기간 : 2024-11-?? ~
+#### User Test : 2024-11-13 ~ 2024-11-17
+#### 추가 개발 기간 : 2024-11-07 ~ 2024-11-20
+#### 지속 개발 기간 : 2024-11-15 ~ 
 #### GitHub의 PullRequest 와 approve를 통해 개발 브랜치로의 지속 통합을 진행
 #### Slack에 연동하여 PR생성, Comment, review, merge에 대한 상태를 관리
 #### 매일 오전(개발 스크럼), 오후 스크럼(통합 스크럼)을 진행하여 지속적으로 진행상황을 공유하고, 변경사항에 대해 소통
@@ -54,6 +58,8 @@
 ![앨범형게시물](https://github.com/user-attachments/assets/88208f85-b823-46b9-abab-cfbf9380b1c3)
 ![그룹게시물등록](https://github.com/user-attachments/assets/8eb69d8d-ea72-44c9-91a1-9fa79029988c)
 ![그룹게시물상세](https://github.com/user-attachments/assets/eab934bb-2686-453d-b54e-cbfc1875c822)
+<br/>
+<br/>
 
 ## SnapRoad는 이런 기술을 사용했어요
 ![기술의사결정](https://github.com/user-attachments/assets/b0dd07ec-5f2a-4cf0-9c8b-d2f3a2462fb5)
@@ -61,34 +67,42 @@
   - 왜 NextJS를 사용했나?
     - 데이터 캐싱 및 쉬운 SSR지원으로 UX 상승
     - SEO를 상승시켜 서비스 노출 증가
+      
 + `TypeScript`
   - 왜 TypeScript를 사용했나?
     - 정적 타입 검사로 안정적인 개발환경을 만들기 위해 사용
     - 타입을 미리 지정하면 개발시에도 도움을 주기 때문에 개발에 용이
       - 타입 지정에 시간이 더 사용되지만, 해당 부분은 supabase 자동 타입 생성기능을 사용하여 시간을 절약함
+        
 + `Zustand`
   - 왜 Zustand를 사용했나?
     - 전역상태로 관리될 필요가 있는 값을 간단하게 세팅하고 사용하기 위해 선택
     - Redux는 보일러플레이트와 짧게 주어진 개발기간에 러닝커브의 문제로 제외
+      
 + `Tanstack-query`
   - 왜 Tanstack query를 사용했나?
     - 데이터의 stale time에 따라 사용자에게 최신화된 데이터 제공
     - useQuery, useMutation, useInfiniteQuery같은 다양한 훅에서 제공해주는 isError, isPending, refetch등의 메서드를 사용해 개발에 편리함 제공
-+ `Tailwind CSS` : 우수한 성능과 CSS유지보수 상승
+      
++ `Tailwind CSS` 
   - 왜 Tailwind를 사용했나?
     - 유틸리티 퍼스트 방식으로 클래스 네임 충돌을 방지하고, 빠르게 스타일링이 가능함
     - 미리 정의된 유틸리티 클래스로 디자인 시스템에 맞는 일관된 스타일 유지 가능
-+ `StoryBook` : 디자인 시스템에 알맞은 공통 컴포넌트 및 스타일을 원할 때 확인하여 언제나 쉽게 적용 가능
+      
++ `StoryBook` 
   - 왜 Storybook을 사용했나?
     - 개별 컴포넌트를 독립적으로 개발하고 일관된 UI/UX를 유지하며 컴포넌트 재사용 가능
     - 각 컴포넌트의 예제를 제공하여 시각적으로 팀원들과 공유하며 문서화 가능
-+ `Supabase` : 간단한 세팅으로 관계형데이터베이스 사용 및 sql문 작성으로 원하는 로직 생성
+      
++ `Supabase` 
   - 왜 Supabase를 사용했나?
     - 각 데이터끼리의 관계를 지정하여 쉽게 여러 데이터를 가져와 사용할 수 있다.
     - sql문을 작성하여 프론트에서 생기는 성능이슈를 방지할 수 있다.
-+ `Kakao Map API` : 국내 지도 및 주소정보, 마커, 클러스터, 폴리라인 등 국내에 알맞은 지도 시스템 사용
+      
++ `Kakao Map API` 
   - 왜 카카오 지도를 사용했나?
     - 국내 여행에 관련된 서비스를 제공하다보니 카카오 지도 사용하여 여러 데이터를 받을 수 있음
+      
 + `Zod` `React Hook Form`
   - 왜 Zod와 React-Hook-Form을 사용했나?
     - 간결한 유효성 검사 통합
@@ -98,15 +112,39 @@
       - 유효성 검사 로직과 Zod Schema 분리로 폼 관련 로직을 쉽게 이해하고 유지보수 가능
     - 타입 안전성
       - Zod Schema를 통해 생성된 타입을 활용하여 타입스크립트가 제공하는 타입 안정성을 확보
-      - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능
+      - 잘못된 데이터 타입을 방지하고 폼 데이터를 안전하게 처리 가능 
+
++ `LightHouse`
+  - 왜 LightHouse를 사용했나?
+     - 웹 성능 측정: 페이지 로딩 속도와 렌더링 최적화를 위해 사용
+     - 접근성 분석: 다양한 사용자 환경에서 접근성을 점검
+     - SEO 개선: 검색 엔진에서 사이트 순위를 높이기 위해 SEO 상태 분석
+     - PWA 품질 검토: Progressive Web App 지원 상태를 확인
+     - 자동화된 테스트: 성능 및 품질 문제를 자동으로 진단하고 해결 방안을 도출
+       
++ `Sentery`
+  - 왜 Sentery 사용했나?
+       - 실시간 오류 추적: 사용자 테스트 중 발생한 오류를 즉시 감지 및 분석
+       - 사용자 행동 기록: 오류 전후의 사용자 행동을 추적해 문제를 재현
+       - 환경 데이터 수집: 브라우저, 운영체제 등 유저 환경 정보를 분석
+       - 성능 문제 진단: 느린 응답 시간 및 성능 저하를 모니터링
+       - 효율적 디버깅: 스택 트레이스와 오류 로그를 통해 문제 해결 속도 향상
+<br/>
+<br/>
 
 ## SnapRoad의 데이터 테이블 구조
+
 ![erd](https://github.com/user-attachments/assets/8f8f924c-e2df-448d-b613-5f76429840be)
+
+<br/>
 
 ## SnapRoad의 MVP 데이터 요청 흐름도
 ![데이터 요청 흐름](https://github.com/user-attachments/assets/9cbb0b64-1603-4975-a201-9da34bdd40a6)
 
+<br/>
+
 ## 트러블 슈팅
+
 ### 최유나
 #### 문제상황
 - 폼 제출 시 여러개의 뮤테이션이 순차적으로 실행되어야 하는 상황이 발생
@@ -275,6 +313,8 @@
 #### 트러블 슈팅 분석
 - 최적화 이전 17개에 달하는 요청이 sql문으로 최적화 후 7개로 줄였으며 최대 요청시간도 0.8초로 최적화 완료
 ![성능개선결과](https://github.com/user-attachments/assets/e2133ae7-0ba8-41af-b581-0dfeea98c9fb)
+
+
 #### 추가 트러블슈팅 자료
 [데이터 테이블 설정 미비로 인한 오류 수정](https://codingpracticenote.tistory.com/349)
 
@@ -318,27 +358,54 @@ create trigger on_auth_user_created
   execute function public.handle_new_user();
 ```
 
-- 트리거 함수 만들 때 수파베이스에서 제공하는 coalesce 를 사용하여 모든 경우에 대비하도록 함
+- 트리거 함수 만들 때 coalesce 을 사용하여 모든 경우에 대비하도록 함
 
+
+[그 외 트러블 ISSUE](https://github.com/ldcumg/SnapRoad/issues)
+<br/>
+
+## Sentry Error Log
+
+### sentry를 사용한 이유
+1. 실시간 오류 확인: 사용자 테스트 중 발생한 오류를 즉시 감지하고 원인을 파악했습니다.
+2. 사용자 행동 추적: 오류 발생 전 유저의 행동(클릭, 페이지 이동 등)을 기록해 문제 상황을 재현했습니다.
+3. 환경 정보 수집: 브라우저, OS 등 유저 환경 데이터를 통해 특정 환경에서의 문제를 분석했습니다.
+4. 성능 이슈 모니터링: 로드 시간 지연이나 성능 저하를 발견하고 최적화 기회를 찾았습니다.
+5. 효율적인 디버깅: 스택 트레이스와 행동 로그로 오류를 빠르게 해결할 수 있었습니다.
+
+![image](https://github.com/user-attachments/assets/8e0bdf15-32d2-4b35-80ea-0bcc0dce4581)
+
+[센트리 에러로그 수정 사항](https://www.notion.so/teamsparta/77136ee9d3b540ad851a7227e0da07a5?v=1432dc3ef51481a59e56000cc6568886)
+<br/>
+
+## Light House
+### 라이트 하우스를 사용한 이유
+LightHouse는 웹 성능 최적화, 접근성 확인, SEO 분석, PWA 지원 점검, 그리고 자동화된 문제 탐지를 통해 사용자 경험을 개선하고, 개발 중 발생할 수 있는 품질 문제를 효과적으로 진단 및 해결하기 위해서 사용하였습니다.
+
+### 라이트 하우스 성능 최적화 전
+![라이트 하우스 성능 최적화 전](https://github.com/user-attachments/assets/53520bf6-ca26-41b4-bd98-07c3e96d80ac)
+### 라이트 하우스 성능 최적화 후
+![라이트 하우스 성능 최적화 후](https://github.com/user-attachments/assets/941c2b4f-93f5-46ea-aea2-c41e0f01bc82)
+[LightHouse](https://www.notion.so/teamsparta/f5ab168ac7d74544968885c1fb7306f2?v=8756ed0964354691837def54e226a92c)
 <br/>
 
 ## 개선 목표
 
-### 최유나
-1. 게시글 수정 할때 어떻게 임시 저장 할 것이며 받아와야하는지
-2. 데이터 별 유저/그룹별로 id 필터링해서 주스탄드 처리 해야하는데 어떻게 할 것인가
-3. 이미지 올리는데 너무 오래걸리는데 이건 어떻게 처리해야하는지
+1. 회원 탈퇴​
+2. 그룹 탈퇴/추방​
+3. 지도 마커 고도화​
+4. 앨범 기능 고도화​
+5. PWA 적용​
+6. 디바이스 맞춤 반응형 최적화​
+7. 위치 선택하지 않을 시 사진 데이터로 주소 매핑 처리
 
-### 이원빈
-1. 검색 결과 더보기 적용하기
-2. 지도에 마커로 보여줄 게시물들의 정보를 서버 상태에서 prefetch하기
-3. 그룹 앨범 토글버튼 hover시 prefetch하기
 
-### 전상국
-1. 이미지 crop(그룹이나 게시글에서 이미지 업로드시 crop 라이브러리 사용하여 이미지 정사각형으로 잘라 업로드하도록 변경)
-2. 이미지 최적화(용량제한 혹은 업로드시 확장자 변경)
-3. signedurl 만료와 캐싱 관련 문제(tanstackquery의 staletime과 signedurl의 유효기간을 적절히 조정하여 문제 방지)
+<br/>
 
-### 정민지
-1. 댓글 대댓글 구조 개선(부모,자식 따로 렌더링하도록 했는데 유지보수와 확장성을 위해 재귀적 구조로 개선)
-2. signedurl 만료와 캐싱 관련 문제(tanstackquery의 staletime과 signedurl의 유효기간을 적절히 조정하여 문제 방지)
+## SnapRoad 기술블로그
+[SnapRoad에서 SignedUrl을 사용한 이유](https://codingpracticenote.tistory.com/351)<br/>
+[Storybook 도입기](https://velog.io/@yuna-c/Storybook-%EB%8F%84%EC%9E%85%EA%B8%B0)<br/>
+[카카오맵 api 클러스터 마커에 게시물 이미지 적용하기](https://velog.io/@ldcumg/%EC%B9%B4%EC%B9%B4%EC%98%A4%EB%A7%B5-api-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EB%A7%88%EC%BB%A4%EC%97%90-%EA%B2%8C%EC%8B%9C%EB%AC%BC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)<br/>
+[Signed URL 과 캐싱](https://jungminji0215.tistory.com/99)
+<br/>
+

@@ -1,7 +1,7 @@
 'use client';
 
-import { useLoginForm } from '@/hooks/byUse/useAuthForm';
-import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
+import { useLogin } from '@/hooks/queries/auth/useAuthMutations';
+import { useLoginForm } from '@/hooks/useCustomForm/useAuthForm';
 import { loginSchema } from '@/schemas/authSchemas';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
@@ -25,7 +25,7 @@ const LoginForm = () => {
     <div>
       <form
         onSubmit={handleSubmit(handleLogin)}
-        className='flex flex-col w-96 gap-5'
+        className='flex w-96 flex-col gap-5'
       >
         <div>
           <Input
@@ -33,7 +33,7 @@ const LoginForm = () => {
             placeholder={'이메일'}
             {...register('email')}
           />
-          {errors.email && <p className='text-danger text-sm pl-1'>{String(errors.email.message)}</p>}
+          {errors.email && <p className='pl-1 text-sm text-danger'>{String(errors.email.message)}</p>}
         </div>
 
         <div>
@@ -43,7 +43,7 @@ const LoginForm = () => {
             placeholder={'비밀번호'}
             {...register('password')}
           />
-          {errors.password && <p className='text-danger text-sm pl-1'>{String(errors.password.message)}</p>}
+          {errors.password && <p className='pl-1 text-sm text-danger'>{String(errors.password.message)}</p>}
         </div>
 
         <div>

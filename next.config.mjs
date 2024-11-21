@@ -4,7 +4,12 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    // domains: [`${process.env.NEXT_PUBLIC_SUPABASE}.supabase.co`],
+    localPatterns: [
+      {
+        pathname: '/images/**',
+        search: '',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,45 +20,23 @@ const nextConfig = {
     ],
   },
 };
-// https://seftmlefjwyijhjjjzpt.supabase.co/storage/v1/object/sign/group_image/6f274ddf-d7a3-42eb-b775-849b61
-export default withSentryConfig(
-  withSentryConfig(nextConfig, {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
+export default withSentryConfig(nextConfig, {
+  org: 'yuna-ii',
+  project: 'javascript-nextjs',
 
-    org: 'yuna-ii',
-    project: 'javascript-nextjs',
+  silent: !process.env.CI,
 
-    // Only print logs for uploading source maps in CI
-    silent: !process.env.CI,
+  widenClientFileUpload: true,
 
-    // For all available options, see:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+  reactComponentAnnotation: {
+    enabled: true,
+  },
 
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
+  tunnelRoute: '/monitoring',
 
-    // Automatically annotate React components to show their full name in breadcrumbs and session replay
-    reactComponentAnnotation: {
-      enabled: true,
-    },
+  hideSourceMaps: true,
 
-    // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-    // This can increase your server load as well as your hosting bill.
-    // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-    // side errors will fail.
-    tunnelRoute: '/monitoring',
+  disableLogger: true,
 
-    // Hides source maps from generated client bundles
-    hideSourceMaps: true,
-
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
-
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
-  }),
-);
+  automaticVercelMonitors: true,
+});

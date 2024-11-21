@@ -1,4 +1,4 @@
-import { useDeleteComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { useDeleteComment } from '@/hooks/queries/comments/useCommentMutation';
 import { Comment } from '@/types/postDetailTypes';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -49,7 +49,7 @@ const CommentOptions = ({ setIsEditMode, comment, postAuthorId, userId }: Commen
 
   return (
     <div
-      className='relative flex'
+      className='relative z-0 flex'
       ref={commentMenuRef}
     >
       {/* 메뉴 버튼 표시 여부 */}

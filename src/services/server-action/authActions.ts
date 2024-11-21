@@ -1,6 +1,7 @@
 'use server';
 
 import { getSignedImgUrl } from './getSignedImgUrl';
+import TABLES from '@/constants/tables';
 import { createClient } from '@/utils/supabase/server';
 
 /** 회원가입 */
@@ -17,9 +18,8 @@ export const signUp = async (formData: { email: string; password: string; nickna
     },
   });
 
-  if (signUpError?.code === 'user_already_exists') throw new Error('이미 사용 중인 이메일입니다.');
-  if (signUpError) throw new Error('알수없는 오류가 발생했습니다. 다시 시도해주세요.');
-  console.error(signUpError);
+  if (signUpError?.code === 'user_already_exists') return { error: { message: '이미 사용 중인 이메일입니다.' } };
+  if (signUpError) throw signUpError;
 
   await signOut(); // 회원 가입 후, 바로 세션 생기는거 방지
   return { message: '회원가입이 완료되었습니다.' };
@@ -34,11 +34,10 @@ export const login = async (formData: { email: string; password: string }) => {
     password: formData.password,
   });
 
-  if (loginError?.code === 'invalid_credentials') throw new Error('유효하지 않는 사용자입니다.');
-  if (loginError) throw new Error('알수없는 오류가 발생했습니다. 다시 시도해주세요.');
-  console.error(loginError);
+  if (loginError?.code === 'invalid_credentials') return { error: { message: '잘못된 이메일 또는 비밀번호입니다.' } };
+  if (loginError) throw loginError;
 
-  return { message: '로그인 완료되었습니다.', data: data };
+  return { message: '로그인 완료되었습니다.' };
 };
 
 export const getSession = async () => {
@@ -70,7 +69,7 @@ export const resetPassword = async (newPassword: string) => {
 export const getUserData = async (userId: string) => {
   const supabase = createClient();
   let { data, error } = await supabase
-    .from('profiles')
+    .from(TABLES.profiles)
     .select('user_nickname, user_image_url')
     .eq('user_id', userId)
     .single();

@@ -11,13 +11,17 @@ interface groupIdProps {
 const PostAddress = ({ groupId }: groupIdProps) => {
   const { addressName, lat, lng } = useUserAndLocation(groupId);
   const router = useRouter();
-  const handleGoBack = () => router.back();
+  const handleGoBack = () => {
+    const isConfirmed = window.confirm('페이지를 벗어나시겠습니까?');
+    if (isConfirmed) {
+      router.back();
+    }
+  };
 
-  // 위도와 경도가 없는 경우 addressName을 "위치 없음"으로 설정
   const displayAddress = lat && lng ? addressName : '위치 없음';
 
   return (
-    <div className='flex items-center justify-between p-4'>
+    <div className='flex items-center justify-between py-4'>
       <p className='text-gray-500'>{displayAddress}</p>
       <button
         type='button'

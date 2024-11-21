@@ -1,10 +1,11 @@
+import TABLES from '@/constants/tables';
 import { createClient } from '@/utils/supabase/server';
 
 export const fetchPostData = async (postId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('posts')
+    .from(TABLES.posts)
     .select(
       `
         *,

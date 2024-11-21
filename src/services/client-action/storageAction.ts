@@ -1,10 +1,10 @@
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { createClient } from '@/utils/supabase/client';
 
 /** default 이미지 */
 export const getDefaultImageUrl = async () => {
   const supabase = createClient();
-  const { data } = supabase.storage.from(buckets.publicImages).getPublicUrl('test_user_default_thumbnail.png');
+  const { data } = supabase.storage.from(BUCKETS.publicImages).getPublicUrl('test_user_default_thumbnail.png');
   return data;
 };
 

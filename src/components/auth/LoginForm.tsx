@@ -1,7 +1,7 @@
 'use client';
 
-import { useLoginForm } from '@/hooks/byUse/useAuthForm';
-import { useLogin } from '@/hooks/queries/byUse/useAuthMutations';
+import { useLogin } from '@/hooks/queries/auth/useAuthMutations';
+import { useLoginForm } from '@/hooks/useCustomForm/useAuthForm';
 import { loginSchema } from '@/schemas/authSchemas';
 import { Button } from '@/stories/Button';
 import { Input } from '@/stories/Input';
@@ -15,14 +15,16 @@ const LoginForm = () => {
     formState: { errors },
   } = useLoginForm();
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isError, isPending } = useLogin();
 
   const handleLogin = async (value: FieldValues) => {
     login(loginSchema.parse(value));
   };
 
+  if (isError) throw new Error('로그인 에러 발생');
+
   return (
-    <div>
+    <div className='m-auto w-full max-w-[23rem]'>
       <form
         onSubmit={handleSubmit(handleLogin)}
         className='flex flex-col gap-8'
@@ -47,6 +49,7 @@ const LoginForm = () => {
           type='submit'
           label='로그인'
           variant='primary'
+          loading={isPending}
         />
       </form>
     </div>

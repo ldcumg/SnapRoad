@@ -1,6 +1,6 @@
-import { postForm } from '../../../services/server-action/formActions';
+import { postForm, updateForm } from '../../../services/server-action/formActions';
 import queryKeys from '../queryKeys';
-import URLS from '@/constants/urls';
+// import URLS from '@/constants/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -11,9 +11,22 @@ export const useSubmitForm = (groupId: string) => {
   return useMutation({
     mutationFn: postForm,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.group.posts(groupId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.postsCoverImages(groupId) });
       // router.push(URLS.groupList);
-      console.log(postForm);
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+};
+
+export const useUpdateForm = (groupId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateForm,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.group.postsCoverImages(groupId) });
     },
     onError: (error) => {
       alert(error.message);

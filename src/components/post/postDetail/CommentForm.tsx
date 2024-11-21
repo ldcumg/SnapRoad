@@ -1,7 +1,9 @@
-import { usePostComment } from '@/hooks/queries/byUse/useCommentMutation';
+import { usePostComment } from '@/hooks/queries/comments/useCommentMutation';
+import { useCommentForm } from '@/hooks/useCustomForm/useCommentForm';
 import { Button } from '@/stories/Button';
 import { UserDetail } from '@/types/postDetailTypes';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 type CommentFormProps = {
   setIsWriteMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,54 +14,67 @@ type CommentFormProps = {
 };
 
 const CommentForm = ({ setIsWriteMode, setIsWriteReplyMode, parentId, postId, userDetail }: CommentFormProps) => {
-  const [comment, setComment] = useState<string>('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setFocus,
+  } = useCommentForm();
 
   const { mutate: fetchPostComment } = usePostComment();
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+    setFocus('comment');
+  }, [setFocus]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const comment = watch('comment');
 
+  const onSubmitComment = async (value: FieldValues) => {
     fetchPostComment({
       postId: postId,
       userId: userDetail?.profiles.user_id!,
       parentId: parentId,
-      commentDesc: comment,
+      commentDesc: value.comment,
     });
-    setComment('');
+
     if (setIsWriteMode) setIsWriteMode(false); // 글 등록을 했으면 등록 폼 닫기
     if (setIsWriteReplyMode) setIsWriteReplyMode(false); // 대댓글 등록 했으면 닫기
+  };
+
+  const handleCommentCancel = () => {
+    if (setIsWriteMode) setIsWriteMode(false);
+    if (setIsWriteReplyMode) setIsWriteReplyMode(false);
   };
 
   return (
     <div className='p-4'>
       <form
         className='flex flex-col gap-2'
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmitComment)}
       >
         <div className='flex flex-col gap-1 rounded-[12px] border bg-white px-3 py-2'>
           <span className='text-label_sm text-gray-900'>{userDetail?.profiles.user_nickname}</span>
           <textarea
-            ref={textareaRef}
-            value={comment}
-            onChange={(e) => {
-              setComment(e.target.value);
-            }}
+            {...register('comment')}
             placeholder='댓글을 입력해주세요.'
             className='resize-none pb-6'
           />
         </div>
-        <div className='flex justify-end'>
+        <div className='flex justify-end gap-1'>
+          <Button
+            type='submit'
+            variant='primary'
+            label='취소 '
+            size='small'
+            onClick={handleCommentCancel}
+          />
           <Button
             type='submit'
             variant='primary'
             label='등록 '
             size='small'
+            disabled={!comment}
           />
         </div>
       </form>

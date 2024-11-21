@@ -1,5 +1,10 @@
-import TopButton from '@/components/_common/TopButton';
+// import TopButton from '@/components/_common/TopButton';
 import LogoUserHeader from '@/components/layout/LogoUserHeader';
+import { TEN_MINUTES_FOR_TANSTACK } from '@/constants/time';
+import queryKeys from '@/hooks/queries/queryKeys';
+import { getInfiniteGroupData, getRandomPosts } from '@/services/server-action/groupServerActions';
+import { TopButton } from '@/stories/TopButton';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,13 +14,36 @@ export const metadata: Metadata = {
 
 type Props = Readonly<{ children: React.ReactNode }>;
 
-const GroupListLayout = ({ children }: Props) => {
+const GroupListLayout = async ({ children }: Props) => {
+  const queryClient = new QueryClient();
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.group.groupRandomPosts(),
+      queryFn: () => {
+        const randomPosts = getRandomPosts();
+        return randomPosts;
+      },
+      staleTime: TEN_MINUTES_FOR_TANSTACK,
+    }),
+    queryClient.prefetchInfiniteQuery({
+      queryKey: queryKeys.group.groupList(),
+      queryFn: ({ pageParam }) => {
+        const groupData = getInfiniteGroupData({ pageParam });
+        return groupData;
+      },
+      staleTime: TEN_MINUTES_FOR_TANSTACK,
+      retry: 0,
+      initialPageParam: 0,
+    }),
+  ]);
+
   return (
-    <>
+    <div>
       <TopButton />
       <LogoUserHeader />
-      {children}
-    </>
+      <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>
+    </div>
   );
 };
 

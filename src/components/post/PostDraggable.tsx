@@ -1,7 +1,7 @@
 'use client';
 
 import PostSortableImage from './PostSortable';
-import buckets from '@/constants/buckets';
+import BUCKETS from '@/constants/buckets';
 import { useFetchImageUrls } from '@/hooks/queries/post/useImageFetchUrlsQuery';
 import { useSetCoverLogic } from '@/hooks/queries/post/useImageHandlersHooks';
 import { useImageUploadStore } from '@/stores/post/useImageUploadStore';
@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 const PostDraggableImageList = () => {
   const { userId = '', groupId = '', uploadSessionId = '' } = usePostDataStore();
   const { images, setSelectedCover, selectedCover } = useImageUploadStore();
-  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, buckets.tourImages, groupId);
+  const { data: imageUrls = [] } = useFetchImageUrls(uploadSessionId, images, BUCKETS.tourImages, groupId);
   const { handleSetCover } = useSetCoverLogic(userId, uploadSessionId);
 
   const [sliderRef] = useKeenSlider({
@@ -22,7 +22,7 @@ const PostDraggableImageList = () => {
     slides: {
       perView: 'auto',
     },
-    drag: false,
+    drag: true,
   });
 
   useEffect(() => {
@@ -34,12 +34,12 @@ const PostDraggableImageList = () => {
   }, [images, selectedCover, setSelectedCover, handleSetCover]);
 
   return (
-    <div className='w-full overflow-y-hidden pb-4'>
+    <div className='w-full pb-4'>
       <div
         ref={sliderRef}
-        className='keen-slider'
+        className='keen-slider w-full !overflow-auto'
       >
-        <div className='flex gap-4'>
+        <div className='flex gap-4 overflow-x-auto'>
           {images.length > 0 &&
             images.map((image, index) => {
               if (image.id === undefined || !imageUrls[index]) return null;

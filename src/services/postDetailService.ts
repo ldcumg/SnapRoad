@@ -1,12 +1,16 @@
 import { getSignedImgUrl } from './server-action/getSignedImgUrl';
+import BUCKETS from '@/constants/buckets';
+import TABLES from '@/constants/tables';
+import { TEN_MINUTES_FOR_SUPABASE } from '@/constants/time';
 import { ImageDetail, PostDetail } from '@/types/postDetailTypes';
 import { createClient } from '@/utils/supabase/server';
+import * as Sentry from '@sentry/nextjs';
 
 export const fetchPostDetail = async (postId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('posts')
+    .from(TABLES.posts)
     .select(
       `
     *,
@@ -20,13 +24,16 @@ export const fetchPostDetail = async (postId: string) => {
     .single();
 
   if (error) {
-    console.error('error ... : ', error);
-    throw new Error('게시글 상세 정보 조회 시 오류가 발생했습니다.');
+    throw new Error(error.message);
   }
 
   // 해당 게시글을 쓴 유저의 signed url
   if (data?.post_author_user?.user_image_url) {
-    const signedImageUrl = await getSignedImgUrl('avatars', 86400, data.post_author_user.user_image_url);
+    const signedImageUrl = await getSignedImgUrl(
+      'avatars',
+      TEN_MINUTES_FOR_SUPABASE,
+      data.post_author_user.user_image_url,
+    );
     (data.post_author_user as typeof data.post_author_user & { signed_image_url: string | null }).signed_image_url =
       signedImageUrl ?? null;
   }
@@ -44,7 +51,11 @@ export const fetchPostDetail = async (postId: string) => {
   const updatedImages = await Promise.all(
     // MEMO : data.images가 배열이 아닌 경우 map 호출 X, undefined 반환
     data.images?.map(async (image) => {
-      const signedImageUrl = await getSignedImgUrl('tour_images', 86400, `${image.group_id}/${image.post_image_name}`);
+      const signedImageUrl = await getSignedImgUrl(
+        BUCKETS.tourImages,
+        86400,
+        `${image.group_id}/${image.post_image_name}`,
+      );
 
       return {
         ...image,
