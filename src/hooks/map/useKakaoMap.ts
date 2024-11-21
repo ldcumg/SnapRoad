@@ -2,7 +2,6 @@
 
 import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import type {
-  Location,
   LatLng,
   CustomMarker,
   CustomMarkerClusterer,
@@ -11,58 +10,19 @@ import type {
   CustomLatLngBounds,
   LocationInfo,
   ClusterStyle,
+  UseKakaoMapReturnType,
+  CreateSearchFunctionParams,
+  HandleFindUserLocationParams,
+  MoveToMarkerParams,
+  ClusterClickEventParams,
+  HandleAddPostRouteParams,
+  OnClusteredEventParams,
 } from '@/types/mapTypes';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-type UseKakaoMapReturnType = {
-  createSearchFunction: (params: {
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
-    isPostsView: boolean;
-    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    searchResult: {
-      markers: LocationInfo[];
-      hasMore: boolean;
-    };
-    setSearchResult: React.Dispatch<
-      React.SetStateAction<{
-        markers: LocationInfo[];
-        hasMore: boolean;
-      }>
-    >;
-    isInputFocus: boolean;
-    setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => ({ searchInput }: FieldValues) => Promise<void>;
-  getSpotInfo: (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => Promise<void>;
-  handleFindUserLocation: (params: {
-    isPostsView: boolean;
-    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
-  }) => void;
-  moveToMarker: (
-    params: Partial<Location> &
-      LatLng & {
-        setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
-      },
-  ) => void;
-  clusterClickEvent: (params: {
-    cluster: kakao.maps.Cluster;
-    setPostsPreview: React.Dispatch<React.SetStateAction<{ postId: string; postImageUrl: string }[]>>;
-  }) => void;
-  handleAddPostRoute: (params: {
-    groupId: string;
-    isPostsView: boolean;
-    spotInfo: Omit<LocationInfo, 'id'> | null;
-  }) => void;
-  onClusteredEvent: (params: {
-    marker: kakao.maps.MarkerClusterer;
-    clusterStyle: ClusterStyle[];
-    setClusterStyle: React.Dispatch<React.SetStateAction<ClusterStyle[]>>;
-  }) => void;
-  clusterCalculator: (clusterStyle: ClusterStyle[]) => number | undefined;
-};
-
+/** 지도에서 사용하는 함수 모음 */
 const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   const route = useRouter();
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
@@ -76,23 +36,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
     setSearchResult,
     isInputFocus,
     setIsInputFocus,
-  }: {
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
-    isPostsView: boolean;
-    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    searchResult: {
-      markers: LocationInfo[];
-      hasMore: boolean;
-    };
-    setSearchResult: React.Dispatch<
-      React.SetStateAction<{
-        markers: LocationInfo[];
-        hasMore: boolean;
-      }>
-    >;
-    isInputFocus: boolean;
-    setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => {
+  }: CreateSearchFunctionParams) => {
     /** 키워드 검색 */
     const searchLocation = async ({ searchInput }: FieldValues) => {
       if (searchInput === searchKeyword.current.keyword) return;
@@ -145,15 +89,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   };
 
   /** 사용자 위치 찾기 */
-  const handleFindUserLocation = ({
-    isPostsView,
-    setIsPostsView,
-    setSpotInfo,
-  }: {
-    isPostsView: boolean;
-    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
-  }) => {
+  const handleFindUserLocation = ({ isPostsView, setIsPostsView, setSpotInfo }: HandleFindUserLocationParams) => {
     if (!navigator.geolocation) {
       return;
     }
@@ -168,34 +104,14 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   };
 
   /** 마커로 화면 이동 */
-  const moveToMarker = ({
-    placeName,
-    address,
-    lat,
-    lng,
-    setSpotInfo,
-  }: Partial<Location> &
-    LatLng & { setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>> }) => {
+  const moveToMarker = ({ placeName, address, lat, lng, setSpotInfo }: MoveToMarkerParams) => {
     map.setLevel(4, { animate: true });
     map.panTo(new kakao.maps.LatLng(lat, lng));
     placeName && address && setSpotInfo({ placeName, address, lat, lng });
   };
 
   /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
-  const clusterClickEvent = ({
-    cluster,
-    setPostsPreview,
-  }: {
-    cluster: kakao.maps.Cluster;
-    setPostsPreview: React.Dispatch<
-      React.SetStateAction<
-        {
-          postId: string;
-          postImageUrl: string;
-        }[]
-      >
-    >;
-  }) => {
+  const clusterClickEvent = ({ cluster, setPostsPreview }: ClusterClickEventParams) => {
     const bounds = new kakao.maps.LatLngBounds();
 
     const clusterMarkersInfo = cluster.getMarkers().map((marker) => {
@@ -212,15 +128,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   };
 
   /** 게시물 추가 라우팅 */
-  const handleAddPostRoute = ({
-    groupId,
-    isPostsView,
-    spotInfo,
-  }: {
-    groupId: string;
-    isPostsView: boolean;
-    spotInfo: Omit<LocationInfo, 'id'> | null;
-  }) => {
+  const handleAddPostRoute = ({ groupId, isPostsView, spotInfo }: HandleAddPostRouteParams) => {
     if (isPostsView) {
       route.replace(`/group/${groupId}/post`);
       return;
@@ -234,15 +142,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   };
 
   /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
-  const onClusteredEvent = ({
-    marker,
-    clusterStyle,
-    setClusterStyle,
-  }: {
-    marker: kakao.maps.MarkerClusterer;
-    clusterStyle: ClusterStyle[];
-    setClusterStyle: React.Dispatch<React.SetStateAction<ClusterStyle[]>>;
-  }) => {
+  const onClusteredEvent = ({ marker, clusterStyle, setClusterStyle }: OnClusteredEventParams) => {
     const customMarker = marker as CustomMarkerClusterer;
 
     // polyline.current = [];
