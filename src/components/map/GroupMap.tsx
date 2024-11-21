@@ -29,7 +29,7 @@ type Props = {
 const GroupMap = ({ groupId, desktop, point }: Props) => {
   const { handleCustomOpen } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
-  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [isPostsView, setIsPostsView] = useState<boolean>(true);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],

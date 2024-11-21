@@ -67,7 +67,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   const route = useRouter();
   const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
 
-  /** 키워드 검색 */
+  /** 키워드 검색 함수 생성 */
   const createSearchFunction = ({
     setSpotInfo,
     isPostsView,
@@ -93,6 +93,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
     isInputFocus: boolean;
     setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
   }) => {
+    /** 키워드 검색 */
     const searchLocation = async ({ searchInput }: FieldValues) => {
       if (searchInput === searchKeyword.current.keyword) return;
 
