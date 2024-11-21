@@ -358,7 +358,7 @@ create trigger on_auth_user_created
   execute function public.handle_new_user();
 ```
 
-- 트리거 함수 만들 때 수파베이스에서 제공하는 coalesce 를 사용하여 모든 경우에 대비하도록 함
+- 트리거 함수 만들 때 coalesce 을 사용하여 모든 경우에 대비하도록 함
 
 
 [그 외 트러블 ISSUE](https://github.com/ldcumg/SnapRoad/issues)
@@ -406,5 +406,6 @@ LightHouse는 웹 성능 최적화, 접근성 확인, SEO 분석, PWA 지원 점
 [SnapRoad에서 SignedUrl을 사용한 이유](https://codingpracticenote.tistory.com/351)<br/>
 [Storybook 도입기](https://velog.io/@yuna-c/Storybook-%EB%8F%84%EC%9E%85%EA%B8%B0)<br/>
 [카카오맵 api 클러스터 마커에 게시물 이미지 적용하기](https://velog.io/@ldcumg/%EC%B9%B4%EC%B9%B4%EC%98%A4%EB%A7%B5-api-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EB%A7%88%EC%BB%A4%EC%97%90-%EA%B2%8C%EC%8B%9C%EB%AC%BC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)<br/>
+[Signed URL 과 캐싱](https://jungminji0215.tistory.com/99)
 <br/>
 
