@@ -29,6 +29,7 @@ export const keywordSearch = async ({
     documents,
     meta: { is_end },
   } = await response.json();
+
   const results = documents.map(({ id, place_name, road_address_name, address_name, y, x }: SearchResult) => {
     const address = road_address_name || address_name;
     return { id, placeName: place_name, address, lat: Number(y), lng: Number(x) };

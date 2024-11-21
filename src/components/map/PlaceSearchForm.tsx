@@ -1,5 +1,8 @@
 'use client';
 
+import Icon_Close from '@/lib/icon/Icon_Close';
+import IconMapSearch from '@/lib/icon/Icon_Map_Search';
+import IconResetInput from '@/lib/icon/Icon_Reset_Input';
 import { searchPlaceSchema } from '@/schemas/searchPlaceSchema';
 import type { LocationInfo } from '@/types/mapTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,10 +60,7 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
         />
         {!!getValues(SEARCH_INPUT) &&
           (hasSearchResult ? (
-            <img
-              className='pointer-events-none absolute right-[48px] top-1/2 z-50 -translate-y-1/2'
-              src='/svgs/Map_Search.svg'
-            />
+            <IconMapSearch className='pointer-events-none absolute right-[48px] top-1/2 z-50 -translate-y-1/2' />
           ) : (
             <button
               className='absolute right-[48px] top-1/2 z-50 -translate-y-1/2'
@@ -69,8 +69,9 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
                 resetField(SEARCH_INPUT);
                 setFocus(SEARCH_INPUT);
               }}
+              aria-label='검색창 초기화'
             >
-              <img src='/svgs/Reset_input.svg' />
+              <IconResetInput />
             </button>
           ))}
         {hasSearchResult ? (
@@ -81,15 +82,17 @@ const PlaceSearchForm = ({ desktop, searchLocation, setSearchResult, setIsInputF
               setSearchResult({ markers: [], hasMore: false });
               resetField(SEARCH_INPUT);
             }}
+            aria-label='검색결과 지우기'
           >
-            <img src='/svgs/Close_LG.svg' />
+            <Icon_Close />
           </button>
         ) : (
           <button
             className='absolute right-[16px] top-1/2 -translate-y-1/2'
             type='submit'
+            aria-label='장소 검색'
           >
-            <img src='/svgs/Map_Search.svg' />
+            <IconMapSearch />
           </button>
         )}
       </div>

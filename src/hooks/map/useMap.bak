@@ -1,6 +1,5 @@
 'use client';
 
-import { getAddress } from '@/services/server-action/mapAction';
 import type {
   Location,
   LatLng,
