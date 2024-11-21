@@ -14,22 +14,11 @@ import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
 import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
-import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
+import { keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import type {
-  ClusterStyle,
-  CustomCluster,
-  CustomLatLng,
-  CustomLatLngBounds,
-  CustomMarker,
-  CustomMarkerClusterer,
-  LatLng,
-  Location,
-  LocationInfo,
-} from '@/types/mapTypes';
+import type { ClusterStyle, LatLng, LocationInfo } from '@/types/mapTypes';
 import { toast } from 'garlic-toast';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
@@ -41,7 +30,6 @@ type Props = {
 };
 
 const GroupMap = ({ groupId, desktop, point }: Props) => {
-  const route = useRouter();
   const { handleCustomOpen } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
   const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
@@ -154,7 +142,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
-          isPostsView ? getSpotInfo() : setSpotInfo(undefined);
+          isPostsView ? getSpotInfo(setSpotInfo) : setSpotInfo(null);
         }}
         aria-label='맵핀, 게시물 전환'
       >
@@ -169,7 +157,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         onCreate={setMap}
         level={13}
         isPanto={true}
-        onDragEnd={() => isPostsView || getSpotInfo()}
+        onDragEnd={() => isPostsView || getSpotInfo(setSpotInfo)}
       >
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
@@ -177,10 +165,10 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
-            onClustered={(marker) => onClusteredEvent(marker)}
+            onClustered={(marker) => onClusteredEvent({ marker, clusterStyle, setClusterStyle })}
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
-              clusterClickEvent(cluster);
+              clusterClickEvent({ cluster, setPostsPreview });
               handleCustomOpen();
             }}
           >
@@ -191,7 +179,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                   key={post_image_url}
                   position={{ lat: post_lat, lng: post_lng }}
                   onClick={() => {
-                    moveToMarker({ lat: post_lat, lng: post_lng });
+                    moveToMarker({ lat: post_lat, lng: post_lng, setSpotInfo });
                     setPostsPreview([{ postId: post_id, postImageUrl: post_image_url }]);
                     handleCustomOpen();
                   }}
@@ -214,7 +202,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
               >
-                <SearchResultMarker onClick={() => moveToMarker(marker)} />
+                <SearchResultMarker onClick={() => moveToMarker({ ...marker, setSpotInfo })} />
               </CustomOverlayMap>
             ))}
           </>
@@ -230,7 +218,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         {!!spotInfo && (
           <SearchResultLayout
             desktop={desktop}
-            handleFindUserLocation={handleFindUserLocation}
+            handleFindUserLocation={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
           >
             <SearchResult
               spotInfo={spotInfo}
@@ -242,7 +230,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         {(!spotInfo || desktop) && (
           <button
             className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
-            onClick={handleFindUserLocation}
+            onClick={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
             aria-label='사용자 위치 찾기'
           >
             <IconGeolocation className='m-auto' />
@@ -266,7 +254,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           >
             <Button
               type='button'
-              onClick={handleAddPostRoute}
+              onClick={() => handleAddPostRoute({ groupId, isPostsView, spotInfo })}
               variant='primary'
               size={desktop ? 'large' : 'full'}
               className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'

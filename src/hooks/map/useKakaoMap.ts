@@ -12,14 +12,14 @@ import type {
   LocationInfo,
   ClusterStyle,
 } from '@/types/mapTypes';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 type UseKakaoMapReturnType = {
-  getSpotInfo: (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'>>>) => Promise<void>;
+  getSpotInfo: (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => Promise<void>;
   handleFindUserLocation: (params: {
     isPostsView: boolean;
     setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'>>>;
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
   }) => void;
   moveToMarker: (
     params: Partial<Location> &
@@ -31,7 +31,11 @@ type UseKakaoMapReturnType = {
     cluster: kakao.maps.Cluster;
     setPostsPreview: React.Dispatch<React.SetStateAction<{ postId: string; postImageUrl: string }[]>>;
   }) => void;
-  handleAddPostRoute: (params: { groupId: string; isPostsView: boolean; spotInfo: Omit<LocationInfo, 'id'> }) => void;
+  handleAddPostRoute: (params: {
+    groupId: string;
+    isPostsView: boolean;
+    spotInfo: Omit<LocationInfo, 'id'> | null;
+  }) => void;
   onClusteredEvent: (params: {
     marker: kakao.maps.MarkerClusterer;
     clusterStyle: ClusterStyle[];
@@ -44,7 +48,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   const route = useRouter();
 
   /** 중심 좌표의 장소 정보 요청 */
-  const getSpotInfo = async (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'>>>) => {
+  const getSpotInfo = async (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => {
     const latlng = map.getCenter();
 
     const lat = latlng.getLat();
@@ -61,7 +65,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   }: {
     isPostsView: boolean;
     setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
-    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'>>>;
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
   }) => {
     if (!navigator.geolocation) {
       return;
@@ -128,7 +132,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   }: {
     groupId: string;
     isPostsView: boolean;
-    spotInfo: Omit<LocationInfo, 'id'>;
+    spotInfo: Omit<LocationInfo, 'id'> | null;
   }) => {
     if (isPostsView) {
       route.replace(`/group/${groupId}/post`);
