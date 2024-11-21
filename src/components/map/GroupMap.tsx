@@ -135,7 +135,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             }}
           >
             {postsCoverImages.map(({ post_id, post_image_url, post_lat, post_lng }) => {
-              polyline.push({ lat: post_lat, lng: post_lng });
+              post_lat && post_lng && polyline.push({ lat: post_lat, lng: post_lng });
               return (
                 <MapMarker
                   key={post_image_url}
