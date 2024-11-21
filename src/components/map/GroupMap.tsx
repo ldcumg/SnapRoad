@@ -6,6 +6,7 @@ import PostsPreviewLayout from './PostsPreviewLayout';
 import SearchResult from './SearchResult';
 import SearchResultLayout from './SearchResultLayout';
 import Loading from '@/app/loading';
+import useKakaoMap from '@/hooks/map/useKakaoMap';
 import { getGroupPostsCoverImagesQuery } from '@/hooks/queries/post/useGroupPostsQuery';
 import IconGeolocation from '@/lib/icon/Icon_Geolocation';
 import IconPostPlus from '@/lib/icon/Icon_Post_Plus';
@@ -13,24 +14,10 @@ import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
 import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
-import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
-import type {
-  ClusterStyle,
-  CustomCluster,
-  CustomLatLng,
-  CustomLatLngBounds,
-  CustomMarker,
-  CustomMarkerClusterer,
-  LatLng,
-  Location,
-  LocationInfo,
-} from '@/types/mapTypes';
-import { toast } from 'garlic-toast';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import type { FieldValues } from 'react-hook-form';
+import type { ClusterStyle, LatLng, LocationInfo } from '@/types/mapTypes';
+import { useEffect, useState } from 'react';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 type Props = {
@@ -40,22 +27,37 @@ type Props = {
 };
 
 const GroupMap = ({ groupId, desktop, point }: Props) => {
-  const route = useRouter();
   const { handleCustomOpen } = useBottomSheetStore((state) => state);
   const [map, setMap] = useState<kakao.maps.Map>();
-  const [isPostsView, setIsPostsView] = useState<boolean>(!!groupId ? true : false);
+  const [isPostsView, setIsPostsView] = useState<boolean>(true);
   const [postsPreView, setPostsPreview] = useState<{ postId: string; postImageUrl: string }[]>([]);
   const [searchResult, setSearchResult] = useState<{ markers: LocationInfo[]; hasMore: boolean }>({
     markers: [],
     hasMore: false,
   });
-  const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
-  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'>>();
+  const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'> | null>(null);
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
-
-  const polyline: LatLng[] = [];
-
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
+  const polyline: LatLng[] = [];
+  const {
+    createSearchFunction,
+    getSpotInfo,
+    handleFindUserLocation,
+    moveToMarker,
+    clusterClickEvent,
+    handleAddPostRoute,
+    onClusteredEvent,
+    clusterCalculator,
+  } = useKakaoMap(map as kakao.maps.Map);
+  const searchLocation = createSearchFunction({
+    setSpotInfo,
+    isPostsView,
+    setIsPostsView,
+    searchResult,
+    setSearchResult,
+    isInputFocus,
+    setIsInputFocus,
+  });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
@@ -76,7 +78,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   // 게시물 상세 페이지에서 올 경우 해당 게시물 위치
   useEffect(() => {
     if (!!point && map) {
-      moveToMarker(point);
+      moveToMarker({ ...point, setSpotInfo });
       map.setLevel(4, { animate: true });
     }
   }, [map]);
@@ -86,174 +88,6 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   if (mapError) throw new Error('지도를 불러오지 못 했습니다.');
 
   if (isError) throw new Error(error.message);
-
-  /** 키워드 검색 */
-  const searchLocation = async ({ searchInput }: FieldValues) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    if (searchInput === searchKeyword.current.keyword) return;
-
-    isPostsView && setIsPostsView(false);
-
-    const keyword = searchInput ?? searchKeyword.current.keyword;
-    const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
-
-    if (!results[0]) {
-      toast.error('검색결과가 존재하지 않습니다.', { progressBar: false, closeOnClick: true, autoClose: true });
-      return;
-    }
-
-    setSearchResult(({ markers, hasMore }) =>
-      searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
-    );
-
-    searchInput && moveToMarker(results[0]);
-
-    if (is_end) {
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: false };
-      });
-      searchKeyword.current = { keyword: '', page: 1 };
-      return;
-    }
-
-    searchResult.hasMore ||
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: true };
-      });
-    searchInput
-      ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
-      : (searchKeyword.current.page = searchKeyword.current.page += 1);
-
-    isInputFocus && setIsInputFocus(false);
-  };
-
-  /** 중심 좌표의 장소 정보 요청 */
-  const getSpotInfo = async () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    const latlng = map.getCenter();
-
-    const lat = latlng.getLat();
-    const lng = latlng.getLng();
-    const address = await getAddress({ lat, lng });
-    setSpotInfo({ placeName: '', address, lat, lng });
-  };
-
-  /** 사용자 위치 찾기 */
-  const handleFindUserLocation = () => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    if (!navigator.geolocation) {
-      toast.alert('위치 정보 제공 동의가 필요합니다.');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude: lat, longitude: lng } = position.coords;
-      map.setLevel(5, { animate: true });
-      map.panTo(new kakao.maps.LatLng(lat, lng));
-      isPostsView && setIsPostsView(false);
-      getSpotInfo();
-    });
-  };
-
-  /** 마커로 화면 이동 */
-  const moveToMarker = ({ placeName, address, lat, lng }: Partial<Location> & LatLng) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-    map.setLevel(4, { animate: true });
-    map.panTo(new kakao.maps.LatLng(lat, lng));
-    placeName && address && setSpotInfo({ placeName, address, lat, lng });
-  };
-
-  /** 클러스터 마커 미리보기 및 지도 범위 재설정 */
-  const clusterClickEvent = (cluster: kakao.maps.Cluster) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-    const bounds = new kakao.maps.LatLngBounds();
-
-    const clusterMarkersInfo = cluster.getMarkers().map((marker) => {
-      const customMarker = marker as CustomMarker;
-
-      bounds.extend(new kakao.maps.LatLng(customMarker.getPosition().getLat(), customMarker.getPosition().getLng()));
-      return {
-        postId: customMarker.getImage().Wh,
-        postImageUrl: customMarker.getImage().ok,
-      };
-    });
-    map.panTo(bounds);
-    setPostsPreview(clusterMarkersInfo);
-  };
-
-  /** 게시물 추가 라우팅 */
-  const handleAddPostRoute = () => {
-    if (isPostsView) {
-      route.replace(`/group/${groupId}/post`);
-      return;
-    }
-
-    if (!spotInfo) return;
-    const { lat, lng, placeName, address } = spotInfo;
-    const place = placeName || address;
-
-    route.replace(`/group/${groupId}/post?lat=${lat}&lng=${lng}&place=${place}`);
-  };
-
-  /** 클러스터 시 게시물의 이미지를 마커 스타일 저장 */
-  const onClusteredEvent = (marker: kakao.maps.MarkerClusterer) => {
-    const customMarker = marker as CustomMarkerClusterer;
-
-    // polyline.current = [];
-    customMarker._clusters.forEach((cluster) => {
-      const customCluster = cluster as CustomCluster;
-      const { Ma: lat, La: lng } = cluster.getCenter() as CustomLatLng;
-      // polyline.current.push({ lat, lng });
-      clusterStyle.some((style) => style.background === `url("${customCluster._markers[0].T.ok}") no-repeat`) ||
-        setClusterStyle((prev) => [
-          ...prev,
-          {
-            centerLatLng: { lat, lng },
-            fontSize: '0px',
-            width: '60px',
-            height: '60px',
-            background: `url("${customCluster._markers[0].T.ok}") no-repeat`,
-            backgroundSize: 'cover',
-            borderRadius: '100%',
-            border: 'solid 4px #EB84DA',
-          },
-        ]);
-    });
-  };
-
-  /** 뷰포트에 클러스터의 좌표가 들어올 시 해당하는 스타일의 인덱스 반환 */
-  const clusterCalculator = () => {
-    if (!map) return;
-    const { ha, qa, oa, pa } = map.getBounds() as CustomLatLngBounds;
-    const viewport = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(qa, ha), new kakao.maps.LatLng(pa, oa));
-
-    let index;
-    for (let i = 0; i < clusterStyle.length; i++) {
-      const { lat, lng } = clusterStyle[i].centerLatLng;
-      if (viewport.contain(new kakao.maps.LatLng(lat, lng))) index = i;
-    }
-    return index;
-  };
-
-  // reconstitutePolyline
 
   return (
     <>
@@ -270,7 +104,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
-          isPostsView ? getSpotInfo() : setSpotInfo(undefined);
+          isPostsView ? getSpotInfo(setSpotInfo) : setSpotInfo(null);
         }}
         aria-label='맵핀, 게시물 전환'
       >
@@ -285,7 +119,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         onCreate={setMap}
         level={13}
         isPanto={true}
-        onDragEnd={() => isPostsView || getSpotInfo()}
+        onDragEnd={() => isPostsView || getSpotInfo(setSpotInfo)}
       >
         {isPostsView && !!postsCoverImages.length ? (
           <MarkerClusterer
@@ -293,10 +127,10 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             minLevel={1} // 클러스터 할 최소 지도 레벨
             styles={clusterStyle}
             disableClickZoom={true}
-            onClustered={(marker) => onClusteredEvent(marker)}
+            onClustered={(marker) => onClusteredEvent({ marker, clusterStyle, setClusterStyle })}
             calculator={clusterCalculator as any}
             onClusterclick={(marker, cluster) => {
-              clusterClickEvent(cluster);
+              clusterClickEvent({ cluster, setPostsPreview });
               handleCustomOpen();
             }}
           >
@@ -307,7 +141,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                   key={post_image_url}
                   position={{ lat: post_lat, lng: post_lng }}
                   onClick={() => {
-                    moveToMarker({ lat: post_lat, lng: post_lng });
+                    moveToMarker({ lat: post_lat, lng: post_lng, setSpotInfo });
                     setPostsPreview([{ postId: post_id, postImageUrl: post_image_url }]);
                     handleCustomOpen();
                   }}
@@ -330,7 +164,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
               >
-                <SearchResultMarker onClick={() => moveToMarker(marker)} />
+                <SearchResultMarker onClick={() => moveToMarker({ ...marker, setSpotInfo })} />
               </CustomOverlayMap>
             ))}
           </>
@@ -346,7 +180,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         {!!spotInfo && (
           <SearchResultLayout
             desktop={desktop}
-            handleFindUserLocation={handleFindUserLocation}
+            handleFindUserLocation={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
           >
             <SearchResult
               spotInfo={spotInfo}
@@ -356,9 +190,11 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           </SearchResultLayout>
         )}
         {(!spotInfo || desktop) && (
+          //NOTE - 임시
           <button
-            className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
-            onClick={handleFindUserLocation}
+            className='fixed bottom-[16px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
+            // className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
+            onClick={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
             aria-label='사용자 위치 찾기'
           >
             <IconGeolocation className='m-auto' />
@@ -377,23 +213,26 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             />
           </PostsPreviewLayout>
         ) : (
-          <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-30 w-full ${!!spotInfo || 'bg-white'} px-[16px] pb-[16px] pt-[12px] pc:bottom-[28px] pc:left-1/2 pc:flex pc:w-[628px] pc:-translate-x-1/2 pc:items-center pc:rounded-[28px] pc:p-[40px]`}
-          >
-            <Button
-              type='button'
-              onClick={handleAddPostRoute}
-              variant='primary'
-              size={desktop ? 'large' : 'full'}
-              className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'
-              disabled={!isPostsView && !spotInfo?.address}
+          //NOTE - 임시
+          spotInfo && (
+            <div
+              className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-30 w-full ${!!spotInfo || 'bg-white'} px-[16px] pb-[16px] pt-[12px] pc:bottom-[28px] pc:left-1/2 pc:flex pc:w-[628px] pc:-translate-x-1/2 pc:items-center pc:rounded-[28px] pc:p-[40px]`}
             >
-              <span className='flex gap-[8px]'>
-                <IconPostPlus />
-                <span className='text-title_lg'>게시물 추가하기</span>
-              </span>
-            </Button>
-          </div>
+              <Button
+                type='button'
+                onClick={() => handleAddPostRoute({ groupId, isPostsView, spotInfo })}
+                variant='primary'
+                size={desktop ? 'large' : 'full'}
+                className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'
+                disabled={!isPostsView && !spotInfo?.address}
+              >
+                <span className='flex gap-[8px]'>
+                  <IconPostPlus />
+                  <span className='text-title_lg'>게시물 추가하기</span>
+                </span>
+              </Button>
+            </div>
+          )
         )}
       </Map>
     </>

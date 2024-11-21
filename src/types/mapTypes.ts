@@ -1,3 +1,5 @@
+import type { FieldValues } from 'react-hook-form';
+
 export type Location = {
   id: string;
   placeName: string;
@@ -49,3 +51,101 @@ export interface CustomLatLngBounds extends kakao.maps.LatLngBounds {
 export interface CustomCluster extends kakao.maps.Cluster {
   _markers: CustomMarkerClusterer[];
 }
+
+export type UseKakaoMapReturnType = {
+  createSearchFunction: (params: {
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+    isPostsView: boolean;
+    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+    searchResult: {
+      markers: LocationInfo[];
+      hasMore: boolean;
+    };
+    setSearchResult: React.Dispatch<
+      React.SetStateAction<{
+        markers: LocationInfo[];
+        hasMore: boolean;
+      }>
+    >;
+    isInputFocus: boolean;
+    setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => ({ searchInput }: FieldValues) => Promise<void>;
+  getSpotInfo: (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => Promise<void>;
+  handleFindUserLocation: (params: {
+    isPostsView: boolean;
+    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+  }) => void;
+  moveToMarker: (
+    params: Partial<Location> &
+      LatLng & {
+        setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+      },
+  ) => void;
+  clusterClickEvent: (params: {
+    cluster: kakao.maps.Cluster;
+    setPostsPreview: React.Dispatch<React.SetStateAction<{ postId: string; postImageUrl: string }[]>>;
+  }) => void;
+  handleAddPostRoute: (params: {
+    groupId: string;
+    isPostsView: boolean;
+    spotInfo: Omit<LocationInfo, 'id'> | null;
+  }) => void;
+  onClusteredEvent: (params: {
+    marker: kakao.maps.MarkerClusterer;
+    clusterStyle: ClusterStyle[];
+    setClusterStyle: React.Dispatch<React.SetStateAction<ClusterStyle[]>>;
+  }) => void;
+  clusterCalculator: (clusterStyle: ClusterStyle[]) => number | undefined;
+};
+
+export type CreateSearchFunctionParams = {
+  setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+  isPostsView: boolean;
+  setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+  searchResult: {
+    markers: LocationInfo[];
+    hasMore: boolean;
+  };
+  setSearchResult: React.Dispatch<
+    React.SetStateAction<{
+      markers: LocationInfo[];
+      hasMore: boolean;
+    }>
+  >;
+  isInputFocus: boolean;
+  setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export type HandleFindUserLocationParams = {
+  isPostsView: boolean;
+  setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+  setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+};
+
+export type MoveToMarkerParams = Partial<Location> &
+  LatLng & { setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>> };
+
+export type ClusterClickEventParams = {
+  cluster: kakao.maps.Cluster;
+  setPostsPreview: React.Dispatch<
+    React.SetStateAction<
+      {
+        postId: string;
+        postImageUrl: string;
+      }[]
+    >
+  >;
+};
+
+export type HandleAddPostRouteParams = {
+  groupId: string;
+  isPostsView: boolean;
+  spotInfo: Omit<LocationInfo, 'id'> | null;
+};
+
+export type OnClusteredEventParams = {
+  marker: kakao.maps.MarkerClusterer;
+  clusterStyle: ClusterStyle[];
+  setClusterStyle: React.Dispatch<React.SetStateAction<ClusterStyle[]>>;
+};
