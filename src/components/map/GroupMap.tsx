@@ -190,8 +190,10 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
           </SearchResultLayout>
         )}
         {(!spotInfo || desktop) && (
+          //NOTE - 임시
           <button
-            className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
+            className='fixed bottom-[16px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
+            // className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
             onClick={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
             aria-label='사용자 위치 찾기'
           >
@@ -211,23 +213,26 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             />
           </PostsPreviewLayout>
         ) : (
-          <div
-            className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-30 w-full ${!!spotInfo || 'bg-white'} px-[16px] pb-[16px] pt-[12px] pc:bottom-[28px] pc:left-1/2 pc:flex pc:w-[628px] pc:-translate-x-1/2 pc:items-center pc:rounded-[28px] pc:p-[40px]`}
-          >
-            <Button
-              type='button'
-              onClick={() => handleAddPostRoute({ groupId, isPostsView, spotInfo })}
-              variant='primary'
-              size={desktop ? 'large' : 'full'}
-              className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'
-              disabled={!isPostsView && !spotInfo?.address}
+          //NOTE - 임시
+          spotInfo && (
+            <div
+              className={`shadow-[0px -4px 10px 0px rgba(0, 0, 0, 0.10)] fixed bottom-0 z-30 w-full ${!!spotInfo || 'bg-white'} px-[16px] pb-[16px] pt-[12px] pc:bottom-[28px] pc:left-1/2 pc:flex pc:w-[628px] pc:-translate-x-1/2 pc:items-center pc:rounded-[28px] pc:p-[40px]`}
             >
-              <span className='flex gap-[8px]'>
-                <IconPostPlus />
-                <span className='text-title_lg'>게시물 추가하기</span>
-              </span>
-            </Button>
-          </div>
+              <Button
+                type='button'
+                onClick={() => handleAddPostRoute({ groupId, isPostsView, spotInfo })}
+                variant='primary'
+                size={desktop ? 'large' : 'full'}
+                className='bottom-[16px] z-30 h-[56px] px-[24px] pc:mx-auto pc:h-[56px] pc:w-[343px] pc:py-[16px]'
+                disabled={!isPostsView && !spotInfo?.address}
+              >
+                <span className='flex gap-[8px]'>
+                  <IconPostPlus />
+                  <span className='text-title_lg'>게시물 추가하기</span>
+                </span>
+              </Button>
+            </div>
+          )
         )}
       </Map>
     </>
