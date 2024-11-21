@@ -19,7 +19,6 @@ type AddButtonsProps = {
 };
 
 const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
-  console.log('isDesktop :>> ', isDesktop);
   return (
     <>
       {isDesktop ? (
