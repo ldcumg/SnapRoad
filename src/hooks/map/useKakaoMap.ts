@@ -17,6 +17,7 @@ import type {
   HandleAddPostRouteParams,
   OnClusteredEventParams,
 } from '@/types/mapTypes';
+import { toast } from 'garlic-toast';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -36,8 +37,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
     isInputFocus,
     setIsInputFocus,
   }: CreateSearchFunctionParams) => {
-    /** 키워드 검색 */
-    const searchLocation = async ({ searchInput }: FieldValues) => {
+    return async ({ searchInput }: FieldValues) => {
       if (searchInput === searchKeyword.current.keyword) return;
 
       isPostsView && setIsPostsView(false);
@@ -46,6 +46,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
       const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
 
       if (!results[0]) {
+        toast.error('검색 결과가 존재하지 않습니다.');
         return;
       }
 
@@ -73,8 +74,6 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
 
       isInputFocus && setIsInputFocus(false);
     };
-
-    return searchLocation;
   };
 
   /** 중심 좌표의 장소 정보 요청 */
