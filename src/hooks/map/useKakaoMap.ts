@@ -24,7 +24,7 @@ type UseKakaoMapReturnType = {
   moveToMarker: (
     params: Partial<Location> &
       LatLng & {
-        setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'>>>;
+        setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
       },
   ) => void;
   clusterClickEvent: (params: {
