@@ -1,6 +1,6 @@
 'use client';
 
-import { getAddress } from '@/services/server-action/mapAction';
+import { getAddress, keywordSearch } from '@/services/server-action/mapAction';
 import type {
   Location,
   LatLng,
@@ -13,8 +13,27 @@ import type {
   ClusterStyle,
 } from '@/types/mapTypes';
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
+import type { FieldValues } from 'react-hook-form';
 
 type UseKakaoMapReturnType = {
+  createSearchFunction: (params: {
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+    isPostsView: boolean;
+    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+    searchResult: {
+      markers: LocationInfo[];
+      hasMore: boolean;
+    };
+    setSearchResult: React.Dispatch<
+      React.SetStateAction<{
+        markers: LocationInfo[];
+        hasMore: boolean;
+      }>
+    >;
+    isInputFocus: boolean;
+    setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => ({ searchInput }: FieldValues) => Promise<void>;
   getSpotInfo: (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => Promise<void>;
   handleFindUserLocation: (params: {
     isPostsView: boolean;
@@ -46,6 +65,73 @@ type UseKakaoMapReturnType = {
 
 const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   const route = useRouter();
+  const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
+
+  /** 키워드 검색 */
+  const createSearchFunction = ({
+    setSpotInfo,
+    isPostsView,
+    setIsPostsView,
+    searchResult,
+    setSearchResult,
+    isInputFocus,
+    setIsInputFocus,
+  }: {
+    setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>;
+    isPostsView: boolean;
+    setIsPostsView: React.Dispatch<React.SetStateAction<boolean>>;
+    searchResult: {
+      markers: LocationInfo[];
+      hasMore: boolean;
+    };
+    setSearchResult: React.Dispatch<
+      React.SetStateAction<{
+        markers: LocationInfo[];
+        hasMore: boolean;
+      }>
+    >;
+    isInputFocus: boolean;
+    setIsInputFocus: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => {
+    const searchLocation = async ({ searchInput }: FieldValues) => {
+      if (searchInput === searchKeyword.current.keyword) return;
+
+      isPostsView && setIsPostsView(false);
+
+      const keyword = searchInput ?? searchKeyword.current.keyword;
+      const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
+
+      if (!results[0]) {
+        return;
+      }
+
+      setSearchResult(({ markers, hasMore }) =>
+        searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
+      );
+
+      searchInput && moveToMarker({ ...results[0], setSpotInfo });
+
+      if (is_end) {
+        setSearchResult((prev) => {
+          return { ...prev, hasMore: false };
+        });
+        searchKeyword.current = { keyword: '', page: 1 };
+        return;
+      }
+
+      searchResult.hasMore ||
+        setSearchResult((prev) => {
+          return { ...prev, hasMore: true };
+        });
+      searchInput
+        ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
+        : (searchKeyword.current.page = searchKeyword.current.page += 1);
+
+      isInputFocus && setIsInputFocus(false);
+    };
+
+    return searchLocation;
+  };
 
   /** 중심 좌표의 장소 정보 요청 */
   const getSpotInfo = async (setSpotInfo: React.Dispatch<React.SetStateAction<Omit<LocationInfo, 'id'> | null>>) => {
@@ -197,6 +283,7 @@ const useKakaoMap = (map: kakao.maps.Map): UseKakaoMapReturnType => {
   // reconstitutePolyline
 
   return {
+    createSearchFunction: createSearchFunction,
     getSpotInfo,
     handleFindUserLocation,
     moveToMarker,

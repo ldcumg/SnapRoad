@@ -14,13 +14,10 @@ import IconSwitchToMappin from '@/lib/icon/Icon_Switch_To_Mappin';
 import IconSwitchToPostMarker from '@/lib/icon/Icon_Switch_To_Post_Marker';
 import MapPin from '@/lib/icon/Map_Pin';
 import SearchResultMarker from '@/lib/icon/Search_Result_Marker';
-import { keywordSearch } from '@/services/server-action/mapAction';
 import useBottomSheetStore from '@/stores/story/useBottomSheetStore';
 import { Button } from '@/stories/Button';
 import type { ClusterStyle, LatLng, LocationInfo } from '@/types/mapTypes';
-import { toast } from 'garlic-toast';
-import { useEffect, useRef, useState } from 'react';
-import type { FieldValues } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import { useKakaoLoader, Map, MapMarker, MarkerClusterer, Polyline, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 type Props = {
@@ -38,12 +35,12 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     markers: [],
     hasMore: false,
   });
-  const searchKeyword = useRef<{ keyword: string; page: number }>({ keyword: '', page: 1 });
   const [spotInfo, setSpotInfo] = useState<Omit<LocationInfo, 'id'> | null>(null);
   const [clusterStyle, setClusterStyle] = useState<ClusterStyle[]>([]);
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
   const polyline: LatLng[] = [];
   const {
+    createSearchFunction,
     getSpotInfo,
     handleFindUserLocation,
     moveToMarker,
@@ -52,6 +49,15 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     onClusteredEvent,
     clusterCalculator,
   } = useKakaoMap(map as kakao.maps.Map);
+  const searchLocation = createSearchFunction({
+    setSpotInfo,
+    isPostsView,
+    setIsPostsView,
+    searchResult,
+    setSearchResult,
+    isInputFocus,
+    setIsInputFocus,
+  });
 
   const { data: postsCoverImages, isPending, isError, error } = getGroupPostsCoverImagesQuery(groupId);
 
@@ -82,50 +88,6 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
   if (mapError) throw new Error('지도를 불러오지 못 했습니다.');
 
   if (isError) throw new Error(error.message);
-
-  /** 키워드 검색 */
-  const searchLocation = async ({ searchInput }: FieldValues) => {
-    if (!map) {
-      toast.error('지도를 불러오지 못 했습니다.');
-      return;
-    }
-
-    if (searchInput === searchKeyword.current.keyword) return;
-
-    isPostsView && setIsPostsView(false);
-
-    const keyword = searchInput ?? searchKeyword.current.keyword;
-    const { results, is_end } = await keywordSearch({ keyword, page: searchKeyword.current.page });
-
-    if (!results[0]) {
-      toast.error('검색결과가 존재하지 않습니다.', { progressBar: false, closeOnClick: true, autoClose: true });
-      return;
-    }
-
-    setSearchResult(({ markers, hasMore }) =>
-      searchInput ? { markers: results, hasMore } : { markers: [...markers, ...results], hasMore },
-    );
-
-    searchInput && moveToMarker({ ...results[0], setSpotInfo });
-
-    if (is_end) {
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: false };
-      });
-      searchKeyword.current = { keyword: '', page: 1 };
-      return;
-    }
-
-    searchResult.hasMore ||
-      setSearchResult((prev) => {
-        return { ...prev, hasMore: true };
-      });
-    searchInput
-      ? (searchKeyword.current = { keyword: searchInput, page: (searchKeyword.current.page += 1) })
-      : (searchKeyword.current.page = searchKeyword.current.page += 1);
-
-    isInputFocus && setIsInputFocus(false);
-  };
 
   return (
     <>
