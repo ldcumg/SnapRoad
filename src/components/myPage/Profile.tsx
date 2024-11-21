@@ -1,6 +1,7 @@
 'use client';
 
 import { useProfilesQuery } from '@/hooks/queries/profiles/useProfilesQueries';
+import IconSetting from '@/lib/icon/Icon_Setting';
 import { Button } from '@/stories/Button';
 import Spinner from '@/stories/Spinner';
 import Link from 'next/link';
@@ -36,11 +37,12 @@ const Profile = ({ userId }: { userId: string }) => {
             label='프로필 수정'
             size='small'
           >
-            <img
+            <IconSetting />
+            {/* <img
               alt='프로필 수정'
               src={'/svgs/Setting.svg'}
               className='h-full w-full object-cover'
-            />
+            /> */}
           </Button>
         </Link>
       </div>
