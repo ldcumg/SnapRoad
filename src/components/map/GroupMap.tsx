@@ -128,7 +128,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
             styles={clusterStyle}
             disableClickZoom={true}
             onClustered={(marker) => onClusteredEvent({ marker, clusterStyle, setClusterStyle })}
-            calculator={clusterCalculator as any}
+            calculator={() => clusterCalculator(clusterStyle) as any}
             onClusterclick={(marker, cluster) => {
               clusterClickEvent({ cluster, setPostsPreview });
               handleCustomOpen();
