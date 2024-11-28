@@ -1,3 +1,5 @@
+'use client';
+
 import ToastContainer from 'garlic-toast';
 import 'garlic-toast/style.css';
 

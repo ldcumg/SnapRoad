@@ -1,6 +1,7 @@
 import LayoutMain from '@/components/layout/LayoutMain';
 import { PostPositioningProvider } from '@/components/providers/PostPositioningProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
+import GarlicToast from '@/components/toast/GarlicToast';
 import '@/lib/styles/globals.css';
 import * as Sentry from '@sentry/browser';
 import type { Metadata } from 'next';
@@ -33,9 +34,8 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
-  manifest: '/manifest.ts', 
+  manifest: '/manifest.ts',
 };
-
 
 const RootLayout = ({
   children,
@@ -53,6 +53,7 @@ const RootLayout = ({
             <LayoutMain>{children}</LayoutMain>
           </PostPositioningProvider>
         </QueryProvider>
+        <GarlicToast />
       </body>
     </html>
   );

@@ -8,10 +8,7 @@ import GroupMap from '@/components/map/GroupMap';
 import useMediaQuery from '@/hooks/byUse/useMediaQuery';
 import { useGroupInfoQuery } from '@/hooks/queries/group/useGroupQueries';
 import { GroupDetailMode } from '@/types/groupTypes';
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-
-const ToastContainer = dynamic(() => import('@/components/toast/GarlicToast'), { ssr: false });
 
 type Props = Readonly<{
   params: { groupId: string };
@@ -62,7 +59,6 @@ const GroupPage = ({ params: { groupId }, searchParams: { lat, lng } }: Props) =
 
   return (
     <div className='flex h-screen flex-col'>
-      <ToastContainer />
       <GroupDetailHeader
         groupTitle={groupInfo.group_title}
         mode={mode}
