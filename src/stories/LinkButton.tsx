@@ -36,8 +36,8 @@ export const LinkButton = ({
   const sizeStyle = {
     small: 'px-4 py-2 text-label_sm rounded-[4px]',
     medium: 'px-5 py-3 text-label_md rounded-[8px]',
-    large: 'px-6 py-3 text-title_lg rounded-[12px]',
-    full: 'px-5 py-3  ssm:text-label_md text-[13px] rounded-[8px] w-full',
+    large: 'px-6 py-3 text-label-lg rounded-[12px]',
+    full: 'px-6 py-4 ssm:text-title_lg text-[13px] rounded-[8px] w-full',
   }[size];
 
   let colorStyle;
