@@ -47,10 +47,10 @@ const ScrollSections = () => {
   }, [sections, lastPage]);
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-[164px]'>
       <section
         ref={section1Ref}
-        className='flex h-screen flex-col items-center gap-5 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-5 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>스냅로드 지도위에</p>
@@ -79,7 +79,7 @@ const ScrollSections = () => {
       </section>
       <section
         ref={section2Ref}
-        className='flex h-screen flex-col items-center gap-7 px-4 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-7 px-4 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
@@ -93,21 +93,22 @@ const ScrollSections = () => {
             <span className='text-gray-900'>해요!</span>
           </p>
         </div>
-        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+        <div className='relative flex w-full max-w-[400px] justify-center rounded-xl shadow-BG_Broad'>
           <Image
             src={image2}
             alt='그룹리스트페이지 예시 사진'
             sizes='400px'
             style={{
-              width: '100%',
+              width: '343px',
               height: 'auto',
+              borderRadius: '12px',
             }}
           />
         </div>
       </section>
       <section
         ref={section3Ref}
-        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-7 px-4 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
@@ -116,21 +117,22 @@ const ScrollSections = () => {
           </p>
           <p className='text-label_md text-gray-900'>시간 순으로 지도위에 연결되어 표시돼요!</p>
         </div>
-        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+        <div className='relative flex w-full max-w-[400px] justify-center rounded-xl shadow-BG_Broad'>
           <Image
             src={image3}
             alt='그룹 앨범 예시 사진'
             sizes='400px'
             style={{
-              width: '100%',
+              width: '343px',
               height: 'auto',
+              borderRadius: '12px',
             }}
           />
         </div>
       </section>
       <section
         ref={section4Ref}
-        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-7 px-4 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>피드에 업로드한 게시물들은</p>
@@ -139,21 +141,22 @@ const ScrollSections = () => {
             <span className='text-gray-900'>돼요!</span>
           </p>
         </div>
-        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+        <div className='relative flex w-full max-w-[400px] justify-center rounded-xl shadow-BG_Broad'>
           <Image
             src={image4}
             alt='그룹 지도 예시 사진'
             sizes='400px'
             style={{
-              width: '100%',
+              width: '343px',
               height: 'auto',
+              borderRadius: '12px',
             }}
           />
         </div>
       </section>
       <section
         ref={section5Ref}
-        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-7 px-4 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md'>
@@ -161,26 +164,27 @@ const ScrollSections = () => {
             <span className='text-gray-900'>하여</span>
           </p>
           <p className='text-label_md'>
-            <span className='text-gray-900'>그 곳에서의</span>
-            <span className='text-primary-400'>추억을 글로</span>
+            <span className='text-gray-900'>그 곳에서의 </span>
+            <span className='text-primary-400'>추억을 글로 </span>
             <span className='text-gray-900'>남겨봐요!</span>
           </p>
         </div>
-        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+        <div className='relative flex w-full max-w-[400px] justify-center rounded-xl shadow-BG_Broad'>
           <Image
             src={image5}
             alt='게시글 상세 예시 사진'
             sizes='400px'
             style={{
-              width: '100%',
+              width: '343px',
               height: 'auto',
+              borderRadius: '12px',
             }}
           />
         </div>
       </section>
       <section
         ref={section6Ref}
-        className='flex h-screen flex-col items-center gap-10 px-4 pt-24'
+        className='flex h-screen flex-col items-center justify-center gap-7 px-4 pt-14'
       >
         <div className='flex flex-col items-center justify-center'>
           <p className='text-label_md text-gray-900'>그룹내 멤버들과</p>
@@ -189,17 +193,23 @@ const ScrollSections = () => {
             <span className='text-gray-900'>을 나눠봐요!</span>
           </p>
         </div>
-        <div className='relative w-full max-w-[400px] rounded-xl shadow-BG_Broad'>
+        <div className='relative flex w-full max-w-[400px] justify-center rounded-xl shadow-BG_Broad'>
           <Image
             src={image6}
             alt='그룹 지도 예시 사진'
             sizes='400px'
             style={{
-              width: '100%',
+              width: '343px',
               height: 'auto',
+              borderRadius: '12px',
             }}
           />
         </div>
+        <LinkButton
+          href='/login'
+          label='로그인하여 시작'
+          size='full'
+        />
       </section>
     </div>
   );

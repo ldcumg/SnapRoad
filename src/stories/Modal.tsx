@@ -13,8 +13,8 @@ const modalOverlayClass =
   'fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 px-4';
 const modalContentClass =
   'relative z-[300] bg-white rounded-xl pb-4 px-4 shadow-lg max-w-md w-full transition-transform duration-300';
-const closeButtonClass = 'absolute z-12 top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none';
-const closeButtonTitleClass = 'absolute z-12 right-4 text-gray-500 hover:text-gray-700 focus:outline-none';
+const closeButtonClass = 'absolute z-[400] top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none';
+const closeButtonTitleClass = 'absolute z-[400] right-4 text-gray-500 hover:text-gray-700 focus:outline-none';
 const closeIconClass = 'w-5 h-5';
 
 export const Modal = ({ isModalOpen, handleModalOpen, children, title }: ModalProps) => {
