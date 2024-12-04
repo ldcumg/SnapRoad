@@ -78,7 +78,7 @@ const RandomImage = () => {
           />
         </Carousel>
       ) : !!groupListDataLen ? (
-        <div className='flex h-[220px] w-[220px] flex-col items-center justify-center gap-9 pt-12'>
+        <div className='flex h-[220px] w-[220px] flex-col items-center justify-center gap-6 rounded-xl bg-gray-50 pc:h-[330px] pc:w-[330px]'>
           <img
             src='/svgs/Empty_Marker.svg'
             alt=''

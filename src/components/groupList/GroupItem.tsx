@@ -22,16 +22,16 @@ const GroupItem = ({ el }: { el: GroupWithCounts }) => {
           <p className='max-w-[100px] truncate text-label_sm text-gray-900 pc:max-w-full pc:text-title_lg'>
             {el?.group_title}
           </p>
-          <p className='flex flex-row items-center justify-center pc:justify-start pc:gap-1'>
+          <p className='flex flex-row items-center justify-center gap-1 pc:justify-start'>
             <img
               src='/svgs/User_Group.svg'
               alt='icon'
-              className='h-[15px] w-[15px] pc:h-[22px] pc:w-[22px]'
+              className='h-[20px] w-[20px] pc:h-[22px] pc:w-[22px]'
             />
-            <span className='text-caption_bold_lg text-gray-700 pc:text-label_md'>{el?.user_count}</span>
+            <span className='text-label_sm text-gray-700 pc:text-label_md'>{el?.user_count}</span>
           </p>
         </div>
-        <p className='line-clamp-3 max-h-full max-w-full overflow-hidden text-ellipsis break-all text-caption_light_md text-gray-700'>
+        <p className='line-clamp-3 max-h-full max-w-full overflow-hidden text-ellipsis break-all text-body_sm text-gray-700'>
           {el?.group_desc}
         </p>
       </div>

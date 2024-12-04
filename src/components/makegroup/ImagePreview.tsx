@@ -12,7 +12,7 @@ const ImagePreview = ({ imgPreview }: Props) => {
             alt='업로드 그룹 썸네일 이미지'
             className='flex h-[200px] w-[200px] items-center justify-center rounded-xl border border-gray-100'
           />
-          <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-[24px] border border-solid border-black bg-white'>
+          <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-[24px] bg-white shadow-BG_S'>
             <img
               src='/svgs/cameraIcon.svg'
               alt=''
@@ -23,11 +23,11 @@ const ImagePreview = ({ imgPreview }: Props) => {
       ) : (
         <div className='relative flex h-[216px] w-[232px] items-start justify-center rounded-xl'>
           <img
-            className='h-[200px] w-[200px] rounded-xl'
+            className='flex h-[200px] w-[200px] items-center justify-center rounded-xl border border-gray-100'
             src='/images/group_default_thumbnail.webp'
             alt='그룹 기본 이미지'
           />
-          <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-[24px] border border-solid border-gray-100 bg-white shadow-BG_S'>
+          <div className='absolute bottom-0 right-0 flex h-[48px] w-[48px] items-center justify-center rounded-[24px] bg-white shadow-BG_S'>
             <img
               src='/svgs/cameraIcon.svg'
               alt=''
