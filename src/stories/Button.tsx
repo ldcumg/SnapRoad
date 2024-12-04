@@ -37,7 +37,7 @@ export const Button = ({
     small: 'px-4 py-2 text-label_sm rounded-[4px]',
     medium: 'px-5 py-3 text-label_md rounded-[8px]',
     large: 'px-6 py-3 text-label-lg rounded-[12px]',
-    full: 'px-5 py-3 ssm:text-label_md text-[13px] rounded-[8px] w-full',
+    full: 'px-6 py-4 ssm:text-label_md text-[13px] rounded-[8px] w-full',
   }[size];
 
   let colorStyle;
@@ -47,7 +47,7 @@ export const Button = ({
   switch (variant) {
     case 'primary':
       colorStyle = 'bg-primary-400 text-white hover:bg-primary-600';
-      disabledStyle = 'bg-primary-50 text-white hover:bg-primary-200 cursor-not-allowed';
+      disabledStyle = 'bg-primary-100 text-white hover:bg-primary-200 cursor-not-allowed';
       loadingStyle = 'bg-primary-200 text-white hover:bg-primary-200 cursor-not-allowed';
       break;
     case 'secondary':

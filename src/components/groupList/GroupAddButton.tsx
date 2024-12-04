@@ -16,9 +16,11 @@ type Props = {
 type AddButtonsProps = {
   isDesktop: boolean;
   handleBottomSheetOpen: () => void;
+  dataLen?: number;
 };
 
-const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
+const AddButtons = ({ handleBottomSheetOpen, isDesktop, dataLen }: AddButtonsProps) => {
+  console.log('dataLen :>> ', dataLen);
   return (
     <>
       {isDesktop ? (
@@ -39,7 +41,7 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
       )}
       {isDesktop ? (
         <Button
-          label='그룹만들기'
+          label='그룹 만들기'
           size='large'
           className='px-7 py-4 text-white'
           onClick={handleBottomSheetOpen}
@@ -51,7 +53,7 @@ const AddButtons = ({ handleBottomSheetOpen, isDesktop }: AddButtonsProps) => {
         </Button>
       ) : (
         <LinkButton
-          label='그룹만들기'
+          label='그룹 만들기'
           href='/makegroup'
           size='full'
           className='text-white'
@@ -102,6 +104,7 @@ const GroupAddButton = ({ dataLen }: Props) => {
             <AddButtons
               isDesktop={desktop}
               handleBottomSheetOpen={handleBottomSheetOpen}
+              dataLen={dataLen}
             />
           </div>
         </div>

@@ -50,7 +50,7 @@ const LengthInput = <T extends FieldValues>({
           </button>
         )}
         <p
-          className={`flex items-center justify-center ${curLength ? 'text-gray-900' : 'text-gray-300'} text-[#bdbdbd]`}
+          className={`flex items-center justify-center text-body_sm ${curLength ? 'text-gray-900' : 'text-gray-300'} text-[#bdbdbd]`}
         >
           {curLength}/{maxLength}
         </p>
