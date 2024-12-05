@@ -71,7 +71,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
       postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
-      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
+      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.setBounds(bounds, 60, 60, 60, 60);
     }
   }, [map, postsCoverImages]);
 
