@@ -55,7 +55,6 @@ const PostsPreviewLayout = ({ children, desktop, postsPreView, setPostsPreview }
       titleClassName='text-title_lg'
       onClose={() => {
         handleCustomClose();
-        //NOTE - 임시
         setPostsPreview([]);
       }}
       headerClassName='pt-[40px] pb-[12px]'

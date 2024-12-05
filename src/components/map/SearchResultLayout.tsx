@@ -30,7 +30,7 @@ const SearchResultLayout = ({ desktop, children, handleFindUserLocation }: Props
       backdrop={false}
     >
       <button
-        className='absolute -top-[16px] left-[16px] z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white'
+        className='absolute -top-[16px] left-[16px] z-50 h-[44px] w-[44px] -translate-y-[90%] rounded-full bg-white shadow-BG_S'
         onClick={handleFindUserLocation}
         aria-label='사용자 위치 찾기'
       >
