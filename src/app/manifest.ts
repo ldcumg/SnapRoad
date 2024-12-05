@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: '/',
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: '#009E6C',
+    theme_color: '#ffffff',
     description: 'SnapRoad: 여행의 추억을 기록하고 공유하세요.',
     icons: [
       {
@@ -17,7 +17,7 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/png',
       },
       {
-        src: '/SnapRoad_icon_green.png', 
+        src: '/SnapRoad_icon_green.png',
         sizes: '512x512',
         type: 'image/png',
       },
