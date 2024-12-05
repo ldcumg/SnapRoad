@@ -12,8 +12,12 @@ const LoginForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useLoginForm();
+
+  const email = watch('email');
+  const password = watch('password');
 
   const { mutate: login, isError, isPending } = useLogin();
 
@@ -50,6 +54,7 @@ const LoginForm = () => {
           label='로그인'
           variant='primary'
           loading={isPending}
+          disabled={!(email && password && !errors.email && !errors.password)}
         />
       </form>
     </div>

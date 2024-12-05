@@ -33,7 +33,9 @@ const LoginHeader = () => {
         </>
       ) : (
         <div className='mb-8 mt-10 flex justify-center'>
-          <IconLogoBig />
+          <Link href={URLS.home}>
+            <IconLogoBig />
+          </Link>
         </div>
       )}
     </>
