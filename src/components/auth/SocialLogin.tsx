@@ -5,7 +5,7 @@ import React from 'react';
 
 const SocialLogin = () => {
   return (
-    <div className='flex justify-center gap-6'>
+    <div className='flex justify-center gap-8'>
       <img
         src='/svgs/Kakao_login.svg'
         alt='카카오 로그인'

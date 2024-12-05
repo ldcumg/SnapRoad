@@ -102,7 +102,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <fieldset>
-        <label className={cn('mb-2 block font-bold', disabledLabelStyle)}>{label}</label>
+        <label className={cn('mb-2 block font-semibold', disabledLabelStyle)}>{label}</label>
         <div className='relative'>
           <input
             ref={ref}
@@ -112,7 +112,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             value={inputValue}
             onChange={handleChange}
             className={cn(
-              'w-full rounded-md border pr-10',
+              'w-full rounded-xl border py-4 pr-10',
               sizeClasses[size],
               activeStyle,
               'focus:outline-none focus:ring-2',
