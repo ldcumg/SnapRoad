@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-const passwordRegex = new RegExp(/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/);
+const passwordRegex = new RegExp(/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
 
 const emailSchema = z.string().email({
   message: '유효하지 않은 이메일 형식이에요!',
 });
 
-const passwordSchema = z.string().regex(passwordRegex, '문자,숫자,특수문자 포함 6자리 이상을 입력해주세요!');
+const passwordSchema = z.string().regex(passwordRegex, '문자,숫자,특수문자 포함 8자리 이상을 입력해주세요!');
 
 export const signUpSchema = z
   .object({
