@@ -71,7 +71,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
     if (!point && map && postsCoverImages?.length) {
       const bounds = new kakao.maps.LatLngBounds();
       postsCoverImages.forEach(({ post_lat, post_lng }) => bounds.extend(new kakao.maps.LatLng(post_lat, post_lng)));
-      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.panTo(bounds);
+      postsCoverImages[0].post_lat && postsCoverImages[0].post_lng && map.setBounds(bounds, 60, 60, 60, 60);
     }
   }, [map, postsCoverImages]);
 
@@ -100,7 +100,7 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         hasSearchResult={!!searchResult.markers[0]}
       />
       <button
-        className='fixed right-[16px] top-[136px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:top-[72.5px]'
+        className='fixed right-[16px] top-[136px] z-30 h-[44px] w-[44px] rounded-full bg-white shadow-BG_S pc:top-[72.5px]'
         onClick={() => {
           setIsPostsView((prev) => !prev);
           isPostsView && setPostsPreview([]);
@@ -192,8 +192,8 @@ const GroupMap = ({ groupId, desktop, point }: Props) => {
         {(!spotInfo || desktop) && (
           //NOTE - 임시
           <button
-            className='fixed bottom-[16px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
-            // className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px]'
+            className='fixed bottom-[16px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white shadow-BG_S pc:left-auto pc:right-[16px] pc:top-[132px]'
+            // className='fixed bottom-[100px] left-[16px] z-30 h-[44px] w-[44px] rounded-full bg-white pc:left-auto pc:right-[16px] pc:top-[132px] shadow-BG_S'
             onClick={() => handleFindUserLocation({ isPostsView, setIsPostsView, setSpotInfo })}
             aria-label='사용자 위치 찾기'
           >
