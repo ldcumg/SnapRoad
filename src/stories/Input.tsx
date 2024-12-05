@@ -118,7 +118,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               'focus:outline-none focus:ring-2',
               disabled ? disabledStyle : '',
             )}
-            style={{ backgroundColor }}
+            style={{
+              backgroundColor,
+              paddingRight: label === '비밀번호' ? '4.5rem' : '2.5rem',
+            }}
             {...props}
           />
           {type === 'password' && (
