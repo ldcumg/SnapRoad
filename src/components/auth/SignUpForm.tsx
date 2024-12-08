@@ -79,6 +79,7 @@ const SignUpForm = () => {
         <div className='flex flex-col gap-4'>
           <Input
             label={'이메일 주소'}
+            isRequired={true}
             placeholder={'이메일 주소 입력'}
             errorText={errors.email && String(errors.email.message)}
             {...register('email')}
@@ -86,6 +87,7 @@ const SignUpForm = () => {
 
           <Input
             label={'비밀번호'}
+            isRequired={true}
             type={'password'}
             placeholder={'비밀번호'}
             helperText={'문자,숫자,특수문자 포함 8자리 이상'}
@@ -95,6 +97,7 @@ const SignUpForm = () => {
 
           <Input
             label={'비밀번호 확인'}
+            isRequired={true}
             type={'password'}
             placeholder={'비밀번호 확인'}
             errorText={errors.confirmPassword && String(errors.confirmPassword.message)}
@@ -103,6 +106,7 @@ const SignUpForm = () => {
 
           <Input
             label={'닉네임'}
+            isRequired={true}
             placeholder={'닉네임 입력'}
             helperText={'10자 내로 입력'}
             errorText={errors.nickname && String(errors.nickname.message)}

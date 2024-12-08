@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import React, { useState, forwardRef } from 'react';
 
 export interface InputProps {
+  isRequired?: boolean;
   type?: string;
   label?: string;
   placeholder?: string;
@@ -30,6 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       errorText,
       variant = 'default',
+      isRequired = false,
       onChange,
       onDeleteClick,
       ...props
@@ -102,7 +104,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <fieldset>
-        <label className={cn('mb-2 block font-semibold', disabledLabelStyle)}>{label}</label>
+        <label className={cn('mb-2 block font-semibold', disabledLabelStyle)}>
+          {label}
+
+          {isRequired ? <span className='text-red-600'> *</span> : null}
+        </label>
         <div className='relative'>
           <input
             ref={ref}
