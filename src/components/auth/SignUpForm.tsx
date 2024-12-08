@@ -137,6 +137,7 @@ const SignUpForm = () => {
         <Button
           type='submit'
           label='회원가입'
+          size='large'
           variant='primary'
           disabled={!isChecked || !isFormFilled || Object.keys(errors).length > 0} // 수정된 부분
           loading={isPending}
