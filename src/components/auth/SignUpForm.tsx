@@ -144,7 +144,12 @@ const SignUpForm = () => {
       </form>
       <div className='flex justify-center gap-2 text-caption_bold_lg text-gray-700'>
         <span>이미 아이디가 있으신가요?</span>
-        <Link href={'/login'}>로그인</Link>
+        <Link
+          href={'/login'}
+          className='underline'
+        >
+          로그인
+        </Link>
       </div>
 
       <BottomSheet
