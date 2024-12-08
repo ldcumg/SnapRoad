@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import React, { useState, forwardRef } from 'react';
 
 export interface InputProps {
+  isRequired?: boolean;
   type?: string;
   label?: string;
   placeholder?: string;
@@ -30,6 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       errorText,
       variant = 'default',
+      isRequired = false,
       onChange,
       onDeleteClick,
       ...props
@@ -102,7 +104,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <fieldset>
-        <label className={cn('mb-2 block font-semibold', disabledLabelStyle)}>{label}</label>
+        <label className={cn('mb-2 block font-semibold', disabledLabelStyle)}>
+          {label}
+
+          {isRequired ? <span className='text-red-600'> *</span> : null}
+        </label>
         <div className='relative'>
           <input
             ref={ref}
@@ -112,7 +118,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             value={inputValue}
             onChange={handleChange}
             className={cn(
-              'w-full rounded-xl border py-4 pr-10',
+              'w-full rounded-xl border py-4 pr-10', // TODO 여기에 적으면 왜 반영이 안될까
               sizeClasses[size],
               activeStyle,
               'focus:outline-none focus:ring-2',
@@ -120,11 +126,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             style={{
               backgroundColor,
+              padding: '16px 12px 16px 12px',
+              borderRadius: '12px',
               paddingRight: label === '비밀번호' ? '4.5rem' : '2.5rem',
             }}
             {...props}
           />
-          {type === 'password' && (
+          {type === 'password' && inputValue && (
             <button
               type='button'
               onClick={togglePasswordVisibility}

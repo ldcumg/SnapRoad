@@ -52,6 +52,7 @@ const LoginForm = () => {
         <Button
           type='submit'
           label='로그인'
+          size='large'
           variant='primary'
           loading={isPending}
           disabled={!(email && password && !errors.email && !errors.password)}

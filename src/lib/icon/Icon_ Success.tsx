@@ -9,12 +9,11 @@ type IconProps = {
 
 export const IconSuccess = ({ width = 65, height = 64, color = 'currentColor', className }: IconProps) => (
   <svg
-    xmlns='http://www.w3.org/2000/svg'
     width={width}
     height={height}
-    fill={color}
     viewBox='0 0 65 64'
-    className={className}
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
   >
     <g id='Group 37'>
       <circle
@@ -28,8 +27,8 @@ export const IconSuccess = ({ width = 65, height = 64, color = 'currentColor', c
         id='Vector 240'
         d='M13.5 32.4558L26.2279 45.1838L51.6837 19.7279'
         stroke='#009E6C'
-        strokeWidth='4'
-        strokeLinecap='round'
+        stroke-width='4'
+        stroke-linecap='round'
       />
     </g>
   </svg>
