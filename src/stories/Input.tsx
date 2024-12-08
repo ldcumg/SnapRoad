@@ -132,7 +132,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             }}
             {...props}
           />
-          {type === 'password' && (
+          {type === 'password' && inputValue && (
             <button
               type='button'
               onClick={togglePasswordVisibility}
