@@ -118,7 +118,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             value={inputValue}
             onChange={handleChange}
             className={cn(
-              'w-full rounded-xl border py-4 pr-10',
+              'w-full rounded-xl border py-4 pr-10', // TODO 여기에 적으면 왜 반영이 안될까
               sizeClasses[size],
               activeStyle,
               'focus:outline-none focus:ring-2',
@@ -126,6 +126,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             style={{
               backgroundColor,
+              padding: '16px 12px 16px 12px',
+              borderRadius: '12px',
               paddingRight: label === '비밀번호' ? '4.5rem' : '2.5rem',
             }}
             {...props}
