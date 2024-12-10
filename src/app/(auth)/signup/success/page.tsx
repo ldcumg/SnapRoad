@@ -20,7 +20,7 @@ const SignUpSuccessPage = () => {
           <IconSuccess />
         </div>
         <p className='text-head_sm text-gray-900'>회원가입이 완료되었어요!</p>
-        <div className='flex w-full gap-4 py-5'>
+        <div className='mb-8 flex w-full gap-4 py-5'>
           <Link
             href={URLS.home}
             className='w-full'
