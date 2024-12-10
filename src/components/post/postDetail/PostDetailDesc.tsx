@@ -27,7 +27,7 @@ const PostDetailDesc = ({ postDetail }: ProfileProps) => {
         {postDetail.tags.map((tag, id) => {
           return (
             <span
-              className='break-all rounded-lg bg-gray-50 p-2'
+              className='break-all rounded-lg bg-gray-50 p-2 text-caption_light_lg text-gray-700'
               key={id}
             >
               #{tag.tag_title}
