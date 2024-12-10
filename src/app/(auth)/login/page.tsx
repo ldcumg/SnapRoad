@@ -2,7 +2,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import LoginHeader from '@/components/auth/LoginHeader';
 import LoginOptions from '@/components/auth/LoginOptions';
 import SocialLogin from '@/components/auth/SocialLogin';
-import { IconLogoBig } from '@/lib/icon/Icon_Logo_Big';
+import { IconLine } from '@/lib/icon/Icon_line';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -17,8 +17,10 @@ const LoginPage = () => {
       <LoginHeader />
       <div className='mb-16 flex flex-col gap-8'>
         <LoginForm />
-        <div className='flex justify-center'>
-          <span className='text-label_sm text-gray-900'>소셜 계정으로 로그인</span>
+        <div className='flex items-center justify-center'>
+          <IconLine />
+          <span className='mx-3 text-label_sm text-gray-900'>소셜 계정으로 로그인</span>
+          <IconLine />
         </div>
         <SocialLogin />
         <LoginOptions />

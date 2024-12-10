@@ -16,7 +16,7 @@ const TermsAgreementPage = () => {
         <MyPageBack />
         <span className='mx-auto text-label_md text-gray-900'>개인정보 수집 · 이용 약관</span>
       </div>
-      <div className='min-h-screen bg-gray-50 py-8'>
+      <div className='bg-gray-0 min-h-screen py-8'>
         <div className='px-4'>
           <AgreeList />
         </div>
