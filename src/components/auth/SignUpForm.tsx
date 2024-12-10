@@ -79,6 +79,7 @@ const SignUpForm = () => {
         <div className='flex flex-col gap-4'>
           <Input
             label={'이메일 주소'}
+            isRequired={true}
             placeholder={'이메일 주소 입력'}
             errorText={errors.email && String(errors.email.message)}
             {...register('email')}
@@ -86,6 +87,7 @@ const SignUpForm = () => {
 
           <Input
             label={'비밀번호'}
+            isRequired={true}
             type={'password'}
             placeholder={'비밀번호'}
             helperText={'문자,숫자,특수문자 포함 8자리 이상'}
@@ -95,6 +97,7 @@ const SignUpForm = () => {
 
           <Input
             label={'비밀번호 확인'}
+            isRequired={true}
             type={'password'}
             placeholder={'비밀번호 확인'}
             errorText={errors.confirmPassword && String(errors.confirmPassword.message)}
@@ -103,6 +106,7 @@ const SignUpForm = () => {
 
           <Input
             label={'닉네임'}
+            isRequired={true}
             placeholder={'닉네임 입력'}
             helperText={'10자 내로 입력'}
             errorText={errors.nickname && String(errors.nickname.message)}
@@ -133,6 +137,7 @@ const SignUpForm = () => {
         <Button
           type='submit'
           label='회원가입'
+          size='large'
           variant='primary'
           disabled={!isChecked || !isFormFilled || Object.keys(errors).length > 0} // 수정된 부분
           loading={isPending}
@@ -140,7 +145,12 @@ const SignUpForm = () => {
       </form>
       <div className='flex justify-center gap-2 text-caption_bold_lg text-gray-700'>
         <span>이미 아이디가 있으신가요?</span>
-        <Link href={'/login'}>로그인</Link>
+        <Link
+          href={'/login'}
+          className='underline'
+        >
+          로그인
+        </Link>
       </div>
 
       <BottomSheet
@@ -148,7 +158,7 @@ const SignUpForm = () => {
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
         // onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
-        title='개인정보 수집·이용 약관 동의'
+        title='개인정보 수집 · 이용 약관 동의'
         height='full'
         // confirmLabel='완료'
         // cancelLabel='취소'

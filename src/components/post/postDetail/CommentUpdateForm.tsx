@@ -53,13 +53,13 @@ const CommentUpdateForm = ({ comment, userDetail, setIsEditMode }: CommentFormPr
           />
         </div>
         <div className='flex justify-end gap-1'>
-          <Button
+          {/* <Button
             type='submit'
             variant='primary'
             label='취소 '
             size='small'
             onClick={handleCancelUpdate}
-          />
+          /> */}
           <Button
             type='submit'
             variant='primary'

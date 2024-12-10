@@ -34,6 +34,7 @@ const AgreeList = () => {
       <br />
       <div>
         <span className='text-body_sm text-gray-900'>4. 개인정보의 파기 절차 및 방법</span>
+        <br />
         <span className='text-body_sm text-gray-900'>
           원칙적으로, 개인정보 수집 및 이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. <br /> 전자적 파일
           형태의 정보는 기록을 재생할 수 없느니술적 방법을 사용하여 삭제합니다. <br /> 종이에 출력된 정보는 분쇄기로

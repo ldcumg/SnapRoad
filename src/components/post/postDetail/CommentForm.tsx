@@ -62,13 +62,13 @@ const CommentForm = ({ setIsWriteMode, setIsWriteReplyMode, parentId, postId, us
           />
         </div>
         <div className='flex justify-end gap-1'>
-          <Button
+          {/* <Button
             type='submit'
             variant='primary'
             label='취소 '
             size='small'
             onClick={handleCommentCancel}
-          />
+          /> */}
           <Button
             type='submit'
             variant='primary'

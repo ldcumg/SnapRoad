@@ -20,7 +20,7 @@ const PostDetailTitle = ({ userDetail, postDetail }: PostAndProfileProps) => {
             height={24}
           />
         </Link>
-        <p className='text-label_sm text-gray-900'>{postDetail.post_address}</p>
+        <p className='text-label_sm text-gray-700'>{postDetail.post_address}</p>
         <p className='text-caption_light_lg text-gray-500'>{postDetail.post_date}</p>
       </div>
       {userDetail.profiles.user_id === postDetail.user_id ? <OptionsMenu postId={postDetail.post_id} /> : null}
