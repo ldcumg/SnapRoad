@@ -11,15 +11,17 @@ export const metadata: Metadata = {
 
 const TermsAgreementPage = () => {
   return (
-    <div className='px-4'>
+    <>
       <div className='relative flex items-center py-4'>
         <MyPageBack />
         <span className='mx-auto text-label_md text-gray-900'>개인정보 수집 · 이용 약관</span>
       </div>
-      <div className='py-8'>
-        <AgreeList />
+      <div className='min-h-screen bg-gray-50 py-8'>
+        <div className='px-4'>
+          <AgreeList />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
