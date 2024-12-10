@@ -158,7 +158,7 @@ const SignUpForm = () => {
         isOpen={isFullHeightOpen}
         onClose={handleFullClose}
         // onConfirm={handleComplete} // 완료 버튼을 누르면 바텀시트 닫고 외부 체크박스 상태 반영
-        title='개인정보 수집·이용 약관 동의'
+        title='개인정보 수집 · 이용 약관 동의'
         height='full'
         // confirmLabel='완료'
         // cancelLabel='취소'
