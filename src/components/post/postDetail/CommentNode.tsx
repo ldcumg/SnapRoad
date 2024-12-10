@@ -26,11 +26,12 @@ const CommentNode = ({ comment, userDetail, postDetail }: CommentNodeProps) => {
         />
       ) : (
         <div className='flex w-full gap-3 p-4'>
-          <ProfileImage
-            profileImageUrl={comment.comment_author_user.signed_image_url}
-            size='small'
-          />
-
+          <div>
+            <ProfileImage
+              profileImageUrl={comment.comment_author_user.signed_image_url}
+              size='small'
+            />
+          </div>
           <div className='w-full'>
             <div className='flex justify-between pb-1'>
               <p className='text-label_sm text-gray-900'>{comment.comment_author_user.user_nickname}</p>

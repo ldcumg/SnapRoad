@@ -11,7 +11,6 @@ const ProfileImage = ({ profileImageUrl, size }: ProfileImageProps) => {
   const imageSize = {
     small: 'w-8 h-8', // 32px
     medium: 'w-10 h-10', // 40px
-    // large: 'w-16 h-16',
   };
 
   return (
